@@ -388,6 +388,14 @@
     letter-spacing: 0.5px;
   }
 </style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HBVBLT12D1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-HBVBLT12D1');
+</script>
 </head>
 <body>
 
@@ -461,7 +469,7 @@
 
     <div id="result">
       <div class="result-empty">
-        <span class="icon">🏊</span>
+        <span class="icon"></span>
         Preenche os campos acima para ver o tempo mínimo de qualificação.
       </div>
     </div>
@@ -679,13 +687,13 @@ function getCompeticoes(escalao) {
 
   // International competitions
   comps.push({ value: "sep", label: "─────────────", disabled: true });
-  comps.push({ value: "olimpicos", label: "🏅 Jogos Olímpicos 2028" });
-  comps.push({ value: "europeus", label: "🌍 Europeus de Piscina Longa" });
+  comps.push({ value: "olimpicos", label: "Jogos Olímpicos 2028" });
+  comps.push({ value: "europeus", label: "Europeus de Piscina Longa" });
 
   // Europeus Juniores: INF_A, INF_B, JUV_A, JUV_B, JUN1, JUN
   const escaloes_eur_jun = ["INF_A","INF_B","JUV_A","JUV_B","JUN1","JUN"];
   if (escaloes_eur_jun.includes(escalao)) {
-    comps.push({ value: "europeus_jun", label: "🌍 Europeus de Juniores" });
+    comps.push({ value: "europeus_jun", label: "Europeus de Juniores" });
   }
 
   return comps;
@@ -956,7 +964,7 @@ function calcularDiferenca(digits) {
     diffDiv.innerHTML = `
       <div class="diff-result passa">
         <div class="diff-time">+ ${csParaTempo(Math.abs(diff))}</div>
-        <div class="diff-msg">🎉 Parabéns, já tens este mínimo!</div>
+        <div class="diff-msg">Parabéns, já tens este mínimo!</div>
       </div>`;
   }
 }
@@ -1064,7 +1072,7 @@ function calcular() {
   if (!piscina || !genero || !escalao || !competicao || !distancia || !estilo) {
     resultDiv.innerHTML = `
       <div class="result-empty">
-        <span class="icon">🏊</span>
+        <span class="icon"></span>
         Preenche todos os campos acima para ver o tempo mínimo de qualificação.
       </div>`;
     return;
@@ -1094,7 +1102,7 @@ function calcular() {
     desc = `${info.nome} · ${distancia}m ${nomeEstilo(estilo)} · Piscina 50m`;
     datasHtml = `
       <div class="result-dates">
-        <div class="result-dates-title">📅 Prova</div>
+        <div class="result-dates-title"> Prova</div>
         <div class="result-dates-item">· ${info.data}</div>
       </div>`;
   } else {
@@ -1109,7 +1117,7 @@ function calcular() {
     const datas = datasDasProvas[escalao]?.[competicao] || [];
     datasHtml = datas.length ? `
       <div class="result-dates">
-        <div class="result-dates-title">📅 Provas</div>
+        <div class="result-dates-title"> Provas</div>
         ${datas.map(d => `<div class="result-dates-item">· ${d}</div>`).join('')}
       </div>` : '';
   }
