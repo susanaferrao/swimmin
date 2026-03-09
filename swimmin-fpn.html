@@ -634,12 +634,12 @@
 </div>
 
   <div class="fpn-btn-wrap">
-    <button class="fpn-btn" id="idades-btn" onclick="toggleIdades()">Recordes Nacionais por Idade</button>
+    <button class="fpn-btn" id="idades-btn" onclick="toggleIdades()">Recordes Nacionais</button>
   </div>
 
   <div class="fpn-section" id="idades-section" style="display:none">
-    <div class="fpn-title">Recordes Nacionais por Idade</div>
-    <div class="fpn-subtitle">Piscina longa (50m) e curta (25m)</div>
+    <div class="fpn-title">Recordes Nacionais</div>
+    <div class="fpn-subtitle">Por Idade · Piscina longa (50m) e curta (25m)</div>
     <div class="grid">
       <div class="field">
         <label>Piscina</label>
@@ -879,36 +879,38 @@ const distanciasEstilos = {
 // Competições válidas por escalão
 function getCompeticoes(escalao) {
   if (!escalao) return [];
-
-  let comps = [];
-
+  const escaloes_eur_jun = ["INF_A","INF_B","JUV_A","JUV_B","JUN1","JUN"];
   if (escalao === "INF_A" || escalao === "INF_B") {
-    comps = [
-      { value: "zonal", label: "Zonal" },
-      { value: "verao", label: "Nacional Verão" },
+    return [
+      { value: "zonal",        label: "Zonal" },
+      { value: "verao",        label: "Nacional Verão" },
+      { value: "europeus_jun", label: "Europeus de Juniores" },
+      { value: "europeus",     label: "Europeus de Piscina Longa" },
+      { value: "olimpicos",    label: "Jogos Olímpicos 2028" },
     ];
   } else if (escalao === "JUV_A" || escalao === "JUV_B") {
-    comps = [
-      { value: "zonal", label: "Zonal" },
-      { value: "inverno", label: "Nacional Inverno" },
-      { value: "verao", label: "Nacional Verão" },
+    return [
+      { value: "zonal",        label: "Zonal" },
+      { value: "inverno",      label: "Nacional Inverno" },
+      { value: "verao",        label: "Nacional Verão" },
+      { value: "europeus_jun", label: "Europeus de Juniores" },
+      { value: "europeus",     label: "Europeus de Piscina Longa" },
+      { value: "olimpicos",    label: "Jogos Olímpicos 2028" },
+    ];
+  } else if (escalao === "JUN1" || escalao === "JUN") {
+    return [
+      { value: "nacional",     label: "Nacional" },
+      { value: "europeus_jun", label: "Europeus de Juniores" },
+      { value: "europeus",     label: "Europeus de Piscina Longa" },
+      { value: "olimpicos",    label: "Jogos Olímpicos 2028" },
     ];
   } else {
-    comps = [{ value: "nacional", label: "Nacional" }];
+    return [
+      { value: "nacional",  label: "Nacional" },
+      { value: "europeus",  label: "Europeus de Piscina Longa" },
+      { value: "olimpicos", label: "Jogos Olímpicos 2028" },
+    ];
   }
-
-  // International competitions
-  comps.push({ value: "sep", label: "─────────────", disabled: true });
-  comps.push({ value: "olimpicos", label: "Jogos Olímpicos 2028" });
-  comps.push({ value: "europeus", label: "Europeus de Piscina Longa" });
-
-  // Europeus Juniores: INF_A, INF_B, JUV_A, JUV_B, JUN1, JUN
-  const escaloes_eur_jun = ["INF_A","INF_B","JUV_A","JUV_B","JUN1","JUN"];
-  if (escaloes_eur_jun.includes(escalao)) {
-    comps.push({ value: "europeus_jun", label: "Europeus de Juniores" });
-  }
-
-  return comps;
 }
 
 // Mapeia escalão + competição → chave na tabela
@@ -4727,7 +4729,7 @@ function toggleIdades() {
     section.scrollIntoView({ behavior: 'smooth', block: 'start' });
   } else {
     section.style.display = 'none';
-    btn.textContent = 'Recordes Nacionais por Idade';
+    btn.textContent = 'Recordes Nacionais';
   }
 }
 </script>
