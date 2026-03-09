@@ -4678,42 +4678,44 @@ function idadeUpdateDistancias() {
 }
 
 function mostrarRecordeIdade() {
-  const piscina = document.getElementById('id-piscina').value;
-  const sexo = document.getElementById('id-sexo').value;
-  const estilo = document.getElementById('id-estilo').value;
-  const dist = document.getElementById('id-distancia').value;
-  const idade = document.getElementById('id-idade').value;
-  const resultDiv = document.getElementById('id-result');
+  var piscina = document.getElementById('id-piscina').value;
+  var sexo = document.getElementById('id-sexo').value;
+  var estilo = document.getElementById('id-estilo').value;
+  var dist = document.getElementById('id-distancia').value;
+  var idade = document.getElementById('id-idade').value;
+  var resultDiv = document.getElementById('id-result');
   resultDiv.innerHTML = '';
   if (!piscina || !sexo || !estilo || !dist || !idade) return;
 
-  const chave = dist + "_" + estilo;
-  let ageKey = idade;
-  // "open" uses the open/absoluto record from 19+ as fallback label
-  if (idade === 'open') ageKey = '19+';
+  var chave = dist + '_' + estilo;
+  var ageKey = (idade === 'open') ? '19+' : idade;
 
-  const rec = recordesIdade[piscina]?.[sexo]?.[ageKey]?.[chave];
+  var ageData = recordesIdade[piscina] && recordesIdade[piscina][sexo] && recordesIdade[piscina][sexo][ageKey];
+  var rec = ageData && ageData[chave];
+
   if (!rec) {
     resultDiv.innerHTML = '<div class="result-box" style="text-align:center;padding:18px;color:#aaa;">Recorde não disponível para esta combinação.</div>';
     return;
   }
-  const [tempo, nome, data, local] = rec;
-  const piscinaLabel = piscina === 'longa' ? 'Piscina Longa (50m)' : 'Piscina Curta (25m)';
-  const sexoLabel = sexo === 'M' ? 'Masculino' : 'Feminino';
-  const idadeLabel = idade === 'open' ? 'Open' : (idade === '19+' ? '19+ anos' : idade + ' anos');
+  var tempo = rec[0], nome = rec[1], dataRec = rec[2], local = rec[3];
+  var piscinaLabel = (piscina === 'longa') ? 'Piscina Longa (50m)' : 'Piscina Curta (25m)';
+  var sexoLabel = (sexo === 'M') ? 'Masculino' : 'Feminino';
+  var idadeLabel = (idade === 'open') ? 'Open' : (idade === '19+' ? '19+ anos' : idade + ' anos');
+  var isTL = nome.indexOf('tempo limite') >= 0;
 
-  const isTL = nome.includes('tempo limite');
-  resultDiv.innerHTML = \`
-    <div class="result-box" style="text-align:center;margin-top:16px;">
-      <div style="font-size:13px;color:#7ab8d4;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">\${dist}m \${estiloLabels[estilo]} · \${sexoLabel} · \${idadeLabel} · \${piscinaLabel}</div>
-      <div style="font-size:42px;font-family:'Bebas Neue',sans-serif;color:var(--aqua);letter-spacing:2px;">\${tempo.replace('.',':').replace(/:(\d{2})$/, ',\$1')}</div>
-      \${isTL
-        ? '<div style="color:#aaa;font-size:14px;margin-top:6px;">Recorde por estabelecer</div>'
-        : \`<div style="font-size:15px;color:var(--text);margin-top:4px;">\${nome}</div>
-           <div style="font-size:13px;color:#7ab8d4;margin-top:2px;">\${data} · \${local}</div>\`
-      }
-    </div>
-  \`;
+  var tempoFormatado = tempo.replace('.', ':').replace(/:(\d{2})$/, ',$1');
+
+  var html = '<div class="result-box" style="text-align:center;margin-top:16px;">';
+  html += '<div style="font-size:13px;color:#7ab8d4;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">' + dist + 'm ' + estiloLabels[estilo] + ' · ' + sexoLabel + ' · ' + idadeLabel + ' · ' + piscinaLabel + '</div>';
+  html += '<div style="font-size:42px;font-family:\'Bebas Neue\',sans-serif;color:var(--aqua);letter-spacing:2px;">' + tempoFormatado + '</div>';
+  if (isTL) {
+    html += '<div style="color:#aaa;font-size:14px;margin-top:6px;">Recorde por estabelecer</div>';
+  } else {
+    html += '<div style="font-size:15px;color:var(--text);margin-top:4px;">' + nome + '</div>';
+    html += '<div style="font-size:13px;color:#7ab8d4;margin-top:2px;">' + dataRec + ' · ' + local + '</div>';
+  }
+  html += '</div>';
+  resultDiv.innerHTML = html;
 }
 
 function toggleIdades() {
