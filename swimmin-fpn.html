@@ -586,7 +586,7 @@
 
   
   <div class="fpn-btn-wrap">
-    <button class="fpn-btn" id="fpn-btn" onclick="toggleFPN()">Calcular os teus Pontos FPN</button>
+    <button class="fpn-btn" id="fpn-btn" onclick="toggleFPN()">Calcular Pontos FPN</button>
   </div>
 
   <div class="fpn-section" id="fpn-section" style="display:none">
@@ -632,6 +632,63 @@
     <div id="fpn-result"></div>
   <div class="footer">Dados de acordo com o regulamento oficial da FPN · atualizado a 09/03/2026</div>
 </div>
+
+  <div class="fpn-btn-wrap">
+    <button class="fpn-btn" id="idades-btn" onclick="toggleIdades()">Recordes Nacionais por Idade</button>
+  </div>
+
+  <div class="fpn-section" id="idades-section" style="display:none">
+    <div class="fpn-title">Recordes Nacionais por Idade</div>
+    <div class="fpn-subtitle">Piscina longa (50m) e curta (25m)</div>
+    <div class="grid">
+      <div class="field">
+        <label>Piscina</label>
+        <select id="id-piscina" onchange="idadeUpdateEstilos()">
+          <option value="">Selecionar</option>
+          <option value="longa">50m · Piscina Longa</option>
+          <option value="curta">25m · Piscina Curta</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Sexo</label>
+        <select id="id-sexo" onchange="idadeUpdateEstilos()">
+          <option value="">Selecionar</option>
+          <option value="M">Masculino</option>
+          <option value="F">Feminino</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="field">
+        <label>Estilo</label>
+        <select id="id-estilo" onchange="idadeUpdateDistancias()">
+          <option value="">Selecionar</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Distância</label>
+        <select id="id-distancia" onchange="mostrarRecordeIdade()">
+          <option value="">Selecionar</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label>Idade</label>
+      <select id="id-idade" onchange="mostrarRecordeIdade()">
+        <option value="">Selecionar</option>
+        <option value="13">13 anos</option>
+        <option value="14">14 anos</option>
+        <option value="15">15 anos</option>
+        <option value="16">16 anos</option>
+        <option value="17">17 anos</option>
+        <option value="18">18 anos</option>
+        <option value="19+">19+ anos</option>
+        <option value="open">Open</option>
+      </select>
+    </div>
+    <div id="id-result"></div>
+    <div class="footer">Dados FPN · atualizado a 04/03/2026 (50m) e 25/02/2026 (25m)</div>
+  </div>
 
 <script>
 // ============================================================
@@ -1542,10 +1599,3135 @@ function toggleFPN() {
     section.scrollIntoView({ behavior: 'smooth', block: 'start' });
   } else {
     section.style.display = 'none';
-    btn.textContent = 'Calcular os teus Pontos FPN';
+    btn.textContent = 'Calcular Pontos FPN';
   }
 }
 </script>
+
+
+// ============================================================
+// RECORDES NACIONAIS POR IDADE
+// ============================================================
+const recordesIdade = {
+  "longa": {
+    "M": {
+      "19+": {
+        "50_L": [
+          "21.67",
+          "Ribeiro, Diogo Matos",
+          "27/06/2025",
+          "Samorin (SVK)"
+        ],
+        "100_L": [
+          "47.98",
+          "Ribeiro, Diogo Matos",
+          "31/03/2023",
+          "Funchal"
+        ],
+        "200_L": [
+          "1:47.97",
+          "Nascimento, Miguel Duarte",
+          "06/04/2019",
+          "Coimbra"
+        ],
+        "400_L": [
+          "3:50.56",
+          "Lopes, Jose Paulo",
+          "06/06/2021",
+          "Barcelona (ESP)"
+        ],
+        "800_L": [
+          "7:52.68",
+          "Lopes, Jose Paulo",
+          "22/05/2021",
+          "Budapeste (HUN)"
+        ],
+        "1500_L": [
+          "15:15.12",
+          "Pina, Guilherme Filipe",
+          "30/03/2017",
+          "Coimbra"
+        ],
+        "50_C": [
+          "25.25",
+          "Costa, Joao Nogueira",
+          "04/04/2025",
+          "Oeiras"
+        ],
+        "100_C": [
+          "53.71",
+          "Costa, Joao Nogueira",
+          "24/07/2023",
+          "Fukuoka (JPN)"
+        ],
+        "200_C": [
+          "1:57.06",
+          "Santos, Francisco Rogerio",
+          "06/06/2021",
+          "Porto"
+        ],
+        "50_B": [
+          "27.92",
+          "Amorim, Alexandre Ferreira",
+          "15/04/2025",
+          "Estocolmo (SWE)"
+        ],
+        "100_B": [
+          "1:01.01",
+          "Almeida, Carlos Esteves",
+          "28/07/2013",
+          "Barcelona (ESP)"
+        ],
+        "200_B": [
+          "2:11.92",
+          "Lopes, Gabriel Jose",
+          "13/08/2022",
+          "Roma (ITA)"
+        ],
+        "50_M": [
+          "22.77",
+          "Ribeiro, Diogo Matos",
+          "28/07/2025",
+          "Singapore (SGP)"
+        ],
+        "100_M": [
+          "51.17",
+          "Ribeiro, Diogo Matos",
+          "17/02/2024",
+          "Doha (QAT)"
+        ],
+        "200_M": [
+          "1:56.17",
+          "Oliveira, Pedro Diogo",
+          "28/07/2009",
+          "Roma (ITA)"
+        ],
+        "200_E": [
+          "1:58.19",
+          "Santos, Alexis Manacas",
+          "06/04/2019",
+          "Coimbra"
+        ],
+        "400_E": [
+          "4:15.84",
+          "Santos, Alexis Manacas",
+          "06/08/2016",
+          "Rio de Janeiro (BRA)"
+        ]
+      },
+      "18": {
+        "50_L": [
+          "21.92",
+          "Ribeiro, Diogo Matos",
+          "02/09/2022",
+          "Lima (PER)"
+        ],
+        "100_L": [
+          "48.52",
+          "Ribeiro, Diogo Matos",
+          "12/08/2022",
+          "Roma (ITA)"
+        ],
+        "200_L": [
+          "1:49.98",
+          "Venancio, Tiago Andre",
+          "14/07/2005",
+          "Budapeste (HUN)"
+        ],
+        "400_L": [
+          "3:53.79",
+          "Lopes, Jose Paulo",
+          "28/07/2018",
+          "Oeiras"
+        ],
+        "800_L": [
+          "8:06.97",
+          "Pina, Guilherme Filipe",
+          "09/07/2016",
+          "Hodmezovasarhely (HUN)"
+        ],
+        "1500_L": [
+          "15:23.46",
+          "Pina, Guilherme Filipe",
+          "07/07/2016",
+          "Hodmezovasarhely (HUN)"
+        ],
+        "50_C": [
+          "26.22",
+          "Costa, Joao Nogueira",
+          "22/08/2019",
+          "Budapest (HUN)"
+        ],
+        "100_C": [
+          "55.18",
+          "Costa, Joao Nogueira",
+          "20/08/2019",
+          "Budapest (HUN)"
+        ],
+        "200_C": [
+          "2:00.07",
+          "Costa, Joao Nogueira",
+          "25/08/2019",
+          "Budapest (HUN)"
+        ],
+        "50_B": [
+          "28.79",
+          "Nunes, Carlos Daniel",
+          "04/07/2023",
+          "Belgrado (SRB)"
+        ],
+        "100_B": [
+          "1:02.62",
+          "Mimoso, Rafael Miguel",
+          "26/07/2025",
+          "Coimbra"
+        ],
+        "200_B": [
+          "2:15.37",
+          "Mimoso, Rafael Miguel",
+          "03/04/2025",
+          "Oeiras"
+        ],
+        "50_M": [
+          "22.96",
+          "Ribeiro, Diogo Matos",
+          "03/09/2022",
+          "Lima (PER)"
+        ],
+        "100_M": [
+          "51.61",
+          "Ribeiro, Diogo Matos",
+          "13/08/2022",
+          "Roma (ITA)"
+        ],
+        "200_M": [
+          "2:01.46",
+          "Oliveira, Pedro Diogo",
+          "08/07/2006",
+          "Palma de Mallorca (ESP)"
+        ],
+        "200_E": [
+          "2:02.55",
+          "Lopes, Jose Paulo",
+          "06/07/2018",
+          "Helsinki (FIN)"
+        ],
+        "400_E": [
+          "4:21.42",
+          "Lopes, Jose Paulo",
+          "08/07/2018",
+          "Helsinki (FIN)"
+        ]
+      },
+      "17": {
+        "50_L": [
+          "22.95",
+          "Venancio, Tiago Andre",
+          "16/07/2004",
+          "Oeiras"
+        ],
+        "100_L": [
+          "49.34",
+          "Ribeiro, Diogo Matos",
+          "07/07/2021",
+          "Rome (ITA)"
+        ],
+        "200_L": [
+          "1:50.82",
+          "Ribeiro, Diogo Matos",
+          "27/03/2021",
+          "Coimbra"
+        ],
+        "400_L": [
+          "3:57.15",
+          "Santa, Gustavo Manuel",
+          "14/07/2010",
+          "Helsinquia (FIN)"
+        ],
+        "800_L": [
+          "8:13.49",
+          "Santa, Gustavo Manuel",
+          "17/07/2010",
+          "Helsinquia (FIN)"
+        ],
+        "1500_L": [
+          "15:42.78",
+          "Pereira, Rui Silva",
+          "02/07/2025",
+          "Samorin (SVK)"
+        ],
+        "50_C": [
+          "26.16",
+          "Oliveira, Miguel Reis",
+          "23/01/2026",
+          "Geneva (SUI)"
+        ],
+        "100_C": [
+          "57.11",
+          "Oliveira, Miguel Reis",
+          "25/01/2026",
+          "Geneva (SUI)"
+        ],
+        "200_C": [
+          "2:03.06",
+          "Oliveira, Pedro Diogo",
+          "15/07/2005",
+          "Budapeste (HUN)"
+        ],
+        "50_B": [
+          "29.10",
+          "Agostinho, Pedro Miguel",
+          "10/07/2009",
+          "Praga (CZE)"
+        ],
+        "100_B": [
+          "1:03.61",
+          "Mimoso, Rafael Miguel",
+          "06/04/2024",
+          "Coimbra"
+        ],
+        "200_B": [
+          "2:15.25",
+          "Mimoso, Rafael Miguel",
+          "04/07/2024",
+          "Vilnius (LTU)"
+        ],
+        "50_M": [
+          "24.09",
+          "Ribeiro, Diogo Matos",
+          "07/07/2021",
+          "Rome (ITA)"
+        ],
+        "100_M": [
+          "52.54",
+          "Ribeiro, Diogo Matos",
+          "09/07/2021",
+          "Rome (ITA)"
+        ],
+        "200_M": [
+          "2:02.12",
+          "Oliveira, Pedro Diogo",
+          "16/07/2005",
+          "Belgrado (HUN)"
+        ],
+        "200_E": [
+          "2:04.32",
+          "Almeida, Carlos Esteves",
+          "17/07/2005",
+          "Budapeste (HUN)"
+        ],
+        "400_E": [
+          "4:25.23",
+          "Vital, Joao Alexandre",
+          "29/08/2015",
+          "Singapore (SGP)"
+        ]
+      },
+      "16": {
+        "50_L": [
+          "23.53",
+          "Alecrim, Rodolfo Junior",
+          "22/02/2026",
+          "Coimbra"
+        ],
+        "100_L": [
+          "52.10",
+          "Venancio, Tiago Andre",
+          "28/07/2003",
+          "Paris (FRA)"
+        ],
+        "200_L": [
+          "1:54.18",
+          "Santa, Gustavo Manuel",
+          "24/07/2009",
+          "Tampere (FIN)"
+        ],
+        "400_L": [
+          "3:59.38",
+          "Santa, Gustavo Manuel",
+          "21/07/2009",
+          "Tampere (FIN)"
+        ],
+        "800_L": [
+          "8:23.54",
+          "Santa, Gustavo Manuel",
+          "23/07/2009",
+          "Tampere (FIN)"
+        ],
+        "1500_L": [
+          "15:45.55",
+          "Santa, Gustavo Manuel",
+          "23/07/2009",
+          "Tampere (FIN)"
+        ],
+        "50_C": [
+          "26.22",
+          "Oliveira, Miguel Reis",
+          "21/08/2025",
+          "Otopeni (ROU)"
+        ],
+        "100_C": [
+          "57.00",
+          "Oliveira, Miguel Reis",
+          "24/07/2025",
+          "Coimbra"
+        ],
+        "200_C": [
+          "2:06.59",
+          "Vital, Joao Alexandre",
+          "28/06/2014",
+          "Netanya (ISR)"
+        ],
+        "50_B": [
+          "29.75",
+          "— tempo limite",
+          "—",
+          "—"
+        ],
+        "100_B": [
+          "1:03.71",
+          "Mimoso, Rafael Miguel",
+          "28/07/2023",
+          "Maribor (SLO)"
+        ],
+        "200_B": [
+          "2:15.98",
+          "Mimoso, Rafael Miguel",
+          "24/07/2023",
+          "Maribor (SLO)"
+        ],
+        "50_M": [
+          "25.35",
+          "Ferreira, Duarte Santos",
+          "12/07/2024",
+          "Oeiras"
+        ],
+        "100_M": [
+          "56.05",
+          "Vakulyuk, Paulo",
+          "03/08/2019",
+          "Funchal"
+        ],
+        "200_M": [
+          "2:03.76",
+          "Oliveira, Pedro Diogo",
+          "31/07/2004",
+          "Lisboa"
+        ],
+        "200_E": [
+          "2:08.11",
+          "Almeida, Carlos Esteves",
+          "31/07/2004",
+          "Lisboa"
+        ],
+        "400_E": [
+          "4:32.66",
+          "Vital, Joao Alexandre",
+          "01/06/2014",
+          "Coimbra"
+        ]
+      },
+      "15": {
+        "50_L": [
+          "23.42",
+          "Alecrim, Rodolfo Junior",
+          "24/07/2025",
+          "Skopje (MKD)"
+        ],
+        "100_L": [
+          "52.43",
+          "Alecrim, Rodolfo Junior",
+          "23/07/2025",
+          "Skopje (MKD)"
+        ],
+        "200_L": [
+          "1:53.96",
+          "Ribeiro, Diogo Matos",
+          "02/08/2019",
+          "Funchal"
+        ],
+        "400_L": [
+          "4:06.22",
+          "Costa, Rui Filipe",
+          "29/07/2006",
+          "Coimbra"
+        ],
+        "800_L": [
+          "8:32.97",
+          "Pereira, Rui Silva",
+          "28/05/2023",
+          "Coimbra"
+        ],
+        "1500_L": [
+          "16:11.75",
+          "Pereira, Rui Silva",
+          "27/05/2023",
+          "Coimbra"
+        ],
+        "50_C": [
+          "27.53",
+          "Oliveira, Miguel Reis",
+          "13/07/2024",
+          "Oeiras"
+        ],
+        "100_C": [
+          "59.34",
+          "Oliveira, Miguel Reis",
+          "04/04/2024",
+          "Coimbra"
+        ],
+        "200_C": [
+          "2:06.44",
+          "Vital, Joao Alexandre",
+          "17/07/2013",
+          "Utrecht (NED)"
+        ],
+        "50_B": [
+          "30.57",
+          "— tempo limite",
+          "—",
+          "—"
+        ],
+        "100_B": [
+          "1:06.00",
+          "Almeida, David Xavier",
+          "24/07/2025",
+          "Skopje (MKD)"
+        ],
+        "200_B": [
+          "2:19.73",
+          "Mimoso, Rafael Miguel",
+          "26/07/2022",
+          "Banská Bystrica (SVK)"
+        ],
+        "50_M": [
+          "25.76",
+          "Alecrim, Rodolfo Junior",
+          "05/04/2025",
+          "Oeiras"
+        ],
+        "100_M": [
+          "56.61",
+          "Ribeiro, Diogo Matos",
+          "03/08/2019",
+          "Funchal"
+        ],
+        "200_M": [
+          "2:08.12",
+          "Silva, Jorge Jesus",
+          "26/07/2015",
+          "Coimbra"
+        ],
+        "200_E": [
+          "2:10.83",
+          "Silva, Jorge Jesus",
+          "26/07/2015",
+          "Coimbra"
+        ],
+        "400_E": [
+          "4:37.06",
+          "Vital, Joao Alexandre",
+          "16/07/2013",
+          "Utrecht (NED)"
+        ]
+      },
+      "14": {
+        "50_L": [
+          "25.56",
+          "Fernandes, Miguel Miranda",
+          "20/07/2025",
+          "Loulé"
+        ],
+        "100_L": [
+          "55.53",
+          "Ferro, David Miguel",
+          "26/07/1998",
+          "Campanhã"
+        ],
+        "200_L": [
+          "2:00.20",
+          "Ribeiro, Diogo Matos",
+          "21/07/2018",
+          "S. Joao da Madeira"
+        ],
+        "400_L": [
+          "4:15.99",
+          "Oliveira, Pedro Fontoura",
+          "11/07/2004",
+          "Badajoz (ESP)"
+        ],
+        "800_L": [
+          "8:54.25",
+          "Oliveira, Pedro Fontoura",
+          "29/05/2004",
+          "Lisboa"
+        ],
+        "1500_L": [
+          "16:43.48",
+          "Oliveira, Pedro Fontoura",
+          "19/06/2004",
+          "Rio Maior"
+        ],
+        "50_C": [
+          "29.62",
+          "Almeida, Pedro Pereira",
+          "18/07/2025",
+          "Loulé"
+        ],
+        "100_C": [
+          "1:01.39",
+          "Ribas, Alexandre Lages",
+          "22/07/2011",
+          "Lisboa"
+        ],
+        "200_C": [
+          "2:14.56",
+          "Ribas, Alexandre Lages",
+          "23/07/2011",
+          "Lisboa"
+        ],
+        "50_B": [
+          "30.39",
+          "— tempo limite",
+          "—",
+          "—"
+        ],
+        "100_B": [
+          "1:09.82",
+          "Pereira, Ricardo Samuel",
+          "20/05/2017",
+          "Vila Franca de Xira"
+        ],
+        "200_B": [
+          "2:32.07",
+          "Carneiro, Joao Soares",
+          "15/07/2017",
+          "Loulé"
+        ],
+        "50_M": [
+          "27.35",
+          "— tempo limite",
+          "—",
+          "—"
+        ],
+        "100_M": [
+          "59.19",
+          "Ribeiro, Diogo Matos",
+          "21/07/2018",
+          "S. Joao da Madeira"
+        ],
+        "200_M": [
+          "2:14.50",
+          "Silva, Fabio Parrilha da",
+          "29/07/2001",
+          "Campanhã"
+        ],
+        "200_E": [
+          "2:16.63",
+          "Ribas, Alexandre Lages",
+          "24/07/2011",
+          "Lisboa"
+        ],
+        "400_E": [
+          "4:46.20",
+          "Freitas, Tomas Miguel",
+          "23/07/2004",
+          "Póvoa Varzim"
+        ]
+      },
+      "13": {
+        "50_L": [
+          "26.99",
+          "Santos, Joao Daniel",
+          "05/07/2025",
+          "Coimbra"
+        ],
+        "100_L": [
+          "58.09",
+          "Alecrim, Rodolfo Junior",
+          "08/07/2023",
+          "Coimbra"
+        ],
+        "200_L": [
+          "2:06.18",
+          "Nunes, Joao Magalhaes",
+          "21/07/2012",
+          "Rio Maior"
+        ],
+        "400_L": [
+          "4:28.42",
+          "Oliveira, Pedro Fontoura",
+          "26/07/2003",
+          "Restelo"
+        ],
+        "800_L": [
+          "9:12.56",
+          "Oliveira, Pedro Fontoura",
+          "27/07/2003",
+          "Lisboa"
+        ],
+        "1500_L": [
+          "17:21.58",
+          "Oliveira, Pedro Fontoura",
+          "27/07/2003",
+          "Restelo"
+        ],
+        "50_C": [
+          "30.69",
+          "Santos, Joao Daniel",
+          "06/07/2025",
+          "Coimbra"
+        ],
+        "100_C": [
+          "1:05.61",
+          "Wanzeller, Goncalo Henriques",
+          "16/07/2016",
+          "Famalicão"
+        ],
+        "200_C": [
+          "2:20.07",
+          "Ruivo, Andre Vilas",
+          "13/07/2013",
+          "S. Joao da Madeira"
+        ],
+        "50_B": [
+          "33.76",
+          "— tempo limite",
+          "—",
+          "—"
+        ],
+        "100_B": [
+          "1:11.95",
+          "Santos, Andre Goncalo",
+          "24/07/2010",
+          "Porto"
+        ],
+        "200_B": [
+          "2:38.94",
+          "Sousa, Duarte Anastacio",
+          "19/07/2015",
+          "Oeiras"
+        ],
+        "50_M": [
+          "28.50",
+          "— tempo limite",
+          "—",
+          "—"
+        ],
+        "100_M": [
+          "1:03.64",
+          "Silva, Fabio Parrilha da",
+          "22/07/2000",
+          "S. Joao da Madeira"
+        ],
+        "200_M": [
+          "2:21.67",
+          "Silva, Fabio Parrilha da",
+          "23/07/2000",
+          "S. Joao da Madeira"
+        ],
+        "200_E": [
+          "2:22.36",
+          "Ruivo, Andre Vilas",
+          "23/06/2013",
+          "Coimbra"
+        ],
+        "400_E": [
+          "4:54.87",
+          "Ruivo, Andre Vilas",
+          "12/07/2013",
+          "S. Joao da Madeira"
+        ]
+      }
+    },
+    "F": {
+      "19+": {
+        "50_L": [
+          "25.25",
+          "Rodrigues, Ana Pinho",
+          "30/03/2023",
+          "Funchal"
+        ],
+        "100_L": [
+          "55.88",
+          "Martins, Francisca Soares",
+          "12/07/2024",
+          "Oeiras"
+        ],
+        "200_L": [
+          "1:57.85",
+          "Martins, Francisca Soares",
+          "22/07/2025",
+          "Berlin (GER)"
+        ],
+        "400_L": [
+          "4:07.50",
+          "Martins, Francisca Soares",
+          "23/07/2025",
+          "Berlin (GER)"
+        ],
+        "800_L": [
+          "8:29.33",
+          "Duraes, Diana Margarida",
+          "23/06/2018",
+          "Tarragona (ESP)"
+        ],
+        "1500_L": [
+          "16:15.12",
+          "Duraes, Diana Margarida",
+          "09/02/2020",
+          "Lisboa"
+        ],
+        "50_C": [
+          "28.24",
+          "Azevedo, Rafaela Gomes",
+          "23/12/2021",
+          "Oeiras"
+        ],
+        "100_C": [
+          "1:00.34",
+          "Rebelo, Camila Rodrigues",
+          "20/07/2025",
+          "Berlin (GER)"
+        ],
+        "200_C": [
+          "2:08.95",
+          "Rebelo, Camila Rodrigues",
+          "18/06/2024",
+          "Belgrado (SRB)"
+        ],
+        "50_B": [
+          "30.73",
+          "Rodrigues, Ana Pinho",
+          "10/06/2023",
+          "Porto"
+        ],
+        "100_B": [
+          "1:08.22",
+          "Rodrigues, Ana Pinho",
+          "11/06/2023",
+          "Porto"
+        ],
+        "200_B": [
+          "2:25.67",
+          "Kaminskaya, Victoria",
+          "25/07/2019",
+          "Gwangju (KOR)"
+        ],
+        "50_M": [
+          "26.58",
+          "Guedes, Ana Margarida",
+          "06/06/2021",
+          "Porto"
+        ],
+        "100_M": [
+          "58.76",
+          "Oliveira, Sara Freitas",
+          "12/08/2010",
+          "Budapeste (HUN)"
+        ],
+        "200_M": [
+          "2:08.03",
+          "Monteiro, Ana Catarina",
+          "06/08/2018",
+          "Glasgow (GBR)"
+        ],
+        "200_E": [
+          "2:13.87",
+          "Kaminskaya, Victoria",
+          "10/04/2017",
+          "Pontevedra (ESP)"
+        ],
+        "400_E": [
+          "4:40.11",
+          "Kaminskaya, Victoria",
+          "09/04/2017",
+          "Pontevedra (ESP)"
+        ]
+      },
+      "18": {
+        "50_L": [
+          "26.41",
+          "Ferreira, Catarina Maria",
+          "28/05/2016",
+          "Coimbra"
+        ],
+        "100_L": [
+          "57.62",
+          "Martins, Francisca Soares",
+          "29/05/2021",
+          "Coimbra"
+        ],
+        "200_L": [
+          "2:02.68",
+          "Cunha, Mariana Pacheco",
+          "05/06/2022",
+          "Porto"
+        ],
+        "400_L": [
+          "4:17.80",
+          "Holub, Tamila Hryhorivna",
+          "08/04/2017",
+          "Pontevedra (ESP)"
+        ],
+        "800_L": [
+          "8:38.40",
+          "Holub, Tamila Hryhorivna",
+          "31/03/2017",
+          "—"
+        ],
+        "1500_L": [
+          "16:24.05",
+          "Holub, Tamila Hryhorivna",
+          "24/07/2017",
+          "Budapeste (HUN)"
+        ],
+        "50_C": [
+          "28.43",
+          "Azevedo, Rafaela Gomes",
+          "09/02/2020",
+          "Lisboa"
+        ],
+        "100_C": [
+          "1:01.50",
+          "Azevedo, Rafaela Gomes",
+          "08/02/2020",
+          "Lisboa"
+        ],
+        "200_C": [
+          "2:15.27",
+          "Azevedo, Francisca Gomes",
+          "02/04/2015",
+          "Coimbra"
+        ],
+        "50_B": [
+          "31.98",
+          "Rodrigues, Ana Pinho",
+          "26/05/2012",
+          "Debrecen (HUN)"
+        ],
+        "100_B": [
+          "1:09.89",
+          "Gomes, Diana Duarte",
+          "28/07/2007",
+          "Aveiro"
+        ],
+        "200_B": [
+          "2:28.78",
+          "Pereira, Raquel Gomes",
+          "18/03/2018",
+          "Coimbra"
+        ],
+        "50_M": [
+          "27.00",
+          "Guedes, Ana Margarida",
+          "01/08/2019",
+          "Funchal"
+        ],
+        "100_M": [
+          "59.36",
+          "Cunha, Mariana Pacheco",
+          "04/07/2022",
+          "Oran (ALG)"
+        ],
+        "200_M": [
+          "2:12.73",
+          "Cunha, Mariana Pacheco",
+          "01/07/2022",
+          "Oran (ALG)"
+        ],
+        "200_E": [
+          "2:15.47",
+          "Kaminskaya, Victoria",
+          "25/05/2013",
+          "Coimbra"
+        ],
+        "400_E": [
+          "4:49.60",
+          "Kaminskaya, Victoria",
+          "26/05/2013",
+          "Coimbra"
+        ]
+      },
+      "17": {
+        "50_L": [
+          "26.17",
+          "Fernandes, Carolina Miranda",
+          "01/04/2022",
+          "Coimbra"
+        ],
+        "100_L": [
+          "56.56",
+          "Sousa, Ana Reis",
+          "04/04/2019",
+          "Coimbra"
+        ],
+        "200_L": [
+          "2:03.11",
+          "Martins, Francisca Soares",
+          "16/08/2020",
+          "Loule"
+        ],
+        "400_L": [
+          "4:14.67",
+          "Holub, Tamila Hryhorivna",
+          "23/07/2016",
+          "Oeiras"
+        ],
+        "800_L": [
+          "8:36.21",
+          "Holub, Tamila Hryhorivna",
+          "28/05/2016",
+          "Coimbra"
+        ],
+        "1500_L": [
+          "16:20.80",
+          "Holub, Tamila Hryhorivna",
+          "08/07/2016",
+          "Hodmezovasarhely (HUN)"
+        ],
+        "50_C": [
+          "28.55",
+          "Azevedo, Rafaela Gomes",
+          "23/08/2019",
+          "Budapest (HUN)"
+        ],
+        "100_C": [
+          "1:01.18",
+          "Azevedo, Rafaela Gomes",
+          "20/08/2019",
+          "Budapest (HUN)"
+        ],
+        "200_C": [
+          "2:15.53",
+          "Frischknecht, Rita Barros",
+          "02/04/2015",
+          "Coimbra"
+        ],
+        "50_B": [
+          "31.60",
+          "Carvalho, Joana Catarina",
+          "30/05/2009",
+          "Coimbra"
+        ],
+        "100_B": [
+          "1:10.00",
+          "Pereira, Raquel Gomes",
+          "31/03/2017",
+          "Coimbra"
+        ],
+        "200_B": [
+          "2:29.23",
+          "Pereira, Raquel Gomes",
+          "02/04/2017",
+          "Coimbra"
+        ],
+        "50_M": [
+          "27.10",
+          "Cunha, Mariana Pacheco",
+          "09/07/2021",
+          "Rome (ITA)"
+        ],
+        "100_M": [
+          "1:00.11",
+          "Cunha, Mariana Pacheco",
+          "05/06/2021",
+          "Porto"
+        ],
+        "200_M": [
+          "2:12.56",
+          "Oliveira, Sara Freitas",
+          "04/08/2002",
+          "Berlim (GER)"
+        ],
+        "200_E": [
+          "2:17.22",
+          "Pereira, Raquel Gomes",
+          "30/03/2017",
+          "Coimbra"
+        ],
+        "400_E": [
+          "4:52.12",
+          "Kaminskaya, Victoria",
+          "27/07/2012",
+          "Oeiras"
+        ]
+      },
+      "16": {
+        "50_L": [
+          "26.21",
+          "Rodrigues, Ana Pinho",
+          "10/04/2010",
+          "Coimbra"
+        ],
+        "100_L": [
+          "57.11",
+          "Sousa, Ana Reis",
+          "04/07/2018",
+          "Helsinki (FIN)"
+        ],
+        "200_L": [
+          "2:02.89",
+          "Sousa, Ana Reis",
+          "06/07/2018",
+          "Helsinki (FIN)"
+        ],
+        "400_L": [
+          "4:20.37",
+          "Ferreira, Marta Andreia",
+          "04/08/2002",
+          "Berlim (GER)"
+        ],
+        "800_L": [
+          "8:45.53",
+          "Holub, Tamila Hryhorivna",
+          "30/05/2015",
+          "Coimbra"
+        ],
+        "1500_L": [
+          "16:43.22",
+          "Holub, Tamila Hryhorivna",
+          "29/08/2015",
+          "Singapore (SGP)"
+        ],
+        "50_C": [
+          "29.33",
+          "Azevedo, Rafaela Gomes",
+          "26/07/2018",
+          "Oeiras"
+        ],
+        "100_C": [
+          "1:03.21",
+          "Rebelo, Camila Rodrigues",
+          "05/04/2019",
+          "Coimbra"
+        ],
+        "200_C": [
+          "2:15.72",
+          "Rebelo, Camila Rodrigues",
+          "07/04/2019",
+          "Coimbra"
+        ],
+        "50_B": [
+          "31.92",
+          "Rodrigues, Ana Pinho",
+          "28/03/2010",
+          "Gorzow Wlwp (POL)"
+        ],
+        "100_B": [
+          "1:10.09",
+          "Gomes, Diana Duarte",
+          "17/07/2005",
+          "Budapeste (HUN)"
+        ],
+        "200_B": [
+          "2:29.51",
+          "Gomes, Diana Duarte",
+          "15/07/2005",
+          "Budapeste (HUN)"
+        ],
+        "50_M": [
+          "27.99",
+          "Fernandes, Carilina Miranda",
+          "09/07/2021",
+          "Rome (ITA)"
+        ],
+        "100_M": [
+          "1:01.48",
+          "Cruz, Sara Francisco",
+          "20/07/2009",
+          "Faro"
+        ],
+        "200_M": [
+          "2:17.09",
+          "Barbosa, Mariana Fernandes",
+          "29/07/2018",
+          "Oeiras"
+        ],
+        "200_E": [
+          "2:20.61",
+          "Duraes, Diana Margarida",
+          "03/06/2012",
+          "Porto"
+        ],
+        "400_E": [
+          "4:54.00",
+          "Rocha, Ines Neto",
+          "20/05/2017",
+          "Gijón (ESP)"
+        ]
+      },
+      "15": {
+        "50_L": [
+          "26.78",
+          "Pereira, Maria Gomes",
+          "05/04/2019",
+          "Coimbra"
+        ],
+        "100_L": [
+          "57.75",
+          "Rosa, Maria Carolina",
+          "08/07/2009",
+          "Prague (CZE)"
+        ],
+        "200_L": [
+          "2:05.85",
+          "Martins, Francisca Soares",
+          "27/07/2018",
+          "Oeiras"
+        ],
+        "400_L": [
+          "4:20.78",
+          "Holub, Tamila Hryhorivna",
+          "07/06/2014",
+          "Porto"
+        ],
+        "800_L": [
+          "8:50.68",
+          "Holub, Tamila Hryhorivna",
+          "27/07/2014",
+          "Oeiras"
+        ],
+        "1500_L": [
+          "16:54.60",
+          "Holub, Tamila Hryhorivna",
+          "11/07/2014",
+          "Dordrecht (NED)"
+        ],
+        "50_C": [
+          "29.42",
+          "— tempo limite",
+          "—",
+          "—"
+        ],
+        "100_C": [
+          "1:03.92",
+          "Fernandes, Ines Camacho",
+          "06/04/2012",
+          "Coimbra"
+        ],
+        "200_C": [
+          "2:17.38",
+          "Silva, Joana Carina",
+          "05/04/2012",
+          "Coimbra"
+        ],
+        "50_B": [
+          "32.04",
+          "— tempo limite",
+          "—",
+          "—"
+        ],
+        "100_B": [
+          "1:10.73",
+          "Rodrigues, Ana Pinho",
+          "31/05/2009",
+          "Coimbra"
+        ],
+        "200_B": [
+          "2:31.32",
+          "Gomes, Diana Duarte",
+          "27/06/2004",
+          "Mulhouse (FRA)"
+        ],
+        "50_M": [
+          "27.98",
+          "— tempo limite",
+          "—",
+          "—"
+        ],
+        "100_M": [
+          "1:01.69",
+          "Cunha, Mariana Pacheco",
+          "03/08/2019",
+          "Funchal"
+        ],
+        "200_M": [
+          "2:15.56",
+          "Francisco, Ana Rita",
+          "20/07/1995",
+          "Genebra (SUI)"
+        ],
+        "200_E": [
+          "2:21.01",
+          "Pereira, Raquel Gomes",
+          "04/04/2015",
+          "Coimbra"
+        ],
+        "400_E": [
+          "4:58.08",
+          "Duraes, Diana Margarida",
+          "05/08/2011",
+          "Povoa de Varzim"
+        ]
+      },
+      "14": {
+        "50_L": [
+          "27.17",
+          "Guedes, Ana Margarida",
+          "31/05/2015",
+          "Coimbra"
+        ],
+        "100_L": [
+          "58.07",
+          "Fernandes, Carolina Miranda",
+          "22/07/2019",
+          "Baku (AZE)"
+        ],
+        "200_L": [
+          "2:07.40",
+          "Cabral, Maria Francisca",
+          "25/07/2014",
+          "Oeiras"
+        ],
+        "400_L": [
+          "4:26.20",
+          "Cabral, Maria Francisca",
+          "26/07/2014",
+          "Oeiras"
+        ],
+        "800_L": [
+          "9:07.70",
+          "Silva, Alexandra Maria",
+          "10/09/1981",
+          "Split (CRO)"
+        ],
+        "1500_L": [
+          "17:34.28",
+          "Veloso, Maria Miguel",
+          "08/07/2007",
+          "Coimbra"
+        ],
+        "50_C": [
+          "30.52",
+          "— tempo limite",
+          "—",
+          "—"
+        ],
+        "100_C": [
+          "1:04.90",
+          "Silva, Joana Carina",
+          "25/03/2011",
+          "Oeiras"
+        ],
+        "200_C": [
+          "2:20.53",
+          "Rebelo, Camila Rodrigues",
+          "21/07/2017",
+          "Oeiras"
+        ],
+        "50_B": [
+          "34.12",
+          "— tempo limite",
+          "—",
+          "—"
+        ],
+        "100_B": [
+          "1:12.89",
+          "Oliveira, Paula Alexandra",
+          "29/07/2010",
+          "Coimbra"
+        ],
+        "200_B": [
+          "2:36.99",
+          "Gomes, Diana Duarte",
+          "28/07/2003",
+          "Paris (FRA)"
+        ],
+        "50_M": [
+          "28.51",
+          "— tempo limite",
+          "—",
+          "—"
+        ],
+        "100_M": [
+          "1:02.99",
+          "Fernandes, Carolina Miranda",
+          "24/07/2019",
+          "Baku (AZE)"
+        ],
+        "200_M": [
+          "2:20.75",
+          "Miguel, Susana Patricia",
+          "04/07/2004",
+          "Génova (ITA)"
+        ],
+        "200_E": [
+          "2:23.60",
+          "Duraes, Diana Margarida",
+          "01/08/2010",
+          "Coimbra"
+        ],
+        "400_E": [
+          "5:01.00",
+          "Rocha, Ines Neto",
+          "24/07/2015",
+          "Coimbra"
+        ]
+      },
+      "13": {
+        "50_L": [
+          "27.86",
+          "Fernandes, Carolina Miranda",
+          "10/02/2018",
+          "Lisboa"
+        ],
+        "100_L": [
+          "59.73",
+          "Fernandes, Ines Camacho",
+          "20/06/2010",
+          "Catania (ITA)"
+        ],
+        "200_L": [
+          "2:10.86",
+          "Frazao, Alexandra Couto",
+          "11/04/2015",
+          "Oeiras"
+        ],
+        "400_L": [
+          "4:31.53",
+          "Silva, Alexandra Maria",
+          "08/08/1980",
+          "Skovde (SWE)"
+        ],
+        "800_L": [
+          "9:14.85",
+          "Silva, Alexandra Maria",
+          "10/08/1980",
+          "Skovde (SWE)"
+        ],
+        "1500_L": [
+          "18:05.56",
+          "Rosa, Mafalda Sofia",
+          "24/06/2016",
+          "Rio Maior"
+        ],
+        "50_C": [
+          "32.67",
+          "— tempo limite",
+          "—",
+          "—"
+        ],
+        "100_C": [
+          "1:06.78",
+          "Fernandes, Ines Camacho",
+          "20/06/2010",
+          "Catania (ITA)"
+        ],
+        "200_C": [
+          "2:23.57",
+          "Azevedo, Rafaela Gomes",
+          "20/06/2015",
+          "Genova (ITA)"
+        ],
+        "50_B": [
+          "35.10",
+          "— tempo limite",
+          "—",
+          "—"
+        ],
+        "100_B": [
+          "1:15.49",
+          "Rodrigues, Ana Pinho",
+          "08/07/2007",
+          "Coimbra"
+        ],
+        "200_B": [
+          "2:42.69",
+          "Pereira, Clara Gomes",
+          "18/07/2015",
+          "Oeiras"
+        ],
+        "50_M": [
+          "28.26",
+          "— tempo limite",
+          "—",
+          "—"
+        ],
+        "100_M": [
+          "1:03.83",
+          "Fernandes, Carolina Miranda",
+          "21/07/2018",
+          "S. Joao da Madeira"
+        ],
+        "200_M": [
+          "2:25.32",
+          "Miguel, Susana Patricia",
+          "05/07/2003",
+          "Restelo"
+        ],
+        "200_E": [
+          "2:27.21",
+          "Fernandes, Carolina Miranda",
+          "22/07/2018",
+          "S. Joao da Madeira"
+        ],
+        "400_E": [
+          "5:11.29",
+          "Rocha, Diana Ramos",
+          "20/07/2007",
+          "Faro"
+        ]
+      }
+    }
+  },
+  "curta": {
+    "M": {
+      "19+": {
+        "50_L": [
+          "21.15",
+          "Ribeiro, Diogo Matos",
+          "13/12/2025",
+          "Leiria"
+        ],
+        "100_L": [
+          "46.55",
+          "Ribeiro, Diogo Matos",
+          "15/12/2024",
+          "Tomar"
+        ],
+        "200_L": [
+          "1:43.16",
+          "Nascimento, Miguel Duarte",
+          "14/12/2018",
+          "Hangzhou (CHN)"
+        ],
+        "400_L": [
+          "3:42.57",
+          "Lopes, Jose Paulo",
+          "16/12/2021",
+          "Abu Dhabi (UAE)"
+        ],
+        "800_L": [
+          "7:41.51",
+          "Lopes, Jose Paulo",
+          "14/01/2024",
+          "Felgueiras"
+        ],
+        "1500_L": [
+          "14:39.82",
+          "Lopes, Jose Paulo",
+          "20/12/2021",
+          "Abu Dhabi (UAE)"
+        ],
+        "50_C": [
+          "23.35",
+          "Santos, Alexis Manacas",
+          "18/12/2021",
+          "Abu Dhabi (UAE)"
+        ],
+        "100_C": [
+          "50.82",
+          "Lopes, Gabriel Jose",
+          "11/12/2022",
+          "Leiria"
+        ],
+        "200_C": [
+          "1:52.66",
+          "Lopes, Gabriel Jose",
+          "16/12/2018",
+          "Hangzhou (CHN)"
+        ],
+        "50_B": [
+          "27.01",
+          "Amorim, Alexandre Ferreira",
+          "14/04/2024",
+          "Felgueiras"
+        ],
+        "100_B": [
+          "58.19",
+          "Almeida, Carlos Esteves",
+          "22/11/2012",
+          "Chartres (FRA)"
+        ],
+        "200_B": [
+          "2:05.59",
+          "Almeida, Carlos Esteves",
+          "25/11/2012",
+          "Chartres (FRA)"
+        ],
+        "50_M": [
+          "22.48",
+          "Ribeiro, Diogo Matos",
+          "14/12/2025",
+          "Leiria"
+        ],
+        "100_M": [
+          "50.12",
+          "Ribeiro, Diogo Matos",
+          "14/12/2024",
+          "Tomar"
+        ],
+        "200_M": [
+          "1:53.39",
+          "Carvalho, Diogo Filipe",
+          "12/12/2009",
+          "Istambul (TUR)"
+        ],
+        "100_E": [
+          "52.73",
+          "Santos, Alexis Manacas",
+          "07/12/2019",
+          "Glasgow (GBR)"
+        ],
+        "200_E": [
+          "1:53.45",
+          "Carvalho, Diogo Filipe",
+          "04/12/2015",
+          "Netanya (ISR)"
+        ],
+        "400_E": [
+          "4:05.87",
+          "Lopes, Gabriel Jose",
+          "09/12/2022",
+          "Leiria"
+        ]
+      },
+      "18": {
+        "50_L": [
+          "22.24",
+          "Nascimento, Miguel Duarte",
+          "08/12/2012",
+          "Porto"
+        ],
+        "100_L": [
+          "48.32",
+          "Ribeiro, Diogo Matos",
+          "26/11/2021",
+          "Leiria"
+        ],
+        "200_L": [
+          "1:47.73",
+          "Venancio, Tiago Andre",
+          "12/12/2004",
+          "Viena (AUT)"
+        ],
+        "400_L": [
+          "3:50.52",
+          "Niz, Adriano Miguel",
+          "26/06/2004",
+          "Fafe"
+        ],
+        "800_L": [
+          "7:56.76",
+          "Pina, Guilherme Filipe",
+          "11/12/2015",
+          "Porto"
+        ],
+        "1500_L": [
+          "15:06.43",
+          "Pereira, Rui Silva",
+          "14/12/2025",
+          "Leiria"
+        ],
+        "50_C": [
+          "24.97",
+          "Pita, Pedro Miguel",
+          "23/07/2024",
+          "Funchal"
+        ],
+        "100_C": [
+          "53.88",
+          "Santos, Alexis Manacas",
+          "05/12/2009",
+          "Leiria"
+        ],
+        "200_C": [
+          "1:57.90",
+          "Januario, Tomas Maia",
+          "09/12/2023",
+          "Leiria"
+        ],
+        "50_B": [
+          "27.96",
+          "Bonniz, Pedro Goncalves",
+          "15/06/2024",
+          "Algés"
+        ],
+        "100_B": [
+          "1:00.28",
+          "Mimoso, Rafael Miguel",
+          "13/12/2024",
+          "Tomar"
+        ],
+        "200_B": [
+          "2:08.01",
+          "Mimoso, Rafael Miguel",
+          "14/12/2024",
+          "Tomar"
+        ],
+        "50_M": [
+          "23.82",
+          "Ribeiro, Diogo Matos",
+          "26/11/2021",
+          "Leiria"
+        ],
+        "100_M": [
+          "52.87",
+          "Ribeiro, Diogo Matos",
+          "27/11/2021",
+          "Leiria"
+        ],
+        "200_M": [
+          "1:58.64",
+          "Carvalho, Diogo Filipe",
+          "09/12/2005",
+          "Tomar"
+        ],
+        "100_E": [
+          "56.40",
+          "Costa, Joao Peres",
+          "28/11/2021",
+          "Leiria"
+        ],
+        "200_E": [
+          "2:00.59",
+          "Lopes, Gabriel Jose",
+          "10/05/2015",
+          "Coimbra"
+        ],
+        "400_E": [
+          "4:11.20",
+          "Vital, Joao Alexandre",
+          "11/12/2015",
+          "Porto"
+        ]
+      },
+      "17": {
+        "50_L": [
+          "23.11",
+          "Joaquim, Henrique Martins",
+          "13/12/2025",
+          "Leiria"
+        ],
+        "100_L": [
+          "49.56",
+          "Ribeiro, Diogo Matos",
+          "22/12/2020",
+          "Coimbra"
+        ],
+        "200_L": [
+          "1:47.65",
+          "Ribeiro, Diogo Matos",
+          "11/04/2021",
+          "Felgueiras"
+        ],
+        "400_L": [
+          "3:52.60",
+          "Pereira, Rui Silva",
+          "14/12/2024",
+          "Tomar"
+        ],
+        "800_L": [
+          "8:00.80",
+          "Santa, Gustavo Manuel",
+          "06/12/2009",
+          "Leiria"
+        ],
+        "1500_L": [
+          "15:05.57",
+          "Santa, Gustavo Manuel",
+          "06/12/2009",
+          "Leiria"
+        ],
+        "50_C": [
+          "25.24",
+          "Oliveira, Miguel Reis",
+          "14/11/2025",
+          "Felgueiras"
+        ],
+        "100_C": [
+          "53.79",
+          "Oliveira, Miguel Reis",
+          "16/11/2025",
+          "Quarteira"
+        ],
+        "200_C": [
+          "1:59.34",
+          "Niz, Adriano Miguel",
+          "16/05/2003",
+          "Alges"
+        ],
+        "50_B": [
+          "28.56",
+          "Agostinho, Pedro Miguel",
+          "03/05/2009",
+          "S. António Cavaleiros"
+        ],
+        "100_B": [
+          "1:01.63",
+          "Mimoso, Rafael Miguel",
+          "08/12/2023",
+          "Leiria"
+        ],
+        "200_B": [
+          "2:11.78",
+          "Mimoso, Rafael Miguel",
+          "09/12/2023",
+          "Leiria"
+        ],
+        "50_M": [
+          "24.49",
+          "Ribeiro, Diogo Matos",
+          "23/12/2020",
+          "Coimbra"
+        ],
+        "100_M": [
+          "53.97",
+          "Venancio, Tiago Andre",
+          "15/02/2004",
+          "Alapraia"
+        ],
+        "200_M": [
+          "1:59.93",
+          "Carvalho, Diogo Filipe",
+          "05/03/2005",
+          "Mealhada"
+        ],
+        "100_E": [
+          "57.40",
+          "Carvalho, Diogo Filipe",
+          "14/05/2005",
+          "Aveiro"
+        ],
+        "200_E": [
+          "2:02.96",
+          "Carvalho, Diogo Filipe",
+          "06/03/2005",
+          "Mealhada"
+        ],
+        "400_E": [
+          "4:21.93",
+          "Vital, Joao Alexandre",
+          "19/12/2014",
+          "Porto"
+        ]
+      },
+      "16": {
+        "50_L": [
+          "23.06",
+          "Alecrim, Rodolfo Alecrim",
+          "01/12/2025",
+          "Tomar"
+        ],
+        "100_L": [
+          "50.55",
+          "Alecrim, Rodolfo Junior",
+          "01/12/2025",
+          "Tomar"
+        ],
+        "200_L": [
+          "1:49.83",
+          "Ribeiro, Diogo Matos",
+          "07/12/2019",
+          "Mealhada"
+        ],
+        "400_L": [
+          "3:58.45",
+          "Pereira, Rui Silva",
+          "17/12/2023",
+          "Sines"
+        ],
+        "800_L": [
+          "8:09.43",
+          "Costa, Rui Filipe",
+          "12/05/2007",
+          "Senhora da Hora"
+        ],
+        "1500_L": [
+          "15:36.31",
+          "Costa, Rui Filipe",
+          "04/03/2007",
+          "Braga"
+        ],
+        "50_C": [
+          "25.93",
+          "Oliveira, Miguel Reis",
+          "15/11/2024",
+          "Felgueiras"
+        ],
+        "100_C": [
+          "55.99",
+          "Oliveira, Miguel Reis",
+          "21/12/2024",
+          "Albufeira"
+        ],
+        "200_C": [
+          "2:01.43",
+          "Sousa, Diogo Gomes",
+          "04/06/2011",
+          "Algés"
+        ],
+        "50_B": [
+          "29.23",
+          "— tempo limite",
+          "—",
+          "—"
+        ],
+        "100_B": [
+          "1:02.73",
+          "Mimoso, Rafael Miguel",
+          "17/06/2023",
+          "Algés"
+        ],
+        "200_B": [
+          "2:15.14",
+          "Mimoso, Rafael Miguel",
+          "12/11/2022",
+          "Albufeira"
+        ],
+        "50_M": [
+          "25.01",
+          "Ferreira, Duarte Santos",
+          "20/07/2024",
+          "Porto"
+        ],
+        "100_M": [
+          "55.48",
+          "Ferreira, Duarte Santos",
+          "21/07/2024",
+          "Porto"
+        ],
+        "200_M": [
+          "2:03.38",
+          "Silva, Diogo Parrilha da",
+          "13/06/2009",
+          "Alcobaça"
+        ],
+        "100_E": [
+          "59.16",
+          "Azevedo, Goncalo Carlos",
+          "22/04/2023",
+          "Felgueiras"
+        ],
+        "200_E": [
+          "2:05.34",
+          "Carvalho, Diogo Filipe",
+          "15/05/2004",
+          "Aveiro"
+        ],
+        "400_E": [
+          "4:25.04",
+          "Vital, Joao Alexandre",
+          "13/12/2013",
+          "Tomar"
+        ]
+      },
+      "15": {
+        "50_L": [
+          "23.41",
+          "Alecrim, Rodolfo Junior",
+          "06/07/2025",
+          "Leiria"
+        ],
+        "100_L": [
+          "51.45",
+          "Alecrim, Rodolfo Junior",
+          "15/03/2025",
+          "Leiria"
+        ],
+        "200_L": [
+          "1:53.76",
+          "Ribeiro, Diogo Matos",
+          "16/06/2019",
+          "Coimbra"
+        ],
+        "400_L": [
+          "4:01.42",
+          "Pereira, Rui Silva",
+          "15/01/2023",
+          "Tomar"
+        ],
+        "800_L": [
+          "8:25.99",
+          "Pereira, Rui Silva",
+          "14/01/2023",
+          "Tomar"
+        ],
+        "1500_L": [
+          "15:55.78",
+          "Pereira, Rui Silva",
+          "14/01/2023",
+          "Tomar"
+        ],
+        "50_C": [
+          "26.38",
+          "Oliveira, Miguel Reis",
+          "14/04/2024",
+          "Felgueiras"
+        ],
+        "100_C": [
+          "57.20",
+          "Oliveira, Miguel Reis",
+          "20/07/2019",
+          "Felgueiras"
+        ],
+        "200_C": [
+          "2:04.99",
+          "Vital, Joao Alexandre",
+          "09/03/2013",
+          "Alapraia"
+        ],
+        "50_B": [
+          "30.36",
+          "Almeida, David Xavier",
+          "05/07/2025",
+          "Leiria"
+        ],
+        "100_B": [
+          "1:04.20",
+          "Mimoso, Rafael Miguel",
+          "16/06/2022",
+          "Algés"
+        ],
+        "200_B": [
+          "2:18.99",
+          "Mimoso, Rafael Miguel",
+          "08/05/2022",
+          "Felgueiras"
+        ],
+        "50_M": [
+          "25.59",
+          "Alecrim, Rodolfo Junior",
+          "16/03/2025",
+          "Leiria"
+        ],
+        "100_M": [
+          "56.68",
+          "Ribeiro, Diogo Matos",
+          "23/06/2019",
+          "Lousã"
+        ],
+        "200_M": [
+          "2:06.17",
+          "Ribeiro, Diogo Matos",
+          "27/04/2019",
+          "Felgueiras"
+        ],
+        "100_E": [
+          "59.22",
+          "Alecrim, Rodolfo Junior",
+          "16/03/2025",
+          "Leiria"
+        ],
+        "200_E": [
+          "2:08.27",
+          "Carvalho, Diogo Filipe",
+          "10/05/2003",
+          "Fafe"
+        ],
+        "400_E": [
+          "4:35.02",
+          "Carvalho, Diogo Filipe",
+          "21/03/2003",
+          "Braga"
+        ]
+      },
+      "14": {
+        "50_L": [
+          "25.17",
+          "Alecrim, Rodolfo Junior",
+          "15/06/2024",
+          "Óbidos"
+        ],
+        "100_L": [
+          "54.35",
+          "Ribeiro, Diogo Matos",
+          "01/07/2018",
+          "S. António Cavaleiros"
+        ],
+        "200_L": [
+          "1:58.99",
+          "Oliveira, Pedro Fontoura",
+          "10/06/2004",
+          "Cova da Piedade"
+        ],
+        "400_L": [
+          "4:12.35",
+          "Ruivo, Andre Vilas",
+          "29/03/2014",
+          "Campo Maior"
+        ],
+        "800_L": [
+          "8:36.36",
+          "Ruivo, Andre Vilas",
+          "25/05/2014",
+          "Nazaré"
+        ],
+        "1500_L": [
+          "16:13.14",
+          "Ruivo, Andre Vilas",
+          "30/03/2014",
+          "Campo Maior"
+        ],
+        "50_C": [
+          "28.26",
+          "Oliveira, Miguel Reis",
+          "23/04/2023",
+          "Felgueiras"
+        ],
+        "100_C": [
+          "59.50",
+          "Silva, Ricardo Lopes",
+          "10/06/2017",
+          "Caldas da Rainha"
+        ],
+        "200_C": [
+          "2:09.17",
+          "Vital, Joao Alexandre",
+          "29/06/2012",
+          "Algés"
+        ],
+        "50_B": [
+          "31.28",
+          "— tempo limite",
+          "—",
+          "—"
+        ],
+        "100_B": [
+          "1:07.92",
+          "Santos, Andre Goncalo",
+          "12/03/2011",
+          "Viseu"
+        ],
+        "200_B": [
+          "2:29.20",
+          "Alves, Paulo Rodrigues",
+          "01/08/2018",
+          "Funchal"
+        ],
+        "50_M": [
+          "27.42",
+          "Ribeiro, Keyser Jossub",
+          "14/06/2025",
+          "Algés"
+        ],
+        "100_M": [
+          "59.56",
+          "Silva, Fabio Parrilha da",
+          "07/04/2001",
+          "Leiria"
+        ],
+        "200_M": [
+          "2:12.42",
+          "Freitas, Tomas Miguel",
+          "11/07/2004",
+          "Funchal"
+        ],
+        "100_E": [
+          "1:02.84",
+          "— tempo limite",
+          "—",
+          "—"
+        ],
+        "200_E": [
+          "2:13.38",
+          "Freitas, Tomas Miguel",
+          "17/07/2004",
+          "Funchal"
+        ],
+        "400_E": [
+          "4:40.32",
+          "Freitas, Tomas Miguel",
+          "09/07/2004",
+          "Funchal"
+        ]
+      },
+      "13": {
+        "50_L": [
+          "26.65",
+          "Lopes, Gabriel Jose",
+          "19/06/2010",
+          "Lousã"
+        ],
+        "100_L": [
+          "56.82",
+          "Alecrim, Rodolfo Junior",
+          "20/05/2023",
+          "Leiria"
+        ],
+        "200_L": [
+          "2:04.71",
+          "Santos, Joao Daniel",
+          "28/06/2025",
+          "Caldas da Rainha"
+        ],
+        "400_L": [
+          "4:21.95",
+          "Oliveira, Pedro Fontoura",
+          "04/04/2003",
+          "Santarém"
+        ],
+        "800_L": [
+          "9:07.20",
+          "Ruivo, Andre Vilas",
+          "03/03/2013",
+          "Leiria"
+        ],
+        "1500_L": [
+          "17:11.29",
+          "Ruivo, Andre Vilas",
+          "03/03/2013",
+          "Leiria"
+        ],
+        "50_C": [
+          "29.25",
+          "— tempo limite",
+          "—",
+          "—"
+        ],
+        "100_C": [
+          "1:04.13",
+          "Oliveira, Miguel Reis",
+          "22/05/2022",
+          "Braga"
+        ],
+        "200_C": [
+          "2:15.27",
+          "Ruivo, Andre Vilas",
+          "16/03/2013",
+          "S. António Cavaleiros"
+        ],
+        "50_B": [
+          "33.81",
+          "— tempo limite",
+          "—",
+          "—"
+        ],
+        "100_B": [
+          "1:09.54",
+          "Santos, Andre Goncalo",
+          "15/05/2010",
+          "Lousada"
+        ],
+        "200_B": [
+          "2:37.57",
+          "Freitas, Tomas Miguel",
+          "13/07/2003",
+          "Funchal"
+        ],
+        "50_M": [
+          "28.73",
+          "— tempo limite",
+          "—",
+          "—"
+        ],
+        "100_M": [
+          "1:01.78",
+          "Silva, Fabio Parrilha da",
+          "01/04/2000",
+          "Penafiel"
+        ],
+        "200_M": [
+          "2:19.18",
+          "Ruivo, Andre Vilas",
+          "01/06/2013",
+          "Nazaré"
+        ],
+        "100_E": [
+          "1:06.44",
+          "— tempo limite",
+          "—",
+          "—"
+        ],
+        "200_E": [
+          "2:17.96",
+          "Ruivo, Andre Vilas",
+          "02/06/2013",
+          "Nazaré"
+        ],
+        "400_E": [
+          "4:49.65",
+          "Ruivo, Andre Vilas",
+          "15/03/2013",
+          "S. António Cavaleiros"
+        ]
+      }
+    },
+    "F": {
+      "19+": {
+        "50_L": [
+          "24.94",
+          "Conceicao, Patricia Vilas",
+          "20/12/2009",
+          "S. António Cavaleiros"
+        ],
+        "100_L": [
+          "54.66",
+          "Rodrigues, Ana Pinho",
+          "20/12/2019",
+          "Felgueiras"
+        ],
+        "200_L": [
+          "1:55.91",
+          "Martins, Francisca Soares",
+          "12/04/2025",
+          "Felgueiras"
+        ],
+        "400_L": [
+          "4:04.57",
+          "Martins, Francisca Soares",
+          "10/12/2023",
+          "Otopeni (ROU)"
+        ],
+        "800_L": [
+          "8:20.97",
+          "Duraes, Diana Margarida",
+          "04/12/2019",
+          "Glasgow (GBR)"
+        ],
+        "1500_L": [
+          "15:55.19",
+          "Duraes, Diana Margarida",
+          "23/11/2019",
+          "Felgueiras"
+        ],
+        "50_C": [
+          "27.16",
+          "Rebelo, Camila Rodrigues",
+          "06/12/2025",
+          "Lublin (POL)"
+        ],
+        "100_C": [
+          "57.79",
+          "Rebelo, Camila Rodrigues",
+          "04/12/2025",
+          "Lublin (POL)"
+        ],
+        "200_C": [
+          "2:03.51",
+          "Rebelo, Camila Rodrigues",
+          "03/12/2025",
+          "Lublin (POL)"
+        ],
+        "50_B": [
+          "29.98",
+          "Rodrigues, Ana Pinho",
+          "13/12/2025",
+          "Leiria"
+        ],
+        "100_B": [
+          "1:06.41",
+          "Rodrigues, Ana Pinho",
+          "14/12/2025",
+          "Leiria"
+        ],
+        "200_B": [
+          "2:22.12",
+          "Pereira, Raquel Gomes",
+          "29/06/2019",
+          "Algés"
+        ],
+        "50_M": [
+          "26.12",
+          "Guedes, Ana Margarida",
+          "23/04/2023",
+          "Felgueiras"
+        ],
+        "100_M": [
+          "57.93",
+          "Cunha, Mariana Pacheco",
+          "16/12/2025",
+          "Leiria"
+        ],
+        "200_M": [
+          "2:05.74",
+          "Monteiro, Ana Catarina",
+          "12/12/2018",
+          "Hangzhou (CHN)"
+        ],
+        "100_E": [
+          "1:00.19",
+          "Cunha, Mariana Pacheco",
+          "15/12/2025",
+          "Leiria"
+        ],
+        "200_E": [
+          "2:11.70",
+          "Rebelo, Camila Rodrigues",
+          "14/12/2024",
+          "Tomar"
+        ],
+        "400_E": [
+          "4:36.19",
+          "Kaminskaya, Victoria",
+          "13/12/2017",
+          "Copenhagen (DEN)"
+        ]
+      },
+      "18": {
+        "50_L": [
+          "26.05",
+          "Guedes, Ana Margarida",
+          "22/12/2018",
+          "Felgueiras"
+        ],
+        "100_L": [
+          "55.57",
+          "Cunha, Mariana Pacheco",
+          "26/11/2021",
+          "Leiria"
+        ],
+        "200_L": [
+          "1:59.25",
+          "Martins, Francisca Soares",
+          "17/07/2021",
+          "Felgueiras"
+        ],
+        "400_L": [
+          "4:11.18",
+          "Martins, Francisca Soares",
+          "14/11/2020",
+          "Mealhada"
+        ],
+        "800_L": [
+          "8:30.86",
+          "Holub, Tamila Hryhorivna",
+          "03/08/2017",
+          "Moscovo (RUS)"
+        ],
+        "1500_L": [
+          "16:46.74",
+          "Andre, Angelica Maria",
+          "12/05/2012",
+          "Lousada"
+        ],
+        "50_C": [
+          "27.45",
+          "Azevedo, Rafaela Gomes",
+          "21/12/2019",
+          "Felgueiras"
+        ],
+        "100_C": [
+          "58.65",
+          "Azevedo, Rafaela Gomes",
+          "22/12/2019",
+          "Felgueiras"
+        ],
+        "200_C": [
+          "2:10.31",
+          "Rebelo, Camila Rodrigues",
+          "18/07/2021",
+          "Gafanha da Nazare"
+        ],
+        "50_B": [
+          "31.90",
+          "Pereira, Raquel Gomes",
+          "10/12/2017",
+          "Porto"
+        ],
+        "100_B": [
+          "1:07.37",
+          "Pereira, Raquel Gomes",
+          "08/12/2017",
+          "Porto"
+        ],
+        "200_B": [
+          "2:23.46",
+          "Pereira, Raquel Gomes",
+          "09/12/2017",
+          "Porto"
+        ],
+        "50_M": [
+          "27.05",
+          "Guedes, Ana Margarida",
+          "21/12/2018",
+          "Felgueiras"
+        ],
+        "100_M": [
+          "58.51",
+          "Cunha, Mariana Pacheco",
+          "07/05/2022",
+          "Felgueiras"
+        ],
+        "200_M": [
+          "2:11.46",
+          "Cunha, Mariana Pacheco",
+          "08/05/2022",
+          "Leiria"
+        ],
+        "100_E": [
+          "1:01.68",
+          "Cunha, Mariana Pacheco",
+          "08/05/2022",
+          "Felgueiras"
+        ],
+        "200_E": [
+          "2:13.83",
+          "Cunha, Mariana Pacheco",
+          "07/05/2022",
+          "Felgueiras"
+        ],
+        "400_E": [
+          "4:41.02",
+          "Kaminskaya, Victoria",
+          "07/12/2012",
+          "Porto"
+        ]
+      },
+      "17": {
+        "50_L": [
+          "25.42",
+          "Fernandes, Carolina Miranda",
+          "14/11/2021",
+          "Albufeira"
+        ],
+        "100_L": [
+          "55.54",
+          "Fernandes, Carolina Miranda",
+          "28/11/2021",
+          "Leiria"
+        ],
+        "200_L": [
+          "1:59.62",
+          "Andre, Leticia Maia",
+          "23/12/2018",
+          "Felgueiras"
+        ],
+        "400_L": [
+          "4:10.52",
+          "Holub, Tamila Hryhorivna",
+          "12/12/2015",
+          "Porto"
+        ],
+        "800_L": [
+          "8:32.83",
+          "Holub, Tamila Hryhorivna",
+          "13/12/2015",
+          "Porto"
+        ],
+        "1500_L": [
+          "16:11.67",
+          "Holub, Tamila Hryhorivna",
+          "11/12/2015",
+          "Porto"
+        ],
+        "50_C": [
+          "28.22",
+          "Rebelo, Camila Rodrigues",
+          "21/12/2019",
+          "Felgueiras"
+        ],
+        "100_C": [
+          "59.61",
+          "Azevedo, Rafaela Gomes",
+          "29/06/2019",
+          "Algés"
+        ],
+        "200_C": [
+          "2:11.13",
+          "Rebelo, Camila Rodrigues",
+          "20/12/2019",
+          "Felgueiras"
+        ],
+        "50_B": [
+          "32.09",
+          "Pereira, Raquel Gomes",
+          "11/12/2016",
+          "Funchal"
+        ],
+        "100_B": [
+          "1:08.02",
+          "Pereira, Raquel Gomes",
+          "09/12/2016",
+          "Funchal"
+        ],
+        "200_B": [
+          "2:26.47",
+          "Pereira, Raquel Gomes",
+          "10/12/2016",
+          "Funchal"
+        ],
+        "50_M": [
+          "26.74",
+          "Cunha, Mariana Pacheco",
+          "11/04/2021",
+          "Felgueiras"
+        ],
+        "100_M": [
+          "59.36",
+          "Cunha, Mariana Pacheco",
+          "10/04/2021",
+          "Felgueiras"
+        ],
+        "200_M": [
+          "2:10.12",
+          "Cruz, Sara Francisco",
+          "04/12/2009",
+          "Leiria"
+        ],
+        "100_E": [
+          "1:02.10",
+          "Fernandes, Carolina Miranda",
+          "28/11/2021",
+          "Leiria"
+        ],
+        "200_E": [
+          "2:15.10",
+          "Cunha, Mariana Pacheco",
+          "10/04/2021",
+          "Felgueiras"
+        ],
+        "400_E": [
+          "4:46.89",
+          "Rocha, Ines Neto",
+          "15/04/2018",
+          "Felgueiras"
+        ]
+      },
+      "16": {
+        "50_L": [
+          "26.01",
+          "Coutinho, Eva Alexandra",
+          "10/06/2025",
+          "Vila Real"
+        ],
+        "100_L": [
+          "56.72",
+          "Sousa, Ana Reis",
+          "08/12/2017",
+          "Porto"
+        ],
+        "200_L": [
+          "2:01.12",
+          "Martins, Francisca Soares",
+          "27/04/2019",
+          "Felgueiras"
+        ],
+        "400_L": [
+          "4:13.53",
+          "Sousa, Ana Reis",
+          "09/12/2017",
+          "Porto"
+        ],
+        "800_L": [
+          "8:45.41",
+          "Holub, Tamila Hryhorivna",
+          "21/12/2014",
+          "Porto"
+        ],
+        "1500_L": [
+          "16:44.26",
+          "Holub, Tamila Hryhorivna",
+          "19/12/2014",
+          "Porto"
+        ],
+        "50_C": [
+          "28.42",
+          "Fernandes, Ines Camacho",
+          "08/12/2012",
+          "Porto"
+        ],
+        "100_C": [
+          "1:01.55",
+          "Fernandes, Ines Camacho",
+          "08/12/2013",
+          "Porto"
+        ],
+        "200_C": [
+          "2:11.74",
+          "Rebelo, Camila Rodrigues",
+          "21/12/2018",
+          "Felgueiras"
+        ],
+        "50_B": [
+          "31.46",
+          "Rodrigues, Ana Pinho",
+          "06/12/2009",
+          "Leiria"
+        ],
+        "100_B": [
+          "1:08.85",
+          "Rodrigues, Ana Pinho",
+          "13/12/2009",
+          "Ponte de Sôr"
+        ],
+        "200_B": [
+          "2:26.87",
+          "Pereira, Raquel Gomes",
+          "11/12/2015",
+          "Porto"
+        ],
+        "50_M": [
+          "27.31",
+          "Fernandes, Carolina Miranda",
+          "18/07/2021",
+          "Gafanha de Nazaré"
+        ],
+        "100_M": [
+          "1:00.66",
+          "Fernandes, Carolina Miranda",
+          "25/04/2021",
+          "Gafanha de Nazaré"
+        ],
+        "200_M": [
+          "2:13.60",
+          "Francisco, Ana Rita",
+          "11/02/1996",
+          "Gelsenkirchen (GER)"
+        ],
+        "100_E": [
+          "1:03.25",
+          "Cunha, Mariana Pacheco",
+          "22/12/2019",
+          "Felgueiras"
+        ],
+        "200_E": [
+          "2:14.94",
+          "Rosa, Maria Carolina",
+          "19/12/2009",
+          "S. António Cavaleiros"
+        ],
+        "400_E": [
+          "4:50.85",
+          "Duraes, Diana Margarida",
+          "02/12/2011",
+          "Silves"
+        ]
+      },
+      "15": {
+        "50_L": [
+          "26.37",
+          "Fernandes, Carolina Miranda",
+          "09/11/2019",
+          "Albufeira"
+        ],
+        "100_L": [
+          "56.18",
+          "Fernandes, Carolina Miranda",
+          "08/12/2019",
+          "Mealhada"
+        ],
+        "200_L": [
+          "2:03.90",
+          "Moura, Maria Ferreira",
+          "29/06/2019",
+          "Algés"
+        ],
+        "400_L": [
+          "4:18.39",
+          "Santos, Ana Claudia",
+          "20/12/2004",
+          "Cantanhede"
+        ],
+        "800_L": [
+          "8:46.74",
+          "Santos, Ana Claudia",
+          "19/12/2004",
+          "Cantanhede"
+        ],
+        "1500_L": [
+          "16:54.39",
+          "Holub, Tamila Hryhorivna",
+          "16/03/2014",
+          "Vila Praia Ancora"
+        ],
+        "50_C": [
+          "29.44",
+          "Carvalho, Matilde Brandao",
+          "12/04/2025",
+          "Felgueiras"
+        ],
+        "100_C": [
+          "1:01.43",
+          "Fernandes, Ines Camacho",
+          "17/12/2011",
+          "Mealhada"
+        ],
+        "200_C": [
+          "2:14.11",
+          "Rebelo, Camila Rodrigues",
+          "12/05/2018",
+          "Condeixa"
+        ],
+        "50_B": [
+          "32.81",
+          "— tempo limite",
+          "—",
+          "—"
+        ],
+        "100_B": [
+          "1:09.59",
+          "Gomes, Diana Duarte",
+          "13/03/2004",
+          "Tomar"
+        ],
+        "200_B": [
+          "2:32.36",
+          "Gomes, Diana Duarte",
+          "07/02/2004",
+          "Alcobaça"
+        ],
+        "50_M": [
+          "27.86",
+          "— tempo limite",
+          "—",
+          "—"
+        ],
+        "100_M": [
+          "1:00.43",
+          "Fernandes, Carolina Miranda",
+          "08/12/2019",
+          "Mealhada"
+        ],
+        "200_M": [
+          "2:17.51",
+          "Felgueiras, Raquel Maria",
+          "05/03/1995",
+          "Algés"
+        ],
+        "100_E": [
+          "1:05.68",
+          "— tempo limite",
+          "—",
+          "—"
+        ],
+        "200_E": [
+          "2:18.13",
+          "Cunha, Mariana Pacheco",
+          "27/04/2019",
+          "Felgueiras"
+        ],
+        "400_E": [
+          "4:51.85",
+          "Santos, Ana Claudia",
+          "21/11/2004",
+          "Setubal"
+        ]
+      },
+      "14": {
+        "50_L": [
+          "26.85",
+          "Guedes, Ana Margarida",
+          "05/07/2015",
+          "Bragança"
+        ],
+        "100_L": [
+          "57.65",
+          "Fernandes, Carolina Miranda",
+          "10/06/2019",
+          "Estarreja"
+        ],
+        "200_L": [
+          "2:04.38",
+          "Rebelo, Camila Rodrigues",
+          "25/06/2017",
+          "Coimbra"
+        ],
+        "400_L": [
+          "4:23.08",
+          "Miguel, Susana Patricia",
+          "15/05/2004",
+          "Alhandra"
+        ],
+        "800_L": [
+          "9:00.27",
+          "Silva, Alexandra Maria",
+          "20/12/1980",
+          "Antibbes (FRA)"
+        ],
+        "1500_L": [
+          "17:17.43",
+          "Holub, Tamila Hryhorivna",
+          "30/06/2013",
+          "Vila Praia Ancora"
+        ],
+        "50_C": [
+          "29.82",
+          "Taveira, Carolina Ratola",
+          "21/07/2024",
+          "Porto"
+        ],
+        "100_C": [
+          "1:02.96",
+          "Fernandes, Ines Camacho",
+          "12/02/2011",
+          "Alapraia"
+        ],
+        "200_C": [
+          "2:17.86",
+          "Martinheira, Catia Raquel",
+          "21/12/2008",
+          "Sines"
+        ],
+        "50_B": [
+          "34.12",
+          "— tempo limite",
+          "—",
+          "—"
+        ],
+        "100_B": [
+          "1:11.76",
+          "Gomes, Diana Duarte",
+          "28/06/2003",
+          "Reboleira"
+        ],
+        "200_B": [
+          "2:34.51",
+          "Gomes, Diana Duarte",
+          "28/06/2003",
+          "Reboleira"
+        ],
+        "50_M": [
+          "29.15",
+          "Silva, Leonor Carnide",
+          "23/04/2023",
+          "Felgueiras"
+        ],
+        "100_M": [
+          "1:02.36",
+          "Cunha, Mariana Pacheco",
+          "14/04/2018",
+          "Felgueiras"
+        ],
+        "200_M": [
+          "2:18.29",
+          "Cunha, Mariana Pacheco",
+          "15/04/2018",
+          "Felgueiras"
+        ],
+        "100_E": [
+          "1:06.81",
+          "Taveira, Carolina Ratola",
+          "21/07/2024",
+          "Porto"
+        ],
+        "200_E": [
+          "2:19.79",
+          "Cunha, Mariana Pacheco",
+          "14/04/2018",
+          "Felgueiras"
+        ],
+        "400_E": [
+          "4:56.53",
+          "Cunha, Mariana Pacheco",
+          "05/05/2018",
+          "Porto"
+        ]
+      },
+      "13": {
+        "50_L": [
+          "27.43",
+          "Brites, Marta Lopes",
+          "12/07/2019",
+          "Ponta Delgada"
+        ],
+        "100_L": [
+          "58.55",
+          "Fernandes, Carolina Miranda",
+          "11/03/2018",
+          "Felgueiras"
+        ],
+        "200_L": [
+          "2:07.47",
+          "Fernandes, Carolina Miranda",
+          "09/03/2018",
+          "Felgueiras"
+        ],
+        "400_L": [
+          "4:25.30",
+          "Silva, Alexandra Maria",
+          "19/07/1980",
+          "Porto"
+        ],
+        "800_L": [
+          "9:03.90",
+          "Silva, Alexandra Maria",
+          "13/07/1980",
+          "Porto"
+        ],
+        "1500_L": [
+          "17:18.20",
+          "Silva, Alexandra Maria",
+          "23/07/1980",
+          "Porto"
+        ],
+        "50_C": [
+          "31.38",
+          "Carvalho, Matilde Brandao",
+          "22/04/2023",
+          "Felgueiras"
+        ],
+        "100_C": [
+          "1:04.85",
+          "Peixeira, Filipa Ramos",
+          "18/03/2016",
+          "Tomar"
+        ],
+        "200_C": [
+          "2:21.33",
+          "Azevedo, Rafaela Gomes",
+          "06/06/2015",
+          "Algés"
+        ],
+        "50_B": [
+          "34.68",
+          "— tempo limite",
+          "—",
+          "—"
+        ],
+        "100_B": [
+          "1:13.43",
+          "Pereira, Raquel Gomes",
+          "13/04/2013",
+          "Abrantes"
+        ],
+        "200_B": [
+          "2:36.86",
+          "Pereira, Clara Gomes",
+          "06/06/2015",
+          "Algés"
+        ],
+        "50_M": [
+          "29.31",
+          "— tempo limite",
+          "—",
+          "—"
+        ],
+        "100_M": [
+          "1:02.30",
+          "Fernandes, Carolina Miranda",
+          "11/03/2018",
+          "Felgueiras"
+        ],
+        "200_M": [
+          "2:20.28",
+          "Fernandes, Carolina Miranda",
+          "12/05/2018",
+          "Condeixa"
+        ],
+        "100_E": [
+          "1:09.62",
+          "— tempo limite",
+          "—",
+          "—"
+        ],
+        "200_E": [
+          "2:21.36",
+          "Fernandes, Carolina Miranda",
+          "10/03/2018",
+          "Felgueiras"
+        ],
+        "400_E": [
+          "5:03.94",
+          "Fernandes, Carolina Miranda",
+          "12/05/2018",
+          "Condeixa"
+        ]
+      }
+    }
+  }
+};
+
+
+const estiloLabels = { "L":"Livres","C":"Costas","B":"Bruços","M":"Mariposa","E":"Estilos" };
+const distanciaOrder = ["50","100","200","400","800","1500"];
+
+function idadeGetProvasForPiscinaAndSexo(piscina, sexo) {
+  if (!piscina || !sexo) return [];
+  const allProvas = new Set();
+  const ages = Object.values(recordesIdade[piscina]?.[sexo] || {});
+  ages.forEach(age => Object.keys(age).forEach(k => allProvas.add(k)));
+  return Array.from(allProvas);
+}
+
+function idadeParseProva(chave) {
+  const parts = chave.split("_");
+  return { dist: parts[0], estilo: parts[1] };
+}
+
+function idadeUpdateEstilos() {
+  const piscina = document.getElementById('id-piscina').value;
+  const sexo = document.getElementById('id-sexo').value;
+  const estiloSel = document.getElementById('id-estilo');
+  const distSel = document.getElementById('id-distancia');
+  estiloSel.innerHTML = '<option value="">Selecionar</option>';
+  distSel.innerHTML = '<option value="">Selecionar</option>';
+  document.getElementById('id-result').innerHTML = '';
+  if (!piscina || !sexo) return;
+  const provas = idadeGetProvasForPiscinaAndSexo(piscina, sexo);
+  const estilos = [...new Set(provas.map(p => idadeParseProva(p).estilo))];
+  const estiloOrder = ["L","C","B","M","E"];
+  estilos.sort((a,b) => estiloOrder.indexOf(a) - estiloOrder.indexOf(b));
+  estilos.forEach(e => {
+    const opt = document.createElement('option');
+    opt.value = e;
+    opt.textContent = estiloLabels[e] || e;
+    estiloSel.appendChild(opt);
+  });
+}
+
+function idadeUpdateDistancias() {
+  const piscina = document.getElementById('id-piscina').value;
+  const sexo = document.getElementById('id-sexo').value;
+  const estilo = document.getElementById('id-estilo').value;
+  const distSel = document.getElementById('id-distancia');
+  distSel.innerHTML = '<option value="">Selecionar</option>';
+  document.getElementById('id-result').innerHTML = '';
+  if (!piscina || !sexo || !estilo) return;
+  const provas = idadeGetProvasForPiscinaAndSexo(piscina, sexo);
+  const dists = provas.filter(p => idadeParseProva(p).estilo === estilo)
+                      .map(p => idadeParseProva(p).dist);
+  dists.sort((a,b) => distanciaOrder.indexOf(a) - distanciaOrder.indexOf(b));
+  dists.forEach(d => {
+    const opt = document.createElement('option');
+    opt.value = d;
+    opt.textContent = d + "m";
+    distSel.appendChild(opt);
+  });
+}
+
+function mostrarRecordeIdade() {
+  const piscina = document.getElementById('id-piscina').value;
+  const sexo = document.getElementById('id-sexo').value;
+  const estilo = document.getElementById('id-estilo').value;
+  const dist = document.getElementById('id-distancia').value;
+  const idade = document.getElementById('id-idade').value;
+  const resultDiv = document.getElementById('id-result');
+  resultDiv.innerHTML = '';
+  if (!piscina || !sexo || !estilo || !dist || !idade) return;
+
+  const chave = dist + "_" + estilo;
+  let ageKey = idade;
+  // "open" uses the open/absoluto record from 19+ as fallback label
+  if (idade === 'open') ageKey = '19+';
+
+  const rec = recordesIdade[piscina]?.[sexo]?.[ageKey]?.[chave];
+  if (!rec) {
+    resultDiv.innerHTML = '<div class="result-box" style="text-align:center;padding:18px;color:#aaa;">Recorde não disponível para esta combinação.</div>';
+    return;
+  }
+  const [tempo, nome, data, local] = rec;
+  const piscinaLabel = piscina === 'longa' ? 'Piscina Longa (50m)' : 'Piscina Curta (25m)';
+  const sexoLabel = sexo === 'M' ? 'Masculino' : 'Feminino';
+  const idadeLabel = idade === 'open' ? 'Open' : (idade === '19+' ? '19+ anos' : idade + ' anos');
+
+  const isTL = nome.includes('tempo limite');
+  resultDiv.innerHTML = \`
+    <div class="result-box" style="text-align:center;margin-top:16px;">
+      <div style="font-size:13px;color:#7ab8d4;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">\${dist}m \${estiloLabels[estilo]} · \${sexoLabel} · \${idadeLabel} · \${piscinaLabel}</div>
+      <div style="font-size:42px;font-family:'Bebas Neue',sans-serif;color:var(--aqua);letter-spacing:2px;">\${tempo.replace('.',':').replace(/:(\d{2})$/, ',\$1')}</div>
+      \${isTL
+        ? '<div style="color:#aaa;font-size:14px;margin-top:6px;">Recorde por estabelecer</div>'
+        : \`<div style="font-size:15px;color:var(--text);margin-top:4px;">\${nome}</div>
+           <div style="font-size:13px;color:#7ab8d4;margin-top:2px;">\${data} · \${local}</div>\`
+      }
+    </div>
+  \`;
+}
+
+function toggleIdades() {
+  const section = document.getElementById('idades-section');
+  const btn = document.getElementById('idades-btn');
+  if (section.style.display === 'none' || section.style.display === '') {
+    section.style.display = 'block';
+    btn.textContent = 'Fechar';
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } else {
+    section.style.display = 'none';
+    btn.textContent = 'Recordes Nacionais por Idade';
+  }
+}
 
 <script>
 if ('serviceWorker' in navigator) {
