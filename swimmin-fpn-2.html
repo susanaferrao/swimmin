@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SwimMin FPN</title>
+<meta name="theme-color" content="#003d6b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SwimMin">
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjgwIiBmaWxsPSIjMDAzZDZiIi8+CiAgPHRleHQgeD0iMjU2IiB5PSIyMDAiIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjaywgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxODAiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiMwMGM0Y2MiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlNXPC90ZXh0PgogIDx0ZXh0IHg9IjI1NiIgeT0iMzcwIiBmb250LWZhbWlseT0iQXJpYWwgQmxhY2ssIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIwIiBmb250LXdlaWdodD0iOTAwIiBmaWxsPSIjZmZmZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5NSU48L3RleHQ+Cjwvc3ZnPg==">
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue-deep: #003d6b;
+    --blue-mid: #005fa3;
+    --blue-bright: #0090e0;
+    --blue-light: #b8dff5;
+    --aqua: #00c4cc;
+    --white: #f4f9fd;
+    --text: #0a1f2e;
+    --muted: #6b8fa8;
+    --card: rgba(255,255,255,0.92);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--blue-deep);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Water background effect */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 50%, #005fa3 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, #0090e0 0%, transparent 50%),
+      radial-gradient(ellipse at 60% 80%, #003d6b 0%, transparent 60%),
+      #001f3a;
+    z-index: 0;
+  }
+
+  /* Animated wave lines */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 38px,
+      rgba(0,196,204,0.04) 38px,
+      rgba(0,196,204,0.04) 40px
+    );
+    z-index: 0;
+    animation: drift 8s ease-in-out infinite alternate;
+  }
+
+  @keyframes drift {
+    from { transform: translateY(0); }
+    to { transform: translateY(-20px); }
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 560px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    letter-spacing: 4px;
+    color: var(--white);
+    line-height: 1;
+    text-shadow: 0 0 40px rgba(0,196,204,0.5);
+  }
+
+  .logo span {
+    color: var(--aqua);
+  }
+
+  .subtitle {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--blue-light);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+
+  /* Card */
+  .card {
+    background: var(--card);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 36px 32px;
+    box-shadow:
+      0 32px 64px rgba(0,0,0,0.4),
+      0 0 0 1px rgba(255,255,255,0.3),
+      inset 0 1px 0 rgba(255,255,255,0.8);
+  }
+
+  /* Dropdowns */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .grid.full { grid-template-columns: 1fr; }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  select {
+    appearance: none;
+    background: var(--white);
+    border: 1.5px solid #d0e4f0;
+    border-radius: 12px;
+    padding: 12px 40px 12px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.2s;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%230090e0' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    width: 100%;
+  }
+
+  select:hover {
+    border-color: var(--blue-bright);
+    box-shadow: 0 0 0 3px rgba(0,144,224,0.1);
+  }
+
+  select:focus {
+    outline: none;
+    border-color: var(--blue-bright);
+    box-shadow: 0 0 0 3px rgba(0,144,224,0.15);
+  }
+
+  select:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  /* Result */
+  .result-wrap {
+    margin-top: 24px;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .result-empty {
+    background: #eef5fa;
+    border: 2px dashed #c5dcea;
+    border-radius: 16px;
+    padding: 28px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .result-empty .icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .result-box {
+    background: linear-gradient(135deg, var(--blue-deep) 0%, var(--blue-mid) 100%);
+    border-radius: 16px;
+    padding: 28px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,63,107,0.3);
+    animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes popIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .result-box::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 140px; height: 140px;
+    background: radial-gradient(circle, rgba(0,196,204,0.3) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .result-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--blue-light);
+    margin-bottom: 10px;
+  }
+
+  .result-time {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 64px;
+    color: #fff;
+    letter-spacing: 3px;
+    line-height: 1;
+    text-shadow: 0 0 30px rgba(0,196,204,0.6);
+  }
+
+  .result-time.big {
+    font-size: 72px;
+  }
+
+  .result-desc {
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--blue-light);
+    font-weight: 400;
+  }
+
+  .result-unavailable {
+    background: #fff3cd;
+    border: 1.5px solid #ffc107;
+    border-radius: 16px;
+    padding: 20px 24px;
+    text-align: center;
+    color: #856404;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  /* Divider */
+  .divider {
+    border: none;
+    border-top: 1.5px solid #e0edf5;
+    margin: 24px 0;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 12px;
+    color: rgba(184,223,245,0.5);
+    letter-spacing: 0.5px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div class="logo">Swim<span>Min</span></div>
+    <div class="subtitle">Tempos Mínimos FPN — Natação Portuguesa</div>
+  </div>
+
+  <div class="card">
+    <div class="grid">
+      <div class="field">
+        <label>Piscina</label>
+        <select id="piscina" onchange="calcular()">
+          <option value="">Selecionar</option>
+          <option value="curta">25m · Piscina Curta</option>
+          <option value="longa">50m · Piscina Longa</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Género</label>
+        <select id="genero" onchange="updateDistancias(); updateEscalao();">
+          <option value="">Selecionar</option>
+          <option value="M">Masculino</option>
+          <option value="F">Feminino</option>
+          <option value="X">Misto</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="field">
+        <label>Escalão</label>
+        <select id="escalao" onchange="updateEscalao()">
+          <option value="">Selecionar</option>
+          <option value="INF_B">Infantil B</option>
+          <option value="INF_A">Infantil A</option>
+          <option value="JUV_B">Juvenil B</option>
+          <option value="JUV_A">Juvenil A</option>
+          <option value="JUN1">1º Júnior</option>
+          <option value="JUN">Júnior</option>
+          <option value="SUB21">Sub 21</option>
+          <option value="SEN">Sénior</option>
+          <option value="ABS">Absoluto</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Competição</label>
+        <select id="competicao" onchange="calcular()">
+          <option value="">Selecionar</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="field">
+        <label>Estilo</label>
+        <select id="estilo" onchange="updateDistanciasPorEstilo(); calcular();">
+          <option value="">Selecionar</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Distância</label>
+        <select id="distancia" onchange="calcular()">
+          <option value="">Selecionar</option>
+        </select>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div id="result">
+      <div class="result-empty">
+        <span class="icon">🏊</span>
+        Preenche os campos acima para ver o tempo mínimo de qualificação.
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">Dados de acordo com o regulamento oficial da FPN · atualizado a 09/03/2026</div>
+</div>
+
+<script>
+// ============================================================
+// DADOS — Piscina Curta (25m)
+// Chave: GENERO_DISTANCIA_ESTILO → { escalão: tempo }
+// Colunas: ABS, SEN, SUB21, JUN1, JUN, JUV_A_VER, JUV_A_INV, JUV_B_VER, JUV_B_INV, INF_A, INF_B, JUV_A_ZON, JUV_B_ZON, INF_A_ZON, INF_B_ZON
+// ============================================================
+
+const dados = {
+  curta: {
+    M: {
+      "50_L": { "ABS":"00:23,51", "SEN":"00:23,98", "SUB21":"00:24,22", "JUN":"00:24,45", "JUN1":"00:25,16", "JUV_A_VER":"00:25,63", "JUV_A_INV":"00:26,10", "JUV_B_VER":"00:26,80", "JUV_B_INV":"00:27,27", "INF_A":"00:28,92", "INF_B":"00:30,33", "JUV_A_ZON":"00:26,80", "JUV_B_ZON":"00:27,74", "INF_A_ZON":"00:29,15", "INF_B_ZON":"00:31,03" },
+      "100_L": { "ABS":"00:50,95", "SEN":"00:51,97", "SUB21":"00:52,48", "JUN":"00:52,99", "JUN1":"00:54,52", "JUV_A_VER":"00:55,54", "JUV_A_INV":"00:56,55", "JUV_B_VER":"00:58,08", "JUV_B_INV":"00:59,10", "INF_A":"01:02,67", "INF_B":"01:05,73", "JUV_A_ZON":"00:58,08", "JUV_B_ZON":"01:00,12", "INF_A_ZON":"01:03,18", "INF_B_ZON":"01:07,25" },
+      "200_L": { "ABS":"01:52,18", "SEN":"01:54,42", "SUB21":"01:55,55", "JUN":"01:56,67", "JUN1":"02:00,03", "JUV_A_VER":"02:02,28", "JUV_A_INV":"02:04,52", "JUV_B_VER":"02:07,89", "JUV_B_INV":"02:10,13", "INF_A":"02:17,98", "INF_B":"02:24,71", "JUV_A_ZON":"02:07,89", "JUV_B_ZON":"02:12,37", "INF_A_ZON":"02:19,10", "INF_B_ZON":"02:28,08" },
+      "400_L": { "ABS":"03:57,72", "SEN":"04:02,47", "SUB21":"04:04,85", "JUN":"04:07,23", "JUN1":"04:14,36", "JUV_A_VER":"04:19,11", "JUV_A_INV":"04:23,87", "JUV_B_VER":"04:31,00", "JUV_B_INV":"04:35,76", "INF_A":"04:52,40", "INF_B":"05:06,66", "JUV_A_ZON":"04:31,00", "JUV_B_ZON":"04:40,51", "INF_A_ZON":"04:54,77", "INF_B_ZON":"05:13,79" },
+      "800_L": { "ABS":"08:18,21", "SEN":"08:28,17", "SUB21":"08:33,16", "JUN":"08:38,14", "JUN1":"08:53,08", "JUV_A_VER":"09:03,05", "JUV_A_INV":"09:13,01", "JUV_B_VER":"09:27,96", "JUV_B_INV":"09:37,92", "INF_A":"10:12,80", "INF_B":"10:42,69", "JUV_A_ZON":"09:27,96", "JUV_B_ZON":"09:47,89", "INF_A_ZON":"10:17,78", "INF_B_ZON":"10:57,64" },
+      "1500_L": { "ABS":"15:41,66", "SEN":"16:00,49", "SUB21":"16:09,91", "JUN":"16:19,33", "JUN1":"16:47,58", "JUV_A_VER":"17:06,41", "JUV_A_INV":"17:25,24", "JUV_B_VER":"17:53,49", "JUV_B_INV":"18:12,33", "INF_A":"19:18,24", "INF_B":"20:14,74", "JUV_A_ZON":"17:53,49", "JUV_B_ZON":"18:31,16", "INF_A_ZON":"19:27,66", "INF_B_ZON":"20:42,99" },
+      "50_C": { "ABS":"00:26,46", "SEN":"00:26,99", "SUB21":"00:27,25", "JUN":"00:27,52", "JUN1":"00:28,31", "JUV_A_VER":"00:28,84", "JUV_A_INV":"00:29,37", "JUV_B_VER":"00:30,16", "JUV_B_INV":"00:30,69", "INF_A":"00:32,55", "INF_B":"00:34,13", "JUV_A_ZON":"00:30,16", "JUV_B_ZON":"00:31,22", "INF_A_ZON":"00:32,81", "INF_B_ZON":"00:34,93" },
+      "100_C": { "ABS":"00:57,00", "SEN":"00:58,14", "SUB21":"00:58,71", "JUN":"00:59,28", "JUN1":"01:00,99", "JUV_A_VER":"01:02,13", "JUV_A_INV":"01:03,27", "JUV_B_VER":"01:04,98", "JUV_B_INV":"01:06,12", "INF_A":"01:10,11", "INF_B":"01:13,53", "JUV_A_ZON":"01:04,98", "JUV_B_ZON":"01:07,26", "INF_A_ZON":"01:10,68", "INF_B_ZON":"01:15,24" },
+      "200_C": { "ABS":"02:04,67", "SEN":"02:07,16", "SUB21":"02:08,41", "JUN":"02:09,66", "JUN1":"02:13,40", "JUV_A_VER":"02:15,89", "JUV_A_INV":"02:18,38", "JUV_B_VER":"02:22,12", "JUV_B_INV":"02:24,62", "INF_A":"02:33,34", "INF_B":"02:40,82", "JUV_A_ZON":"02:22,12", "JUV_B_ZON":"02:27,11", "INF_A_ZON":"02:34,59", "INF_B_ZON":"02:44,56" },
+      "50_B": { "ABS":"00:29,83", "SEN":"00:30,43", "SUB21":"00:30,72", "JUN":"00:31,02", "JUN1":"00:31,92", "JUV_A_VER":"00:32,51", "JUV_A_INV":"00:33,11", "JUV_B_VER":"00:34,01", "JUV_B_INV":"00:34,60", "INF_A":"00:36,69", "INF_B":"00:38,48", "JUV_A_ZON":"00:34,01", "JUV_B_ZON":"00:35,20", "INF_A_ZON":"00:36,99", "INF_B_ZON":"00:39,38" },
+      "100_B": { "ABS":"01:04,54", "SEN":"01:05,83", "SUB21":"01:06,48", "JUN":"01:07,12", "JUN1":"01:09,06", "JUV_A_VER":"01:10,35", "JUV_A_INV":"01:11,64", "JUV_B_VER":"01:13,58", "JUV_B_INV":"01:14,87", "INF_A":"01:19,38", "INF_B":"01:23,26", "JUV_A_ZON":"01:13,58", "JUV_B_ZON":"01:16,16", "INF_A_ZON":"01:20,03", "INF_B_ZON":"01:25,19" },
+      "200_B": { "ABS":"02:21,85", "SEN":"02:24,69", "SUB21":"02:26,11", "JUN":"02:27,52", "JUN1":"02:31,78", "JUV_A_VER":"02:34,62", "JUV_A_INV":"02:37,45", "JUV_B_VER":"02:41,71", "JUV_B_INV":"02:44,55", "INF_A":"02:54,48", "INF_B":"03:02,99", "JUV_A_ZON":"02:41,71", "JUV_B_ZON":"02:47,38", "INF_A_ZON":"02:55,89", "INF_B_ZON":"03:07,24" },
+      "50_M": { "ABS":"00:25,25", "SEN":"00:25,76", "SUB21":"00:26,01", "JUN":"00:26,26", "JUN1":"00:27,02", "JUV_A_VER":"00:27,52", "JUV_A_INV":"00:28,03", "JUV_B_VER":"00:28,78", "JUV_B_INV":"00:29,29", "INF_A":"00:31,06", "INF_B":"00:32,57", "JUV_A_ZON":"00:28,78", "JUV_B_ZON":"00:29,80", "INF_A_ZON":"00:31,31", "INF_B_ZON":"00:33,33" },
+      "100_M": { "ABS":"00:55,82", "SEN":"00:56,94", "SUB21":"00:57,49", "JUN":"00:58,05", "JUN1":"00:59,73", "JUV_A_VER":"01:00,84", "JUV_A_INV":"01:01,96", "JUV_B_VER":"01:03,63", "JUV_B_INV":"01:04,75", "INF_A":"01:08,66", "INF_B":"01:12,01", "JUV_A_ZON":"01:03,63", "JUV_B_ZON":"01:05,87", "INF_A_ZON":"01:09,22", "INF_B_ZON":"01:13,68" },
+      "200_M": { "ABS":"02:05,98", "SEN":"02:08,50", "SUB21":"02:09,76", "JUN":"02:11,02", "JUN1":"02:14,80", "JUV_A_VER":"02:17,32", "JUV_A_INV":"02:19,84", "JUV_B_VER":"02:23,62", "JUV_B_INV":"02:26,14", "INF_A":"02:34,96", "INF_B":"02:42,51", "JUV_A_ZON":"02:23,62", "JUV_B_ZON":"02:28,66", "INF_A_ZON":"02:36,22", "INF_B_ZON":"02:46,29" },
+      "100_E": { "ABS":"00:58,80", "SEN":"00:59,98", "SUB21":"01:00,56", "JUN":"01:01,15", "JUN1":"01:02,92", "JUV_A_VER":"01:04,09", "JUV_A_INV":"01:05,27", "JUV_B_VER":"01:07,03", "JUV_B_INV":"01:08,21", "INF_A":"01:12,32", "INF_B":"01:15,85", "JUV_A_ZON":"01:07,03", "JUV_B_ZON":"01:09,38", "INF_A_ZON":"01:12,91", "INF_B_ZON":"01:17,62" },
+      "200_E": { "ABS":"02:06,27", "SEN":"02:08,80", "SUB21":"02:10,06", "JUN":"02:11,32", "JUN1":"02:15,11", "JUV_A_VER":"02:17,63", "JUV_A_INV":"02:20,16", "JUV_B_VER":"02:23,95", "JUV_B_INV":"02:26,47", "INF_A":"02:35,31", "INF_B":"02:42,89", "JUV_A_ZON":"02:23,95", "JUV_B_ZON":"02:29,00", "INF_A_ZON":"02:36,57", "INF_B_ZON":"02:46,68" },
+      "400_E": { "ABS":"04:30,16", "SEN":"04:35,56", "SUB21":"04:38,26", "JUN":"04:40,97", "JUN1":"04:49,07", "JUV_A_VER":"04:54,47", "JUV_A_INV":"04:59,88", "JUV_B_VER":"05:07,98", "JUV_B_INV":"05:13,39", "INF_A":"05:32,30", "INF_B":"05:48,51", "JUV_A_ZON":"05:07,98", "JUV_B_ZON":"05:18,79", "INF_A_ZON":"05:35,00", "INF_B_ZON":"05:56,61" },
+      "4x100_L": { "ABS":"03:26,28", "SEN":"03:30,41", "SUB21":"03:32,47", "JUN":"03:34,53", "JUN1":"03:40,72", "JUV_A_VER":"03:44,85", "JUV_A_INV":"03:48,97", "JUV_B_VER":"03:55,16", "JUV_B_INV":"03:59,28", "INF_A":"04:13,72", "INF_B":"04:26,10", "JUV_A_ZON":"03:55,16", "JUV_B_ZON":"04:03,41", "INF_A_ZON":"04:15,79", "INF_B_ZON":"04:32,29" },
+      "4x200_L": { "ABS":"07:39,90", "SEN":"07:49,10", "SUB21":"07:53,70", "JUN":"07:58,30", "JUN1":"08:12,09", "JUV_A_VER":"08:21,29", "JUV_A_INV":"08:30,49", "JUV_B_VER":"08:44,29", "JUV_B_INV":"08:53,48", "INF_A":"09:25,68", "INF_B":"09:53,27", "JUV_A_ZON":"08:44,29", "JUV_B_ZON":"09:02,68", "INF_A_ZON":"09:30,28", "INF_B_ZON":"10:07,07" },
+      "4x100_E": { "ABS":"03:43,98", "SEN":"03:48,46", "SUB21":"03:50,70", "JUN":"03:52,94", "JUN1":"03:59,66", "JUV_A_VER":"04:04,14", "JUV_A_INV":"04:08,62", "JUV_B_VER":"04:15,34", "JUV_B_INV":"04:19,82", "INF_A":"04:35,50", "INF_B":"04:48,93", "JUV_A_ZON":"04:15,34", "JUV_B_ZON":"04:24,30", "INF_A_ZON":"04:37,74", "INF_B_ZON":"04:55,65" },
+      "4x50_E": { "ABS":"01:44,91", "SEN":"01:47,01", "SUB21":"01:48,06", "JUN":"01:49,11", "JUN1":"01:52,25", "JUV_A_VER":"01:54,35", "JUV_A_INV":"01:56,45", "JUV_B_VER":"01:59,60", "JUV_B_INV":"02:01,70", "INF_A":"02:09,04", "INF_B":"02:15,33", "JUV_A_ZON":"01:59,60", "JUV_B_ZON":"02:03,79", "INF_A_ZON":"02:10,09", "INF_B_ZON":"02:18,48" },
+      "4x50_L": { "ABS":"01:36,08", "SEN":"01:38,00", "SUB21":"01:38,96", "JUN":"01:39,92", "JUN1":"01:42,81", "JUV_A_VER":"01:44,73", "JUV_A_INV":"01:46,65", "JUV_B_VER":"01:49,53", "JUV_B_INV":"01:51,45", "INF_A":"01:58,18", "INF_B":"02:03,94", "JUV_A_ZON":"01:49,53", "JUV_B_ZON":"01:53,37", "INF_A_ZON":"01:59,14", "INF_B_ZON":"02:06,83" },
+    },
+    F: {
+      "50_L": { "ABS":"00:27,05", "SEN":"00:27,59", "SUB21":"00:27,86", "JUN":"00:28,13", "JUN1":"00:28,67", "JUV_A_VER":"00:29,21", "JUV_A_INV":"00:29,75", "JUV_B_VER":"00:30,30", "JUV_B_INV":"00:30,84", "INF_A":"00:31,92", "INF_B":"00:32,73", "JUV_A_ZON":"00:30,57", "JUV_B_ZON":"00:31,38", "INF_A_ZON":"00:32,73", "INF_B_ZON":"00:34,08" },
+      "100_L": { "ABS":"00:57,95", "SEN":"00:59,11", "SUB21":"00:59,69", "JUN":"01:00,27", "JUN1":"01:01,43", "JUV_A_VER":"01:02,59", "JUV_A_INV":"01:03,75", "JUV_B_VER":"01:04,90", "JUV_B_INV":"01:06,06", "INF_A":"01:08,38", "INF_B":"01:10,12", "JUV_A_ZON":"01:05,48", "JUV_B_ZON":"01:07,22", "INF_A_ZON":"01:10,12", "INF_B_ZON":"01:13,02" },
+      "200_L": { "ABS":"02:04,47", "SEN":"02:06,96", "SUB21":"02:08,20", "JUN":"02:09,45", "JUN1":"02:11,94", "JUV_A_VER":"02:14,43", "JUV_A_INV":"02:16,92", "JUV_B_VER":"02:19,41", "JUV_B_INV":"02:21,90", "INF_A":"02:26,87", "INF_B":"02:30,61", "JUV_A_ZON":"02:20,65", "JUV_B_ZON":"02:24,39", "INF_A_ZON":"02:30,61", "INF_B_ZON":"02:36,83" },
+      "400_L": { "ABS":"04:19,58", "SEN":"04:24,77", "SUB21":"04:27,37", "JUN":"04:29,96", "JUN1":"04:35,15", "JUV_A_VER":"04:40,35", "JUV_A_INV":"04:45,54", "JUV_B_VER":"04:50,73", "JUV_B_INV":"04:55,92", "INF_A":"05:06,30", "INF_B":"05:14,09", "JUV_A_ZON":"04:53,33", "JUV_B_ZON":"05:01,11", "INF_A_ZON":"05:14,09", "INF_B_ZON":"05:27,07" },
+      "800_L": { "ABS":"08:46,75", "SEN":"08:57,28", "SUB21":"09:02,55", "JUN":"09:07,82", "JUN1":"09:18,36", "JUV_A_VER":"09:28,89", "JUV_A_INV":"09:39,43", "JUV_B_VER":"09:49,96", "JUV_B_INV":"10:00,50", "INF_A":"10:21,57", "INF_B":"10:37,37", "JUV_A_ZON":"09:55,23", "JUV_B_ZON":"10:11,03", "INF_A_ZON":"10:37,37", "INF_B_ZON":"11:03,71" },
+      "1500_L": { "ABS":"17:18,56", "SEN":"17:39,33", "SUB21":"17:49,72", "JUN":"18:00,10", "JUN1":"18:20,87", "JUV_A_VER":"18:41,64", "JUV_A_INV":"19:02,42", "JUV_B_VER":"19:23,19", "JUV_B_INV":"19:43,96", "INF_A":"20:25,50", "INF_B":"20:56,66", "JUV_A_ZON":"19:33,57", "JUV_B_ZON":"20:04,73", "INF_A_ZON":"20:56,66", "INF_B_ZON":"21:48,59" },
+      "50_C": { "ABS":"00:30,45", "SEN":"00:31,06", "SUB21":"00:31,36", "JUN":"00:31,67", "JUN1":"00:32,28", "JUV_A_VER":"00:32,89", "JUV_A_INV":"00:33,49", "JUV_B_VER":"00:34,10", "JUV_B_INV":"00:34,71", "INF_A":"00:35,93", "INF_B":"00:36,84", "JUV_A_ZON":"00:34,41", "JUV_B_ZON":"00:35,32", "INF_A_ZON":"00:36,84", "INF_B_ZON":"00:38,37" },
+      "100_C": { "ABS":"01:04,97", "SEN":"01:06,27", "SUB21":"01:06,92", "JUN":"01:07,57", "JUN1":"01:08,87", "JUV_A_VER":"01:10,17", "JUV_A_INV":"01:11,47", "JUV_B_VER":"01:12,77", "JUV_B_INV":"01:14,07", "INF_A":"01:16,66", "INF_B":"01:18,61", "JUV_A_ZON":"01:13,42", "JUV_B_ZON":"01:15,37", "INF_A_ZON":"01:18,61", "INF_B_ZON":"01:21,86" },
+      "200_C": { "ABS":"02:20,72", "SEN":"02:23,53", "SUB21":"02:24,94", "JUN":"02:26,35", "JUN1":"02:29,16", "JUV_A_VER":"02:31,98", "JUV_A_INV":"02:34,79", "JUV_B_VER":"02:37,61", "JUV_B_INV":"02:40,42", "INF_A":"02:46,05", "INF_B":"02:50,27", "JUV_A_ZON":"02:39,01", "JUV_B_ZON":"02:43,24", "INF_A_ZON":"02:50,27", "INF_B_ZON":"02:57,31" },
+      "50_B": { "ABS":"00:34,28", "SEN":"00:34,97", "SUB21":"00:35,31", "JUN":"00:35,65", "JUN1":"00:36,34", "JUV_A_VER":"00:37,02", "JUV_A_INV":"00:37,71", "JUV_B_VER":"00:38,39", "JUV_B_INV":"00:39,08", "INF_A":"00:40,45", "INF_B":"00:41,48", "JUV_A_ZON":"00:38,74", "JUV_B_ZON":"00:39,76", "INF_A_ZON":"00:41,48", "INF_B_ZON":"00:43,19" },
+      "100_B": { "ABS":"01:13,91", "SEN":"01:15,39", "SUB21":"01:16,13", "JUN":"01:16,87", "JUN1":"01:18,34", "JUV_A_VER":"01:19,82", "JUV_A_INV":"01:21,30", "JUV_B_VER":"01:22,78", "JUV_B_INV":"01:24,26", "INF_A":"01:27,21", "INF_B":"01:29,43", "JUV_A_ZON":"01:23,52", "JUV_B_ZON":"01:25,74", "INF_A_ZON":"01:29,43", "INF_B_ZON":"01:33,13" },
+      "200_B": { "ABS":"02:37,74", "SEN":"02:40,89", "SUB21":"02:42,47", "JUN":"02:44,05", "JUN1":"02:47,20", "JUV_A_VER":"02:50,36", "JUV_A_INV":"02:53,51", "JUV_B_VER":"02:56,67", "JUV_B_INV":"02:59,82", "INF_A":"03:06,13", "INF_B":"03:10,87", "JUV_A_ZON":"02:58,25", "JUV_B_ZON":"03:02,98", "INF_A_ZON":"03:10,87", "INF_B_ZON":"03:18,75" },
+      "50_M": { "ABS":"00:29,04", "SEN":"00:29,62", "SUB21":"00:29,91", "JUN":"00:30,20", "JUN1":"00:30,78", "JUV_A_VER":"00:31,36", "JUV_A_INV":"00:31,94", "JUV_B_VER":"00:32,52", "JUV_B_INV":"00:33,11", "INF_A":"00:34,27", "INF_B":"00:35,14", "JUV_A_ZON":"00:32,82", "JUV_B_ZON":"00:33,69", "INF_A_ZON":"00:35,14", "INF_B_ZON":"00:36,59" },
+      "100_M": { "ABS":"01:04,65", "SEN":"01:05,94", "SUB21":"01:06,59", "JUN":"01:07,24", "JUN1":"01:08,53", "JUV_A_VER":"01:09,82", "JUV_A_INV":"01:11,12", "JUV_B_VER":"01:12,41", "JUV_B_INV":"01:13,70", "INF_A":"01:16,29", "INF_B":"01:18,23", "JUV_A_ZON":"01:13,05", "JUV_B_ZON":"01:14,99", "INF_A_ZON":"01:18,23", "INF_B_ZON":"01:21,46" },
+      "200_M": { "ABS":"02:21,94", "SEN":"02:24,78", "SUB21":"02:26,20", "JUN":"02:27,62", "JUN1":"02:30,46", "JUV_A_VER":"02:33,30", "JUV_A_INV":"02:36,13", "JUV_B_VER":"02:38,97", "JUV_B_INV":"02:41,81", "INF_A":"02:47,49", "INF_B":"02:51,75", "JUV_A_ZON":"02:40,39", "JUV_B_ZON":"02:44,65", "INF_A_ZON":"02:51,75", "INF_B_ZON":"02:58,84" },
+      "100_E": { "ABS":"01:06,89", "SEN":"01:08,23", "SUB21":"01:08,90", "JUN":"01:09,57", "JUN1":"01:10,90", "JUV_A_VER":"01:12,24", "JUV_A_INV":"01:13,58", "JUV_B_VER":"01:14,92", "JUV_B_INV":"01:16,25", "INF_A":"01:18,93", "INF_B":"01:20,94", "JUV_A_ZON":"01:15,59", "JUV_B_ZON":"01:17,59", "INF_A_ZON":"01:20,94", "INF_B_ZON":"01:24,28" },
+      "200_E": { "ABS":"02:22,41", "SEN":"02:25,26", "SUB21":"02:26,68", "JUN":"02:28,11", "JUN1":"02:30,95", "JUV_A_VER":"02:33,80", "JUV_A_INV":"02:36,65", "JUV_B_VER":"02:39,50", "JUV_B_INV":"02:42,35", "INF_A":"02:48,04", "INF_B":"02:52,32", "JUV_A_ZON":"02:40,92", "JUV_B_ZON":"02:45,20", "INF_A_ZON":"02:52,32", "INF_B_ZON":"02:59,44" },
+      "400_E": { "ABS":"04:58,69", "SEN":"05:04,66", "SUB21":"05:07,65", "JUN":"05:10,64", "JUN1":"05:16,61", "JUV_A_VER":"05:22,59", "JUV_A_INV":"05:28,56", "JUV_B_VER":"05:34,53", "JUV_B_INV":"05:40,51", "INF_A":"05:52,45", "INF_B":"06:01,41", "JUV_A_ZON":"05:37,52", "JUV_B_ZON":"05:46,48", "INF_A_ZON":"06:01,41", "INF_B_ZON":"06:16,35" },
+      "4x100_L": { "ABS":"03:55,67", "SEN":"04:00,38", "SUB21":"04:02,74", "JUN":"04:05,10", "JUN1":"04:09,81", "JUV_A_VER":"04:14,52", "JUV_A_INV":"04:19,24", "JUV_B_VER":"04:23,95", "JUV_B_INV":"04:28,66", "INF_A":"04:38,09", "INF_B":"04:45,16", "JUV_A_ZON":"04:26,31", "JUV_B_ZON":"04:33,38", "INF_A_ZON":"04:45,16", "INF_B_ZON":"04:56,94" },
+      "4x200_L": { "ABS":"08:33,27", "SEN":"08:43,54", "SUB21":"08:48,67", "JUN":"08:53,80", "JUN1":"09:04,07", "JUV_A_VER":"09:14,33", "JUV_A_INV":"09:24,60", "JUV_B_VER":"09:34,86", "JUV_B_INV":"09:45,13", "INF_A":"10:05,66", "INF_B":"10:21,06", "JUV_A_ZON":"09:40,00", "JUV_B_ZON":"09:55,39", "INF_A_ZON":"10:21,06", "INF_B_ZON":"10:46,72" },
+      "4x100_E": { "ABS":"04:19,35", "SEN":"04:24,54", "SUB21":"04:27,13", "JUN":"04:29,72", "JUN1":"04:34,91", "JUV_A_VER":"04:40,10", "JUV_A_INV":"04:45,28", "JUV_B_VER":"04:50,47", "JUV_B_INV":"04:55,66", "INF_A":"05:06,03", "INF_B":"05:13,81", "JUV_A_ZON":"04:53,07", "JUV_B_ZON":"05:00,85", "INF_A_ZON":"05:13,81", "INF_B_ZON":"05:26,78" },
+      "4x50_E": { "ABS":"02:00,48", "SEN":"02:02,89", "SUB21":"02:04,09", "JUN":"02:05,30", "JUN1":"02:07,71", "JUV_A_VER":"02:10,12", "JUV_A_INV":"02:12,53", "JUV_B_VER":"02:14,94", "JUV_B_INV":"02:17,35", "INF_A":"02:22,17", "INF_B":"02:25,78", "JUV_A_ZON":"02:16,14", "JUV_B_ZON":"02:19,76", "INF_A_ZON":"02:25,78", "INF_B_ZON":"02:31,80" },
+      "4x50_L": { "ABS":"01:50,35", "SEN":"01:52,56", "SUB21":"01:53,66", "JUN":"01:54,76", "JUN1":"01:56,97", "JUV_A_VER":"01:59,18", "JUV_A_INV":"02:01,39", "JUV_B_VER":"02:03,59", "JUV_B_INV":"02:05,80", "INF_A":"02:10,21", "INF_B":"02:13,52", "JUV_A_ZON":"02:04,70", "JUV_B_ZON":"02:08,01", "INF_A_ZON":"02:13,52", "INF_B_ZON":"02:19,04" },
+    },
+    X: {
+      "4x100_L": { "ABS":"03:40,98", "SEN":"03:45,39", "SUB21":"03:47,60", "JUN":"03:49,81", "JUN1":"03:56,44", "JUV_A_VER":"04:00,86", "JUV_A_INV":"04:05,28", "JUV_B_VER":"04:09,70", "JUV_B_INV":"04:14,12", "INF_A":"04:27,38", "INF_B":"04:36,22", "JUV_A_ZON":"04:11,91", "JUV_B_ZON":"04:18,54", "INF_A_ZON":"04:31,80", "INF_B_ZON":"04:45,06" },
+      "4x100_E": { "ABS":"03:54,77", "SEN":"03:59,46", "SUB21":"04:01,81", "JUN":"04:04,16", "JUN1":"04:11,20", "JUV_A_VER":"04:15,90", "JUV_A_INV":"04:20,59", "JUV_B_VER":"04:25,29", "JUV_B_INV":"04:29,98", "INF_A":"04:44,07", "INF_B":"04:53,46", "JUV_A_ZON":"04:27,64", "JUV_B_ZON":"04:34,68", "INF_A_ZON":"04:48,77", "INF_B_ZON":"05:02,85" },
+      "4x50_L": { "ABS":"01:43,21", "SEN":"01:45,28", "SUB21":"01:46,31", "JUN":"01:47,34", "JUN1":"01:50,44", "JUV_A_VER":"01:52,50", "JUV_A_INV":"01:54,57", "JUV_B_VER":"01:56,63", "JUV_B_INV":"01:58,70", "INF_A":"02:04,89", "INF_B":"02:09,02", "JUV_A_ZON":"01:57,67", "JUV_B_ZON":"02:00,76", "INF_A_ZON":"02:06,95", "INF_B_ZON":"02:13,15" },
+      "4x50_E": { "ABS":"01:52,69", "SEN":"01:54,95", "SUB21":"01:56,08", "JUN":"01:57,20", "JUN1":"02:00,58", "JUV_A_VER":"02:02,84", "JUV_A_INV":"02:05,09", "JUV_B_VER":"02:07,35", "JUV_B_INV":"02:09,60", "INF_A":"02:16,36", "INF_B":"02:20,87", "JUV_A_ZON":"02:08,47", "JUV_B_ZON":"02:11,85", "INF_A_ZON":"02:18,61", "INF_B_ZON":"02:25,38" },
+    },
+  },
+  longa: {
+    M: {
+      "50_L": { "ABS":"00:24,26", "SEN":"00:24,75", "SUB21":"00:24,99", "JUN":"00:25,23", "JUN1":"00:25,96", "JUV_A_VER":"00:26,44", "JUV_A_INV":"00:26,93", "JUV_B_VER":"00:27,66", "JUV_B_INV":"00:28,14", "INF_A":"00:29,84", "INF_B":"00:31,30", "JUV_A_ZON":"00:27,66", "JUV_B_ZON":"00:28,63", "INF_A_ZON":"00:30,08", "INF_B_ZON":"00:32,02" },
+      "100_L": { "ABS":"00:52,80", "SEN":"00:53,86", "SUB21":"00:54,38", "JUN":"00:54,91", "JUN1":"00:56,50", "JUV_A_VER":"00:57,55", "JUV_A_INV":"00:58,61", "JUV_B_VER":"01:00,19", "JUV_B_INV":"01:01,25", "INF_A":"01:04,94", "INF_B":"01:08,11", "JUV_A_ZON":"01:00,19", "JUV_B_ZON":"01:02,30", "INF_A_ZON":"01:05,47", "INF_B_ZON":"01:09,70" },
+      "200_L": { "ABS":"01:56,36", "SEN":"01:58,69", "SUB21":"01:59,85", "JUN":"02:01,01", "JUN1":"02:04,51", "JUV_A_VER":"02:06,83", "JUV_A_INV":"02:09,16", "JUV_B_VER":"02:12,65", "JUV_B_INV":"02:14,98", "INF_A":"02:23,12", "INF_B":"02:30,10", "JUV_A_ZON":"02:12,65", "JUV_B_ZON":"02:17,30", "INF_A_ZON":"02:24,29", "INF_B_ZON":"02:33,60" },
+      "400_L": { "ABS":"04:06,04", "SEN":"04:10,96", "SUB21":"04:13,42", "JUN":"04:15,88", "JUN1":"04:23,26", "JUV_A_VER":"04:28,18", "JUV_A_INV":"04:33,10", "JUV_B_VER":"04:40,49", "JUV_B_INV":"04:45,41", "INF_A":"05:02,63", "INF_B":"05:17,39", "JUV_A_ZON":"04:40,49", "JUV_B_ZON":"04:50,33", "INF_A_ZON":"05:05,09", "INF_B_ZON":"05:24,77" },
+      "800_L": { "ABS":"08:32,14", "SEN":"08:42,38", "SUB21":"08:47,50", "JUN":"08:52,63", "JUN1":"09:07,99", "JUV_A_VER":"09:18,23", "JUV_A_INV":"09:28,48", "JUV_B_VER":"09:43,84", "JUV_B_INV":"09:54,08", "INF_A":"10:29,93", "INF_B":"11:00,66", "JUV_A_ZON":"09:43,84", "JUV_B_ZON":"10:04,33", "INF_A_ZON":"10:35,05", "INF_B_ZON":"11:16,02" },
+      "1500_L": { "ABS":"16:21,19", "SEN":"16:40,81", "SUB21":"16:50,63", "JUN":"17:00,44", "JUN1":"17:29,87", "JUV_A_VER":"17:49,50", "JUV_A_INV":"18:09,12", "JUV_B_VER":"18:38,56", "JUV_B_INV":"18:58,18", "INF_A":"20:06,86", "INF_B":"21:05,74", "JUV_A_ZON":"18:38,56", "JUV_B_ZON":"19:17,80", "INF_A_ZON":"20:16,68", "INF_B_ZON":"21:35,17" },
+      "50_C": { "ABS":"00:27,87", "SEN":"00:28,43", "SUB21":"00:28,71", "JUN":"00:28,98", "JUN1":"00:29,82", "JUV_A_VER":"00:30,38", "JUV_A_INV":"00:30,94", "JUV_B_VER":"00:31,77", "JUV_B_INV":"00:32,33", "INF_A":"00:34,28", "INF_B":"00:35,95", "JUV_A_ZON":"00:31,77", "JUV_B_ZON":"00:32,89", "INF_A_ZON":"00:34,56", "INF_B_ZON":"00:36,79" },
+      "100_C": { "ABS":"00:59,87", "SEN":"01:01,07", "SUB21":"01:01,67", "JUN":"01:02,26", "JUN1":"01:04,06", "JUV_A_VER":"01:05,26", "JUV_A_INV":"01:06,46", "JUV_B_VER":"01:08,25", "JUV_B_INV":"01:09,45", "INF_A":"01:13,64", "INF_B":"01:17,23", "JUV_A_ZON":"01:08,25", "JUV_B_ZON":"01:10,65", "INF_A_ZON":"01:14,24", "INF_B_ZON":"01:19,03" },
+      "200_C": { "ABS":"02:12,75", "SEN":"02:15,41", "SUB21":"02:16,73", "JUN":"02:18,06", "JUN1":"02:22,04", "JUV_A_VER":"02:24,70", "JUV_A_INV":"02:27,35", "JUV_B_VER":"02:31,33", "JUV_B_INV":"02:33,99", "INF_A":"02:43,28", "INF_B":"02:51,25", "JUV_A_ZON":"02:31,33", "JUV_B_ZON":"02:36,64", "INF_A_ZON":"02:44,61", "INF_B_ZON":"02:55,23" },
+      "50_B": { "ABS":"00:30,72", "SEN":"00:31,33", "SUB21":"00:31,64", "JUN":"00:31,95", "JUN1":"00:32,87", "JUV_A_VER":"00:33,48", "JUV_A_INV":"00:34,10", "JUV_B_VER":"00:35,02", "JUV_B_INV":"00:35,64", "INF_A":"00:37,79", "INF_B":"00:39,63", "JUV_A_ZON":"00:35,02", "JUV_B_ZON":"00:36,25", "INF_A_ZON":"00:38,09", "INF_B_ZON":"00:40,55" },
+      "100_B": { "ABS":"01:07,76", "SEN":"01:09,12", "SUB21":"01:09,79", "JUN":"01:10,47", "JUN1":"01:12,50", "JUV_A_VER":"01:13,86", "JUV_A_INV":"01:15,21", "JUV_B_VER":"01:17,25", "JUV_B_INV":"01:18,60", "INF_A":"01:23,34", "INF_B":"01:27,41", "JUV_A_ZON":"01:17,25", "JUV_B_ZON":"01:19,96", "INF_A_ZON":"01:24,02", "INF_B_ZON":"01:29,44" },
+      "200_B": { "ABS":"02:28,12", "SEN":"02:31,08", "SUB21":"02:32,56", "JUN":"02:34,04", "JUN1":"02:38,49", "JUV_A_VER":"02:41,45", "JUV_A_INV":"02:44,41", "JUV_B_VER":"02:48,86", "JUV_B_INV":"02:51,82", "INF_A":"03:02,19", "INF_B":"03:11,07", "JUV_A_ZON":"02:48,86", "JUV_B_ZON":"02:54,78", "INF_A_ZON":"03:03,67", "INF_B_ZON":"03:15,52" },
+      "50_M": { "ABS":"00:25,59", "SEN":"00:26,10", "SUB21":"00:26,36", "JUN":"00:26,61", "JUN1":"00:27,38", "JUV_A_VER":"00:27,89", "JUV_A_INV":"00:28,40", "JUV_B_VER":"00:29,17", "JUV_B_INV":"00:29,68", "INF_A":"00:31,48", "INF_B":"00:33,01", "JUV_A_ZON":"00:29,17", "JUV_B_ZON":"00:30,20", "INF_A_ZON":"00:31,73", "INF_B_ZON":"00:33,78" },
+      "100_M": { "ABS":"00:57,00", "SEN":"00:58,14", "SUB21":"00:58,71", "JUN":"00:59,28", "JUN1":"01:00,99", "JUV_A_VER":"01:02,13", "JUV_A_INV":"01:03,27", "JUV_B_VER":"01:04,98", "JUV_B_INV":"01:06,12", "INF_A":"01:10,11", "INF_B":"01:13,53", "JUV_A_ZON":"01:04,98", "JUV_B_ZON":"01:07,26", "INF_A_ZON":"01:10,68", "INF_B_ZON":"01:15,24" },
+      "200_M": { "ABS":"02:09,36", "SEN":"02:11,95", "SUB21":"02:13,24", "JUN":"02:14,53", "JUN1":"02:18,42", "JUV_A_VER":"02:21,00", "JUV_A_INV":"02:23,59", "JUV_B_VER":"02:27,47", "JUV_B_INV":"02:30,06", "INF_A":"02:39,11", "INF_B":"02:46,87", "JUV_A_ZON":"02:27,47", "JUV_B_ZON":"02:32,64", "INF_A_ZON":"02:40,41", "INF_B_ZON":"02:50,76" },
+      "200_E": { "ABS":"02:12,78", "SEN":"02:15,44", "SUB21":"02:16,76", "JUN":"02:18,09", "JUN1":"02:22,07", "JUV_A_VER":"02:24,73", "JUV_A_INV":"02:27,39", "JUV_B_VER":"02:31,37", "JUV_B_INV":"02:34,02", "INF_A":"02:43,32", "INF_B":"02:51,29", "JUV_A_ZON":"02:31,37", "JUV_B_ZON":"02:36,68", "INF_A_ZON":"02:44,65", "INF_B_ZON":"02:55,27" },
+      "400_E": { "ABS":"04:43,91", "SEN":"04:49,59", "SUB21":"04:52,43", "JUN":"04:55,27", "JUN1":"05:03,78", "JUV_A_VER":"05:09,46", "JUV_A_INV":"05:15,14", "JUV_B_VER":"05:23,66", "JUV_B_INV":"05:29,34", "INF_A":"05:49,21", "INF_B":"06:06,24", "JUV_A_ZON":"05:23,66", "JUV_B_ZON":"05:35,01", "INF_A_ZON":"05:52,05", "INF_B_ZON":"06:14,76" },
+      "4x100_L": { "ABS":"03:37,49", "SEN":"03:41,84", "SUB21":"03:44,01", "JUN":"03:46,19", "JUN1":"03:52,71", "JUV_A_VER":"03:57,06", "JUV_A_INV":"04:01,41", "JUV_B_VER":"04:07,94", "JUV_B_INV":"04:12,29", "INF_A":"04:27,51", "INF_B":"04:40,56", "JUV_A_ZON":"04:07,94", "JUV_B_ZON":"04:16,64", "INF_A_ZON":"04:29,69", "INF_B_ZON":"04:47,09" },
+      "4x200_L": { "ABS":"08:11,93", "SEN":"08:21,77", "SUB21":"08:26,69", "JUN":"08:31,61", "JUN1":"08:46,37", "JUV_A_VER":"08:56,20", "JUV_A_INV":"09:06,04", "JUV_B_VER":"09:20,80", "JUV_B_INV":"09:30,64", "INF_A":"10:05,07", "INF_B":"10:34,59", "JUV_A_ZON":"09:20,80", "JUV_B_ZON":"09:40,48", "INF_A_ZON":"10:09,99", "INF_B_ZON":"10:49,35" },
+      "4x100_E": { "ABS":"04:01,64", "SEN":"04:06,47", "SUB21":"04:08,89", "JUN":"04:11,31", "JUN1":"04:18,55", "JUV_A_VER":"04:23,39", "JUV_A_INV":"04:28,22", "JUV_B_VER":"04:35,47", "JUV_B_INV":"04:40,30", "INF_A":"04:57,22", "INF_B":"05:11,72", "JUV_A_ZON":"04:35,47", "JUV_B_ZON":"04:45,14", "INF_A_ZON":"04:59,63", "INF_B_ZON":"05:18,96" },
+      "4x50_E": { "ABS":"01:50,40", "SEN":"01:52,61", "SUB21":"01:53,71", "JUN":"01:54,82", "JUN1":"01:58,13", "JUV_A_VER":"02:00,34", "JUV_A_INV":"02:02,54", "JUV_B_VER":"02:05,86", "JUV_B_INV":"02:08,06", "INF_A":"02:15,79", "INF_B":"02:22,42", "JUV_A_ZON":"02:05,86", "JUV_B_ZON":"02:10,27", "INF_A_ZON":"02:16,90", "INF_B_ZON":"02:25,73" },
+      "4x50_L": { "ABS":"01:39,21", "SEN":"01:41,19", "SUB21":"01:42,19", "JUN":"01:43,18", "JUN1":"01:46,15", "JUV_A_VER":"01:48,14", "JUV_A_INV":"01:50,12", "JUV_B_VER":"01:53,10", "JUV_B_INV":"01:55,08", "INF_A":"02:02,03", "INF_B":"02:07,98", "JUV_A_ZON":"01:53,10", "JUV_B_ZON":"01:57,07", "INF_A_ZON":"02:03,02", "INF_B_ZON":"02:10,96" },
+    },
+    F: {
+      "50_L": { "ABS":"00:27,63", "SEN":"00:28,18", "SUB21":"00:28,46", "JUN":"00:28,74", "JUN1":"00:29,29", "JUV_A_VER":"00:29,84", "JUV_A_INV":"00:30,39", "JUV_B_VER":"00:30,95", "JUV_B_INV":"00:31,50", "INF_A":"00:32,60", "INF_B":"00:33,43", "JUV_A_ZON":"00:31,22", "JUV_B_ZON":"00:32,05", "INF_A_ZON":"00:33,43", "INF_B_ZON":"00:34,81" },
+      "100_L": { "ABS":"00:59,64", "SEN":"01:00,83", "SUB21":"01:01,43", "JUN":"01:02,03", "JUN1":"01:03,22", "JUV_A_VER":"01:04,41", "JUV_A_INV":"01:05,60", "JUV_B_VER":"01:06,80", "JUV_B_INV":"01:07,99", "INF_A":"01:10,38", "INF_B":"01:12,16", "JUV_A_ZON":"01:07,39", "JUV_B_ZON":"01:09,18", "INF_A_ZON":"01:12,16", "INF_B_ZON":"01:15,15" },
+      "200_L": { "ABS":"02:08,20", "SEN":"02:10,76", "SUB21":"02:12,05", "JUN":"02:13,33", "JUN1":"02:15,89", "JUV_A_VER":"02:18,46", "JUV_A_INV":"02:21,02", "JUV_B_VER":"02:23,58", "JUV_B_INV":"02:26,15", "INF_A":"02:31,28", "INF_B":"02:35,12", "JUV_A_ZON":"02:24,87", "JUV_B_ZON":"02:28,71", "INF_A_ZON":"02:35,12", "INF_B_ZON":"02:41,53" },
+      "400_L": { "ABS":"04:28,98", "SEN":"04:34,36", "SUB21":"04:37,05", "JUN":"04:39,74", "JUN1":"04:45,12", "JUV_A_VER":"04:50,50", "JUV_A_INV":"04:55,88", "JUV_B_VER":"05:01,26", "JUV_B_INV":"05:06,64", "INF_A":"05:17,40", "INF_B":"05:25,47", "JUV_A_ZON":"05:03,95", "JUV_B_ZON":"05:12,02", "INF_A_ZON":"05:25,47", "INF_B_ZON":"05:38,91" },
+      "800_L": { "ABS":"09:04,25", "SEN":"09:15,14", "SUB21":"09:20,58", "JUN":"09:26,02", "JUN1":"09:36,91", "JUV_A_VER":"09:47,79", "JUV_A_INV":"09:58,68", "JUV_B_VER":"10:09,56", "JUV_B_INV":"10:20,44", "INF_A":"10:42,22", "INF_B":"10:58,54", "JUV_A_ZON":"10:15,00", "JUV_B_ZON":"10:31,33", "INF_A_ZON":"10:58,54", "INF_B_ZON":"11:25,76" },
+      "1500_L": { "ABS":"17:44,97", "SEN":"18:06,27", "SUB21":"18:16,92", "JUN":"18:27,57", "JUN1":"18:48,87", "JUV_A_VER":"19:10,17", "JUV_A_INV":"19:31,47", "JUV_B_VER":"19:52,77", "JUV_B_INV":"20:14,07", "INF_A":"20:56,66", "INF_B":"21:28,61", "JUV_A_ZON":"20:03,42", "JUV_B_ZON":"20:35,37", "INF_A_ZON":"21:28,61", "INF_B_ZON":"22:21,86" },
+      "50_C": { "ABS":"00:31,74", "SEN":"00:32,37", "SUB21":"00:32,69", "JUN":"00:33,01", "JUN1":"00:33,64", "JUV_A_VER":"00:34,28", "JUV_A_INV":"00:34,91", "JUV_B_VER":"00:35,55", "JUV_B_INV":"00:36,18", "INF_A":"00:37,45", "INF_B":"00:38,41", "JUV_A_ZON":"00:35,87", "JUV_B_ZON":"00:36,82", "INF_A_ZON":"00:38,41", "INF_B_ZON":"00:39,99" },
+      "100_C": { "ABS":"01:07,62", "SEN":"01:08,97", "SUB21":"01:09,65", "JUN":"01:10,32", "JUN1":"01:11,68", "JUV_A_VER":"01:13,03", "JUV_A_INV":"01:14,38", "JUV_B_VER":"01:15,73", "JUV_B_INV":"01:17,09", "INF_A":"01:19,79", "INF_B":"01:21,82", "JUV_A_ZON":"01:16,41", "JUV_B_ZON":"01:18,44", "INF_A_ZON":"01:21,82", "INF_B_ZON":"01:25,20" },
+      "200_C": { "ABS":"02:25,92", "SEN":"02:28,84", "SUB21":"02:30,30", "JUN":"02:31,76", "JUN1":"02:34,68", "JUV_A_VER":"02:37,59", "JUV_A_INV":"02:40,51", "JUV_B_VER":"02:43,43", "JUV_B_INV":"02:46,35", "INF_A":"02:52,19", "INF_B":"02:56,56", "JUV_A_ZON":"02:44,89", "JUV_B_ZON":"02:49,27", "INF_A_ZON":"02:56,56", "INF_B_ZON":"03:03,86" },
+      "50_B": { "ABS":"00:34,68", "SEN":"00:35,37", "SUB21":"00:35,72", "JUN":"00:36,07", "JUN1":"00:36,76", "JUV_A_VER":"00:37,45", "JUV_A_INV":"00:38,15", "JUV_B_VER":"00:38,84", "JUV_B_INV":"00:39,54", "INF_A":"00:40,92", "INF_B":"00:41,96", "JUV_A_ZON":"00:39,19", "JUV_B_ZON":"00:40,23", "INF_A_ZON":"00:41,96", "INF_B_ZON":"00:43,70" },
+      "100_B": { "ABS":"01:16,29", "SEN":"01:17,82", "SUB21":"01:18,58", "JUN":"01:19,34", "JUN1":"01:20,87", "JUV_A_VER":"01:22,39", "JUV_A_INV":"01:23,92", "JUV_B_VER":"01:25,44", "JUV_B_INV":"01:26,97", "INF_A":"01:30,02", "INF_B":"01:32,31", "JUV_A_ZON":"01:26,21", "JUV_B_ZON":"01:28,50", "INF_A_ZON":"01:32,31", "INF_B_ZON":"01:36,13" },
+      "200_B": { "ABS":"02:45,23", "SEN":"02:48,53", "SUB21":"02:50,19", "JUN":"02:51,84", "JUN1":"02:55,14", "JUV_A_VER":"02:58,45", "JUV_A_INV":"03:01,75", "JUV_B_VER":"03:05,06", "JUV_B_INV":"03:08,36", "INF_A":"03:14,97", "INF_B":"03:19,93", "JUV_A_ZON":"03:06,71", "JUV_B_ZON":"03:11,67", "INF_A_ZON":"03:19,93", "INF_B_ZON":"03:28,19" },
+      "50_M": { "ABS":"00:29,34", "SEN":"00:29,93", "SUB21":"00:30,22", "JUN":"00:30,51", "JUN1":"00:31,10", "JUV_A_VER":"00:31,69", "JUV_A_INV":"00:32,27", "JUV_B_VER":"00:32,86", "JUV_B_INV":"00:33,45", "INF_A":"00:34,62", "INF_B":"00:35,50", "JUV_A_ZON":"00:33,15", "JUV_B_ZON":"00:34,03", "INF_A_ZON":"00:35,50", "INF_B_ZON":"00:36,97" },
+      "100_M": { "ABS":"01:05,51", "SEN":"01:06,82", "SUB21":"01:07,48", "JUN":"01:08,13", "JUN1":"01:09,44", "JUV_A_VER":"01:10,75", "JUV_A_INV":"01:12,06", "JUV_B_VER":"01:13,37", "JUV_B_INV":"01:14,68", "INF_A":"01:17,30", "INF_B":"01:19,27", "JUV_A_ZON":"01:14,03", "JUV_B_ZON":"01:15,99", "INF_A_ZON":"01:19,27", "INF_B_ZON":"01:22,54" },
+      "200_M": { "ABS":"02:26,25", "SEN":"02:29,17", "SUB21":"02:30,64", "JUN":"02:32,10", "JUN1":"02:35,02", "JUV_A_VER":"02:37,95", "JUV_A_INV":"02:40,88", "JUV_B_VER":"02:43,80", "JUV_B_INV":"02:46,73", "INF_A":"02:52,57", "INF_B":"02:56,96", "JUV_A_ZON":"02:45,26", "JUV_B_ZON":"02:49,65", "INF_A_ZON":"02:56,96", "INF_B_ZON":"03:04,28" },
+      "200_E": { "ABS":"02:27,71", "SEN":"02:30,66", "SUB21":"02:32,14", "JUN":"02:33,62", "JUN1":"02:36,57", "JUV_A_VER":"02:39,53", "JUV_A_INV":"02:42,48", "JUV_B_VER":"02:45,44", "JUV_B_INV":"02:48,39", "INF_A":"02:54,30", "INF_B":"02:58,73", "JUV_A_ZON":"02:46,91", "JUV_B_ZON":"02:51,34", "INF_A_ZON":"02:58,73", "INF_B_ZON":"03:06,11" },
+      "400_E": { "ABS":"05:08,82", "SEN":"05:15,00", "SUB21":"05:18,08", "JUN":"05:21,17", "JUN1":"05:27,35", "JUV_A_VER":"05:33,53", "JUV_A_INV":"05:39,70", "JUV_B_VER":"05:45,88", "JUV_B_INV":"05:52,05", "INF_A":"06:04,41", "INF_B":"06:13,67", "JUV_A_ZON":"05:48,97", "JUV_B_ZON":"05:58,23", "INF_A_ZON":"06:13,67", "INF_B_ZON":"06:29,11" },
+      "4x100_L": { "ABS":"04:07,14", "SEN":"04:12,08", "SUB21":"04:14,55", "JUN":"04:17,03", "JUN1":"04:21,97", "JUV_A_VER":"04:26,91", "JUV_A_INV":"04:31,85", "JUV_B_VER":"04:36,80", "JUV_B_INV":"04:41,74", "INF_A":"04:51,63", "INF_B":"04:59,04", "JUV_A_ZON":"04:39,27", "JUV_B_ZON":"04:46,68", "INF_A_ZON":"04:59,04", "INF_B_ZON":"05:11,40" },
+      "4x200_L": { "ABS":"09:03,25", "SEN":"09:14,11", "SUB21":"09:19,55", "JUN":"09:24,98", "JUN1":"09:35,85", "JUV_A_VER":"09:46,71", "JUV_A_INV":"09:57,58", "JUV_B_VER":"10:08,44", "JUV_B_INV":"10:19,30", "INF_A":"10:41,03", "INF_B":"10:57,33", "JUV_A_ZON":"10:13,87", "JUV_B_ZON":"10:30,17", "INF_A_ZON":"10:57,33", "INF_B_ZON":"11:24,50" },
+      "4x100_E": { "ABS":"04:34,00", "SEN":"04:39,48", "SUB21":"04:42,22", "JUN":"04:44,96", "JUN1":"04:50,44", "JUV_A_VER":"04:55,92", "JUV_A_INV":"05:01,40", "JUV_B_VER":"05:06,88", "JUV_B_INV":"05:12,36", "INF_A":"05:23,32", "INF_B":"05:31,54", "JUV_A_ZON":"05:09,62", "JUV_B_ZON":"05:17,84", "INF_A_ZON":"05:31,54", "INF_B_ZON":"05:45,24" },
+      "4x50_E": { "ABS":"02:04,50", "SEN":"02:06,99", "SUB21":"02:08,23", "JUN":"02:09,48", "JUN1":"02:11,97", "JUV_A_VER":"02:14,46", "JUV_A_INV":"02:16,95", "JUV_B_VER":"02:19,44", "JUV_B_INV":"02:21,93", "INF_A":"02:26,91", "INF_B":"02:30,64", "JUV_A_ZON":"02:20,68", "JUV_B_ZON":"02:24,42", "INF_A_ZON":"02:30,64", "INF_B_ZON":"02:36,87" },
+      "4x50_L": { "ABS":"01:53,24", "SEN":"01:55,50", "SUB21":"01:56,64", "JUN":"01:57,77", "JUN1":"02:00,03", "JUV_A_VER":"02:02,30", "JUV_A_INV":"02:04,56", "JUV_B_VER":"02:06,83", "JUV_B_INV":"02:09,09", "INF_A":"02:13,62", "INF_B":"02:17,02", "JUV_A_ZON":"02:07,96", "JUV_B_ZON":"02:11,36", "INF_A_ZON":"02:17,02", "INF_B_ZON":"02:22,68" },
+    },
+    X: {
+      "4x100_L": { "ABS":"03:52,31", "SEN":"03:56,96", "SUB21":"03:59,28", "JUN":"04:01,61", "JUN1":"04:08,58", "JUV_A_VER":"04:13,22", "JUV_A_INV":"04:17,87", "JUV_B_VER":"04:22,52", "JUV_B_INV":"04:27,16", "INF_A":"04:41,10", "INF_B":"04:50,39", "JUV_A_ZON":"04:24,84", "JUV_B_ZON":"04:31,81", "INF_A_ZON":"04:45,75", "INF_B_ZON":"04:59,69" },
+      "4x100_E": { "ABS":"04:17,82", "SEN":"04:22,98", "SUB21":"04:25,55", "JUN":"04:28,13", "JUN1":"04:35,87", "JUV_A_VER":"04:41,02", "JUV_A_INV":"04:46,18", "JUV_B_VER":"04:51,34", "JUV_B_INV":"04:56,49", "INF_A":"05:11,96", "INF_B":"05:22,27", "JUV_A_ZON":"04:53,91", "JUV_B_ZON":"05:01,65", "INF_A_ZON":"05:17,12", "INF_B_ZON":"05:32,59" },
+      "4x50_L": { "ABS":"01:46,22", "SEN":"01:48,35", "SUB21":"01:49,41", "JUN":"01:50,47", "JUN1":"01:53,66", "JUV_A_VER":"01:55,79", "JUV_A_INV":"01:57,91", "JUV_B_VER":"02:00,03", "JUV_B_INV":"02:02,16", "INF_A":"02:08,53", "INF_B":"02:12,78", "JUV_A_ZON":"02:01,10", "JUV_B_ZON":"02:04,28", "INF_A_ZON":"02:10,66", "INF_B_ZON":"02:17,03" },
+      "4x50_E": { "ABS":"01:57,45", "SEN":"01:59,80", "SUB21":"02:00,97", "JUN":"02:02,15", "JUN1":"02:05,67", "JUV_A_VER":"02:08,02", "JUV_A_INV":"02:10,37", "JUV_B_VER":"02:12,72", "JUV_B_INV":"02:15,07", "INF_A":"02:22,11", "INF_B":"02:26,81", "JUV_A_ZON":"02:13,89", "JUV_B_ZON":"02:17,42", "INF_A_ZON":"02:24,46", "INF_B_ZON":"02:31,51" },
+    },
+  },
+};
+
+// ============================================================
+// LÓGICA DE DISTÂNCIAS E ESTILOS POR GÉNERO
+// ============================================================
+const distanciasEstilos = {
+  M: [
+    { dist: "50", estilo: "L", label: "50m · Livres" },
+    { dist: "100", estilo: "L", label: "100m · Livres" },
+    { dist: "200", estilo: "L", label: "200m · Livres" },
+    { dist: "400", estilo: "L", label: "400m · Livres" },
+    { dist: "800", estilo: "L", label: "800m · Livres" },
+    { dist: "1500", estilo: "L", label: "1500m · Livres" },
+    { dist: "50", estilo: "C", label: "50m · Costas" },
+    { dist: "100", estilo: "C", label: "100m · Costas" },
+    { dist: "200", estilo: "C", label: "200m · Costas" },
+    { dist: "50", estilo: "B", label: "50m · Bruços" },
+    { dist: "100", estilo: "B", label: "100m · Bruços" },
+    { dist: "200", estilo: "B", label: "200m · Bruços" },
+    { dist: "50", estilo: "M", label: "50m · Mariposa" },
+    { dist: "100", estilo: "M", label: "100m · Mariposa" },
+    { dist: "200", estilo: "M", label: "200m · Mariposa" },
+    { dist: "100", estilo: "E", label: "100m · Estilos" },
+    { dist: "200", estilo: "E", label: "200m · Estilos" },
+    { dist: "400", estilo: "E", label: "400m · Estilos" },
+    { dist: "4x50", estilo: "L", label: "4x50m · Livres" },
+    { dist: "4x100", estilo: "L", label: "4x100m · Livres" },
+    { dist: "4x200", estilo: "L", label: "4x200m · Livres" },
+    { dist: "4x50", estilo: "E", label: "4x50m · Estilos" },
+    { dist: "4x100", estilo: "E", label: "4x100m · Estilos" },
+  ],
+  F: [
+    { dist: "50", estilo: "L", label: "50m · Livres" },
+    { dist: "100", estilo: "L", label: "100m · Livres" },
+    { dist: "200", estilo: "L", label: "200m · Livres" },
+    { dist: "400", estilo: "L", label: "400m · Livres" },
+    { dist: "800", estilo: "L", label: "800m · Livres" },
+    { dist: "1500", estilo: "L", label: "1500m · Livres" },
+    { dist: "50", estilo: "C", label: "50m · Costas" },
+    { dist: "100", estilo: "C", label: "100m · Costas" },
+    { dist: "200", estilo: "C", label: "200m · Costas" },
+    { dist: "50", estilo: "B", label: "50m · Bruços" },
+    { dist: "100", estilo: "B", label: "100m · Bruços" },
+    { dist: "200", estilo: "B", label: "200m · Bruços" },
+    { dist: "50", estilo: "M", label: "50m · Mariposa" },
+    { dist: "100", estilo: "M", label: "100m · Mariposa" },
+    { dist: "200", estilo: "M", label: "200m · Mariposa" },
+    { dist: "100", estilo: "E", label: "100m · Estilos" },
+    { dist: "200", estilo: "E", label: "200m · Estilos" },
+    { dist: "400", estilo: "E", label: "400m · Estilos" },
+    { dist: "4x50", estilo: "L", label: "4x50m · Livres" },
+    { dist: "4x100", estilo: "L", label: "4x100m · Livres" },
+    { dist: "4x200", estilo: "L", label: "4x200m · Livres" },
+    { dist: "4x50", estilo: "E", label: "4x50m · Estilos" },
+    { dist: "4x100", estilo: "E", label: "4x100m · Estilos" },
+  ],
+  X: [
+    { dist: "4x50", estilo: "L", label: "4x50m · Livres" },
+    { dist: "4x100", estilo: "L", label: "4x100m · Livres" },
+    { dist: "4x50", estilo: "E", label: "4x50m · Estilos" },
+    { dist: "4x100", estilo: "E", label: "4x100m · Estilos" },
+  ]
+};
+
+// Competições válidas por escalão
+function getCompeticoes(escalao) {
+  if (!escalao) return [];
+  if (escalao === "INF_A" || escalao === "INF_B") {
+    return [
+      { value: "zonal", label: "Zonal" },
+      { value: "verao", label: "Nacional Verão" }
+    ];
+  }
+  if (escalao === "JUV_A" || escalao === "JUV_B") {
+    return [
+      { value: "zonal", label: "Zonal" },
+      { value: "inverno", label: "Nacional Inverno" },
+      { value: "verao", label: "Nacional Verão" }
+    ];
+  }
+  // JUN1, JUN, SUB21, SEN, ABS
+  return [
+    { value: "nacional", label: "Nacional" }
+  ];
+}
+
+// Mapeia escalão + competição → chave na tabela
+function getChaveEscalao(escalao, competicao) {
+  if (escalao === "ABS") return "ABS";
+  if (escalao === "SEN") return "SEN";
+  if (escalao === "SUB21") return "SUB21";
+  if (escalao === "JUN1") return "JUN1";
+  if (escalao === "JUN") return "JUN";
+  if (escalao === "JUV_A") {
+    if (competicao === "verao") return "JUV_A_VER";
+    if (competicao === "inverno") return "JUV_A_INV";
+    if (competicao === "zonal") return "JUV_A_ZON";
+  }
+  if (escalao === "JUV_B") {
+    if (competicao === "verao") return "JUV_B_VER";
+    if (competicao === "inverno") return "JUV_B_INV";
+    if (competicao === "zonal") return "JUV_B_ZON";
+  }
+  if (escalao === "INF_A") {
+    if (competicao === "verao") return "INF_A";
+    if (competicao === "zonal") return "INF_A_ZON";
+  }
+  if (escalao === "INF_B") {
+    if (competicao === "verao") return "INF_B";
+    if (competicao === "zonal") return "INF_B_ZON";
+  }
+  return null;
+}
+
+function updateEscalao() {
+  const escalao = document.getElementById('escalao').value;
+  const sel = document.getElementById('competicao');
+  sel.innerHTML = '<option value="">Selecionar</option>';
+
+  if (escalao) {
+    const comps = getCompeticoes(escalao);
+    comps.forEach(c => {
+      sel.innerHTML += `<option value="${c.value}">${c.label}</option>`;
+    });
+    if (comps.length === 1) {
+      sel.value = comps[0].value;
+    }
+  }
+
+  updateDistancias();
+  updateForm();
+}
+
+function updateDistancias() {
+  const genero = document.getElementById('genero').value;
+  const selDist = document.getElementById('distancia');
+  const selEstilo = document.getElementById('estilo');
+
+  selDist.innerHTML = '<option value="">Selecionar</option>';
+  selEstilo.innerHTML = '<option value="">Selecionar</option>';
+
+  if (!genero) return;
+
+  const lista = distanciasEstilos[genero] || [];
+  const estilosSeen = new Set();
+
+  lista.forEach(item => {
+    if (!estilosSeen.has(item.estilo)) {
+      estilosSeen.add(item.estilo);
+      selEstilo.innerHTML += `<option value="${item.estilo}">${nomeEstilo(item.estilo)}</option>`;
+    }
+  });
+
+  if (lista.length > 0) {
+    const estilosUnique = [...estilosSeen];
+    if (estilosUnique.length === 1) selEstilo.value = estilosUnique[0];
+  }
+}
+
+function updateDistanciasPorEstilo() {
+  const genero = document.getElementById('genero').value;
+  const estilo = document.getElementById('estilo').value;
+  const selDist = document.getElementById('distancia');
+
+  selDist.innerHTML = '<option value="">Selecionar</option>';
+  if (!genero || !estilo) return;
+
+  const lista = (distanciasEstilos[genero] || []).filter(i => i.estilo === estilo);
+  lista.forEach(item => {
+    selDist.innerHTML += `<option value="${item.dist}">${item.dist}m</option>`;
+  });
+  if (lista.length === 1) selDist.value = lista[0].dist;
+}
+
+
+
+function nomeEstilo(e) {
+  const m = { L:"Livres", C:"Costas", B:"Bruços", M:"Mariposa", E:"Estilos" };
+  return m[e] || e;
+}
+
+function updateForm() {
+  const genero = document.getElementById('genero').value;
+  if (genero) updateDistancias();
+  calcular();
+}
+
+function calcular() {
+  const piscina = document.getElementById('piscina').value;
+  const genero = document.getElementById('genero').value;
+  const escalao = document.getElementById('escalao').value;
+  const competicao = document.getElementById('competicao').value;
+  const distancia = document.getElementById('distancia').value;
+  const estilo = document.getElementById('estilo').value;
+
+  const resultDiv = document.getElementById('result');
+
+  if (!piscina || !genero || !escalao || !competicao || !distancia || !estilo) {
+    resultDiv.innerHTML = `
+      <div class="result-empty">
+        <span class="icon">🏊</span>
+        Preenche todos os campos acima para ver o tempo mínimo de qualificação.
+      </div>`;
+    return;
+  }
+
+  const chaveEscalao = getChaveEscalao(escalao, competicao);
+  const chaveProva = `${distancia}_${estilo}`;
+
+  const tabela = dados[piscina]?.[genero]?.[chaveProva];
+  const tempo = tabela?.[chaveEscalao];
+
+  const nomeComp = {
+    zonal: "Campeonato Zonal",
+    inverno: "Nacional de Inverno",
+    verao: "Nacional de Verão",
+    nacional: "Campeonato Nacional"
+  }[competicao];
+
+  const nomeEscalaoMap = {
+    ABS:"Absoluto", SEN:"Sénior", SUB21:"Sub 21", JUN1:"1º Júnior",
+    JUN:"Júnior", JUV_A:"Juvenil A", JUV_B:"Juvenil B",
+    INF_A:"Infantil A", INF_B:"Infantil B"
+  };
+
+  const desc = `${nomeEscalaoMap[escalao]} · ${distancia}m ${nomeEstilo(estilo)} · ${nomeComp} · Piscina ${piscina === 'curta' ? '25m' : '50m'}`;
+
+  if (!tempo || tempo === '--') {
+    resultDiv.innerHTML = `
+      <div class="result-unavailable">
+        ⚠️ Não existe tempo mínimo definido para esta combinação.
+      </div>`;
+    return;
+  }
+
+  resultDiv.innerHTML = `
+    <div class="result-box">
+      <div class="result-label">Tempo Mínimo de Qualificação</div>
+      <div class="result-time">${tempo}</div>
+      <div class="result-desc">${desc}</div>
+    </div>`;
+}
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>

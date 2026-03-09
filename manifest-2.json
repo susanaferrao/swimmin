@@ -1,0 +1,25 @@
+{
+  "name": "SwimMin FPN",
+  "short_name": "SwimMin",
+  "description": "Tempos m\u00ednimos de qualifica\u00e7\u00e3o FPN - Nata\u00e7\u00e3o Portuguesa",
+  "start_url": "/swimmin/swimmin-fpn.html",
+  "scope": "/swimmin/",
+  "display": "standalone",
+  "background_color": "#001f3a",
+  "theme_color": "#003d6b",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
