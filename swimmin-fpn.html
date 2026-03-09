@@ -878,56 +878,64 @@ function formatarInput(val) {
 let tempoMinimoCs = 0;
 
 function onTempoInput(e) {
-  const raw = e.target.value.replace(/\D/g, '').slice(0, 6);
-  e.target.value = raw;
-  calcularDiferenca(raw);
+  // Keep only digits, max 6
+  const digits = e.target.value.replace(/[^0-9]/g, '').slice(0, 6);
+  // Format as MM:SS,cc while typing
+  const padded = digits.padStart(6, '0');
+  const min  = padded.slice(0, 2);
+  const sec  = padded.slice(2, 4);
+  const cent = padded.slice(4, 6);
+  e.target.value = `${parseInt(min)}:${sec},${cent}`;
+  calcularDiferenca(digits);
 }
 
-function calcularDiferenca(raw) {
+function calcularDiferenca(digits) {
   const diffDiv = document.getElementById('diff-result');
   const progressDiv = document.getElementById('progress-wrap');
   if (!diffDiv || !tempoMinimoCs) return;
 
-  if (!raw || raw.length < 2) {
+  if (!digits || digits.length < 1) {
     diffDiv.innerHTML = '';
     progressDiv.innerHTML = '';
     return;
   }
 
-  const pessoalCs = parsearInput(raw);
-  const diff = tempoMinimoCs - pessoalCs;
-  const pct = Math.min(100, Math.round((pessoalCs / tempoMinimoCs) * 100));
+  const pessoalCs = parsearInput(digits);
+  // In swimming: LOWER time = better. 
+  // diff > 0 means person is SLOWER (needs to improve)
+  // diff < 0 means person is FASTER (already qualified)
+  const diff = pessoalCs - tempoMinimoCs;
 
-  // Progress bar
+  // Progress: how close to minimum (100% = at minimum, >100% = faster than minimum)
+  const pct = Math.min(100, Math.round((tempoMinimoCs / pessoalCs) * 100));
   const barColor = pct >= 100 ? '#51cf66' : `hsl(${pct * 1.2}, 80%, 55%)`;
-  progressDiv.innerHTML = `
-    <div class="progress-bar-bg">
-      <div class="progress-bar-fill" style="width:${pct}%; background:${barColor}"></div>
-    </div>
-    <div class="progress-pct">${pct}% do objetivo</div>
-  `;
 
   if (diff > 0) {
-    // ainda falta
+    // Person is slower → still needs to improve
+    progressDiv.innerHTML = `
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" style="width:${pct}%; background:${barColor}"></div>
+      </div>
+      <div class="progress-pct">Estás a ${pct}% do objetivo</div>
+    `;
     diffDiv.innerHTML = `
       <div class="diff-result falta">
         <div class="diff-time">− ${csParaTempo(diff)}</div>
-        <div class="diff-msg">Ainda faltam ${csParaTempo(diff)} para atingir o mínimo</div>
+        <div class="diff-msg">Ainda precisas de baixar ${csParaTempo(diff)} para atingir o mínimo</div>
       </div>`;
   } else {
-    // passou!
-    diffDiv.innerHTML = `
-      <div class="diff-result passa">
-        <div class="diff-time">+ ${csParaTempo(Math.abs(diff))}</div>
-        <div class="diff-msg">🎉 Parabéns, já tens este mínimo!</div>
-      </div>`;
-    // bar at 100% green
+    // Person is faster → qualified!
     progressDiv.innerHTML = `
       <div class="progress-bar-bg">
         <div class="progress-bar-fill" style="width:100%; background:#51cf66"></div>
       </div>
       <div class="progress-pct">100% do objetivo</div>
     `;
+    diffDiv.innerHTML = `
+      <div class="diff-result passa">
+        <div class="diff-time">+ ${csParaTempo(Math.abs(diff))}</div>
+        <div class="diff-msg">🎉 Parabéns, já tens este mínimo!</div>
+      </div>`;
   }
 }
 
