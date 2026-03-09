@@ -379,6 +379,115 @@
     margin: 24px 0;
   }
 
+
+  /* FPN Button */
+  .fpn-btn-wrap {
+    text-align: center;
+    margin-top: 28px;
+  }
+  .fpn-btn {
+    background: linear-gradient(135deg, var(--aqua), var(--blue-bright));
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 14px 32px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 20px rgba(0,196,204,0.3);
+    transition: all 0.2s;
+    width: 100%;
+  }
+  .fpn-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(0,196,204,0.4); }
+
+  /* FPN Section */
+  .fpn-section {
+    margin-top: 20px;
+    background: var(--card);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 36px 32px;
+    box-shadow: 0 32px 64px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.3);
+  }
+  .fpn-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--blue-deep);
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+  .fpn-subtitle {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .fpn-result-box {
+    margin-top: 20px;
+    background: linear-gradient(135deg, var(--blue-deep), var(--blue-mid));
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+    animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .fpn-pontos {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 80px;
+    color: var(--aqua);
+    line-height: 1;
+    text-shadow: 0 0 30px rgba(0,196,204,0.5);
+  }
+  .fpn-pontos-label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--blue-light);
+    margin-top: 2px;
+  }
+  .fpn-divider {
+    border-top: 1px solid rgba(255,255,255,0.15);
+    margin: 14px 0;
+  }
+  .fpn-rn-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 4px;
+  }
+  .fpn-rn-nome {
+    font-size: 14px;
+    color: var(--aqua);
+    font-weight: 500;
+    margin-bottom: 3px;
+  }
+  .fpn-rn-info {
+    font-size: 12px;
+    color: var(--blue-light);
+  }
+  .fpn-unavailable {
+    margin-top: 14px;
+    background: #fff3cd;
+    border: 1.5px solid #ffc107;
+    border-radius: 12px;
+    padding: 14px;
+    text-align: center;
+    color: #856404;
+    font-size: 13px;
+  }
+  .fpn-tempo-preview {
+    text-align: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    margin-top: 4px;
+    min-height: 34px;
+  }
+
   /* Footer */
   .footer {
     text-align: center;
@@ -416,7 +525,7 @@
         </select>
       </div>
       <div class="field">
-        <label>Género</label>
+        <label>Sexo</label>
         <select id="genero" onchange="onGeneroChange()">
           <option value="">Selecionar</option>
           <option value="M">Masculino</option>
@@ -475,7 +584,55 @@
     </div>
   </div>
 
-  <div class="footer">Dados de acordo com o regulamento oficial da FPN · atualizado a 09/03/2026</div>
+  
+  <div class="fpn-btn-wrap">
+    <button class="fpn-btn" id="fpn-btn" onclick="toggleFPN()">Calcular os teus Pontos FPN</button>
+  </div>
+
+  <div class="fpn-section" id="fpn-section" style="display:none">
+    <div class="fpn-title">Pontos FPN</div>
+    <div class="fpn-subtitle">Baseado nos Recordes Nacionais Absolutos</div>
+    <div class="grid">
+      <div class="field">
+        <label>Piscina</label>
+        <select id="fpn-piscina" onchange="fpnUpdateEstilos()">
+          <option value="">Selecionar</option>
+          <option value="curta">25m · Piscina Curta</option>
+          <option value="longa">50m · Piscina Longa</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Sexo</label>
+        <select id="fpn-sexo" onchange="fpnUpdateEstilos()">
+          <option value="">Selecionar</option>
+          <option value="M">Masculino</option>
+          <option value="F">Feminino</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="field">
+        <label>Estilo</label>
+        <select id="fpn-estilo" onchange="fpnUpdateDistancias()">
+          <option value="">Selecionar</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Distância</label>
+        <select id="fpn-distancia" onchange="calcularPontosFPN()">
+          <option value="">Selecionar</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label>O teu tempo</label>
+      <input class="personal-input" type="tel" maxlength="6" placeholder="105000" id="fpn-tempo" oninput="fpnOnTempoInput(event)" style="background:var(--white); border:1.5px solid #d0e4f0; color:var(--text); font-size:22px;">
+      <div class="fpn-tempo-preview" id="fpn-tempo-preview"></div>
+    </div>
+    <div id="fpn-result"></div>
+  </div>
+
+<div class="footer">Dados de acordo com o regulamento oficial da FPN · atualizado a 09/03/2026</div>
 </div>
 
 <script>
@@ -773,14 +930,21 @@ function updateDistancias() {
 }
 
 function updateDistanciasPorEstilo() {
-  const genero = document.getElementById('genero').value;
-  const estilo = document.getElementById('estilo').value;
+  const genero  = document.getElementById('genero').value;
+  const estilo  = document.getElementById('estilo').value;
+  const piscina = document.getElementById('piscina').value;
   const selDist = document.getElementById('distancia');
 
   selDist.innerHTML = '<option value="">Selecionar</option>';
   if (!genero || !estilo) return;
 
-  const lista = (distanciasEstilos[genero] || []).filter(i => i.estilo === estilo);
+  let lista = (distanciasEstilos[genero] || []).filter(i => i.estilo === estilo);
+
+  // 100m Estilos only exists in piscina curta
+  if (piscina === 'longa' && estilo === 'E') {
+    lista = lista.filter(i => i.dist !== '100');
+  }
+
   lista.forEach(item => {
     selDist.innerHTML += `<option value="${item.dist}">${item.dist}m</option>`;
   });
@@ -1150,6 +1314,239 @@ function calcular() {
     </div>`;
 }
 </script>
+
+
+// ============================================================
+// RECORDES NACIONAIS
+// ============================================================
+const recordesNacionais = {
+  longa: {
+    M: {
+      "50_L":   { tempo:"00:21,67", nome:"Ribeiro, Diogo Matos",       data:"27/06/2025", local:"Samorin (SVK)" },
+      "100_L":  { tempo:"00:47,98", nome:"Ribeiro, Diogo Matos",       data:"31/03/2023", local:"Funchal" },
+      "200_L":  { tempo:"01:47,97", nome:"Nascimento, Miguel Duarte",  data:"06/04/2019", local:"Coimbra" },
+      "400_L":  { tempo:"03:50,56", nome:"Lopes, Jose Paulo",          data:"06/06/2021", local:"Barcelona (ESP)" },
+      "800_L":  { tempo:"07:52,68", nome:"Lopes, Jose Paulo",          data:"22/05/2021", local:"Budapeste (HUN)" },
+      "1500_L": { tempo:"15:15,12", nome:"Pina, Guilherme Filipe",     data:"30/03/2017", local:"Coimbra" },
+      "50_C":   { tempo:"00:25,25", nome:"Costa, Joao Nogueira",       data:"04/04/2025", local:"Oeiras" },
+      "100_C":  { tempo:"00:53,71", nome:"Costa, Joao Nogueira",       data:"24/07/2023", local:"Fukuoka (JPN)" },
+      "200_C":  { tempo:"01:57,06", nome:"Santos, Francisco Rogerio",  data:"06/06/2021", local:"Porto" },
+      "50_B":   { tempo:"00:27,92", nome:"Amorim, Alexandre Ferreira", data:"15/04/2025", local:"Estocolmo (SWE)" },
+      "100_B":  { tempo:"01:01,01", nome:"Almeida, Carlos Esteves",    data:"28/07/2013", local:"Barcelona (ESP)" },
+      "200_B":  { tempo:"02:11,92", nome:"Lopes, Gabriel Jose",        data:"13/08/2022", local:"Roma (ITA)" },
+      "50_M":   { tempo:"00:22,77", nome:"Ribeiro, Diogo Matos",       data:"28/07/2025", local:"Singapore (SGP)" },
+      "100_M":  { tempo:"00:51,17", nome:"Ribeiro, Diogo Matos",       data:"17/02/2024", local:"Doha (QAT)" },
+      "200_M":  { tempo:"01:56,17", nome:"Oliveira, Pedro Diogo",      data:"28/07/2009", local:"Roma (ITA)" },
+      "200_E":  { tempo:"01:58,19", nome:"Santos, Alexis Manacas",     data:"06/04/2019", local:"Coimbra" },
+      "400_E":  { tempo:"04:15,84", nome:"Santos, Alexis Manacas",     data:"06/08/2016", local:"Rio de Janeiro (BRA)" },
+      "4x50_L": { tempo:"01:29,80", nome:"Sport Lisboa e Benfica",     data:"27/07/2022", local:"Oeiras" },
+      "4x100_L":{ tempo:"03:20,92", nome:"Sport Lisboa e Benfica",     data:"06/04/2023", local:"Oeiras" },
+      "4x200_L":{ tempo:"07:26,26", nome:"Sporting Clube de Portugal", data:"14/04/2019", local:"Oeiras" },
+      "4x50_E": { tempo:"01:41,67", nome:"Sporting Clube de Portugal", data:"29/07/2022", local:"Oeiras" },
+      "4x100_E":{ tempo:"03:41,33", nome:"Sport Lisboa e Benfica",     data:"06/04/2025", local:"Oeiras" },
+    },
+    F: {
+      "50_L":   { tempo:"00:25,25", nome:"Rodrigues, Ana Pinho",       data:"30/03/2023", local:"Funchal" },
+      "100_L":  { tempo:"00:55,88", nome:"Martins, Francisca Soares",  data:"12/07/2024", local:"Oeiras" },
+      "200_L":  { tempo:"01:57,85", nome:"Martins, Francisca Soares",  data:"22/07/2025", local:"Berlin (GER)" },
+      "400_L":  { tempo:"04:07,50", nome:"Martins, Francisca Soares",  data:"23/07/2025", local:"Berlin (GER)" },
+      "800_L":  { tempo:"08:29,33", nome:"Duraes, Diana Margarida",    data:"23/06/2018", local:"Tarragona (ESP)" },
+      "1500_L": { tempo:"16:15,12", nome:"Duraes, Diana Margarida",    data:"09/02/2020", local:"Lisboa" },
+      "50_C":   { tempo:"00:28,24", nome:"Azevedo, Rafaela Gomes",     data:"23/12/2021", local:"Oeiras" },
+      "100_C":  { tempo:"01:00,34", nome:"Rebelo, Camila Rodrigues",   data:"20/07/2025", local:"Berlin (GER)" },
+      "200_C":  { tempo:"02:08,95", nome:"Rebelo, Camila Rodrigues",   data:"18/06/2024", local:"Belgrado (SRB)" },
+      "50_B":   { tempo:"00:30,73", nome:"Rodrigues, Ana Pinho",       data:"10/06/2023", local:"Porto" },
+      "100_B":  { tempo:"01:08,22", nome:"Rodrigues, Ana Pinho",       data:"11/06/2023", local:"Porto" },
+      "200_B":  { tempo:"02:25,67", nome:"Kaminskaya, Victoria",       data:"25/07/2019", local:"Gwangju (KOR)" },
+      "50_M":   { tempo:"00:26,58", nome:"Guedes, Ana Margarida",      data:"06/06/2021", local:"Porto" },
+      "100_M":  { tempo:"00:58,76", nome:"Oliveira, Sara Freitas",     data:"12/08/2010", local:"Budapeste (HUN)" },
+      "200_M":  { tempo:"02:08,03", nome:"Monteiro, Ana Catarina",     data:"06/08/2018", local:"Glasgow (GBR)" },
+      "200_E":  { tempo:"02:13,87", nome:"Kaminskaya, Victoria",       data:"10/04/2017", local:"Pontevedra (ESP)" },
+      "400_E":  { tempo:"04:40,11", nome:"Kaminskaya, Victoria",       data:"09/04/2017", local:"Pontevedra (ESP)" },
+      "4x50_L": { tempo:"01:46,22", nome:"FC Porto/Dolce Vita",        data:"01/04/2011", local:"Rio Maior" },
+      "4x100_L":{ tempo:"03:51,11", nome:"Sporting Clube de Portugal", data:"05/04/2025", local:"Oeiras" },
+      "4x200_L":{ tempo:"08:18,33", nome:"Sport Lisboa e Benfica",     data:"04/04/2024", local:"Coimbra" },
+      "4x50_E": { tempo:"01:56,39", nome:"Sport Alges e Dafundo",      data:"03/08/2019", local:"Funchal" },
+      "4x100_E":{ tempo:"04:14,70", nome:"Sport Alges e Dafundo",      data:"13/04/2019", local:"Oeiras" },
+    }
+  },
+  curta: {
+    M: {
+      "50_L":   { tempo:"00:21,15", nome:"Ribeiro, Diogo Matos",       data:"13/12/2025", local:"Leiria" },
+      "100_L":  { tempo:"00:46,55", nome:"Ribeiro, Diogo Matos",       data:"15/12/2024", local:"Tomar" },
+      "200_L":  { tempo:"01:43,16", nome:"Nascimento, Miguel Duarte",  data:"14/12/2018", local:"Hangzhou (CHN)" },
+      "400_L":  { tempo:"03:42,57", nome:"Lopes, Jose Paulo",          data:"16/12/2021", local:"Abu Dhabi (UAE)" },
+      "800_L":  { tempo:"07:41,51", nome:"Lopes, Jose Paulo",          data:"14/01/2024", local:"Felgueiras" },
+      "1500_L": { tempo:"14:39,82", nome:"Lopes, Jose Paulo",          data:"20/12/2021", local:"Abu Dhabi (UAE)" },
+      "50_C":   { tempo:"00:23,35", nome:"Santos, Alexis Manacas",     data:"18/12/2021", local:"Abu Dhabi (UAE)" },
+      "100_C":  { tempo:"00:50,82", nome:"Lopes, Gabriel Jose",        data:"11/12/2022", local:"Leiria" },
+      "200_C":  { tempo:"01:52,66", nome:"Lopes, Gabriel Jose",        data:"16/12/2018", local:"Hangzhou (CHN)" },
+      "50_B":   { tempo:"00:27,01", nome:"Amorim, Alexandre Ferreira", data:"14/04/2024", local:"Felgueiras" },
+      "100_B":  { tempo:"00:58,19", nome:"Almeida, Carlos Esteves",    data:"22/11/2012", local:"Chartres (FRA)" },
+      "200_B":  { tempo:"02:05,59", nome:"Almeida, Carlos Esteves",    data:"25/11/2012", local:"Chartres (FRA)" },
+      "50_M":   { tempo:"00:22,48", nome:"Ribeiro, Diogo Matos",       data:"14/12/2025", local:"Leiria" },
+      "100_M":  { tempo:"00:50,12", nome:"Ribeiro, Diogo Matos",       data:"14/12/2024", local:"Tomar" },
+      "200_M":  { tempo:"01:53,39", nome:"Carvalho, Diogo Filipe",     data:"12/12/2009", local:"Istambul (TUR)" },
+      "100_E":  { tempo:"00:52,73", nome:"Santos, Alexis Manacas",     data:"07/12/2019", local:"Glasgow (GBR)" },
+      "200_E":  { tempo:"01:53,45", nome:"Carvalho, Diogo Filipe",     data:"04/12/2015", local:"Netanya (ISR)" },
+      "400_E":  { tempo:"04:05,87", nome:"Lopes, Gabriel Jose",        data:"09/12/2022", local:"Leiria" },
+      "4x50_L": { tempo:"01:26,91", nome:"Sport Lisboa e Benfica",     data:"09/12/2022", local:"Leiria" },
+      "4x100_L":{ tempo:"03:12,55", nome:"Sport Lisboa e Benfica",     data:"15/12/2024", local:"Tomar" },
+      "4x200_L":{ tempo:"07:10,67", nome:"Sporting Clube de Portugal", data:"22/12/2018", local:"Felgueiras" },
+      "4x50_E": { tempo:"01:36,67", nome:"Sport Lisboa e Benfica",     data:"10/12/2022", local:"Leiria" },
+      "4x100_E":{ tempo:"03:33,03", nome:"Sporting Clube de Portugal", data:"09/12/2022", local:"Leiria" },
+    },
+    F: {
+      "50_L":   { tempo:"00:24,94", nome:"Conceicao, Patricia Vilas",  data:"20/12/2009", local:"S. António Cavaleiros" },
+      "100_L":  { tempo:"00:54,66", nome:"Rodrigues, Ana Pinho",       data:"20/12/2019", local:"Felgueiras" },
+      "200_L":  { tempo:"01:55,91", nome:"Martins, Francisca Soares",  data:"12/04/2025", local:"Felgueiras" },
+      "400_L":  { tempo:"04:04,57", nome:"Martins, Francisca Soares",  data:"10/12/2023", local:"Otopeni (ROU)" },
+      "800_L":  { tempo:"08:20,97", nome:"Duraes, Diana Margarida",    data:"04/12/2019", local:"Glasgow (GBR)" },
+      "1500_L": { tempo:"15:55,19", nome:"Duraes, Diana Margarida",    data:"23/11/2019", local:"Felgueiras" },
+      "50_C":   { tempo:"00:27,16", nome:"Rebelo, Camila Rodrigues",   data:"06/12/2025", local:"Lublin (POL)" },
+      "100_C":  { tempo:"00:57,79", nome:"Rebelo, Camila Rodrigues",   data:"04/12/2025", local:"Lublin (POL)" },
+      "200_C":  { tempo:"02:03,51", nome:"Rebelo, Camila Rodrigues",   data:"03/12/2025", local:"Lublin (POL)" },
+      "50_B":   { tempo:"00:29,98", nome:"Rodrigues, Ana Pinho",       data:"13/12/2025", local:"Leiria" },
+      "100_B":  { tempo:"01:06,41", nome:"Rodrigues, Ana Pinho",       data:"14/12/2025", local:"Leiria" },
+      "200_B":  { tempo:"02:22,12", nome:"Pereira, Raquel Gomes",      data:"29/06/2019", local:"Algés" },
+      "50_M":   { tempo:"00:26,12", nome:"Guedes, Ana Margarida",      data:"23/04/2023", local:"Felgueiras" },
+      "100_M":  { tempo:"00:57,93", nome:"Cunha, Mariana Pacheco",     data:"16/12/2025", local:"Leiria" },
+      "200_M":  { tempo:"02:05,74", nome:"Monteiro, Ana Catarina",     data:"12/12/2018", local:"Hangzhou (CHN)" },
+      "100_E":  { tempo:"01:00,19", nome:"Cunha, Mariana Pacheco",     data:"15/12/2025", local:"Leiria" },
+      "200_E":  { tempo:"02:11,70", nome:"Rebelo, Camila Rodrigues",   data:"14/12/2024", local:"Tomar" },
+      "400_E":  { tempo:"04:36,19", nome:"Kaminskaya, Victoria",       data:"13/12/2017", local:"Copenhagen (DEN)" },
+      "4x50_L": { tempo:"01:42,92", nome:"Sporting Clube de Portugal", data:"15/12/2025", local:"Leiria" },
+      "4x100_L":{ tempo:"03:42,27", nome:"Sporting Clube de Portugal", data:"20/12/2025", local:"Quarteira" },
+      "4x200_L":{ tempo:"08:03,35", nome:"Sport Lisboa e Benfica",     data:"22/12/2023", local:"Felgueiras" },
+      "4x50_E": { tempo:"01:51,70", nome:"Sport Alges e Dafundo",      data:"16/12/2025", local:"Leiria" },
+      "4x100_E":{ tempo:"04:05,43", nome:"Sporting Clube de Portugal", data:"20/12/2025", local:"Quarteira" },
+    }
+  }
+};
+
+function tempoStrParaCs(t) {
+  if (!t) return 0;
+  const clean = t.replace(',', '.').replace(/[^0-9:.]/g, '');
+  const parts = clean.split(':');
+  if (parts.length === 2) {
+    const sec = parseFloat(parts[1]);
+    return Math.round(parseInt(parts[0]) * 6000 + sec * 100);
+  }
+  return Math.round(parseFloat(clean) * 100);
+}
+
+function calcularPontosFPN() {
+  const piscina = document.getElementById('fpn-piscina').value;
+  const sexo    = document.getElementById('fpn-sexo').value;
+  const estilo  = document.getElementById('fpn-estilo').value;
+  const dist    = document.getElementById('fpn-distancia').value;
+  const tempoInput = document.getElementById('fpn-tempo').value.replace(/[^0-9]/g,'');
+
+  const resDiv = document.getElementById('fpn-result');
+
+  if (!piscina || !sexo || !estilo || !dist || !tempoInput) {
+    resDiv.innerHTML = '';
+    return;
+  }
+
+  const chave = `${dist}_${estilo}`;
+  const recorde = recordesNacionais[piscina]?.[sexo]?.[chave];
+
+  if (!recorde) {
+    resDiv.innerHTML = `<div class="fpn-unavailable">Recorde nacional não disponível para esta combinação.</div>`;
+    return;
+  }
+
+  const B = tempoStrParaCs(recorde.tempo);
+  const T = parsearInput(tempoInput);
+
+  if (T === 0 || B === 0) { resDiv.innerHTML = ''; return; }
+
+  const pontos = Math.round(1000 * Math.pow(B / T, 3));
+
+  resDiv.innerHTML = `
+    <div class="fpn-result-box">
+      <div class="fpn-pontos">${pontos}</div>
+      <div class="fpn-pontos-label">Pontos FPN</div>
+      <div class="fpn-divider"></div>
+      <div class="fpn-rn-label">Recorde Nacional: ${recorde.tempo}</div>
+      <div class="fpn-rn-nome">${recorde.nome}</div>
+      <div class="fpn-rn-info">${recorde.data} · ${recorde.local}</div>
+    </div>`;
+}
+
+function fpnUpdateEstilos() {
+  const piscina = document.getElementById('fpn-piscina').value;
+  const sexo    = document.getElementById('fpn-sexo').value;
+  const selEstilo = document.getElementById('fpn-estilo');
+  const selDist   = document.getElementById('fpn-distancia');
+
+  selEstilo.innerHTML = '<option value="">Selecionar</option>';
+  selDist.innerHTML   = '<option value="">Selecionar</option>';
+  document.getElementById('fpn-result').innerHTML = '';
+
+  if (!piscina || !sexo) return;
+
+  const provas = Object.keys(recordesNacionais[piscina]?.[sexo] || {});
+  const estilosSeen = new Set();
+  provas.forEach(k => {
+    const parts = k.split('_');
+    const e = parts[parts.length - 1];
+    if (!estilosSeen.has(e)) {
+      estilosSeen.add(e);
+      selEstilo.innerHTML += `<option value="${e}">${nomeEstilo(e)}</option>`;
+    }
+  });
+}
+
+function fpnUpdateDistancias() {
+  const piscina = document.getElementById('fpn-piscina').value;
+  const sexo    = document.getElementById('fpn-sexo').value;
+  const estilo  = document.getElementById('fpn-estilo').value;
+  const selDist = document.getElementById('fpn-distancia');
+
+  selDist.innerHTML = '<option value="">Selecionar</option>';
+  document.getElementById('fpn-result').innerHTML = '';
+
+  if (!piscina || !sexo || !estilo) return;
+
+  const provas = Object.keys(recordesNacionais[piscina]?.[sexo] || {});
+  provas.filter(k => k.endsWith('_' + estilo)).forEach(k => {
+    const dist = k.replace('_' + estilo, '');
+    const label = dist.startsWith('4x') ? dist + 'm' : dist + 'm';
+    selDist.innerHTML += `<option value="${dist}">${label}</option>`;
+  });
+}
+
+function fpnOnTempoInput(e) {
+  const digits = e.target.value.replace(/[^0-9]/g, '').slice(0, 6);
+  const preview = document.getElementById('fpn-tempo-preview');
+  if (preview) {
+    if (digits.length === 0) { preview.textContent = ''; }
+    else {
+      const padded = digits.padStart(6, '0');
+      const min = parseInt(padded.slice(0, 2));
+      const sec = padded.slice(2, 4);
+      const cs  = padded.slice(4, 6);
+      preview.textContent = `${min}:${sec},${cs}`;
+    }
+  }
+  e.target.value = digits;
+  calcularPontosFPN();
+}
+
+function toggleFPN() {
+  const section = document.getElementById('fpn-section');
+  const btn = document.getElementById('fpn-btn');
+  if (section.style.display === 'none' || section.style.display === '') {
+    section.style.display = 'block';
+    btn.textContent = 'Fechar';
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } else {
+    section.style.display = 'none';
+    btn.textContent = 'Calcular os teus Pontos FPN';
+  }
+}
 
 <script>
 if ('serviceWorker' in navigator) {
