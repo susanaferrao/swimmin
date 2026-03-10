@@ -701,6 +701,7 @@
           <option value="">Selecionar</option>
           <option value="M">Masculino</option>
           <option value="F">Feminino</option>
+          <option value="X">Misto</option>
         </select>
       </div>
     </div>
@@ -749,6 +750,7 @@
           <option value="">Selecionar</option>
           <option value="M">Masculino</option>
           <option value="F">Feminino</option>
+          <option value="X">Misto</option>
         </select>
       </div>
     </div>
@@ -5436,30 +5438,45 @@ function idadeUpdateEstilos() {
   var prevE = estiloEl.value;
   estiloEl.innerHTML = '<option value="">Selecionar</option>';
   if (!piscina || !sexo) return;
-  var estilos = ['L','C','B','M','E'];
+  var estilos = sexo === 'X' ? ['L','E'] : ['L','C','B','M','E','X'];
   for (var i = 0; i < estilos.length; i++) {
     var opt = document.createElement('option');
     opt.value = estilos[i];
-    opt.textContent = ESTILO_LABELS[estilos[i]];
+    opt.textContent = estilos[i] === 'X' ? 'Estafetas' : ESTILO_LABELS[estilos[i]];
     estiloEl.appendChild(opt);
   }
   if (estiloEl.querySelector('option[value="' + prevE + '"]')) estiloEl.value = prevE;
   idadeUpdateDistancias();
 }
 
+var ESTAFETA_PROVAS_LONGA = {'L':['50','100','200'],'E':['50','100']};
+var ESTAFETA_PROVAS_CURTA = {'L':['50','100','200'],'E':['50','100']};
+
 function idadeUpdateDistancias() {
   var piscina = document.getElementById('id-piscina').value;
+  var sexo = document.getElementById('id-sexo').value;
   var estilo = document.getElementById('id-estilo').value;
   var distEl = document.getElementById('id-distancia');
   var prevD = distEl.value;
   distEl.innerHTML = '<option value="">Selecionar</option>';
   if (!piscina || !estilo) return;
-  var provas = piscina === 'longa' ? ESTILO_PROVAS_LONGA[estilo] : ESTILO_PROVAS_CURTA[estilo];
+  var provas;
+  if (estilo === 'X') {
+    // Estafetas individuais (M ou F): Livres e Estilos
+    provas = piscina === 'longa' ? ['50','100','200'] : ['50','100','200'];
+  } else if (sexo === 'X') {
+    // Misto estafetas
+    var misto = piscina === 'longa' ? ESTAFETA_PROVAS_LONGA : ESTAFETA_PROVAS_CURTA;
+    provas = misto[estilo] || [];
+  } else {
+    provas = piscina === 'longa' ? ESTILO_PROVAS_LONGA[estilo] : ESTILO_PROVAS_CURTA[estilo];
+  }
   if (!provas) return;
   for (var i = 0; i < provas.length; i++) {
     var opt = document.createElement('option');
+    var label = (estilo === 'X' || sexo === 'X') ? '4x' + provas[i] + 'm' : provas[i] + 'm';
     opt.value = provas[i];
-    opt.textContent = provas[i] + 'm';
+    opt.textContent = label;
     distEl.appendChild(opt);
   }
   if (distEl.querySelector('option[value="' + prevD + '"]')) distEl.value = prevD;
@@ -5481,13 +5498,23 @@ function mostrarRecordeIdade() {
 
   var pisc = piscina === 'curta' ? 'curta' : 'longa';
   var ageKey = idade === 'open' ? 'open' : idade;
-  var key = dist + '_' + estilo;
+  var isEstafeta = (estilo === 'X' || sexo === 'X');
   var rec = null;
-  try { rec = recordesIdade[pisc][sexo][ageKey][key]; } catch(e) {}
+
+  if (isEstafeta) {
+    // Estafetas: sexo X or estilo X
+    var lookupSexo = sexo === 'X' ? 'X' : sexo;
+    var lookupEstilo = sexo === 'X' ? estilo : estilo; // estilo L or E
+    var key = dist + '_' + lookupEstilo;
+    try { rec = recordesEstafetas[pisc][lookupSexo][ageKey][key]; } catch(e) {}
+  } else {
+    var key = dist + '_' + estilo;
+    try { rec = recordesIdade[pisc][sexo][ageKey][key]; } catch(e) {}
+  }
 
   if (!rec) {
     resultEl.innerHTML = '<div class="fpn-result-box" style="margin-top:12px;">'
-      + '<div class="fpn-pontos-label" style="font-size:16px;color:var(--aqua);">Recorde por estabelecer</div>'
+      + '<div class="fpn-pontos-label" style="font-size:16px;color:var(--aqua);">Sem registo</div>'
       + '</div>';
     return;
   }
@@ -5495,11 +5522,993 @@ function mostrarRecordeIdade() {
   var html = '<div class="fpn-result-box" style="margin-top:12px;">';
   html += '<div class="fpn-pontos">' + rec.tempo + '</div>';
   html += '<div class="fpn-divider"></div>';
-  html += '<div class="fpn-rn-nome">' + rec.nome + '</div>';
+  if (isEstafeta) {
+    html += '<div class="fpn-rn-nome">' + rec.clube + '</div>';
+  } else {
+    html += '<div class="fpn-rn-nome">' + rec.nome + '</div>';
+  }
   html += '<div class="fpn-rn-info">' + rec.data + ' · ' + rec.local + '</div>';
   html += '</div>';
   resultEl.innerHTML = html;
 }
+
+var recordesEstafetas = {
+  longa: {
+    "M": {
+      "open": {
+        "50_L": {
+          "tempo": "1:29,80",
+          "clube": "Sport Lisboa e Benfica",
+          "data": "27/07/2022",
+          "local": "Oeiras"
+        },
+        "100_L": {
+          "tempo": "3:20,92",
+          "clube": "Sport Lisboa e Benfica",
+          "data": "06/04/2023",
+          "local": "Oeiras"
+        },
+        "200_L": {
+          "tempo": "7:26,26",
+          "clube": "Sporting Clube de Portugal",
+          "data": "14/04/2019",
+          "local": "Oeiras"
+        },
+        "50_E": {
+          "tempo": "1:41,67",
+          "clube": "Sporting Clube de Portugal",
+          "data": "29/07/2022",
+          "local": "Oeiras"
+        },
+        "100_E": {
+          "tempo": "3:41,33",
+          "clube": "Sport Lisboa e Benfica",
+          "data": "06/04/2025",
+          "local": "Oeiras"
+        }
+      },
+      "19+": {
+        "50_L": {
+          "tempo": "1:29,80",
+          "clube": "Sport Lisboa e Benfica",
+          "data": "27/07/2022",
+          "local": "Oeiras"
+        },
+        "100_L": {
+          "tempo": "3:20,92",
+          "clube": "Sport Lisboa e Benfica",
+          "data": "06/04/2023",
+          "local": "Oeiras"
+        },
+        "200_L": {
+          "tempo": "7:26,26",
+          "clube": "Sporting Clube de Portugal",
+          "data": "14/04/2019",
+          "local": "Oeiras"
+        },
+        "50_E": {
+          "tempo": "1:41,67",
+          "clube": "Sporting Clube de Portugal",
+          "data": "29/07/2022",
+          "local": "Oeiras"
+        },
+        "100_E": {
+          "tempo": "3:43,87",
+          "clube": "Sporting Clube de Portugal",
+          "data": "30/07/2022",
+          "local": "Oeiras"
+        }
+      },
+      "17-18": {
+        "50_L": {
+          "tempo": "1:36,04",
+          "clube": "Sport Lisboa e Benfica",
+          "data": "28/07/2023",
+          "local": "Coimbra"
+        },
+        "100_L": {
+          "tempo": "3:32,70",
+          "clube": "Clube Uniao 1919",
+          "data": "09/05/2021",
+          "local": "Coimbra"
+        },
+        "200_L": {
+          "tempo": "7:44,42",
+          "clube": "Associacao Naval Amorense",
+          "data": "05/04/2014",
+          "local": "Coimbra"
+        },
+        "50_E": {
+          "tempo": "1:46,34",
+          "clube": "Sport Lisboa e Benfica",
+          "data": "29/07/2023",
+          "local": "Coimbra"
+        },
+        "100_E": {
+          "tempo": "3:54,30",
+          "clube": "Sport Lisboa e Benfica",
+          "data": "12/07/2024",
+          "local": "Oeiras"
+        }
+      },
+      "16": {
+        "50_L": {
+          "tempo": "1:42,32",
+          "clube": "Clube Nautico de Leiria",
+          "data": "15/07/2023",
+          "local": "Coimbra"
+        },
+        "100_L": {
+          "tempo": "3:39,68",
+          "clube": "Futebol Clube do Porto",
+          "data": "19/07/2013",
+          "local": "Famalicao"
+        },
+        "200_L": {
+          "tempo": "7:58,57",
+          "clube": "Associacao Naval Amorense",
+          "data": "26/07/2012",
+          "local": "Jamor"
+        },
+        "50_E": {
+          "tempo": "1:50,97",
+          "clube": "Futebol Clube do Porto",
+          "data": "30/03/2023",
+          "local": "Funchal"
+        },
+        "100_E": {
+          "tempo": "4:03,65",
+          "clube": "Sporting Clube de Portugal",
+          "data": "29/07/2018",
+          "local": "Oeiras"
+        }
+      },
+      "15-16": {
+        "50_L": {
+          "tempo": "1:42,32",
+          "clube": "Clube Nautico de Leiria",
+          "data": "15/07/2023",
+          "local": "Coimbra"
+        },
+        "100_L": {
+          "tempo": "3:39,68",
+          "clube": "Futebol Clube do Porto",
+          "data": "19/07/2013",
+          "local": "Famalicao"
+        },
+        "50_E": {
+          "tempo": "1:50,97",
+          "clube": "Futebol Clube do Porto",
+          "data": "30/03/2023",
+          "local": "Funchal"
+        },
+        "100_E": {
+          "tempo": "4:03,65",
+          "clube": "Sporting Clube de Portugal",
+          "data": "29/07/2018",
+          "local": "Oeiras"
+        }
+      },
+      "15": {
+        "50_L": {
+          "tempo": "1:42,79",
+          "clube": "Clube Naval Setubalense",
+          "data": "13/07/2024",
+          "local": "Oeiras"
+        },
+        "100_L": {
+          "tempo": "3:44,52",
+          "clube": "Ass. Desp. Bairro dos Anjos",
+          "data": "02/08/2019",
+          "local": "Funchal"
+        },
+        "200_L": {
+          "tempo": "8:09,89",
+          "clube": "Ass. Desp. Bairro dos Anjos",
+          "data": "01/08/2019",
+          "local": "Funchal"
+        },
+        "50_E": {
+          "tempo": "1:53,93",
+          "clube": "Futebol Clube do Porto",
+          "data": "29/07/2022",
+          "local": "Oeiras"
+        },
+        "100_E": {
+          "tempo": "4:08,58",
+          "clube": "Sporting Clube de Portugal",
+          "data": "23/07/2017",
+          "local": "Oeiras"
+        }
+      },
+      "14": {
+        "50_E": {
+          "tempo": "2:03,19",
+          "clube": "Clube dos Galitos / Bresimar",
+          "data": "18/07/2025",
+          "local": "Loulé"
+        }
+      },
+      "13-14": {
+        "50_E": {
+          "tempo": "2:03,19",
+          "clube": "Clube dos Galitos / Bresimar",
+          "data": "18/07/2025",
+          "local": "Loulé"
+        }
+      },
+      "13": {
+        "100_L": {
+          "tempo": "4:06,16",
+          "clube": "Associacao Naval Amorense",
+          "data": "19/07/2014",
+          "local": "Loulé"
+        },
+        "200_L": {
+          "tempo": "8:58,21",
+          "clube": "Associacao Naval Amorense",
+          "data": "18/07/2014",
+          "local": "Loulé"
+        },
+        "50_E": {
+          "tempo": "2:11,95",
+          "clube": "Clube dos Galitos/Bresimar",
+          "data": "19/07/2024",
+          "local": "Setúbal"
+        }
+      }
+    },
+    "F": {
+      "open": {
+        "100_L": {
+          "tempo": "3:51,11",
+          "clube": "Sporting Clube de Portugal",
+          "data": "05/04/2025",
+          "local": "Oeiras"
+        },
+        "200_L": {
+          "tempo": "8:18,33",
+          "clube": "Sport Lisboa e Benfica",
+          "data": "04/04/2024",
+          "local": "Coimbra"
+        },
+        "50_E": {
+          "tempo": "1:56,39",
+          "clube": "Sport Alges e Dafundo",
+          "data": "03/08/2019",
+          "local": "Funchal"
+        },
+        "100_E": {
+          "tempo": "4:14,70",
+          "clube": "Sport Alges e Dafundo",
+          "data": "13/04/2019",
+          "local": "Oeiras"
+        }
+      },
+      "19+": {
+        "100_L": {
+          "tempo": "3:51,11",
+          "clube": "Sporting Clube de Portugal",
+          "data": "05/04/2025",
+          "local": "Oeiras"
+        },
+        "200_L": {
+          "tempo": "8:21,65",
+          "clube": "Sporting Clube de Portugal",
+          "data": "03/04/2025",
+          "local": "Oeiras"
+        },
+        "100_E": {
+          "tempo": "4:14,99",
+          "clube": "Sporting Clube de Portugal",
+          "data": "27/07/2025",
+          "local": "Coimbra"
+        }
+      },
+      "15": {
+        "100_L": {
+          "tempo": "4:06,43",
+          "clube": "Futebol Clube do Porto",
+          "data": "02/04/2015",
+          "local": "Coimbra"
+        },
+        "200_L": {
+          "tempo": "8:54,69",
+          "clube": "Condeixa Aqua Clube",
+          "data": "03/04/2025",
+          "local": "Oeiras"
+        },
+        "50_E": {
+          "tempo": "2:07,28",
+          "clube": "Condeixa Aqua Clube",
+          "data": "21/03/2025",
+          "local": "Coimbra"
+        }
+      },
+      "14": {
+        "100_L": {
+          "tempo": "4:08,56",
+          "clube": "Clube dos Galitos / Bresimar",
+          "data": "14/07/2024",
+          "local": "Oeiras"
+        },
+        "200_L": {
+          "tempo": "9:01,51",
+          "clube": "Sporting Clube de Portugal",
+          "data": "26/07/2012",
+          "local": "Oeiras"
+        },
+        "100_E": {
+          "tempo": "4:35,70",
+          "clube": "Sport Lisboa e Benfica",
+          "data": "27/07/2008",
+          "local": "Lisboa"
+        }
+      },
+      "13": {
+        "100_E": {
+          "tempo": "4:45,41",
+          "clube": "Sport Lisboa e Benfica",
+          "data": "30/06/2007",
+          "local": "Lisboa"
+        }
+      }
+    },
+    "X": {
+      "open": {
+        "50_L": {
+          "tempo": "1:41,55",
+          "clube": "Futebol Clube do Porto",
+          "data": "02/02/2020",
+          "local": "Povoa de Varzim"
+        },
+        "100_L": {
+          "tempo": "3:39,15",
+          "clube": "Sporting Clube de Braga",
+          "data": "31/05/2025",
+          "local": "Coimbra"
+        },
+        "50_E": {
+          "tempo": "1:50,71",
+          "clube": "Associacao Louzan Natacao",
+          "data": "04/02/2023",
+          "local": "Póvoa de Varzim"
+        },
+        "100_E": {
+          "tempo": "3:57,26",
+          "clube": "Sporting Clube de Portugal",
+          "data": "05/04/2024",
+          "local": "Coimbra"
+        }
+      },
+      "19+": {
+        "50_L": {
+          "tempo": "1:41,55",
+          "clube": "Futebol Clube do Porto",
+          "data": "02/02/2020",
+          "local": "Povoa de Varzim"
+        },
+        "100_L": {
+          "tempo": "3:42,82",
+          "clube": "Sporting Clube de Portugal",
+          "data": "31/05/2025",
+          "local": "Coimbra"
+        },
+        "50_E": {
+          "tempo": "1:50,71",
+          "clube": "Associacao Louzan Natacao",
+          "data": "04/02/2023",
+          "local": "Póvoa de Varzim"
+        },
+        "100_E": {
+          "tempo": "3:57,26",
+          "clube": "Sporting Clube de Portugal",
+          "data": "05/04/2024",
+          "local": "Coimbra"
+        }
+      },
+      "17-18": {
+        "50_L": {
+          "tempo": "1:48,10",
+          "clube": "Futebol Clube do Porto",
+          "data": "27/02/2026",
+          "local": "Póvoa de Varzim"
+        },
+        "100_E": {
+          "tempo": "4:08,74",
+          "clube": "Sport Lisboa e Benfica",
+          "data": "05/04/2024",
+          "local": "Coimbra"
+        }
+      },
+      "16": {
+        "50_L": {
+          "tempo": "1:47,76",
+          "clube": "Clube Fluvial Portuense",
+          "data": "27/02/2026",
+          "local": "Póvoa de Varzim"
+        }
+      },
+      "15-16": {
+        "50_L": {
+          "tempo": "1:47,76",
+          "clube": "Clube Fluvial Portuense",
+          "data": "27/02/2026",
+          "local": "Póvoa de Varzim"
+        },
+        "100_L": {
+          "tempo": "3:55,56",
+          "clube": "Condeixa Aqua Clube",
+          "data": "13/07/2025",
+          "local": "Coimbra"
+        },
+        "50_E": {
+          "tempo": "1:59,55",
+          "clube": "Sporting Clube de Braga",
+          "data": "30/07/2022",
+          "local": "Oeiras"
+        },
+        "100_E": {
+          "tempo": "4:23,44",
+          "clube": "Clube Naval Setubalense",
+          "data": "25/07/2025",
+          "local": "Coimbra"
+        }
+      },
+      "14-16": {
+        "50_E": {
+          "tempo": "1:57,70",
+          "clube": "Clube dos Galitos / Bresimar",
+          "data": "31/07/2021",
+          "local": "Oeiras"
+        },
+        "100_E": {
+          "tempo": "4:15,97",
+          "clube": "Clube dos Galitos / Bresimar",
+          "data": "01/08/2021",
+          "local": "Oeiras"
+        }
+      },
+      "13-14": {
+        "50_L": {
+          "tempo": "1:53,56",
+          "clube": "Clube Galitos / Bresimar",
+          "data": "06/07/2025",
+          "local": "Coimbra"
+        },
+        "100_L": {
+          "tempo": "4:01,87",
+          "clube": "Clube dos Galitos / Bresimar",
+          "data": "21/07/2018",
+          "local": "S. Joao da Madeira"
+        },
+        "100_E": {
+          "tempo": "4:33,31",
+          "clube": "Sporting Clube de Portugal",
+          "data": "17/07/2016",
+          "local": "Famalicão"
+        }
+      }
+    }
+  },
+  curta: {
+    "M": {
+      "open": {
+        "50_L": {
+          "tempo": "1:26,91",
+          "clube": "Sport Lisboa e Benfica",
+          "data": "09/12/2022",
+          "local": "Leiria"
+        },
+        "100_L": {
+          "tempo": "3:12,55",
+          "clube": "Sport Lisboa e Benfica",
+          "data": "15/12/2024",
+          "local": "Tomar"
+        },
+        "200_L": {
+          "tempo": "7:10,67",
+          "clube": "Sporting Clube de Portugal",
+          "data": "22/12/2018",
+          "local": "Felgueiras"
+        },
+        "50_E": {
+          "tempo": "1:36,67",
+          "clube": "Sport Lisboa e Benfica",
+          "data": "10/12/2022",
+          "local": "Leiria"
+        },
+        "100_E": {
+          "tempo": "3:33,03",
+          "clube": "Sporting Clube de Portugal",
+          "data": "09/12/2022",
+          "local": "Leiria"
+        }
+      },
+      "19+": {
+        "50_L": {
+          "tempo": "1:26,91",
+          "clube": "Sport Lisboa e Benfica",
+          "data": "09/12/2022",
+          "local": "Leiria"
+        },
+        "100_L": {
+          "tempo": "3:12,55",
+          "clube": "Sport Lisboa e Benfica",
+          "data": "15/12/2024",
+          "local": "Tomar"
+        },
+        "200_L": {
+          "tempo": "7:10,67",
+          "clube": "Sporting Clube de Portugal",
+          "data": "22/12/2018",
+          "local": "Felgueiras"
+        },
+        "50_E": {
+          "tempo": "1:36,67",
+          "clube": "Sport Lisboa e Benfica",
+          "data": "10/12/2022",
+          "local": "Leiria"
+        },
+        "100_E": {
+          "tempo": "3:33,03",
+          "clube": "Sporting Clube de Portugal",
+          "data": "09/12/2022",
+          "local": "Leiria"
+        }
+      },
+      "17-18": {
+        "50_L": {
+          "tempo": "1:34,33",
+          "clube": "Sport Lisboa e Benfica",
+          "data": "08/12/2023",
+          "local": "Leiria"
+        },
+        "100_L": {
+          "tempo": "3:27,52",
+          "clube": "Sport Lisboa e Benfica",
+          "data": "10/12/2023",
+          "local": "Leiria"
+        },
+        "200_L": {
+          "tempo": "7:35,04",
+          "clube": "Sport Lisboa e Benfica",
+          "data": "09/12/2023",
+          "local": "Leiria"
+        },
+        "50_E": {
+          "tempo": "1:43,58",
+          "clube": "Sport Lisboa e Benfica",
+          "data": "09/12/2023",
+          "local": "Leiria"
+        },
+        "100_E": {
+          "tempo": "3:46,26",
+          "clube": "Sport Lisboa e Benfica",
+          "data": "08/12/2023",
+          "local": "Leiria"
+        }
+      },
+      "16": {
+        "50_L": {
+          "tempo": "1:38,97",
+          "clube": "Sport Lisboa e Benfica",
+          "data": "07/05/2022",
+          "local": "Felgueiras"
+        },
+        "100_L": {
+          "tempo": "3:34,94",
+          "clube": "Clube Naval do Funchal",
+          "data": "11/07/2014",
+          "local": "Funchal"
+        },
+        "50_E": {
+          "tempo": "1:49,06",
+          "clube": "Clube Nautico de Leiria",
+          "data": "25/03/2023",
+          "local": "Leiria"
+        }
+      },
+      "15-16": {
+        "50_L": {
+          "tempo": "1:38,97",
+          "clube": "Sport Lisboa e Benfica",
+          "data": "07/05/2022",
+          "local": "Felgueiras"
+        },
+        "100_L": {
+          "tempo": "3:34,94",
+          "clube": "Clube Naval do Funchal",
+          "data": "11/07/2014",
+          "local": "Funchal"
+        },
+        "50_E": {
+          "tempo": "1:49,06",
+          "clube": "Clube Nautico de Leiria",
+          "data": "25/03/2023",
+          "local": "Leiria"
+        }
+      },
+      "15": {
+        "50_L": {
+          "tempo": "1:41,97",
+          "clube": "Clube dos Galitos / Bresimar",
+          "data": "21/02/2026",
+          "local": "Mealhada"
+        }
+      },
+      "14": {
+        "100_E": {
+          "tempo": "4:12,48",
+          "clube": "Sporting Clube de Portugal",
+          "data": "20/03/2016",
+          "local": "Tomar"
+        }
+      },
+      "13-14": {
+        "100_E": {
+          "tempo": "4:12,48",
+          "clube": "Sporting Clube de Portugal",
+          "data": "20/03/2016",
+          "local": "Tomar"
+        }
+      },
+      "13": {
+        "50_L": {
+          "tempo": "1:56,97",
+          "clube": "Clube dos Galitos / Bresimar",
+          "data": "17/03/2024",
+          "local": "Castro Daire"
+        },
+        "50_E": {
+          "tempo": "2:14,09",
+          "clube": "Clube dos Galitos / Bresimar",
+          "data": "17/03/2024",
+          "local": "Castro Daire"
+        }
+      }
+    },
+    "F": {
+      "open": {
+        "50_L": {
+          "tempo": "1:42,92",
+          "clube": "Sporting Clube de Portugal",
+          "data": "15/12/2025",
+          "local": "Leiria"
+        },
+        "100_L": {
+          "tempo": "3:42,27",
+          "clube": "Sporting Clube de Portugal",
+          "data": "20/12/2025",
+          "local": "Quarteira"
+        },
+        "200_L": {
+          "tempo": "8:03,35",
+          "clube": "Sport Lisboa e Benfica",
+          "data": "22/12/2023",
+          "local": "Felgueiras"
+        },
+        "50_E": {
+          "tempo": "1:51,70",
+          "clube": "Sport Alges e Dafundo",
+          "data": "16/12/2025",
+          "local": "Leiria"
+        },
+        "100_E": {
+          "tempo": "4:05,43",
+          "clube": "Sporting Clube de Portugal",
+          "data": "20/12/2025",
+          "local": "Quarteira"
+        }
+      },
+      "19+": {
+        "50_L": {
+          "tempo": "1:42,92",
+          "clube": "Sporting Clube de Portugal",
+          "data": "15/12/2025",
+          "local": "Leiria"
+        },
+        "100_L": {
+          "tempo": "3:42,27",
+          "clube": "Sporting Clube de Portugal",
+          "data": "20/12/2025",
+          "local": "Quarteira"
+        },
+        "200_L": {
+          "tempo": "8:03,62",
+          "clube": "Sporting Clube de Portugal",
+          "data": "21/12/2025",
+          "local": "Quarteira"
+        },
+        "50_E": {
+          "tempo": "1:51,70",
+          "clube": "Sport Alges e Dafundo",
+          "data": "16/12/2025",
+          "local": "Leiria"
+        },
+        "100_E": {
+          "tempo": "4:05,43",
+          "clube": "Sporting Clube de Portugal",
+          "data": "20/12/2025",
+          "local": "Quarteira"
+        }
+      },
+      "16": {
+        "50_L": {
+          "tempo": "1:46,86",
+          "clube": "Sporting Clube de Portugal",
+          "data": "04/12/2009",
+          "local": "Leiria"
+        },
+        "100_L": {
+          "tempo": "3:59,92",
+          "clube": "Condeixa Aqua Clube",
+          "data": "08/12/2025",
+          "local": "Estarreja"
+        },
+        "200_L": {
+          "tempo": "8:42,20",
+          "clube": "Condeixa Aqua Clube",
+          "data": "06/12/2025",
+          "local": "Estarreja"
+        },
+        "50_E": {
+          "tempo": "2:00,49",
+          "clube": "Clube dos Galitos / Bresimar",
+          "data": "21/02/2026",
+          "local": "Mealhada"
+        },
+        "100_E": {
+          "tempo": "4:27,13",
+          "clube": "Clube dos Galitos / Bresimar",
+          "data": "22/02/2026",
+          "local": "Mealhada"
+        }
+      },
+      "15-16": {
+        "100_L": {
+          "tempo": "3:59,92",
+          "clube": "Condeixa Aqua Clube",
+          "data": "08/12/2025",
+          "local": "Estarreja"
+        },
+        "200_L": {
+          "tempo": "8:42,20",
+          "clube": "Condeixa Aqua Clube",
+          "data": "06/12/2025",
+          "local": "Estarreja"
+        },
+        "50_E": {
+          "tempo": "2:00,49",
+          "clube": "Clube dos Galitos / Bresimar",
+          "data": "21/02/2026",
+          "local": "Mealhada"
+        },
+        "100_E": {
+          "tempo": "4:27,13",
+          "clube": "Clube dos Galitos / Bresimar",
+          "data": "22/02/2026",
+          "local": "Mealhada"
+        }
+      },
+      "15": {
+        "50_L": {
+          "tempo": "1:52,84",
+          "clube": "Condeixa Aqua Clube",
+          "data": "23/11/2024",
+          "local": "Cantanhede"
+        },
+        "100_L": {
+          "tempo": "4:00,53",
+          "clube": "Clube dos Galitos / Bresimar",
+          "data": "08/12/2019",
+          "local": "Mealhada"
+        },
+        "200_L": {
+          "tempo": "8:48,75",
+          "clube": "Clube dos Galitos / Bresimar",
+          "data": "24/05/2025",
+          "local": "Mealhada"
+        },
+        "50_E": {
+          "tempo": "2:04,57",
+          "clube": "Condeixa Aqua Clube",
+          "data": "12/04/2025",
+          "local": "Felgueiras"
+        },
+        "100_E": {
+          "tempo": "4:29,46",
+          "clube": "Sporting Clube de Portugal",
+          "data": "14/07/2019",
+          "local": "Algés"
+        }
+      },
+      "14": {
+        "50_L": {
+          "tempo": "1:53,87",
+          "clube": "Condeixa Aqua Clube",
+          "data": "25/05/2024",
+          "local": "Condeixa"
+        },
+        "100_L": {
+          "tempo": "4:05,21",
+          "clube": "Clube dos Galitos / Bresimar",
+          "data": "10/06/2019",
+          "local": "Estarreja"
+        },
+        "200_L": {
+          "tempo": "8:52,76",
+          "clube": "Sport Alges e Dafundo",
+          "data": "04/06/2011",
+          "local": "Algés"
+        },
+        "50_E": {
+          "tempo": "2:07,67",
+          "clube": "Condeixa Aqua Clube",
+          "data": "26/11/2023",
+          "local": "Coimbra"
+        },
+        "100_E": {
+          "tempo": "4:33,40",
+          "clube": "Sport Lisboa e Benfica",
+          "data": "15/06/2006",
+          "local": "Reboleira"
+        }
+      },
+      "13": {
+        "100_L": {
+          "tempo": "4:13,11",
+          "clube": "Clube dos Galitos / Bresimar",
+          "data": "11/03/2018",
+          "local": "Felgueiras"
+        }
+      }
+    },
+    "X": {
+      "open": {
+        "50_L": {
+          "tempo": "1:34,67",
+          "clube": "Sporting Clube de Portugal",
+          "data": "15/12/2025",
+          "local": "Leiria"
+        },
+        "100_L": {
+          "tempo": "3:38,72",
+          "clube": "Futebol Clube do Porto",
+          "data": "14/11/2021",
+          "local": "Felguerias"
+        },
+        "50_E": {
+          "tempo": "1:44,20",
+          "clube": "Sport Lisboa e Benfica",
+          "data": "14/12/2025",
+          "local": "Leiria"
+        },
+        "100_E": {
+          "tempo": "3:58,31",
+          "clube": "Vitoria Sport Clube",
+          "data": "14/11/2021",
+          "local": "Felgueriras"
+        }
+      },
+      "19+": {
+        "50_L": {
+          "tempo": "1:34,67",
+          "clube": "Sporting Clube de Portugal",
+          "data": "15/12/2025",
+          "local": "Leiria"
+        },
+        "100_L": {
+          "tempo": "3:38,72",
+          "clube": "Futebol Clube do Porto",
+          "data": "14/11/2021",
+          "local": "Felgueiras"
+        },
+        "50_E": {
+          "tempo": "1:44,20",
+          "clube": "Sport Lisboa e Benfica",
+          "data": "14/12/2025",
+          "local": "Leiria"
+        }
+      },
+      "17-18": {
+        "50_L": {
+          "tempo": "1:41,62",
+          "clube": "Sport Lisboa e Benfica",
+          "data": "28/04/2019",
+          "local": "Felgueiras"
+        },
+        "100_L": {
+          "tempo": "3:41,33",
+          "clube": "Clube dos Galitos / Bresimar",
+          "data": "15/05/2022",
+          "local": "Gafanha da Nazare"
+        },
+        "50_E": {
+          "tempo": "1:51,44",
+          "clube": "Clube dos Galitos / Bresimar",
+          "data": "22/10/2022",
+          "local": "Estarreja"
+        },
+        "100_E": {
+          "tempo": "4:00,84",
+          "clube": "Clube dos Galitos / Bresimar",
+          "data": "14/05/2022",
+          "local": "Gafanha da Nazare"
+        }
+      },
+      "15-16": {
+        "50_L": {
+          "tempo": "1:45,84",
+          "clube": "Futebol Clube do Porto",
+          "data": "14/04/2024",
+          "local": "Felgueiras"
+        },
+        "100_L": {
+          "tempo": "3:50,57",
+          "clube": "Condeixa Aqua Clube",
+          "data": "08/12/2024",
+          "local": "Condeixa"
+        },
+        "50_E": {
+          "tempo": "1:57,50",
+          "clube": "Futebol Clube do Porto",
+          "data": "13/04/2024",
+          "local": "Felgueiras"
+        }
+      },
+      "15": {
+        "50_L": {
+          "tempo": "1:46,99",
+          "clube": "Clube dos Galitos / Bresimar",
+          "data": "23/11/2025",
+          "local": "Mealhada"
+        },
+        "50_E": {
+          "tempo": "1:59,15",
+          "clube": "Clube dos Galitos / Bresimar",
+          "data": "07/12/2025",
+          "local": "Estarreja"
+        }
+      },
+      "14": {
+        "100_L": {
+          "tempo": "4:09,72",
+          "clube": "Futebol Clube do Porto",
+          "data": "01/02/2026",
+          "local": "Felgueiras"
+        }
+      },
+      "13-14": {
+        "50_L": {
+          "tempo": "1:50,69",
+          "clube": "Clube dos Galitos / Bresimar",
+          "data": "29/06/2025",
+          "local": "Aveiro"
+        },
+        "100_L": {
+          "tempo": "4:09,72",
+          "clube": "Futebol Clube do Porto",
+          "data": "01/02/2026",
+          "local": "Felgueiras"
+        },
+        "50_E": {
+          "tempo": "2:04,67",
+          "clube": "Clube Naval do Funchal",
+          "data": "04/07/2025",
+          "local": "Funchal"
+        },
+        "100_E": {
+          "tempo": "4:35,27",
+          "clube": "Sport Alges e Dafundo",
+          "data": "29/06/2019",
+          "local": "Alges"
+        }
+      }
+    }
+  }
+};
+
 
 // ============================================================
 // OS MEUS MINIMOS
