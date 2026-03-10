@@ -709,6 +709,14 @@
     <div class="fpn-subtitle">Compara os teus tempos com os minimos FPN</div>
 
     <div id="atleta-view-intro">
+      <div id="atleta-profile-bar" style="display:none;margin-bottom:14px;">
+        <div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#7ab8d4;margin-bottom:6px;">Nadador</div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <select id="atleta-profile-select" onchange="mudarPerfil(this.value)" style="flex:1;padding:10px 12px;border-radius:10px;background:#f0f7ff;border:1.5px solid #c0d8ee;color:#1a3a4a;font-size:14px;font-weight:600;cursor:pointer;"></select>
+          <button onclick="novoPerfilAtleta()" title="Novo nadador" style="padding:10px 14px;border-radius:10px;background:var(--aqua);color:var(--dark);border:none;font-weight:700;font-size:18px;cursor:pointer;line-height:1;">+</button>
+        </div>
+        <button onclick="eliminarPerfilAtleta()" id="atleta-delete-btn" style="margin-top:8px;padding:7px 12px;border-radius:8px;background:transparent;border:1.5px solid #e74c3c;color:#e74c3c;font-size:12px;font-weight:600;cursor:pointer;width:100%;">Eliminar este nadador</button>
+      </div>
       <div id="atleta-saved-summary"></div>
       <div id="atleta-comp-selector" style="display:none;margin-top:16px;">
         <div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#7ab8d4;margin-bottom:6px;">Ver mínimos para</div>
@@ -5439,6 +5447,35 @@ function mostrarRecordeIdade() {
 // OS MEUS MINIMOS
 // ============================================================
 var ATLETA_KEY = 'swimmin_atleta_v2';
+var PROFILES_KEY = 'swimmin_profiles_v1';
+var ACTIVE_PROFILE_KEY = 'swimmin_active_profile_v1';
+
+function getAllProfiles() {
+  try { var r = localStorage.getItem(PROFILES_KEY); return r ? JSON.parse(r) : {}; } catch(e) { return {}; }
+}
+function getActiveProfileId() {
+  try { return localStorage.getItem(ACTIVE_PROFILE_KEY) || null; } catch(e) { return null; }
+}
+function setActiveProfileId(id) {
+  try { localStorage.setItem(ACTIVE_PROFILE_KEY, id); } catch(e) {}
+}
+function saveProfile(id, data) {
+  var profiles = getAllProfiles();
+  profiles[id] = data;
+  try { localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles)); } catch(e) {}
+}
+function deleteProfile(id) {
+  var profiles = getAllProfiles();
+  delete profiles[id];
+  try { localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles)); } catch(e) {}
+  if (getActiveProfileId() === id) {
+    var ids = Object.keys(profiles);
+    setActiveProfileId(ids.length > 0 ? ids[0] : null);
+  }
+}
+function generateProfileId() {
+  return 'p' + Date.now();
+}
 var PROVAS_INDIVIDUAIS_CURTA = [
   {key:'50_L', label:'50m Livres'},
   {key:'100_L', label:'100m Livres'},
@@ -5480,15 +5517,15 @@ var PROVAS_INDIVIDUAIS_LONGA = [
 ];
 
 var COMP_POR_ESCALAO = {
-  'INF_B': [{id:'zonal',label:'Zonais',longa_only:false},{id:'verao',label:'Nacional Verao',longa_only:false}],
-  'INF_A': [{id:'zonal',label:'Zonais',longa_only:false},{id:'verao',label:'Nacional Verao',longa_only:false}],
-  'JUV_B': [{id:'zonal',label:'Zonais',longa_only:false},{id:'inverno',label:'Nacional Inverno',longa_only:false},{id:'verao',label:'Nacional Verao',longa_only:false}],
-  'JUV_A': [{id:'zonal',label:'Zonais',longa_only:false},{id:'inverno',label:'Nacional Inverno',longa_only:false},{id:'verao',label:'Nacional Verao',longa_only:false}],
-  'JUN1':  [{id:'nacional',label:'Nacional',longa_only:false},{id:'europeus_jun',label:'Europeus Juniores',longa_only:true},{id:'europeus',label:'Europeus',longa_only:true}],
-  'JUN':   [{id:'nacional',label:'Nacional',longa_only:false},{id:'europeus_jun',label:'Europeus Juniores',longa_only:true},{id:'europeus',label:'Europeus',longa_only:true}],
-  'SUB21': [{id:'nacional',label:'Nacional',longa_only:false},{id:'europeus',label:'Europeus',longa_only:true},{id:'olimpicos',label:'Jogos Olimpicos 2028',longa_only:true}],
-  'SEN':   [{id:'nacional',label:'Nacional',longa_only:false},{id:'europeus',label:'Europeus',longa_only:true},{id:'olimpicos',label:'Jogos Olimpicos 2028',longa_only:true}],
-  'ABS':   [{id:'nacional',label:'Nacional',longa_only:false},{id:'europeus',label:'Europeus',longa_only:true},{id:'olimpicos',label:'Jogos Olimpicos 2028',longa_only:true}]
+  'INF_B': [{id:'zonal',label:'Zonais',longa_only:false},{id:'verao',label:'Nacional Verão',longa_only:false},{id:'europeus_jun',label:'Europeus Juniores',longa_only:true},{id:'europeus',label:'Europeus',longa_only:true},{id:'olimpicos',label:'Jogos Olímpicos 2028',longa_only:true}],
+  'INF_A': [{id:'zonal',label:'Zonais',longa_only:false},{id:'verao',label:'Nacional Verão',longa_only:false},{id:'europeus_jun',label:'Europeus Juniores',longa_only:true},{id:'europeus',label:'Europeus',longa_only:true},{id:'olimpicos',label:'Jogos Olímpicos 2028',longa_only:true}],
+  'JUV_B': [{id:'zonal',label:'Zonais',longa_only:false},{id:'inverno',label:'Nacional Inverno',longa_only:false},{id:'verao',label:'Nacional Verão',longa_only:false},{id:'europeus_jun',label:'Europeus Juniores',longa_only:true},{id:'europeus',label:'Europeus',longa_only:true},{id:'olimpicos',label:'Jogos Olímpicos 2028',longa_only:true}],
+  'JUV_A': [{id:'zonal',label:'Zonais',longa_only:false},{id:'inverno',label:'Nacional Inverno',longa_only:false},{id:'verao',label:'Nacional Verão',longa_only:false},{id:'europeus_jun',label:'Europeus Juniores',longa_only:true},{id:'europeus',label:'Europeus',longa_only:true},{id:'olimpicos',label:'Jogos Olímpicos 2028',longa_only:true}],
+  'JUN1':  [{id:'nacional',label:'Nacional',longa_only:false},{id:'europeus_jun',label:'Europeus Juniores',longa_only:true},{id:'europeus',label:'Europeus',longa_only:true},{id:'olimpicos',label:'Jogos Olímpicos 2028',longa_only:true}],
+  'JUN':   [{id:'nacional',label:'Nacional',longa_only:false},{id:'europeus_jun',label:'Europeus Juniores',longa_only:true},{id:'europeus',label:'Europeus',longa_only:true},{id:'olimpicos',label:'Jogos Olímpicos 2028',longa_only:true}],
+  'SUB21': [{id:'nacional',label:'Nacional',longa_only:false},{id:'europeus',label:'Europeus',longa_only:true},{id:'olimpicos',label:'Jogos Olímpicos 2028',longa_only:true}],
+  'SEN':   [{id:'nacional',label:'Nacional',longa_only:false},{id:'europeus',label:'Europeus',longa_only:true},{id:'olimpicos',label:'Jogos Olímpicos 2028',longa_only:true}],
+  'ABS':   [{id:'nacional',label:'Nacional',longa_only:false},{id:'europeus',label:'Europeus',longa_only:true},{id:'olimpicos',label:'Jogos Olímpicos 2028',longa_only:true}]
 };
 
 function getColForComp(escalao, compId) {
@@ -5557,10 +5594,26 @@ function formatAtletaMs(ms) {
 }
 
 function saveAtleta(data) {
+  // Legacy single-profile save (kept for compatibility)
   try { localStorage.setItem(ATLETA_KEY, JSON.stringify(data)); } catch(e) {}
 }
 function loadAtleta() {
+  var activeId = getActiveProfileId();
+  if (activeId) {
+    var profiles = getAllProfiles();
+    if (profiles[activeId]) return profiles[activeId];
+  }
+  // Fallback to legacy single profile
   try { var r = localStorage.getItem(ATLETA_KEY); return r ? JSON.parse(r) : null; } catch(e) { return null; }
+}
+function saveActiveAtleta(data) {
+  var activeId = getActiveProfileId();
+  if (!activeId) {
+    activeId = generateProfileId();
+    setActiveProfileId(activeId);
+  }
+  saveProfile(activeId, data);
+  saveAtleta(data); // keep legacy in sync
 }
 
 function toggleAtleta() {
@@ -5579,19 +5632,90 @@ function toggleAtleta() {
 
 var ATLETA_COMP_ATUAL = null;
 
+var ESC_LABEL = {'INF_B':'Infantil B','INF_A':'Infantil A','JUV_B':'Juvenil B','JUV_A':'Juvenil A','JUN1':'1º Júnior','JUN':'Júnior','SUB21':'Sub 21','SEN':'Sénior','ABS':'Absoluto'};
+
 function iniciarAtleta() {
-  var data = loadAtleta();
-  if (data && data.escalao && data.sexo) {
-    document.getElementById('atleta-form').style.display = 'none';
-    document.getElementById('atleta-view-intro').style.display = 'block';
-    document.getElementById('atleta-editar-btn').style.display = 'block';
-    var escLabel = {'INF_B':'Infantil B','INF_A':'Infantil A','JUV_B':'Juvenil B','JUV_A':'Juvenil A','JUN1':'1 Junior','JUN':'Junior','SUB21':'Sub 21','SEN':'Senior','ABS':'Absoluto'};
-    var nome = data.nome || 'Atleta';
-    document.getElementById('atleta-saved-summary').innerHTML = '<div style="font-size:15px;color:var(--blue-deep);margin-bottom:4px;"><strong>' + nome + '</strong> · ' + (escLabel[data.escalao]||data.escalao) + '</div>';
-    renderCompButtons(data);
-  } else {
-    mostrarFormulario();
+  // Migrate legacy single profile to multi-profile system
+  migrateLegatyProfile();
+  var profiles = getAllProfiles();
+  var ids = Object.keys(profiles);
+  if (ids.length === 0) { mostrarFormulario(); return; }
+  // Ensure active profile is valid
+  var activeId = getActiveProfileId();
+  if (!activeId || !profiles[activeId]) { activeId = ids[0]; setActiveProfileId(activeId); }
+  mostrarPerfilAtivo();
+}
+
+function migrateLegatyProfile() {
+  var profiles = getAllProfiles();
+  if (Object.keys(profiles).length > 0) return; // already migrated
+  try {
+    var r = localStorage.getItem(ATLETA_KEY);
+    if (r) {
+      var data = JSON.parse(r);
+      if (data && data.escalao) {
+        var id = generateProfileId();
+        data.id = id;
+        saveProfile(id, data);
+        setActiveProfileId(id);
+      }
+    }
+  } catch(e) {}
+}
+
+function mostrarPerfilAtivo() {
+  var profiles = getAllProfiles();
+  var ids = Object.keys(profiles);
+  var activeId = getActiveProfileId();
+  var data = profiles[activeId];
+  if (!data) { mostrarFormulario(); return; }
+
+  document.getElementById('atleta-form').style.display = 'none';
+  document.getElementById('atleta-view-intro').style.display = 'block';
+  document.getElementById('atleta-editar-btn').style.display = 'block';
+
+  // Profile bar - only show if more than 1 profile, but always show to allow adding
+  var profileBar = document.getElementById('atleta-profile-bar');
+  profileBar.style.display = 'block';
+  var sel = document.getElementById('atleta-profile-select');
+  sel.innerHTML = '';
+  for (var i = 0; i < ids.length; i++) {
+    var p = profiles[ids[i]];
+    var opt = document.createElement('option');
+    opt.value = ids[i];
+    opt.textContent = (p.nome || 'Nadador') + ' · ' + (ESC_LABEL[p.escalao] || p.escalao);
+    if (ids[i] === activeId) opt.selected = true;
+    sel.appendChild(opt);
   }
+  // Hide delete button if only 1 profile
+  document.getElementById('atleta-delete-btn').style.display = ids.length > 1 ? 'block' : 'none';
+
+  document.getElementById('atleta-saved-summary').innerHTML =
+    '<div style="font-size:15px;color:var(--blue-deep);margin-bottom:4px;">' +
+    '<strong>' + (data.nome || 'Nadador') + '</strong> · ' + (ESC_LABEL[data.escalao] || data.escalao) + '</div>';
+
+  ATLETA_COMP_ATUAL = null;
+  renderCompButtons(data);
+}
+
+function mudarPerfil(id) {
+  setActiveProfileId(id);
+  ATLETA_COMP_ATUAL = null;
+  mostrarPerfilAtivo();
+}
+
+function novoPerfilAtleta() {
+  setActiveProfileId(null);
+  mostrarFormulario();
+}
+
+function eliminarPerfilAtleta() {
+  var activeId = getActiveProfileId();
+  var profiles = getAllProfiles();
+  var nome = (profiles[activeId] && profiles[activeId].nome) ? profiles[activeId].nome : 'este nadador';
+  if (!confirm('Eliminar o perfil de ' + nome + '?')) return;
+  deleteProfile(activeId);
+  iniciarAtleta();
 }
 
 function renderCompButtons(data) {
@@ -5622,11 +5746,21 @@ function mostrarFormulario() {
   document.getElementById('atleta-form').style.display = 'block';
   document.getElementById('atleta-view-intro').style.display = 'none';
   document.getElementById('atleta-resultados').innerHTML = '';
-  var data = loadAtleta();
+  // Load active profile if editing, otherwise blank form for new profile
+  var activeId = getActiveProfileId();
+  var data = null;
+  if (activeId) {
+    var profiles = getAllProfiles();
+    data = profiles[activeId] || null;
+  }
   if (data) {
-    if (data.nome) document.getElementById('atleta-nome').value = data.nome;
-    if (data.escalao) document.getElementById('atleta-escalao').value = data.escalao;
-    if (data.sexo) document.getElementById('atleta-sexo').value = data.sexo;
+    document.getElementById('atleta-nome').value = data.nome || '';
+    document.getElementById('atleta-escalao').value = data.escalao || '';
+    document.getElementById('atleta-sexo').value = data.sexo || '';
+  } else {
+    document.getElementById('atleta-nome').value = '';
+    document.getElementById('atleta-escalao').value = '';
+    document.getElementById('atleta-sexo').value = '';
   }
   renderFormProvas(data);
 }
@@ -5680,16 +5814,18 @@ function guardarAtleta() {
     var inp = document.getElementById('fl-' + key);
     if (inp && inp.value.trim()) { var ms = parseAtletaMs(inp.value.trim()); if (ms) ts['longa'][key] = ms; }
   }
-  var data = {nome:nome, escalao:escalao, sexo:sexo, tempos:ts};
+  var activeId = getActiveProfileId();
+  if (!activeId) activeId = generateProfileId();
+  setActiveProfileId(activeId);
+  var data = {id:activeId, nome:nome, escalao:escalao, sexo:sexo, tempos:ts};
+  saveProfile(activeId, data);
   saveAtleta(data);
-  document.getElementById('atleta-form').style.display = 'none';
-  document.getElementById('atleta-view-intro').style.display = 'block';
-  var escLabel = {'INF_B':'Infantil B','INF_A':'Infantil A','JUV_B':'Juvenil B','JUV_A':'Juvenil A','JUN1':'1 Junior','JUN':'Junior','SUB21':'Sub 21','SEN':'Senior','ABS':'Absoluto'};
-  document.getElementById('atleta-saved-summary').innerHTML = '<div style="font-size:15px;color:var(--blue-deep);margin-bottom:4px;"><strong>' + (nome||'Atleta') + '</strong> · ' + (escLabel[escalao]||escalao) + '</div>';
-  document.getElementById('atleta-editar-btn').style.display = 'block';
   ATLETA_COMP_ATUAL = null;
-  renderCompButtons(data);
-  document.getElementById('atleta-comp-selector').scrollIntoView({behavior:'smooth', block:'start'});
+  mostrarPerfilAtivo();
+  setTimeout(function() {
+    var el = document.getElementById('atleta-comp-selector');
+    if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
+  }, 100);
 }
 
 function renderAtletaResultados(data, compId) {
