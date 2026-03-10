@@ -411,6 +411,8 @@
     border-radius: 24px;
     padding: 36px 32px;
     box-shadow: 0 32px 64px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.3);
+    position: relative;
+    z-index: 2;
   }
   .fpn-title {
     font-family: 'Bebas Neue', sans-serif;
@@ -689,13 +691,15 @@
     </div>
     <div id="id-result"></div>
     <div class="footer">Dados FPN · atualizado a 04/03/2026 (50m) e 25/02/2026 (25m)</div>
-  </div
+  </div>
+  </div>
+
   <div class="fpn-btn-wrap">
-    <button class="fpn-btn" id="atleta-btn" onclick="toggleAtleta()">O meu ponto de situacao</button>
+    <button class="fpn-btn" id="atleta-btn" onclick="toggleAtleta()">Os meus minimos</button>
   </div>
 
   <div class="fpn-section" id="atleta-section" style="display:none">
-    <div class="fpn-title">O meu ponto de situacao</div>
+    <div class="fpn-title">Os meus minimos</div>
     <div class="fpn-subtitle">Compara os teus tempos com os minimos FPN</div>
 
     <div style="display:flex;gap:8px;margin-bottom:18px;">
@@ -708,7 +712,7 @@
       <div style="display:flex;gap:8px;align-items:flex-end;">
         <div class="field" style="flex:1;margin-bottom:0">
           <label>ID Swimrankings</label>
-          <input type="tel" id="swimr-id-input" placeholder="ex: 4046710" style="background:var(--white);border:1.5px solid #d0e4f0;color:var(--text);font-size:18px;padding:10px 14px;border-radius:8px;width:100%;box-sizing:border-box;">
+          <input type="tel" id="swimr-id-input" placeholder="ex: 4046710" style="background:var(--white);border:1.5px solid #d0e4f0;color:var(--text);font-size:18px;padding:10px 14px;border-radius:8px;width:100%;box-sizing:border-box;position:relative;z-index:10;">
         </div>
         <button onclick="buscarAtletaSwimr()" style="padding:12px 18px;border-radius:8px;background:var(--aqua);color:var(--dark);font-weight:700;font-size:14px;border:none;cursor:pointer;white-space:nowrap;margin-bottom:0;">Pesquisar</button>
       </div>
@@ -4815,11 +4819,11 @@ function toggleAtleta() {
   if (section.style.display === 'none') {
     section.style.display = 'block';
     section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    btn.textContent = 'Fechar ponto de situacao';
+    btn.textContent = 'Fechar os meus minimos';
     loadSavedAtletaData();
   } else {
     section.style.display = 'none';
-    btn.textContent = 'O meu ponto de situacao';
+    btn.textContent = 'Os meus minimos';
   }
 }
 
