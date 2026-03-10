@@ -305,6 +305,7 @@
     margin-top: 16px;
     padding-top: 16px;
     border-top: 1px solid rgba(255,255,255,0.15);
+    text-align: center;
   }
   .personal-label {
     font-size: 10px;
@@ -318,6 +319,7 @@
     display: flex;
     gap: 10px;
     align-items: center;
+    justify-content: center;
   }
   .personal-input {
     background: rgba(255,255,255,0.1);
@@ -480,7 +482,7 @@
   }
   .fpn-rn-info {
     font-size: 12px;
-    color: var(--blue-light);
+    color: rgba(255,255,255,0.75);
   }
   .fpn-unavailable {
     margin-top: 14px;
@@ -748,6 +750,14 @@
         <div style="font-size:12px;color:#1a5a7a;line-height:1.6;">Introduz os teus melhores tempos (PB). Formato: M:SS,cc ou SS,cc (ex: 1:02,34 ou 27,45). Deixa em branco as provas que nao nadas.<br><strong>Nota:</strong> os minimos exigem tempos feitos nos ultimos 18 meses. Verifica sempre as datas.</div>
       </div>
 
+      <div style="background:rgba(0,196,204,0.1);border-radius:8px;padding:10px 14px;margin-bottom:14px;border-left:3px solid var(--aqua);">
+        <div style="font-size:12px;color:var(--blue-deep);font-weight:600;margin-bottom:3px;">Como inserir os tempos</div>
+        <div style="font-size:12px;color:#1a5a7a;line-height:1.6;">
+          Escreve só os dígitos, sem pontuação:<br>
+          <strong>30,43</strong> → escreve <strong>3043</strong><br>
+          <strong>1:17,09</strong> → escreve <strong>11709</strong>
+        </div>
+      </div>
       <div style="font-size:13px;font-weight:700;color:var(--aqua);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Piscina Curta (25m)</div>
       <div id="form-curta"></div>
 
@@ -5676,8 +5686,9 @@ function guardarAtleta() {
   var escLabel = {'INF_B':'Infantil B','INF_A':'Infantil A','JUV_B':'Juvenil B','JUV_A':'Juvenil A','JUN1':'1 Junior','JUN':'Junior','SUB21':'Sub 21','SEN':'Senior','ABS':'Absoluto'};
   document.getElementById('atleta-saved-summary').innerHTML = '<div style="font-size:15px;color:var(--blue-deep);margin-bottom:4px;"><strong>' + (nome||'Atleta') + '</strong> · ' + (escLabel[escalao]||escalao) + '</div>';
   document.getElementById('atleta-editar-btn').style.display = 'block';
-  renderAtletaResultados(data);
-  document.getElementById('atleta-resultados').scrollIntoView({behavior:'smooth', block:'start'});
+  ATLETA_COMP_ATUAL = null;
+  renderCompButtons(data);
+  document.getElementById('atleta-comp-selector').scrollIntoView({behavior:'smooth', block:'start'});
 }
 
 function renderAtletaResultados(data, compId) {
