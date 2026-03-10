@@ -5516,6 +5516,7 @@ function mostrarRecordeIdade() {
   html += '<div class="fpn-divider"></div>';
   if (isEstafeta) {
     html += '<div class="fpn-rn-nome">' + rec.clube + '</div>';
+    if (rec.nadadores) html += '<div class="fpn-rn-info" style="margin-bottom:4px;">' + rec.nadadores + '</div>';
   } else {
     html += '<div class="fpn-rn-nome">' + rec.nome + '</div>';
   }
@@ -5532,31 +5533,36 @@ var recordesEstafetas = {
           "tempo": "1:29,80",
           "clube": "Sport Lisboa e Benfica",
           "data": "27/07/2022",
-          "local": "Oeiras"
+          "local": "Oeiras",
+          "nadadores": "Miguel Duarte Nascimento · Miguel Henriques Marques · Diogo Ramos Lebre · Diogo Santos Costa"
         },
         "100_L": {
           "tempo": "3:20,92",
           "clube": "Sport Lisboa e Benfica",
           "data": "06/04/2023",
-          "local": "Oeiras"
+          "local": "Oeiras",
+          "nadadores": "Miguel Henriques Marques · Diogo Matos Ribeiro · Diogo Santos Costa · Miguel Duarte Nascimento"
         },
         "200_L": {
           "tempo": "7:26,26",
           "clube": "Sporting Clube de Portugal",
           "data": "14/04/2019",
-          "local": "Oeiras"
+          "local": "Oeiras",
+          "nadadores": "Alexis Manacas Santos · Tiago Cunha Costa · Francisco Rogerio Santos · Igor Araujo Mogne"
         },
         "50_E": {
           "tempo": "1:41,67",
           "clube": "Sporting Clube de Portugal",
           "data": "29/07/2022",
-          "local": "Oeiras"
+          "local": "Oeiras",
+          "nadadores": "Francisco Rogerio Santos · Francisco Robalo Quintas · Tiago Cunha Costa · Alexis Manacas Santos"
         },
         "100_E": {
           "tempo": "3:41,33",
           "clube": "Sport Lisboa e Benfica",
           "data": "06/04/2025",
-          "local": "Oeiras"
+          "local": "Oeiras",
+          "nadadores": "Tomas Maia Januario · Rafael Miguel Mimoso · Diogo Matos Ribeiro · Gustavo Carvalhais Ribeiro"
         }
       },
       "19+": {
@@ -5564,31 +5570,36 @@ var recordesEstafetas = {
           "tempo": "1:29,80",
           "clube": "Sport Lisboa e Benfica",
           "data": "27/07/2022",
-          "local": "Oeiras"
+          "local": "Oeiras",
+          "nadadores": "Miguel Duarte Nascimento · Miguel Henriques Marques · Diogo Ramos Lebre · Diogo Santos Costa"
         },
         "100_L": {
           "tempo": "3:20,92",
           "clube": "Sport Lisboa e Benfica",
           "data": "06/04/2023",
-          "local": "Oeiras"
+          "local": "Oeiras",
+          "nadadores": "Miguel Henriques Marques · Diogo Matos Ribeiro · Diogo Santos Costa · Miguel Duarte Nascimento"
         },
         "200_L": {
           "tempo": "7:26,26",
           "clube": "Sporting Clube de Portugal",
           "data": "14/04/2019",
-          "local": "Oeiras"
+          "local": "Oeiras",
+          "nadadores": "Alexis Manacas Santos · Tiago Cunha Costa · Francisco Rogerio Santos · Igor Araujo Mogne"
         },
         "50_E": {
           "tempo": "1:41,67",
           "clube": "Sporting Clube de Portugal",
           "data": "29/07/2022",
-          "local": "Oeiras"
+          "local": "Oeiras",
+          "nadadores": "Francisco Rogerio Santos · Francisco Robalo Quintas · Tiago Cunha Costa · Alexis Manacas Santos"
         },
         "100_E": {
           "tempo": "3:43,87",
           "clube": "Sporting Clube de Portugal",
           "data": "30/07/2022",
-          "local": "Oeiras"
+          "local": "Oeiras",
+          "nadadores": "Francisco Rogerio Santos · Francisco Robalo Quintas · Tiago Cunha Costa · Gustavo Carvalhais Ribeiro"
         }
       },
       "17-18": {
@@ -5596,31 +5607,36 @@ var recordesEstafetas = {
           "tempo": "1:36,04",
           "clube": "Sport Lisboa e Benfica",
           "data": "28/07/2023",
-          "local": "Coimbra"
+          "local": "Coimbra",
+          "nadadores": "Guilherme Fernandes Baptista · Andre Henriques Marques · Gabriel Carvalho Ferrao · Tomas Maia Januario"
         },
         "100_L": {
           "tempo": "3:32,70",
           "clube": "Clube Uniao 1919",
           "data": "09/05/2021",
-          "local": "Coimbra"
+          "local": "Coimbra",
+          "nadadores": "Diogo Matos Ribeiro · Gustavo Pires Marques · Martim Miranda Machado · Rodrigo Miguel Reis"
         },
         "200_L": {
           "tempo": "7:44,42",
           "clube": "Associacao Naval Amorense",
           "data": "05/04/2014",
-          "local": "Coimbra"
+          "local": "Coimbra",
+          "nadadores": "Joao Carlos Santos · Fabio Alcantara Aires · Rafael Lourenco Gil · Joao Pedro Gil"
         },
         "50_E": {
           "tempo": "1:46,34",
           "clube": "Sport Lisboa e Benfica",
           "data": "29/07/2023",
-          "local": "Coimbra"
+          "local": "Coimbra",
+          "nadadores": "Tomas Maia Januario · Pedro Goncalves Bonniz · Andre Henriques Marques · Guilherme Fernandes Baptista"
         },
         "100_E": {
           "tempo": "3:54,30",
           "clube": "Sport Lisboa e Benfica",
           "data": "12/07/2024",
-          "local": "Oeiras"
+          "local": "Oeiras",
+          "nadadores": "Tomas Maia Januario · Pedro Goncalves Bonniz · David Miguel Morais · Guilherme Fernandes Baptista"
         }
       },
       "16": {
@@ -5628,31 +5644,36 @@ var recordesEstafetas = {
           "tempo": "1:42,32",
           "clube": "Clube Nautico de Leiria",
           "data": "15/07/2023",
-          "local": "Coimbra"
+          "local": "Coimbra",
+          "nadadores": "Goncalo Pereira Colaco · Afonso Dinis Roque · Francisco Marques Simoes · Joao Moura Francisco"
         },
         "100_L": {
           "tempo": "3:39,68",
           "clube": "Futebol Clube do Porto",
           "data": "19/07/2013",
-          "local": "Famalicao"
+          "local": "Famalicao",
+          "nadadores": "Joao Miguel Ascensao · Luis Carlos Oliveira · Eduardo Salgado Ramos · Ruben Oliveira Lopes"
         },
         "200_L": {
           "tempo": "7:58,57",
           "clube": "Associacao Naval Amorense",
           "data": "26/07/2012",
-          "local": "Jamor"
+          "local": "Jamor",
+          "nadadores": "Miguel Angelo Alves · Rafael Lourenco Gil · Rafael Filipe Nunes · Joao Carlos Santos"
         },
         "50_E": {
           "tempo": "1:50,97",
           "clube": "Futebol Clube do Porto",
           "data": "30/03/2023",
-          "local": "Funchal"
+          "local": "Funchal",
+          "nadadores": "Rodrigo Filipe Correia · Duarte Maria Carreira · Francisco Bernardes Martelo · Guilherme Mahua Soares"
         },
         "100_E": {
           "tempo": "4:03,65",
           "clube": "Sporting Clube de Portugal",
           "data": "29/07/2018",
-          "local": "Oeiras"
+          "local": "Oeiras",
+          "nadadores": "Diogo Nuno Valente · Gabriel Macedo Cresta · Ruy Manuel Domingos · Vicente Oliveira Gomes"
         }
       },
       "15-16": {
@@ -5660,25 +5681,29 @@ var recordesEstafetas = {
           "tempo": "1:42,32",
           "clube": "Clube Nautico de Leiria",
           "data": "15/07/2023",
-          "local": "Coimbra"
+          "local": "Coimbra",
+          "nadadores": "Goncalo Pereira Colaco · Afonso Dinis Roque · Francisco Marques Simoes · Joao Moura Francisco"
         },
         "100_L": {
           "tempo": "3:39,68",
           "clube": "Futebol Clube do Porto",
           "data": "19/07/2013",
-          "local": "Famalicao"
+          "local": "Famalicao",
+          "nadadores": "Joao Miguel Ascensao · Luis Carlos Oliveira · Eduardo Salgado Ramos · Ruben Oliveira Lopes"
         },
         "50_E": {
           "tempo": "1:50,97",
           "clube": "Futebol Clube do Porto",
           "data": "30/03/2023",
-          "local": "Funchal"
+          "local": "Funchal",
+          "nadadores": "Rodrigo Filipe Correia · Duarte Maria Carreira · Francisco Bernardes Martelo · Guilherme Mahua Soares"
         },
         "100_E": {
           "tempo": "4:03,65",
           "clube": "Sporting Clube de Portugal",
           "data": "29/07/2018",
-          "local": "Oeiras"
+          "local": "Oeiras",
+          "nadadores": "Diogo Nuno Valente · Gabriel Macedo Cresta · Ruy Manuel Domingos · Vicente Oliveira Gomes"
         }
       },
       "15": {
@@ -5686,31 +5711,36 @@ var recordesEstafetas = {
           "tempo": "1:42,79",
           "clube": "Clube Naval Setubalense",
           "data": "13/07/2024",
-          "local": "Oeiras"
+          "local": "Oeiras",
+          "nadadores": "Daniel Ducatti Pires · Miguel Ratinho Rocha · Pedro Miguel Silva · Rafael Lin Moniz"
         },
         "100_L": {
           "tempo": "3:44,52",
           "clube": "Ass. Desp. Bairro dos Anjos",
           "data": "02/08/2019",
-          "local": "Funchal"
+          "local": "Funchal",
+          "nadadores": "Guilherme Silva Castanheira · Vitor Belo Clara · Ricardo Morais Faria · Rodrigo Miguel Reis"
         },
         "200_L": {
           "tempo": "8:09,89",
           "clube": "Ass. Desp. Bairro dos Anjos",
           "data": "01/08/2019",
-          "local": "Funchal"
+          "local": "Funchal",
+          "nadadores": "Nuno Marques Silva · Guilherme Silva Castanheira · Vitor Belo Clara · Rodrigo Miguel Reis"
         },
         "50_E": {
           "tempo": "1:53,93",
           "clube": "Futebol Clube do Porto",
           "data": "29/07/2022",
-          "local": "Oeiras"
+          "local": "Oeiras",
+          "nadadores": "Rodrigo Filipe Correia · Duarte Maria Carreira · Francisco Bernardes Martelo · Guilherme Mahua Soares"
         },
         "100_E": {
           "tempo": "4:08,58",
           "clube": "Sporting Clube de Portugal",
           "data": "23/07/2017",
-          "local": "Oeiras"
+          "local": "Oeiras",
+          "nadadores": "Diogo Nuno Valente · Martim Rebelo Malfeito · Ruy Manuel Domingos · Vicente Oliveira Gomes"
         }
       },
       "14": {
@@ -5718,7 +5748,8 @@ var recordesEstafetas = {
           "tempo": "2:03,19",
           "clube": "Clube dos Galitos / Bresimar",
           "data": "18/07/2025",
-          "local": "Loulé"
+          "local": "Loulé",
+          "nadadores": "Daniel Volkov · Xavier Pinto Pereira · Miguel Miranda Fernandes · Santiago Vagos Valente"
         }
       },
       "13-14": {
@@ -5726,7 +5757,8 @@ var recordesEstafetas = {
           "tempo": "2:03,19",
           "clube": "Clube dos Galitos / Bresimar",
           "data": "18/07/2025",
-          "local": "Loulé"
+          "local": "Loulé",
+          "nadadores": "Daniel Volkov · Xavier Pinto Pereira · Miguel Miranda Fernandes · Santiago Vagos Valente"
         }
       },
       "13": {
@@ -5734,19 +5766,22 @@ var recordesEstafetas = {
           "tempo": "4:06,16",
           "clube": "Associacao Naval Amorense",
           "data": "19/07/2014",
-          "local": "Loulé"
+          "local": "Loulé",
+          "nadadores": "Rafael Alcantara Aires · Edgar Filipe Santos · David Matias Cristino · Rodrigo Ponte Jorge"
         },
         "200_L": {
           "tempo": "8:58,21",
           "clube": "Associacao Naval Amorense",
           "data": "18/07/2014",
-          "local": "Loulé"
+          "local": "Loulé",
+          "nadadores": "Rodrigo Ponte Jorge · Edgar Filipe Santos · David Matias Cristino · Rafael Alcantara Aires"
         },
         "50_E": {
           "tempo": "2:11,95",
           "clube": "Clube dos Galitos/Bresimar",
           "data": "19/07/2024",
-          "local": "Setúbal"
+          "local": "Setúbal",
+          "nadadores": "Francisco Felix Vale · Xavier Pinto Pereira · Miguel Miranda Fernandes · Santiago Vagos Valente"
         }
       }
     },
@@ -5756,25 +5791,29 @@ var recordesEstafetas = {
           "tempo": "3:51,11",
           "clube": "Sporting Clube de Portugal",
           "data": "05/04/2025",
-          "local": "Oeiras"
+          "local": "Oeiras",
+          "nadadores": "Maria Ferreira Moura · Carolina Pereira Viana · Laura Espinola Barbeito · Anna Fomina"
         },
         "200_L": {
           "tempo": "8:18,33",
           "clube": "Sport Lisboa e Benfica",
           "data": "04/04/2024",
-          "local": "Coimbra"
+          "local": "Coimbra",
+          "nadadores": "Catarina Andrade Franco · Diana Margarida Duraes · Maria Leonor Coelho · Ema Jeronimo Conceicao"
         },
         "50_E": {
           "tempo": "1:56,39",
           "clube": "Sport Alges e Dafundo",
           "data": "03/08/2019",
-          "local": "Funchal"
+          "local": "Funchal",
+          "nadadores": "Rafaela Gomes Azevedo · Raquel Gomes Pereira · Rita Barros Frischknecht · Ana Reis Sousa"
         },
         "100_E": {
           "tempo": "4:14,70",
           "clube": "Sport Alges e Dafundo",
           "data": "13/04/2019",
-          "local": "Oeiras"
+          "local": "Oeiras",
+          "nadadores": "Rafaela Gomes Azevedo · Raquel Gomes Pereira · Madalena Gomes Azevedo · Ana Reis Sousa"
         }
       },
       "19+": {
@@ -5782,19 +5821,22 @@ var recordesEstafetas = {
           "tempo": "3:51,11",
           "clube": "Sporting Clube de Portugal",
           "data": "05/04/2025",
-          "local": "Oeiras"
+          "local": "Oeiras",
+          "nadadores": "Maria Ferreira Moura · Carolina Pereira Viana · Laura Espinola Barbeito · Anna Fomina"
         },
         "200_L": {
           "tempo": "8:21,65",
           "clube": "Sporting Clube de Portugal",
           "data": "03/04/2025",
-          "local": "Oeiras"
+          "local": "Oeiras",
+          "nadadores": "Maria Ferreira Moura · Carolina Pereira Viana · Laura Espinola Barbeito · Anna Fomina"
         },
         "100_E": {
           "tempo": "4:14,99",
           "clube": "Sporting Clube de Portugal",
           "data": "27/07/2025",
-          "local": "Coimbra"
+          "local": "Coimbra",
+          "nadadores": "Maelie Fonseca · Margarida Domingues Nunes · Maria Ferreira Moura · Anna Fomina"
         }
       },
       "15": {
@@ -5802,19 +5844,22 @@ var recordesEstafetas = {
           "tempo": "4:06,43",
           "clube": "Futebol Clube do Porto",
           "data": "02/04/2015",
-          "local": "Coimbra"
+          "local": "Coimbra",
+          "nadadores": "Maria Francisca Cabral · Marta Alexandra Canedo · Joana Martins Pereira · Ana Rita Faria"
         },
         "200_L": {
           "tempo": "8:54,69",
           "clube": "Condeixa Aqua Clube",
           "data": "03/04/2025",
-          "local": "Oeiras"
+          "local": "Oeiras",
+          "nadadores": "Rita Lucas Santos · Maria Neto Simoes · Leonor Nunes Cardeal · Camila Duarte Marcelo"
         },
         "50_E": {
           "tempo": "2:07,28",
           "clube": "Condeixa Aqua Clube",
           "data": "21/03/2025",
-          "local": "Coimbra"
+          "local": "Coimbra",
+          "nadadores": "Rita Lucas Santos · Maria Neto Simoes · Camila Duarte Marcelo · Leonor Nunes Cardeal"
         }
       },
       "14": {
@@ -5822,19 +5867,22 @@ var recordesEstafetas = {
           "tempo": "4:08,56",
           "clube": "Clube dos Galitos / Bresimar",
           "data": "14/07/2024",
-          "local": "Oeiras"
+          "local": "Oeiras",
+          "nadadores": "Carolina Ratola Taveira · Ines Ribeiro Melo · Leonor Silva Jesus · Sofia Rodrigues Vasconcelos"
         },
         "200_L": {
           "tempo": "9:01,51",
           "clube": "Sporting Clube de Portugal",
           "data": "26/07/2012",
-          "local": "Oeiras"
+          "local": "Oeiras",
+          "nadadores": "Sofia Alexandra Branco · Carolina Mantua Guedes · Sofia Machado Dionisio · Beatriz Rodrigues Conde"
         },
         "100_E": {
           "tempo": "4:35,70",
           "clube": "Sport Lisboa e Benfica",
           "data": "27/07/2008",
-          "local": "Lisboa"
+          "local": "Lisboa",
+          "nadadores": "Ines Catarina Agostinho · Ana Maria Pina · Sofia Oliveira Pinto · Vera Patricia Pinto"
         }
       },
       "13": {
@@ -5842,7 +5890,8 @@ var recordesEstafetas = {
           "tempo": "4:45,41",
           "clube": "Sport Lisboa e Benfica",
           "data": "30/06/2007",
-          "local": "Lisboa"
+          "local": "Lisboa",
+          "nadadores": "Ines Catarina Agostinho · Ana Maria Pina · Raquel Paulo Ranito · Vera Patricia Pinto"
         }
       }
     },
@@ -5852,25 +5901,29 @@ var recordesEstafetas = {
           "tempo": "1:41,55",
           "clube": "Futebol Clube do Porto",
           "data": "02/02/2020",
-          "local": "Povoa de Varzim"
+          "local": "Povoa de Varzim",
+          "nadadores": "Rosa Maria Oliveira · Porfirio Braga Nunes · Alexandre Ferreira Amorim · Catarina Maria Ferreira"
         },
         "100_L": {
           "tempo": "3:39,15",
           "clube": "Sporting Clube de Braga",
           "data": "31/05/2025",
-          "local": "Coimbra"
+          "local": "Coimbra",
+          "nadadores": "Diogo Alexandre Oliveira · Filipe Manso Laranjo · Ana Pinho Rodrigues · Maria Gomes Neves"
         },
         "50_E": {
           "tempo": "1:50,71",
           "clube": "Associacao Louzan Natacao",
           "data": "04/02/2023",
-          "local": "Póvoa de Varzim"
+          "local": "Póvoa de Varzim",
+          "nadadores": "Camila Rodrigues Rebelo · Gabriel Jose Lopes · Ines Jacinto Henriques · Afonso Filipe Costa"
         },
         "100_E": {
           "tempo": "3:57,26",
           "clube": "Sporting Clube de Portugal",
           "data": "05/04/2024",
-          "local": "Coimbra"
+          "local": "Coimbra",
+          "nadadores": "Francisco Rogerio Santos · Francisco Robalo Quintas · Maria Ferreira Moura · Rita Barros Frischknecht"
         }
       },
       "19+": {
@@ -5878,25 +5931,29 @@ var recordesEstafetas = {
           "tempo": "1:41,55",
           "clube": "Futebol Clube do Porto",
           "data": "02/02/2020",
-          "local": "Povoa de Varzim"
+          "local": "Povoa de Varzim",
+          "nadadores": "Rosa Maria Oliveira · Porfirio Braga Nunes · Alexandre Ferreira Amorim · Catarina Maria Ferreira"
         },
         "100_L": {
           "tempo": "3:42,82",
           "clube": "Sporting Clube de Portugal",
           "data": "31/05/2025",
-          "local": "Coimbra"
+          "local": "Coimbra",
+          "nadadores": "Maria Ferreira Moura · Anna Fomina · Kaio Araujo Faftine · Pedro Bethlem Tigre"
         },
         "50_E": {
           "tempo": "1:50,71",
           "clube": "Associacao Louzan Natacao",
           "data": "04/02/2023",
-          "local": "Póvoa de Varzim"
+          "local": "Póvoa de Varzim",
+          "nadadores": "Camila Rodrigues Rebelo · Gabriel Jose Lopes · Ines Jacinto Henriques · Afonso Filipe Costa"
         },
         "100_E": {
           "tempo": "3:57,26",
           "clube": "Sporting Clube de Portugal",
           "data": "05/04/2024",
-          "local": "Coimbra"
+          "local": "Coimbra",
+          "nadadores": "Francisco Rogerio Santos · Francisco Robalo Quintas · Maria Ferreira Moura · Rita Barros Frischknecht"
         }
       },
       "17-18": {
@@ -5904,13 +5961,15 @@ var recordesEstafetas = {
           "tempo": "1:48,10",
           "clube": "Futebol Clube do Porto",
           "data": "27/02/2026",
-          "local": "Póvoa de Varzim"
+          "local": "Póvoa de Varzim",
+          "nadadores": "Bernardo Silva Deus · Beatriz Alves Ambrus · Carolina Correia Martins · Francisco Miguel Pereira"
         },
         "100_E": {
           "tempo": "4:08,74",
           "clube": "Sport Lisboa e Benfica",
           "data": "05/04/2024",
-          "local": "Coimbra"
+          "local": "Coimbra",
+          "nadadores": "Maria Carlotta Ferrari · Rafael Miguel Mimoso · David Miguel Morais · Catarina Andrade Franco"
         }
       },
       "16": {
@@ -5918,7 +5977,8 @@ var recordesEstafetas = {
           "tempo": "1:47,76",
           "clube": "Clube Fluvial Portuense",
           "data": "27/02/2026",
-          "local": "Póvoa de Varzim"
+          "local": "Póvoa de Varzim",
+          "nadadores": "Diogo Spratley Graca · Matilde Brandao Carvalho · Cloe Canadas Nogueira · Santiago Rocha Guimaraes"
         }
       },
       "15-16": {
@@ -5926,25 +5986,29 @@ var recordesEstafetas = {
           "tempo": "1:47,76",
           "clube": "Clube Fluvial Portuense",
           "data": "27/02/2026",
-          "local": "Póvoa de Varzim"
+          "local": "Póvoa de Varzim",
+          "nadadores": "Diogo Spratley Graca · Matilde Brandao Carvalho · Cloe Canadas Nogueira · Santiago Rocha Guimaraes"
         },
         "100_L": {
           "tempo": "3:55,56",
           "clube": "Condeixa Aqua Clube",
           "data": "13/07/2025",
-          "local": "Coimbra"
+          "local": "Coimbra",
+          "nadadores": "Rita Lucas Santos · Tomas Rafael Pereira · Leonor Nunes Cardeal · Joao Nuno Gaspar"
         },
         "50_E": {
           "tempo": "1:59,55",
           "clube": "Sporting Clube de Braga",
           "data": "30/07/2022",
-          "local": "Oeiras"
+          "local": "Oeiras",
+          "nadadores": "Miguel Costa Durao · Milan Santos Jevic · Gabriela Silva Marques · Margarida Vieira Pinto"
         },
         "100_E": {
           "tempo": "4:23,44",
           "clube": "Clube Naval Setubalense",
           "data": "25/07/2025",
-          "local": "Coimbra"
+          "local": "Coimbra",
+          "nadadores": "Carolina Sofia Martins · Rita Canas Brito · Miguel Ratinho Rocha · Rafael Lin Moniz"
         }
       },
       "14-16": {
@@ -5952,13 +6016,15 @@ var recordesEstafetas = {
           "tempo": "1:57,70",
           "clube": "Clube dos Galitos / Bresimar",
           "data": "31/07/2021",
-          "local": "Oeiras"
+          "local": "Oeiras",
+          "nadadores": "Diogo Miguel Silva · Joao Carvalho Rodrigues · Maria Emilia Almeida · Miriam Mortagua Soares"
         },
         "100_E": {
           "tempo": "4:15,97",
           "clube": "Clube dos Galitos / Bresimar",
           "data": "01/08/2021",
-          "local": "Oeiras"
+          "local": "Oeiras",
+          "nadadores": "Diogo Miguel Silva · Joao Carvalho Rodrigues · Maria Emilia Almeida · Miriam Mortagua Soares"
         }
       },
       "13-14": {
@@ -5966,19 +6032,22 @@ var recordesEstafetas = {
           "tempo": "1:53,56",
           "clube": "Clube Galitos / Bresimar",
           "data": "06/07/2025",
-          "local": "Coimbra"
+          "local": "Coimbra",
+          "nadadores": "Miguel Miranda Fernandes · Camila Ganito Santos · Daniel Volkov · Ana Carolina Pimenta"
         },
         "100_L": {
           "tempo": "4:01,87",
           "clube": "Clube dos Galitos / Bresimar",
           "data": "21/07/2018",
-          "local": "S. Joao da Madeira"
+          "local": "S. Joao da Madeira",
+          "nadadores": "Joao Afonso Antunes · Pedro Duarte Jesus · Carolina Miranda Fernandes · Lara Rodrigues Vasconcelos"
         },
         "100_E": {
           "tempo": "4:33,31",
           "clube": "Sporting Clube de Portugal",
           "data": "17/07/2016",
-          "local": "Famalicão"
+          "local": "Famalicão",
+          "nadadores": "Filipa Ramos Peixeira · Martim Rebelo Malfeito · Vicente Oliveira Gomes · Barbara Silva Viegas"
         }
       }
     }
@@ -5990,31 +6059,36 @@ var recordesEstafetas = {
           "tempo": "1:26,91",
           "clube": "Sport Lisboa e Benfica",
           "data": "09/12/2022",
-          "local": "Leiria"
+          "local": "Leiria",
+          "nadadores": "Miguel Duarte Nascimento · Miguel Henriques Marques · Diogo Santos Costa · Diogo Matos Ribeiro"
         },
         "100_L": {
           "tempo": "3:12,55",
           "clube": "Sport Lisboa e Benfica",
           "data": "15/12/2024",
-          "local": "Tomar"
+          "local": "Tomar",
+          "nadadores": "Diogo Matos Ribeiro · Diogo Santos Costa · Gustavo Carvalhais Ribeiro · Miguel Duarte Nascimento"
         },
         "200_L": {
           "tempo": "7:10,67",
           "clube": "Sporting Clube de Portugal",
           "data": "22/12/2018",
-          "local": "Felgueiras"
+          "local": "Felgueiras",
+          "nadadores": "Tiago Cunha Costa · Igor Araujo Mogne · Francisco Rogerio Santos · Alexis Manacas Santos"
         },
         "50_E": {
           "tempo": "1:36,67",
           "clube": "Sport Lisboa e Benfica",
           "data": "10/12/2022",
-          "local": "Leiria"
+          "local": "Leiria",
+          "nadadores": "Diogo Santos Costa · Joao Soares Carneiro · Diogo Matos Ribeiro · Miguel Henriques Marques"
         },
         "100_E": {
           "tempo": "3:33,03",
           "clube": "Sporting Clube de Portugal",
           "data": "09/12/2022",
-          "local": "Leiria"
+          "local": "Leiria",
+          "nadadores": "Francisco Rogerio Santos · Francisco Robalo Quintas · Tiago Cunha Costa · Gustavo Carvalhais Ribeiro"
         }
       },
       "19+": {
@@ -6022,31 +6096,36 @@ var recordesEstafetas = {
           "tempo": "1:26,91",
           "clube": "Sport Lisboa e Benfica",
           "data": "09/12/2022",
-          "local": "Leiria"
+          "local": "Leiria",
+          "nadadores": "Miguel Duarte Nascimento · Miguel Henriques Marques · Diogo Santos Costa · Diogo Matos Ribeiro"
         },
         "100_L": {
           "tempo": "3:12,55",
           "clube": "Sport Lisboa e Benfica",
           "data": "15/12/2024",
-          "local": "Tomar"
+          "local": "Tomar",
+          "nadadores": "Diogo Matos Ribeiro · Diogo Santos Costa · Gustavo Carvalhais Ribeiro · Miguel Duarte Nascimento"
         },
         "200_L": {
           "tempo": "7:10,67",
           "clube": "Sporting Clube de Portugal",
           "data": "22/12/2018",
-          "local": "Felgueiras"
+          "local": "Felgueiras",
+          "nadadores": "Tiago Cunha Costa · Igor Araujo Mogne · Francisco Rogerio Santos · Alexis Manacas Santos"
         },
         "50_E": {
           "tempo": "1:36,67",
           "clube": "Sport Lisboa e Benfica",
           "data": "10/12/2022",
-          "local": "Leiria"
+          "local": "Leiria",
+          "nadadores": "Diogo Santos Costa · Joao Soares Carneiro · Diogo Matos Ribeiro · Miguel Henriques Marques"
         },
         "100_E": {
           "tempo": "3:33,03",
           "clube": "Sporting Clube de Portugal",
           "data": "09/12/2022",
-          "local": "Leiria"
+          "local": "Leiria",
+          "nadadores": "Francisco Rogerio Santos · Francisco Robalo Quintas · Tiago Cunha Costa · Gustavo Carvalhais Ribeiro"
         }
       },
       "17-18": {
@@ -6054,31 +6133,36 @@ var recordesEstafetas = {
           "tempo": "1:34,33",
           "clube": "Sport Lisboa e Benfica",
           "data": "08/12/2023",
-          "local": "Leiria"
+          "local": "Leiria",
+          "nadadores": "Pedro Goncalves Bonniz · Tomas Maia Januario · Guilherme Fernandes Baptista · Tomas Nunes Roque"
         },
         "100_L": {
           "tempo": "3:27,52",
           "clube": "Sport Lisboa e Benfica",
           "data": "10/12/2023",
-          "local": "Leiria"
+          "local": "Leiria",
+          "nadadores": "Tomas Maia Januario · Tomas Nunes Roque · Guilherme Fernandes Baptista · Pedro Goncalves Bonniz"
         },
         "200_L": {
           "tempo": "7:35,04",
           "clube": "Sport Lisboa e Benfica",
           "data": "09/12/2023",
-          "local": "Leiria"
+          "local": "Leiria",
+          "nadadores": "Tomas Nunes Roque · Guilherme Fernandes Baptista · Tomas Maia Januario · Pedro Goncalves Bonniz"
         },
         "50_E": {
           "tempo": "1:43,58",
           "clube": "Sport Lisboa e Benfica",
           "data": "09/12/2023",
-          "local": "Leiria"
+          "local": "Leiria",
+          "nadadores": "Tomas Maia Januario · Rafael Miguel Mimoso · Pedro Goncalves Bonniz · Guilherme Fernandes Baptista"
         },
         "100_E": {
           "tempo": "3:46,26",
           "clube": "Sport Lisboa e Benfica",
           "data": "08/12/2023",
-          "local": "Leiria"
+          "local": "Leiria",
+          "nadadores": "Tomas Maia Januario · Rafael Miguel Mimoso · Guilherme Fernandes Baptista · Tomas Nunes Roque"
         }
       },
       "16": {
@@ -6086,19 +6170,22 @@ var recordesEstafetas = {
           "tempo": "1:38,97",
           "clube": "Sport Lisboa e Benfica",
           "data": "07/05/2022",
-          "local": "Felgueiras"
+          "local": "Felgueiras",
+          "nadadores": "Tomas Nunes Roque · Tomas Maia Januario · Guilherme Fernandes Baptista · David Miguel Morais"
         },
         "100_L": {
           "tempo": "3:34,94",
           "clube": "Clube Naval do Funchal",
           "data": "11/07/2014",
-          "local": "Funchal"
+          "local": "Funchal",
+          "nadadores": "Francisco Manso Teixeira · Francisco Aguiar Morganho · Pedro Camacho Sousa · Henrique Luis Vargas"
         },
         "50_E": {
           "tempo": "1:49,06",
           "clube": "Clube Nautico de Leiria",
           "data": "25/03/2023",
-          "local": "Leiria"
+          "local": "Leiria",
+          "nadadores": "Goncalo Pereira Colaco · Francisco Marques Simoes · Joao Moura Francisco · Afonso Dinis Roque"
         }
       },
       "15-16": {
@@ -6106,19 +6193,22 @@ var recordesEstafetas = {
           "tempo": "1:38,97",
           "clube": "Sport Lisboa e Benfica",
           "data": "07/05/2022",
-          "local": "Felgueiras"
+          "local": "Felgueiras",
+          "nadadores": "Tomas Nunes Roque · Tomas Maia Januario · Guilherme Fernandes Baptista · David Miguel Morais"
         },
         "100_L": {
           "tempo": "3:34,94",
           "clube": "Clube Naval do Funchal",
           "data": "11/07/2014",
-          "local": "Funchal"
+          "local": "Funchal",
+          "nadadores": "Duarte Rafael Mourao · Fabio Andre Figueira · Simao Gomes Morgado · Carlos Esteves Almeida"
         },
         "50_E": {
           "tempo": "1:49,06",
           "clube": "Clube Nautico de Leiria",
           "data": "25/03/2023",
-          "local": "Leiria"
+          "local": "Leiria",
+          "nadadores": "Goncalo Pereira Colaco · Francisco Marques Simoes · Joao Moura Francisco · Afonso Dinis Roque"
         }
       },
       "15": {
@@ -6126,7 +6216,8 @@ var recordesEstafetas = {
           "tempo": "1:41,97",
           "clube": "Clube dos Galitos / Bresimar",
           "data": "21/02/2026",
-          "local": "Mealhada"
+          "local": "Mealhada",
+          "nadadores": "Francisco Felix Vale · Santiago Vagos Valente · Daniel Volkov · Miguel Miranda Fernandes"
         }
       },
       "14": {
@@ -6134,7 +6225,8 @@ var recordesEstafetas = {
           "tempo": "4:12,48",
           "clube": "Sporting Clube de Portugal",
           "data": "20/03/2016",
-          "local": "Tomar"
+          "local": "Tomar",
+          "nadadores": "Diogo Nuno Valente · Martim Rebelo Malfeito · Vicente Oliveira Gomes · Ruy Manuel Domingos"
         }
       },
       "13-14": {
@@ -6142,7 +6234,8 @@ var recordesEstafetas = {
           "tempo": "4:12,48",
           "clube": "Sporting Clube de Portugal",
           "data": "20/03/2016",
-          "local": "Tomar"
+          "local": "Tomar",
+          "nadadores": "Diogo Nuno Valente · Martim Rebelo Malfeito · Vicente Oliveira Gomes · Ruy Manuel Domingos"
         }
       },
       "13": {
@@ -6150,13 +6243,15 @@ var recordesEstafetas = {
           "tempo": "1:56,97",
           "clube": "Clube dos Galitos / Bresimar",
           "data": "17/03/2024",
-          "local": "Castro Daire"
+          "local": "Castro Daire",
+          "nadadores": "Francisco Felix Vale · Xavier Pinto Pereira · Santiago Vagos Valente · Miguel Miranda Fernandes"
         },
         "50_E": {
           "tempo": "2:14,09",
           "clube": "Clube dos Galitos / Bresimar",
           "data": "17/03/2024",
-          "local": "Castro Daire"
+          "local": "Castro Daire",
+          "nadadores": "Francisco Felix Vale · Santiago Vagos Valente · Miguel Miranda Fernandes · Miguel Marques Jesus"
         }
       }
     },
@@ -6166,31 +6261,36 @@ var recordesEstafetas = {
           "tempo": "1:42,92",
           "clube": "Sporting Clube de Portugal",
           "data": "15/12/2025",
-          "local": "Leiria"
+          "local": "Leiria",
+          "nadadores": "Laura Espinola Barbeiro · Maria Ferreira Moura · Carolina Pereira Viana · Anna Fomina"
         },
         "100_L": {
           "tempo": "3:42,27",
           "clube": "Sporting Clube de Portugal",
           "data": "20/12/2025",
-          "local": "Quarteira"
+          "local": "Quarteira",
+          "nadadores": "Laura Espinola Barbeito · Maria Ferreira Moura · Carolina Pereira Viana · Anna Fomina"
         },
         "200_L": {
           "tempo": "8:03,35",
           "clube": "Sport Lisboa e Benfica",
           "data": "22/12/2023",
-          "local": "Felgueiras"
+          "local": "Felgueiras",
+          "nadadores": "Leticia Maia Andre · Catarina Andrade Franco · Ema Jeronimo Conceicao · Diana Margarida Duraes"
         },
         "50_E": {
           "tempo": "1:51,70",
           "clube": "Sport Alges e Dafundo",
           "data": "16/12/2025",
-          "local": "Leiria"
+          "local": "Leiria",
+          "nadadores": "Rafaela Gomes Azevedo · Claudia Ferreira Borges · Marta Joao Pires · Ema Jeronimo Conceicao"
         },
         "100_E": {
           "tempo": "4:05,43",
           "clube": "Sporting Clube de Portugal",
           "data": "20/12/2025",
-          "local": "Quarteira"
+          "local": "Quarteira",
+          "nadadores": "Maelie Fonseca · Madalena Reis Cerdeira · Maria Ferreira Moura · Anna Fomina"
         }
       },
       "19+": {
@@ -6198,31 +6298,36 @@ var recordesEstafetas = {
           "tempo": "1:42,92",
           "clube": "Sporting Clube de Portugal",
           "data": "15/12/2025",
-          "local": "Leiria"
+          "local": "Leiria",
+          "nadadores": "Laura Espinola Barbeiro · Maria Ferreira Moura · Carolina Pereira Viana · Anna Fomina"
         },
         "100_L": {
           "tempo": "3:42,27",
           "clube": "Sporting Clube de Portugal",
           "data": "20/12/2025",
-          "local": "Quarteira"
+          "local": "Quarteira",
+          "nadadores": "Laura Espinola Barbeito · Maria Ferreira Moura · Carolina Pereira Viana · Anna Fomina"
         },
         "200_L": {
           "tempo": "8:03,62",
           "clube": "Sporting Clube de Portugal",
           "data": "21/12/2025",
-          "local": "Quarteira"
+          "local": "Quarteira",
+          "nadadores": "Maria Ferreira Moura · Carolina Pereira Viana · Laura Espinola Barbeito · Anna Fomina"
         },
         "50_E": {
           "tempo": "1:51,70",
           "clube": "Sport Alges e Dafundo",
           "data": "16/12/2025",
-          "local": "Leiria"
+          "local": "Leiria",
+          "nadadores": "Rafaela Gomes Azevedo · Claudia Ferreira Borges · Marta Joao Pires · Ema Jeronimo Conceicao"
         },
         "100_E": {
           "tempo": "4:05,43",
           "clube": "Sporting Clube de Portugal",
           "data": "20/12/2025",
-          "local": "Quarteira"
+          "local": "Quarteira",
+          "nadadores": "Maelie Fonseca · Madalena Reis Cerdeira · Maria Ferreira Moura · Anna Fomina"
         }
       },
       "16": {
@@ -6230,31 +6335,36 @@ var recordesEstafetas = {
           "tempo": "1:46,86",
           "clube": "Sporting Clube de Portugal",
           "data": "04/12/2009",
-          "local": "Leiria"
+          "local": "Leiria",
+          "nadadores": "Maria Carolina Rosa · Patricia Garcia Marinho · Filipa Vilas Tiago · Mafalda Gomes Beleza"
         },
         "100_L": {
           "tempo": "3:59,92",
           "clube": "Condeixa Aqua Clube",
           "data": "08/12/2025",
-          "local": "Estarreja"
+          "local": "Estarreja",
+          "nadadores": "Leonor Nunes Cardeal · Maria Neto Simoes · Maria Ines Rodrigues · Camila Duarte Marcelo"
         },
         "200_L": {
           "tempo": "8:42,20",
           "clube": "Condeixa Aqua Clube",
           "data": "06/12/2025",
-          "local": "Estarreja"
+          "local": "Estarreja",
+          "nadadores": "Leonor Nunes Cardeal · Maria Neto Simoes · Rita Lucas Santos · Camila Duarte Marcelo"
         },
         "50_E": {
           "tempo": "2:00,49",
           "clube": "Clube dos Galitos / Bresimar",
           "data": "21/02/2026",
-          "local": "Mealhada"
+          "local": "Mealhada",
+          "nadadores": "Carolina Ratola Taveira · Raquel Domingues Re · Leonor Silva Jesus · Sofia Rodrigues Vasconcelos"
         },
         "100_E": {
           "tempo": "4:27,13",
           "clube": "Clube dos Galitos / Bresimar",
           "data": "22/02/2026",
-          "local": "Mealhada"
+          "local": "Mealhada",
+          "nadadores": "Carolina Ratola Taveira · Raquel Domingues Re · Leonor Silva Jesus · Sofia Rodrigues Vasconcelos"
         }
       },
       "15-16": {
@@ -6262,25 +6372,29 @@ var recordesEstafetas = {
           "tempo": "3:59,92",
           "clube": "Condeixa Aqua Clube",
           "data": "08/12/2025",
-          "local": "Estarreja"
+          "local": "Estarreja",
+          "nadadores": "Leonor Nunes Cardeal · Maria Neto Simoes · Maria Ines Rodrigues · Camila Duarte Marcelo"
         },
         "200_L": {
           "tempo": "8:42,20",
           "clube": "Condeixa Aqua Clube",
           "data": "06/12/2025",
-          "local": "Estarreja"
+          "local": "Estarreja",
+          "nadadores": "Leonor Nunes Cardeal · Maria Neto Simoes · Rita Lucas Santos · Camila Duarte Marcelo"
         },
         "50_E": {
           "tempo": "2:00,49",
           "clube": "Clube dos Galitos / Bresimar",
           "data": "21/02/2026",
-          "local": "Mealhada"
+          "local": "Mealhada",
+          "nadadores": "Carolina Ratola Taveira · Raquel Domingues Re · Leonor Silva Jesus · Sofia Rodrigues Vasconcelos"
         },
         "100_E": {
           "tempo": "4:27,13",
           "clube": "Clube dos Galitos / Bresimar",
           "data": "22/02/2026",
-          "local": "Mealhada"
+          "local": "Mealhada",
+          "nadadores": "Carolina Ratola Taveira · Raquel Domingues Re · Leonor Silva Jesus · Sofia Rodrigues Vasconcelos"
         }
       },
       "15": {
@@ -6288,31 +6402,36 @@ var recordesEstafetas = {
           "tempo": "1:52,84",
           "clube": "Condeixa Aqua Clube",
           "data": "23/11/2024",
-          "local": "Cantanhede"
+          "local": "Cantanhede",
+          "nadadores": "Rita Lucas Santos · Maria Neto Simoes · Leonor Nunes Cardeal · Camila Duarte Marcelo"
         },
         "100_L": {
           "tempo": "4:00,53",
           "clube": "Clube dos Galitos / Bresimar",
           "data": "08/12/2019",
-          "local": "Mealhada"
+          "local": "Mealhada",
+          "nadadores": "Carolina Miranda Fernandes · Maria Carolina Almeida · Leonor Ferreira Sequeira · Lara Rodrigues Vasconcelos"
         },
         "200_L": {
           "tempo": "8:48,75",
           "clube": "Clube dos Galitos / Bresimar",
           "data": "24/05/2025",
-          "local": "Mealhada"
+          "local": "Mealhada",
+          "nadadores": "Carolina Ratola Taveira · Leonor Silva Jesus · Ines Ribeiro Melo · Sofia Rodrigues Vasconcelos"
         },
         "50_E": {
           "tempo": "2:04,57",
           "clube": "Condeixa Aqua Clube",
           "data": "12/04/2025",
-          "local": "Felgueiras"
+          "local": "Felgueiras",
+          "nadadores": "Rita Lucas Santos · Maria Neto Simoes · Camila Duarte Marcelo · Leonor Nunes Cardeal"
         },
         "100_E": {
           "tempo": "4:29,46",
           "clube": "Sporting Clube de Portugal",
           "data": "14/07/2019",
-          "local": "Algés"
+          "local": "Algés",
+          "nadadores": "Mariana Morais Delfino · Marta Macedo Inacio · Maria Ferreira Moura · Daniela Alexandra Pedro"
         }
       },
       "14": {
@@ -6320,31 +6439,36 @@ var recordesEstafetas = {
           "tempo": "1:53,87",
           "clube": "Condeixa Aqua Clube",
           "data": "25/05/2024",
-          "local": "Condeixa"
+          "local": "Condeixa",
+          "nadadores": "Camila Duarte Marcelo · Rita Lucas Santos · Maria Ines Rodrigues · Maria Neto Simoes"
         },
         "100_L": {
           "tempo": "4:05,21",
           "clube": "Clube dos Galitos / Bresimar",
           "data": "10/06/2019",
-          "local": "Estarreja"
+          "local": "Estarreja",
+          "nadadores": "Carolina Miranda Fernandes · Maria Carolina Almeida · Lara Rodrigues Vasconcelos · Leonor Ferreira Sequeira"
         },
         "200_L": {
           "tempo": "8:52,76",
           "clube": "Sport Alges e Dafundo",
           "data": "04/06/2011",
-          "local": "Algés"
+          "local": "Algés",
+          "nadadores": ""
         },
         "50_E": {
           "tempo": "2:07,67",
           "clube": "Condeixa Aqua Clube",
           "data": "26/11/2023",
-          "local": "Coimbra"
+          "local": "Coimbra",
+          "nadadores": "Rita Lucas Santos · Maria Neto Simoes · Camila Duarte Marcelo · Maria Ines Rodrigues"
         },
         "100_E": {
           "tempo": "4:33,40",
           "clube": "Sport Lisboa e Benfica",
           "data": "15/06/2006",
-          "local": "Reboleira"
+          "local": "Reboleira",
+          "nadadores": ""
         }
       },
       "13": {
@@ -6352,7 +6476,8 @@ var recordesEstafetas = {
           "tempo": "4:13,11",
           "clube": "Clube dos Galitos / Bresimar",
           "data": "11/03/2018",
-          "local": "Felgueiras"
+          "local": "Felgueiras",
+          "nadadores": "Carolina Miranda Fernandes · Leonor Ferreira Sequeira · Maria Carolina Almeida · Lara Rodrigues Vasconcelos"
         }
       }
     },
@@ -6362,25 +6487,29 @@ var recordesEstafetas = {
           "tempo": "1:34,67",
           "clube": "Sporting Clube de Portugal",
           "data": "15/12/2025",
-          "local": "Leiria"
+          "local": "Leiria",
+          "nadadores": "Andre Miguel Ramos · Pedro Bethlem Tigre · Laura Espinola Barbeiro · Anna Fomina"
         },
         "100_L": {
           "tempo": "3:38,72",
           "clube": "Futebol Clube do Porto",
           "data": "14/11/2021",
-          "local": "Felguerias"
+          "local": "Felguerias",
+          "nadadores": "Pedro Miguel Santos · Ana Rita Ramos · Porfirio Braga Nunes · Rosa Maria Oliveira"
         },
         "50_E": {
           "tempo": "1:44,20",
           "clube": "Sport Lisboa e Benfica",
           "data": "14/12/2025",
-          "local": "Leiria"
+          "local": "Leiria",
+          "nadadores": "Miguel Duarte Nascimento · Rebeca Leonor Antunes · Diogo Matos Ribeiro · Rita Barros Frischnecht"
         },
         "100_E": {
           "tempo": "3:58,31",
           "clube": "Vitoria Sport Clube",
           "data": "14/11/2021",
-          "local": "Felgueriras"
+          "local": "Felgueriras",
+          "nadadores": "Joao Nogueira Costa · Alexandre Ferreira Amorim · Filipa Viamonte Fernandes · Ana Ines Fernandes"
         }
       },
       "19+": {
@@ -6388,19 +6517,22 @@ var recordesEstafetas = {
           "tempo": "1:34,67",
           "clube": "Sporting Clube de Portugal",
           "data": "15/12/2025",
-          "local": "Leiria"
+          "local": "Leiria",
+          "nadadores": "Andre Miguel Ramos · Pedro Bethlem Tigre · Laura Espinola Barbeiro · Anna Fomina"
         },
         "100_L": {
           "tempo": "3:38,72",
           "clube": "Futebol Clube do Porto",
           "data": "14/11/2021",
-          "local": "Felgueiras"
+          "local": "Felgueiras",
+          "nadadores": "Pedro Miguel Santos · Ana Rita Ramos · Porfirio Braga Nunes · Rosa Maria Oliveira"
         },
         "50_E": {
           "tempo": "1:44,20",
           "clube": "Sport Lisboa e Benfica",
           "data": "14/12/2025",
-          "local": "Leiria"
+          "local": "Leiria",
+          "nadadores": "Miguel Duarte Nascimento · Rebeca Leonor Antunes · Diogo Matos Ribeiro · Rita Barros Frischknecht"
         }
       },
       "17-18": {
@@ -6408,25 +6540,29 @@ var recordesEstafetas = {
           "tempo": "1:41,62",
           "clube": "Sport Lisboa e Benfica",
           "data": "28/04/2019",
-          "local": "Felgueiras"
+          "local": "Felgueiras",
+          "nadadores": "Rafael Alcantara Aires · Leticia Maia Andre · Diogo Ramos Lebre · Ana Raquel Graveto"
         },
         "100_L": {
           "tempo": "3:41,33",
           "clube": "Clube dos Galitos / Bresimar",
           "data": "15/05/2022",
-          "local": "Gafanha da Nazare"
+          "local": "Gafanha da Nazare",
+          "nadadores": "Bernardo Rodrigues Tavares · Diogo Miguel Silva · Maria Carolina Almeida · Carolina Miranda Fernandes"
         },
         "50_E": {
           "tempo": "1:51,44",
           "clube": "Clube dos Galitos / Bresimar",
           "data": "22/10/2022",
-          "local": "Estarreja"
+          "local": "Estarreja",
+          "nadadores": "Diogo Miguel Silva · Joao Carvalho Rodrigues · Carolina Miranda Fernandes · Lara Rodrigues Vasconcelos"
         },
         "100_E": {
           "tempo": "4:00,84",
           "clube": "Clube dos Galitos / Bresimar",
           "data": "14/05/2022",
-          "local": "Gafanha da Nazare"
+          "local": "Gafanha da Nazare",
+          "nadadores": "Diogo Miguel Silva · Tiago Maia Pereira · Maria Carolina Almeida · Carolina Miranda Fernandes"
         }
       },
       "15-16": {
@@ -6434,19 +6570,22 @@ var recordesEstafetas = {
           "tempo": "1:45,84",
           "clube": "Futebol Clube do Porto",
           "data": "14/04/2024",
-          "local": "Felgueiras"
+          "local": "Felgueiras",
+          "nadadores": "Miguel Fragoso Medeiros · Beatriz Alves Ambrus · Duarte Santos Ferreira · Francisca Martingo Ricardo"
         },
         "100_L": {
           "tempo": "3:50,57",
           "clube": "Condeixa Aqua Clube",
           "data": "08/12/2024",
-          "local": "Condeixa"
+          "local": "Condeixa",
+          "nadadores": "Rita Lucas Santos · Joao Nuno Gaspar · Leonor Nunes Cardeal · Tomas Rafael Pereira"
         },
         "50_E": {
           "tempo": "1:57,50",
           "clube": "Futebol Clube do Porto",
           "data": "13/04/2024",
-          "local": "Felgueiras"
+          "local": "Felgueiras",
+          "nadadores": "Francisca Martingo Ricardo · Miguel Fragoso Medeiros · Duarte Santos Ferreira · Beatriz Alves Ambrus"
         }
       },
       "15": {
@@ -6454,13 +6593,15 @@ var recordesEstafetas = {
           "tempo": "1:46,99",
           "clube": "Clube dos Galitos / Bresimar",
           "data": "23/11/2025",
-          "local": "Mealhada"
+          "local": "Mealhada",
+          "nadadores": "Miguel Miranda Fernandes · Daniel Volkov · Leonor Marques Mendes · Zoe Pinho Nunes"
         },
         "50_E": {
           "tempo": "1:59,15",
           "clube": "Clube dos Galitos / Bresimar",
           "data": "07/12/2025",
-          "local": "Estarreja"
+          "local": "Estarreja",
+          "nadadores": "Daniel Volkov · Leonor Marques Mendes · Miguel Miranda Fernandes · Zoe Pinho Nunes"
         }
       },
       "14": {
@@ -6468,7 +6609,8 @@ var recordesEstafetas = {
           "tempo": "4:09,72",
           "clube": "Futebol Clube do Porto",
           "data": "01/02/2026",
-          "local": "Felgueiras"
+          "local": "Felgueiras",
+          "nadadores": "Maria Clara Pereira · Joao Santiago Neves · Tiago Carvalho Pinto · Maria Luis Simoes"
         }
       },
       "13-14": {
@@ -6476,30 +6618,4773 @@ var recordesEstafetas = {
           "tempo": "1:50,69",
           "clube": "Clube dos Galitos / Bresimar",
           "data": "29/06/2025",
-          "local": "Aveiro"
+          "local": "Aveiro",
+          "nadadores": "Miguel Miranda Fernandes · Ana Carolina Pimenta · Daniel Volkov · Camila Ganito Santos"
         },
         "100_L": {
           "tempo": "4:09,72",
           "clube": "Futebol Clube do Porto",
           "data": "01/02/2026",
-          "local": "Felgueiras"
+          "local": "Felgueiras",
+          "nadadores": "Maria Clara Pereira · Joao Santiago Neves · Tiago Carvalho Pinto · Maria Luis Simoes"
         },
         "50_E": {
           "tempo": "2:04,67",
           "clube": "Clube Naval do Funchal",
           "data": "04/07/2025",
-          "local": "Funchal"
+          "local": "Funchal",
+          "nadadores": "David Oliveira Rodrigues · Maria Franco Ferro · Pedro Dinis Abreu · Sarah Camila Machado"
         },
         "100_E": {
           "tempo": "4:35,27",
           "clube": "Sport Alges e Dafundo",
           "data": "29/06/2019",
-          "local": "Alges"
+          "local": "Alges",
+          "nadadores": "Maria Soares Almeida · Rodrigo Ferreira Mimoso · Francisc Gututui · Francisca Santos Ferreira"
         }
       }
     }
   }
 };
+
+// ============================================================
+// DADOS — Piscina Curta (25m) e Piscina Longa (50m)
+// ============================================================
+var tempos = {
+  "longa": {
+    "M": {
+      "50_L": {
+        "ABS": "00:24,26",
+        "SEN": "00:24,75",
+        "SUB21": "00:24,99",
+        "JUN": "00:25,23",
+        "JUN1": "00:25,96",
+        "JUV_A_VER": "00:26,44",
+        "JUV_A_INV": "00:26,93",
+        "JUV_B_VER": "00:27,66",
+        "JUV_B_INV": "00:28,14",
+        "INF_A": "00:29,84",
+        "INF_B": "00:31,30",
+        "JUV_A_ZON": "00:27,66",
+        "JUV_B_ZON": "00:28,63",
+        "INF_A_ZON": "00:30,08",
+        "INF_B_ZON": "00:32,02"
+      },
+      "100_L": {
+        "ABS": "00:52,80",
+        "SEN": "00:53,86",
+        "SUB21": "00:54,38",
+        "JUN": "00:54,91",
+        "JUN1": "00:56,50",
+        "JUV_A_VER": "00:57,55",
+        "JUV_A_INV": "00:58,61",
+        "JUV_B_VER": "01:00,19",
+        "JUV_B_INV": "01:01,25",
+        "INF_A": "01:04,94",
+        "INF_B": "01:08,11",
+        "JUV_A_ZON": "01:00,19",
+        "JUV_B_ZON": "01:02,30",
+        "INF_A_ZON": "01:05,47",
+        "INF_B_ZON": "01:09,70"
+      },
+      "200_L": {
+        "ABS": "01:56,36",
+        "SEN": "01:58,69",
+        "SUB21": "01:59,85",
+        "JUN": "02:01,01",
+        "JUN1": "02:04,51",
+        "JUV_A_VER": "02:06,83",
+        "JUV_A_INV": "02:09,16",
+        "JUV_B_VER": "02:12,65",
+        "JUV_B_INV": "02:14,98",
+        "INF_A": "02:23,12",
+        "INF_B": "02:30,10",
+        "JUV_A_ZON": "02:12,65",
+        "JUV_B_ZON": "02:17,30",
+        "INF_A_ZON": "02:24,29",
+        "INF_B_ZON": "02:33,60"
+      },
+      "400_L": {
+        "ABS": "04:06,04",
+        "SEN": "04:10,96",
+        "SUB21": "04:13,42",
+        "JUN": "04:15,88",
+        "JUN1": "04:23,26",
+        "JUV_A_VER": "04:28,18",
+        "JUV_A_INV": "04:33,10",
+        "JUV_B_VER": "04:40,49",
+        "JUV_B_INV": "04:45,41",
+        "INF_A": "05:02,63",
+        "INF_B": "05:17,39",
+        "JUV_A_ZON": "04:40,49",
+        "JUV_B_ZON": "04:50,33",
+        "INF_A_ZON": "05:05,09",
+        "INF_B_ZON": "05:24,77"
+      },
+      "800_L": {
+        "ABS": "08:32,14",
+        "SEN": "08:42,38",
+        "SUB21": "08:47,50",
+        "JUN": "08:52,63",
+        "JUN1": "09:07,99",
+        "JUV_A_VER": "09:18,23",
+        "JUV_A_INV": "09:28,48",
+        "JUV_B_VER": "09:43,84",
+        "JUV_B_INV": "09:54,08",
+        "INF_A": "10:29,93",
+        "INF_B": "11:00,66",
+        "JUV_A_ZON": "09:43,84",
+        "JUV_B_ZON": "10:04,33",
+        "INF_A_ZON": "10:35,05",
+        "INF_B_ZON": "11:16,02"
+      },
+      "1500_L": {
+        "ABS": "16:21,19",
+        "SEN": "16:40,81",
+        "SUB21": "16:50,63",
+        "JUN": "17:00,44",
+        "JUN1": "17:29,87",
+        "JUV_A_VER": "17:49,50",
+        "JUV_A_INV": "18:09,12",
+        "JUV_B_VER": "18:38,56",
+        "JUV_B_INV": "18:58,18",
+        "INF_A": "20:06,86",
+        "INF_B": "21:05,74",
+        "JUV_A_ZON": "18:38,56",
+        "JUV_B_ZON": "19:17,80",
+        "INF_A_ZON": "20:16,68",
+        "INF_B_ZON": "21:35,17"
+      },
+      "50_C": {
+        "ABS": "00:27,87",
+        "SEN": "00:28,43",
+        "SUB21": "00:28,71",
+        "JUN": "00:28,98",
+        "JUN1": "00:29,82",
+        "JUV_A_VER": "00:30,38",
+        "JUV_A_INV": "00:30,94",
+        "JUV_B_VER": "00:31,77",
+        "JUV_B_INV": "00:32,33",
+        "INF_A": "00:34,28",
+        "INF_B": "00:35,95",
+        "JUV_A_ZON": "00:31,77",
+        "JUV_B_ZON": "00:32,89",
+        "INF_A_ZON": "00:34,56",
+        "INF_B_ZON": "00:36,79"
+      },
+      "100_C": {
+        "ABS": "00:59,87",
+        "SEN": "01:01,07",
+        "SUB21": "01:01,67",
+        "JUN": "01:02,26",
+        "JUN1": "01:04,06",
+        "JUV_A_VER": "01:05,26",
+        "JUV_A_INV": "01:06,46",
+        "JUV_B_VER": "01:08,25",
+        "JUV_B_INV": "01:09,45",
+        "INF_A": "01:13,64",
+        "INF_B": "01:17,23",
+        "JUV_A_ZON": "01:08,25",
+        "JUV_B_ZON": "01:10,65",
+        "INF_A_ZON": "01:14,24",
+        "INF_B_ZON": "01:19,03"
+      },
+      "200_C": {
+        "ABS": "02:12,75",
+        "SEN": "02:15,41",
+        "SUB21": "02:16,73",
+        "JUN": "02:18,06",
+        "JUN1": "02:22,04",
+        "JUV_A_VER": "02:24,70",
+        "JUV_A_INV": "02:27,35",
+        "JUV_B_VER": "02:31,33",
+        "JUV_B_INV": "02:33,99",
+        "INF_A": "02:43,28",
+        "INF_B": "02:51,25",
+        "JUV_A_ZON": "02:31,33",
+        "JUV_B_ZON": "02:36,64",
+        "INF_A_ZON": "02:44,61",
+        "INF_B_ZON": "02:55,23"
+      },
+      "50_B": {
+        "ABS": "00:30,72",
+        "SEN": "00:31,33",
+        "SUB21": "00:31,64",
+        "JUN": "00:31,95",
+        "JUN1": "00:32,87",
+        "JUV_A_VER": "00:33,48",
+        "JUV_A_INV": "00:34,10",
+        "JUV_B_VER": "00:35,02",
+        "JUV_B_INV": "00:35,64",
+        "INF_A": "00:37,79",
+        "INF_B": "00:39,63",
+        "JUV_A_ZON": "00:35,02",
+        "JUV_B_ZON": "00:36,25",
+        "INF_A_ZON": "00:38,09",
+        "INF_B_ZON": "00:40,55"
+      },
+      "100_B": {
+        "ABS": "01:07,76",
+        "SEN": "01:09,12",
+        "SUB21": "01:09,79",
+        "JUN": "01:10,47",
+        "JUN1": "01:12,50",
+        "JUV_A_VER": "01:13,86",
+        "JUV_A_INV": "01:15,21",
+        "JUV_B_VER": "01:17,25",
+        "JUV_B_INV": "01:18,60",
+        "INF_A": "01:23,34",
+        "INF_B": "01:27,41",
+        "JUV_A_ZON": "01:17,25",
+        "JUV_B_ZON": "01:19,96",
+        "INF_A_ZON": "01:24,02",
+        "INF_B_ZON": "01:29,44"
+      },
+      "200_B": {
+        "ABS": "02:28,12",
+        "SEN": "02:31,08",
+        "SUB21": "02:32,56",
+        "JUN": "02:34,04",
+        "JUN1": "02:38,49",
+        "JUV_A_VER": "02:41,45",
+        "JUV_A_INV": "02:44,41",
+        "JUV_B_VER": "02:48,86",
+        "JUV_B_INV": "02:51,82",
+        "INF_A": "03:02,19",
+        "INF_B": "03:11,07",
+        "JUV_A_ZON": "02:48,86",
+        "JUV_B_ZON": "02:54,78",
+        "INF_A_ZON": "03:03,67",
+        "INF_B_ZON": "03:15,52"
+      },
+      "50_M": {
+        "ABS": "00:25,59",
+        "SEN": "00:26,10",
+        "SUB21": "00:26,36",
+        "JUN": "00:26,61",
+        "JUN1": "00:27,38",
+        "JUV_A_VER": "00:27,89",
+        "JUV_A_INV": "00:28,40",
+        "JUV_B_VER": "00:29,17",
+        "JUV_B_INV": "00:29,68",
+        "INF_A": "00:31,48",
+        "INF_B": "00:33,01",
+        "JUV_A_ZON": "00:29,17",
+        "JUV_B_ZON": "00:30,20",
+        "INF_A_ZON": "00:31,73",
+        "INF_B_ZON": "00:33,78"
+      },
+      "100_M": {
+        "ABS": "00:57,00",
+        "SEN": "00:58,14",
+        "SUB21": "00:58,71",
+        "JUN": "00:59,28",
+        "JUN1": "01:00,99",
+        "JUV_A_VER": "01:02,13",
+        "JUV_A_INV": "01:03,27",
+        "JUV_B_VER": "01:04,98",
+        "JUV_B_INV": "01:06,12",
+        "INF_A": "01:10,11",
+        "INF_B": "01:13,53",
+        "JUV_A_ZON": "01:04,98",
+        "JUV_B_ZON": "01:07,26",
+        "INF_A_ZON": "01:10,68",
+        "INF_B_ZON": "01:15,24"
+      },
+      "200_M": {
+        "ABS": "02:09,36",
+        "SEN": "02:11,95",
+        "SUB21": "02:13,24",
+        "JUN": "02:14,53",
+        "JUN1": "02:18,42",
+        "JUV_A_VER": "02:21,00",
+        "JUV_A_INV": "02:23,59",
+        "JUV_B_VER": "02:27,47",
+        "JUV_B_INV": "02:30,06",
+        "INF_A": "02:39,11",
+        "INF_B": "02:46,87",
+        "JUV_A_ZON": "02:27,47",
+        "JUV_B_ZON": "02:32,64",
+        "INF_A_ZON": "02:40,41",
+        "INF_B_ZON": "02:50,76"
+      },
+      "200_E": {
+        "ABS": "02:12,78",
+        "SEN": "02:15,44",
+        "SUB21": "02:16,76",
+        "JUN": "02:18,09",
+        "JUN1": "02:22,07",
+        "JUV_A_VER": "02:24,73",
+        "JUV_A_INV": "02:27,39",
+        "JUV_B_VER": "02:31,37",
+        "JUV_B_INV": "02:34,02",
+        "INF_A": "02:43,32",
+        "INF_B": "02:51,29",
+        "JUV_A_ZON": "02:31,37",
+        "JUV_B_ZON": "02:36,68",
+        "INF_A_ZON": "02:44,65",
+        "INF_B_ZON": "02:55,27"
+      },
+      "400_E": {
+        "ABS": "04:43,91",
+        "SEN": "04:49,59",
+        "SUB21": "04:52,43",
+        "JUN": "04:55,27",
+        "JUN1": "05:03,78",
+        "JUV_A_VER": "05:09,46",
+        "JUV_A_INV": "05:15,14",
+        "JUV_B_VER": "05:23,66",
+        "JUV_B_INV": "05:29,34",
+        "INF_A": "05:49,21",
+        "INF_B": "06:06,24",
+        "JUV_A_ZON": "05:23,66",
+        "JUV_B_ZON": "05:35,01",
+        "INF_A_ZON": "05:52,05",
+        "INF_B_ZON": "06:14,76"
+      }
+    },
+    "F": {
+      "50_L": {
+        "ABS": "00:27,63",
+        "SEN": "00:28,18",
+        "SUB21": "00:28,46",
+        "JUN": "00:28,74",
+        "JUN1": "00:29,29",
+        "JUV_A_VER": "00:29,84",
+        "JUV_A_INV": "00:30,39",
+        "JUV_B_VER": "00:30,95",
+        "JUV_B_INV": "00:31,50",
+        "INF_A": "00:32,60",
+        "INF_B": "00:33,43",
+        "JUV_A_ZON": "00:31,22",
+        "JUV_B_ZON": "00:32,05",
+        "INF_A_ZON": "00:33,43",
+        "INF_B_ZON": "00:34,81"
+      },
+      "100_L": {
+        "ABS": "00:59,64",
+        "SEN": "01:00,83",
+        "SUB21": "01:01,43",
+        "JUN": "01:02,03",
+        "JUN1": "01:03,22",
+        "JUV_A_VER": "01:04,41",
+        "JUV_A_INV": "01:05,60",
+        "JUV_B_VER": "01:06,80",
+        "JUV_B_INV": "01:07,99",
+        "INF_A": "01:10,38",
+        "INF_B": "01:12,16",
+        "JUV_A_ZON": "01:07,39",
+        "JUV_B_ZON": "01:09,18",
+        "INF_A_ZON": "01:12,16",
+        "INF_B_ZON": "01:15,15"
+      },
+      "200_L": {
+        "ABS": "02:08,20",
+        "SEN": "02:10,76",
+        "SUB21": "02:12,05",
+        "JUN": "02:13,33",
+        "JUN1": "02:15,89",
+        "JUV_A_VER": "02:18,46",
+        "JUV_A_INV": "02:21,02",
+        "JUV_B_VER": "02:23,58",
+        "JUV_B_INV": "02:26,15",
+        "INF_A": "02:31,28",
+        "INF_B": "02:35,12",
+        "JUV_A_ZON": "02:24,87",
+        "JUV_B_ZON": "02:28,71",
+        "INF_A_ZON": "02:35,12",
+        "INF_B_ZON": "02:41,53"
+      },
+      "400_L": {
+        "ABS": "04:28,98",
+        "SEN": "04:34,36",
+        "SUB21": "04:37,05",
+        "JUN": "04:39,74",
+        "JUN1": "04:45,12",
+        "JUV_A_VER": "04:50,50",
+        "JUV_A_INV": "04:55,88",
+        "JUV_B_VER": "05:01,26",
+        "JUV_B_INV": "05:06,64",
+        "INF_A": "05:17,40",
+        "INF_B": "05:25,47",
+        "JUV_A_ZON": "05:03,95",
+        "JUV_B_ZON": "05:12,02",
+        "INF_A_ZON": "05:25,47",
+        "INF_B_ZON": "05:38,91"
+      },
+      "800_L": {
+        "ABS": "09:04,25",
+        "SEN": "09:15,14",
+        "SUB21": "09:20,58",
+        "JUN": "09:26,02",
+        "JUN1": "09:36,91",
+        "JUV_A_VER": "09:47,79",
+        "JUV_A_INV": "09:58,68",
+        "JUV_B_VER": "10:09,56",
+        "JUV_B_INV": "10:20,44",
+        "INF_A": "10:42,22",
+        "INF_B": "10:58,54",
+        "JUV_A_ZON": "10:15,00",
+        "JUV_B_ZON": "10:31,33",
+        "INF_A_ZON": "10:58,54",
+        "INF_B_ZON": "11:25,76"
+      },
+      "1500_L": {
+        "ABS": "17:44,97",
+        "SEN": "18:06,27",
+        "SUB21": "18:16,92",
+        "JUN": "18:27,57",
+        "JUN1": "18:48,87",
+        "JUV_A_VER": "19:10,17",
+        "JUV_A_INV": "19:31,47",
+        "JUV_B_VER": "19:52,77",
+        "JUV_B_INV": "20:14,07",
+        "INF_A": "20:56,66",
+        "INF_B": "21:28,61",
+        "JUV_A_ZON": "20:03,42",
+        "JUV_B_ZON": "20:35,37",
+        "INF_A_ZON": "21:28,61",
+        "INF_B_ZON": "22:21,86"
+      },
+      "50_C": {
+        "ABS": "00:31,74",
+        "SEN": "00:32,37",
+        "SUB21": "00:32,69",
+        "JUN": "00:33,01",
+        "JUN1": "00:33,64",
+        "JUV_A_VER": "00:34,28",
+        "JUV_A_INV": "00:34,91",
+        "JUV_B_VER": "00:35,55",
+        "JUV_B_INV": "00:36,18",
+        "INF_A": "00:37,45",
+        "INF_B": "00:38,41",
+        "JUV_A_ZON": "00:35,87",
+        "JUV_B_ZON": "00:36,82",
+        "INF_A_ZON": "00:38,41",
+        "INF_B_ZON": "00:39,99"
+      },
+      "100_C": {
+        "ABS": "01:07,62",
+        "SEN": "01:08,97",
+        "SUB21": "01:09,65",
+        "JUN": "01:10,32",
+        "JUN1": "01:11,68",
+        "JUV_A_VER": "01:13,03",
+        "JUV_A_INV": "01:14,38",
+        "JUV_B_VER": "01:15,73",
+        "JUV_B_INV": "01:17,09",
+        "INF_A": "01:19,79",
+        "INF_B": "01:21,82",
+        "JUV_A_ZON": "01:16,41",
+        "JUV_B_ZON": "01:18,44",
+        "INF_A_ZON": "01:21,82",
+        "INF_B_ZON": "01:25,20"
+      },
+      "200_C": {
+        "ABS": "02:25,92",
+        "SEN": "02:28,84",
+        "SUB21": "02:30,30",
+        "JUN": "02:31,76",
+        "JUN1": "02:34,68",
+        "JUV_A_VER": "02:37,59",
+        "JUV_A_INV": "02:40,51",
+        "JUV_B_VER": "02:43,43",
+        "JUV_B_INV": "02:46,35",
+        "INF_A": "02:52,19",
+        "INF_B": "02:56,56",
+        "JUV_A_ZON": "02:44,89",
+        "JUV_B_ZON": "02:49,27",
+        "INF_A_ZON": "02:56,56",
+        "INF_B_ZON": "03:03,86"
+      },
+      "50_B": {
+        "ABS": "00:34,68",
+        "SEN": "00:35,37",
+        "SUB21": "00:35,72",
+        "JUN": "00:36,07",
+        "JUN1": "00:36,76",
+        "JUV_A_VER": "00:37,45",
+        "JUV_A_INV": "00:38,15",
+        "JUV_B_VER": "00:38,84",
+        "JUV_B_INV": "00:39,54",
+        "INF_A": "00:40,92",
+        "INF_B": "00:41,96",
+        "JUV_A_ZON": "00:39,19",
+        "JUV_B_ZON": "00:40,23",
+        "INF_A_ZON": "00:41,96",
+        "INF_B_ZON": "00:43,70"
+      },
+      "100_B": {
+        "ABS": "01:16,29",
+        "SEN": "01:17,82",
+        "SUB21": "01:18,58",
+        "JUN": "01:19,34",
+        "JUN1": "01:20,87",
+        "JUV_A_VER": "01:22,39",
+        "JUV_A_INV": "01:23,92",
+        "JUV_B_VER": "01:25,44",
+        "JUV_B_INV": "01:26,97",
+        "INF_A": "01:30,02",
+        "INF_B": "01:32,31",
+        "JUV_A_ZON": "01:26,21",
+        "JUV_B_ZON": "01:28,50",
+        "INF_A_ZON": "01:32,31",
+        "INF_B_ZON": "01:36,13"
+      },
+      "200_B": {
+        "ABS": "02:45,23",
+        "SEN": "02:48,53",
+        "SUB21": "02:50,19",
+        "JUN": "02:51,84",
+        "JUN1": "02:55,14",
+        "JUV_A_VER": "02:58,45",
+        "JUV_A_INV": "03:01,75",
+        "JUV_B_VER": "03:05,06",
+        "JUV_B_INV": "03:08,36",
+        "INF_A": "03:14,97",
+        "INF_B": "03:19,93",
+        "JUV_A_ZON": "03:06,71",
+        "JUV_B_ZON": "03:11,67",
+        "INF_A_ZON": "03:19,93",
+        "INF_B_ZON": "03:28,19"
+      },
+      "50_M": {
+        "ABS": "00:29,34",
+        "SEN": "00:29,93",
+        "SUB21": "00:30,22",
+        "JUN": "00:30,51",
+        "JUN1": "00:31,10",
+        "JUV_A_VER": "00:31,69",
+        "JUV_A_INV": "00:32,27",
+        "JUV_B_VER": "00:32,86",
+        "JUV_B_INV": "00:33,45",
+        "INF_A": "00:34,62",
+        "INF_B": "00:35,50",
+        "JUV_A_ZON": "00:33,15",
+        "JUV_B_ZON": "00:34,03",
+        "INF_A_ZON": "00:35,50",
+        "INF_B_ZON": "00:36,97"
+      },
+      "100_M": {
+        "ABS": "01:05,51",
+        "SEN": "01:06,82",
+        "SUB21": "01:07,48",
+        "JUN": "01:08,13",
+        "JUN1": "01:09,44",
+        "JUV_A_VER": "01:10,75",
+        "JUV_A_INV": "01:12,06",
+        "JUV_B_VER": "01:13,37",
+        "JUV_B_INV": "01:14,68",
+        "INF_A": "01:17,30",
+        "INF_B": "01:19,27",
+        "JUV_A_ZON": "01:14,03",
+        "JUV_B_ZON": "01:15,99",
+        "INF_A_ZON": "01:19,27",
+        "INF_B_ZON": "01:22,54"
+      },
+      "200_M": {
+        "ABS": "02:26,25",
+        "SEN": "02:29,17",
+        "SUB21": "02:30,64",
+        "JUN": "02:32,10",
+        "JUN1": "02:35,02",
+        "JUV_A_VER": "02:37,95",
+        "JUV_A_INV": "02:40,88",
+        "JUV_B_VER": "02:43,80",
+        "JUV_B_INV": "02:46,73",
+        "INF_A": "02:52,57",
+        "INF_B": "02:56,96",
+        "JUV_A_ZON": "02:45,26",
+        "JUV_B_ZON": "02:49,65",
+        "INF_A_ZON": "02:56,96",
+        "INF_B_ZON": "03:04,28"
+      },
+      "200_E": {
+        "ABS": "02:27,71",
+        "SEN": "02:30,66",
+        "SUB21": "02:32,14",
+        "JUN": "02:33,62",
+        "JUN1": "02:36,57",
+        "JUV_A_VER": "02:39,53",
+        "JUV_A_INV": "02:42,48",
+        "JUV_B_VER": "02:45,44",
+        "JUV_B_INV": "02:48,39",
+        "INF_A": "02:54,30",
+        "INF_B": "02:58,73",
+        "JUV_A_ZON": "02:46,91",
+        "JUV_B_ZON": "02:51,34",
+        "INF_A_ZON": "02:58,73",
+        "INF_B_ZON": "03:06,11"
+      },
+      "400_E": {
+        "ABS": "05:08,82",
+        "SEN": "05:15,00",
+        "SUB21": "05:18,08",
+        "JUN": "05:21,17",
+        "JUN1": "05:27,35",
+        "JUV_A_VER": "05:33,53",
+        "JUV_A_INV": "05:39,70",
+        "JUV_B_VER": "05:45,88",
+        "JUV_B_INV": "05:52,05",
+        "INF_A": "06:04,41",
+        "INF_B": "06:13,67",
+        "JUV_A_ZON": "05:48,97",
+        "JUV_B_ZON": "05:58,23",
+        "INF_A_ZON": "06:13,67",
+        "INF_B_ZON": "06:29,11"
+      }
+    }
+  },
+  "curta": {
+    "M": {
+      "50_L": {
+        "ABS": "00:23,51",
+        "SEN": "00:23,98",
+        "SUB21": "00:24,22",
+        "JUN": "00:24,45",
+        "JUN1": "00:25,16",
+        "JUV_A_VER": "00:25,63",
+        "JUV_A_INV": "00:26,10",
+        "JUV_B_VER": "00:26,80",
+        "JUV_B_INV": "00:27,27",
+        "INF_A": "00:28,92",
+        "INF_B": "00:30,33",
+        "JUV_A_ZON": "00:26,80",
+        "JUV_B_ZON": "00:27,74",
+        "INF_A_ZON": "00:29,15",
+        "INF_B_ZON": "00:31,03"
+      },
+      "100_L": {
+        "ABS": "00:50,95",
+        "SEN": "00:51,97",
+        "SUB21": "00:52,48",
+        "JUN": "00:52,99",
+        "JUN1": "00:54,52",
+        "JUV_A_VER": "00:55,54",
+        "JUV_A_INV": "00:56,55",
+        "JUV_B_VER": "00:58,08",
+        "JUV_B_INV": "00:59,10",
+        "INF_A": "01:02,67",
+        "INF_B": "01:05,73",
+        "JUV_A_ZON": "00:58,08",
+        "JUV_B_ZON": "01:00,12",
+        "INF_A_ZON": "01:03,18",
+        "INF_B_ZON": "01:07,25"
+      },
+      "200_L": {
+        "ABS": "01:52,18",
+        "SEN": "01:54,42",
+        "SUB21": "01:55,55",
+        "JUN": "01:56,67",
+        "JUN1": "02:00,03",
+        "JUV_A_VER": "02:02,28",
+        "JUV_A_INV": "02:04,52",
+        "JUV_B_VER": "02:07,89",
+        "JUV_B_INV": "02:10,13",
+        "INF_A": "02:17,98",
+        "INF_B": "02:24,71",
+        "JUV_A_ZON": "02:07,89",
+        "JUV_B_ZON": "02:12,37",
+        "INF_A_ZON": "02:19,10",
+        "INF_B_ZON": "02:28,08"
+      },
+      "400_L": {
+        "ABS": "03:57,72",
+        "SEN": "04:02,47",
+        "SUB21": "04:04,85",
+        "JUN": "04:07,23",
+        "JUN1": "04:14,36",
+        "JUV_A_VER": "04:19,11",
+        "JUV_A_INV": "04:23,87",
+        "JUV_B_VER": "04:31,00",
+        "JUV_B_INV": "04:35,76",
+        "INF_A": "04:52,40",
+        "INF_B": "05:06,66",
+        "JUV_A_ZON": "04:31,00",
+        "JUV_B_ZON": "04:40,51",
+        "INF_A_ZON": "04:54,77",
+        "INF_B_ZON": "05:13,79"
+      },
+      "800_L": {
+        "ABS": "08:18,21",
+        "SEN": "08:28,17",
+        "SUB21": "08:33,16",
+        "JUN": "08:38,14",
+        "JUN1": "08:53,08",
+        "JUV_A_VER": "09:03,05",
+        "JUV_A_INV": "09:13,01",
+        "JUV_B_VER": "09:27,96",
+        "JUV_B_INV": "09:37,92",
+        "INF_A": "10:12,80",
+        "INF_B": "10:42,69",
+        "JUV_A_ZON": "09:27,96",
+        "JUV_B_ZON": "09:47,89",
+        "INF_A_ZON": "10:17,78",
+        "INF_B_ZON": "10:57,64"
+      },
+      "1500_L": {
+        "ABS": "15:41,66",
+        "SEN": "16:00,49",
+        "SUB21": "16:09,91",
+        "JUN": "16:19,33",
+        "JUN1": "16:47,58",
+        "JUV_A_VER": "17:06,41",
+        "JUV_A_INV": "17:25,24",
+        "JUV_B_VER": "17:53,49",
+        "JUV_B_INV": "18:12,33",
+        "INF_A": "19:18,24",
+        "INF_B": "20:14,74",
+        "JUV_A_ZON": "17:53,49",
+        "JUV_B_ZON": "18:31,16",
+        "INF_A_ZON": "19:27,66",
+        "INF_B_ZON": "20:42,99"
+      },
+      "50_C": {
+        "ABS": "00:26,46",
+        "SEN": "00:26,99",
+        "SUB21": "00:27,25",
+        "JUN": "00:27,52",
+        "JUN1": "00:28,31",
+        "JUV_A_VER": "00:28,84",
+        "JUV_A_INV": "00:29,37",
+        "JUV_B_VER": "00:30,16",
+        "JUV_B_INV": "00:30,69",
+        "INF_A": "00:32,55",
+        "INF_B": "00:34,13",
+        "JUV_A_ZON": "00:30,16",
+        "JUV_B_ZON": "00:31,22",
+        "INF_A_ZON": "00:32,81",
+        "INF_B_ZON": "00:34,93"
+      },
+      "100_C": {
+        "ABS": "00:57,00",
+        "SEN": "00:58,14",
+        "SUB21": "00:58,71",
+        "JUN": "00:59,28",
+        "JUN1": "01:00,99",
+        "JUV_A_VER": "01:02,13",
+        "JUV_A_INV": "01:03,27",
+        "JUV_B_VER": "01:04,98",
+        "JUV_B_INV": "01:06,12",
+        "INF_A": "01:10,11",
+        "INF_B": "01:13,53",
+        "JUV_A_ZON": "01:04,98",
+        "JUV_B_ZON": "01:07,26",
+        "INF_A_ZON": "01:10,68",
+        "INF_B_ZON": "01:15,24"
+      },
+      "200_C": {
+        "ABS": "02:04,67",
+        "SEN": "02:07,16",
+        "SUB21": "02:08,41",
+        "JUN": "02:09,66",
+        "JUN1": "02:13,40",
+        "JUV_A_VER": "02:15,89",
+        "JUV_A_INV": "02:18,38",
+        "JUV_B_VER": "02:22,12",
+        "JUV_B_INV": "02:24,62",
+        "INF_A": "02:33,34",
+        "INF_B": "02:40,82",
+        "JUV_A_ZON": "02:22,12",
+        "JUV_B_ZON": "02:27,11",
+        "INF_A_ZON": "02:34,59",
+        "INF_B_ZON": "02:44,56"
+      },
+      "50_B": {
+        "ABS": "00:29,83",
+        "SEN": "00:30,43",
+        "SUB21": "00:30,72",
+        "JUN": "00:31,02",
+        "JUN1": "00:31,92",
+        "JUV_A_VER": "00:32,51",
+        "JUV_A_INV": "00:33,11",
+        "JUV_B_VER": "00:34,01",
+        "JUV_B_INV": "00:34,60",
+        "INF_A": "00:36,69",
+        "INF_B": "00:38,48",
+        "JUV_A_ZON": "00:34,01",
+        "JUV_B_ZON": "00:35,20",
+        "INF_A_ZON": "00:36,99",
+        "INF_B_ZON": "00:39,38"
+      },
+      "100_B": {
+        "ABS": "01:04,54",
+        "SEN": "01:05,83",
+        "SUB21": "01:06,48",
+        "JUN": "01:07,12",
+        "JUN1": "01:09,06",
+        "JUV_A_VER": "01:10,35",
+        "JUV_A_INV": "01:11,64",
+        "JUV_B_VER": "01:13,58",
+        "JUV_B_INV": "01:14,87",
+        "INF_A": "01:19,38",
+        "INF_B": "01:23,26",
+        "JUV_A_ZON": "01:13,58",
+        "JUV_B_ZON": "01:16,16",
+        "INF_A_ZON": "01:20,03",
+        "INF_B_ZON": "01:25,19"
+      },
+      "200_B": {
+        "ABS": "02:21,85",
+        "SEN": "02:24,69",
+        "SUB21": "02:26,11",
+        "JUN": "02:27,52",
+        "JUN1": "02:31,78",
+        "JUV_A_VER": "02:34,62",
+        "JUV_A_INV": "02:37,45",
+        "JUV_B_VER": "02:41,71",
+        "JUV_B_INV": "02:44,55",
+        "INF_A": "02:54,48",
+        "INF_B": "03:02,99",
+        "JUV_A_ZON": "02:41,71",
+        "JUV_B_ZON": "02:47,38",
+        "INF_A_ZON": "02:55,89",
+        "INF_B_ZON": "03:07,24"
+      },
+      "50_M": {
+        "ABS": "00:25,25",
+        "SEN": "00:25,76",
+        "SUB21": "00:26,01",
+        "JUN": "00:26,26",
+        "JUN1": "00:27,02",
+        "JUV_A_VER": "00:27,52",
+        "JUV_A_INV": "00:28,03",
+        "JUV_B_VER": "00:28,78",
+        "JUV_B_INV": "00:29,29",
+        "INF_A": "00:31,06",
+        "INF_B": "00:32,57",
+        "JUV_A_ZON": "00:28,78",
+        "JUV_B_ZON": "00:29,80",
+        "INF_A_ZON": "00:31,31",
+        "INF_B_ZON": "00:33,33"
+      },
+      "100_M": {
+        "ABS": "00:55,82",
+        "SEN": "00:56,94",
+        "SUB21": "00:57,49",
+        "JUN": "00:58,05",
+        "JUN1": "00:59,73",
+        "JUV_A_VER": "01:00,84",
+        "JUV_A_INV": "01:01,96",
+        "JUV_B_VER": "01:03,63",
+        "JUV_B_INV": "01:04,75",
+        "INF_A": "01:08,66",
+        "INF_B": "01:12,01",
+        "JUV_A_ZON": "01:03,63",
+        "JUV_B_ZON": "01:05,87",
+        "INF_A_ZON": "01:09,22",
+        "INF_B_ZON": "01:13,68"
+      },
+      "200_M": {
+        "ABS": "02:05,98",
+        "SEN": "02:08,50",
+        "SUB21": "02:09,76",
+        "JUN": "02:11,02",
+        "JUN1": "02:14,80",
+        "JUV_A_VER": "02:17,32",
+        "JUV_A_INV": "02:19,84",
+        "JUV_B_VER": "02:23,62",
+        "JUV_B_INV": "02:26,14",
+        "INF_A": "02:34,96",
+        "INF_B": "02:42,51",
+        "JUV_A_ZON": "02:23,62",
+        "JUV_B_ZON": "02:28,66",
+        "INF_A_ZON": "02:36,22",
+        "INF_B_ZON": "02:46,29"
+      },
+      "100_E": {
+        "ABS": "00:58,80",
+        "SEN": "00:59,98",
+        "SUB21": "01:00,56",
+        "JUN": "01:01,15",
+        "JUN1": "01:02,92",
+        "JUV_A_VER": "01:04,09",
+        "JUV_A_INV": "01:05,27",
+        "JUV_B_VER": "01:07,03",
+        "JUV_B_INV": "01:08,21",
+        "INF_A": "01:12,32",
+        "INF_B": "01:15,85",
+        "JUV_A_ZON": "01:07,03",
+        "JUV_B_ZON": "01:09,38",
+        "INF_A_ZON": "01:12,91",
+        "INF_B_ZON": "01:17,62"
+      },
+      "200_E": {
+        "ABS": "02:06,27",
+        "SEN": "02:08,80",
+        "SUB21": "02:10,06",
+        "JUN": "02:11,32",
+        "JUN1": "02:15,11",
+        "JUV_A_VER": "02:17,63",
+        "JUV_A_INV": "02:20,16",
+        "JUV_B_VER": "02:23,95",
+        "JUV_B_INV": "02:26,47",
+        "INF_A": "02:35,31",
+        "INF_B": "02:42,89",
+        "JUV_A_ZON": "02:23,95",
+        "JUV_B_ZON": "02:29,00",
+        "INF_A_ZON": "02:36,57",
+        "INF_B_ZON": "02:46,68"
+      },
+      "400_E": {
+        "ABS": "04:30,16",
+        "SEN": "04:35,56",
+        "SUB21": "04:38,26",
+        "JUN": "04:40,97",
+        "JUN1": "04:49,07",
+        "JUV_A_VER": "04:54,47",
+        "JUV_A_INV": "04:59,88",
+        "JUV_B_VER": "05:07,98",
+        "JUV_B_INV": "05:13,39",
+        "INF_A": "05:32,30",
+        "INF_B": "05:48,51",
+        "JUV_A_ZON": "05:07,98",
+        "JUV_B_ZON": "05:18,79",
+        "INF_A_ZON": "05:35,00",
+        "INF_B_ZON": "05:56,61"
+      }
+    },
+    "F": {
+      "50_L": {
+        "ABS": "00:27,05",
+        "SEN": "00:27,59",
+        "SUB21": "00:27,86",
+        "JUN": "00:28,13",
+        "JUN1": "00:28,67",
+        "JUV_A_VER": "00:29,21",
+        "JUV_A_INV": "00:29,75",
+        "JUV_B_VER": "00:30,30",
+        "JUV_B_INV": "00:30,84",
+        "INF_A": "00:31,92",
+        "INF_B": "00:32,73",
+        "JUV_A_ZON": "00:30,57",
+        "JUV_B_ZON": "00:31,38",
+        "INF_A_ZON": "00:32,73",
+        "INF_B_ZON": "00:34,08"
+      },
+      "100_L": {
+        "ABS": "00:57,95",
+        "SEN": "00:59,11",
+        "SUB21": "00:59,69",
+        "JUN": "01:00,27",
+        "JUN1": "01:01,43",
+        "JUV_A_VER": "01:02,59",
+        "JUV_A_INV": "01:03,75",
+        "JUV_B_VER": "01:04,90",
+        "JUV_B_INV": "01:06,06",
+        "INF_A": "01:08,38",
+        "INF_B": "01:10,12",
+        "JUV_A_ZON": "01:05,48",
+        "JUV_B_ZON": "01:07,22",
+        "INF_A_ZON": "01:10,12",
+        "INF_B_ZON": "01:13,02"
+      },
+      "200_L": {
+        "ABS": "02:04,47",
+        "SEN": "02:06,96",
+        "SUB21": "02:08,20",
+        "JUN": "02:09,45",
+        "JUN1": "02:11,94",
+        "JUV_A_VER": "02:14,43",
+        "JUV_A_INV": "02:16,92",
+        "JUV_B_VER": "02:19,41",
+        "JUV_B_INV": "02:21,90",
+        "INF_A": "02:26,87",
+        "INF_B": "02:30,61",
+        "JUV_A_ZON": "02:20,65",
+        "JUV_B_ZON": "02:24,39",
+        "INF_A_ZON": "02:30,61",
+        "INF_B_ZON": "02:36,83"
+      },
+      "400_L": {
+        "ABS": "04:19,58",
+        "SEN": "04:24,77",
+        "SUB21": "04:27,37",
+        "JUN": "04:29,96",
+        "JUN1": "04:35,15",
+        "JUV_A_VER": "04:40,35",
+        "JUV_A_INV": "04:45,54",
+        "JUV_B_VER": "04:50,73",
+        "JUV_B_INV": "04:55,92",
+        "INF_A": "05:06,30",
+        "INF_B": "05:14,09",
+        "JUV_A_ZON": "04:53,33",
+        "JUV_B_ZON": "05:01,11",
+        "INF_A_ZON": "05:14,09",
+        "INF_B_ZON": "05:27,07"
+      },
+      "800_L": {
+        "ABS": "08:46,75",
+        "SEN": "08:57,28",
+        "SUB21": "09:02,55",
+        "JUN": "09:07,82",
+        "JUN1": "09:18,36",
+        "JUV_A_VER": "09:28,89",
+        "JUV_A_INV": "09:39,43",
+        "JUV_B_VER": "09:49,96",
+        "JUV_B_INV": "10:00,50",
+        "INF_A": "10:21,57",
+        "INF_B": "10:37,37",
+        "JUV_A_ZON": "09:55,23",
+        "JUV_B_ZON": "10:11,03",
+        "INF_A_ZON": "10:37,37",
+        "INF_B_ZON": "11:03,71"
+      },
+      "1500_L": {
+        "ABS": "17:18,56",
+        "SEN": "17:39,33",
+        "SUB21": "17:49,72",
+        "JUN": "18:00,10",
+        "JUN1": "18:20,87",
+        "JUV_A_VER": "18:41,64",
+        "JUV_A_INV": "19:02,42",
+        "JUV_B_VER": "19:23,19",
+        "JUV_B_INV": "19:43,96",
+        "INF_A": "20:25,50",
+        "INF_B": "20:56,66",
+        "JUV_A_ZON": "19:33,57",
+        "JUV_B_ZON": "20:04,73",
+        "INF_A_ZON": "20:56,66",
+        "INF_B_ZON": "21:48,59"
+      },
+      "50_C": {
+        "ABS": "00:30,45",
+        "SEN": "00:31,06",
+        "SUB21": "00:31,36",
+        "JUN": "00:31,67",
+        "JUN1": "00:32,28",
+        "JUV_A_VER": "00:32,89",
+        "JUV_A_INV": "00:33,49",
+        "JUV_B_VER": "00:34,10",
+        "JUV_B_INV": "00:34,71",
+        "INF_A": "00:35,93",
+        "INF_B": "00:36,84",
+        "JUV_A_ZON": "00:34,41",
+        "JUV_B_ZON": "00:35,32",
+        "INF_A_ZON": "00:36,84",
+        "INF_B_ZON": "00:38,37"
+      },
+      "100_C": {
+        "ABS": "01:04,97",
+        "SEN": "01:06,27",
+        "SUB21": "01:06,92",
+        "JUN": "01:07,57",
+        "JUN1": "01:08,87",
+        "JUV_A_VER": "01:10,17",
+        "JUV_A_INV": "01:11,47",
+        "JUV_B_VER": "01:12,77",
+        "JUV_B_INV": "01:14,07",
+        "INF_A": "01:16,66",
+        "INF_B": "01:18,61",
+        "JUV_A_ZON": "01:13,42",
+        "JUV_B_ZON": "01:15,37",
+        "INF_A_ZON": "01:18,61",
+        "INF_B_ZON": "01:21,86"
+      },
+      "200_C": {
+        "ABS": "02:20,72",
+        "SEN": "02:23,53",
+        "SUB21": "02:24,94",
+        "JUN": "02:26,35",
+        "JUN1": "02:29,16",
+        "JUV_A_VER": "02:31,98",
+        "JUV_A_INV": "02:34,79",
+        "JUV_B_VER": "02:37,61",
+        "JUV_B_INV": "02:40,42",
+        "INF_A": "02:46,05",
+        "INF_B": "02:50,27",
+        "JUV_A_ZON": "02:39,01",
+        "JUV_B_ZON": "02:43,24",
+        "INF_A_ZON": "02:50,27",
+        "INF_B_ZON": "02:57,31"
+      },
+      "50_B": {
+        "ABS": "00:34,28",
+        "SEN": "00:34,97",
+        "SUB21": "00:35,31",
+        "JUN": "00:35,65",
+        "JUN1": "00:36,34",
+        "JUV_A_VER": "00:37,02",
+        "JUV_A_INV": "00:37,71",
+        "JUV_B_VER": "00:38,39",
+        "JUV_B_INV": "00:39,08",
+        "INF_A": "00:40,45",
+        "INF_B": "00:41,48",
+        "JUV_A_ZON": "00:38,74",
+        "JUV_B_ZON": "00:39,76",
+        "INF_A_ZON": "00:41,48",
+        "INF_B_ZON": "00:43,19"
+      },
+      "100_B": {
+        "ABS": "01:13,91",
+        "SEN": "01:15,39",
+        "SUB21": "01:16,13",
+        "JUN": "01:16,87",
+        "JUN1": "01:18,34",
+        "JUV_A_VER": "01:19,82",
+        "JUV_A_INV": "01:21,30",
+        "JUV_B_VER": "01:22,78",
+        "JUV_B_INV": "01:24,26",
+        "INF_A": "01:27,21",
+        "INF_B": "01:29,43",
+        "JUV_A_ZON": "01:23,52",
+        "JUV_B_ZON": "01:25,74",
+        "INF_A_ZON": "01:29,43",
+        "INF_B_ZON": "01:33,13"
+      },
+      "200_B": {
+        "ABS": "02:37,74",
+        "SEN": "02:40,89",
+        "SUB21": "02:42,47",
+        "JUN": "02:44,05",
+        "JUN1": "02:47,20",
+        "JUV_A_VER": "02:50,36",
+        "JUV_A_INV": "02:53,51",
+        "JUV_B_VER": "02:56,67",
+        "JUV_B_INV": "02:59,82",
+        "INF_A": "03:06,13",
+        "INF_B": "03:10,87",
+        "JUV_A_ZON": "02:58,25",
+        "JUV_B_ZON": "03:02,98",
+        "INF_A_ZON": "03:10,87",
+        "INF_B_ZON": "03:18,75"
+      },
+      "50_M": {
+        "ABS": "00:29,04",
+        "SEN": "00:29,62",
+        "SUB21": "00:29,91",
+        "JUN": "00:30,20",
+        "JUN1": "00:30,78",
+        "JUV_A_VER": "00:31,36",
+        "JUV_A_INV": "00:31,94",
+        "JUV_B_VER": "00:32,52",
+        "JUV_B_INV": "00:33,11",
+        "INF_A": "00:34,27",
+        "INF_B": "00:35,14",
+        "JUV_A_ZON": "00:32,82",
+        "JUV_B_ZON": "00:33,69",
+        "INF_A_ZON": "00:35,14",
+        "INF_B_ZON": "00:36,59"
+      },
+      "100_M": {
+        "ABS": "01:04,65",
+        "SEN": "01:05,94",
+        "SUB21": "01:06,59",
+        "JUN": "01:07,24",
+        "JUN1": "01:08,53",
+        "JUV_A_VER": "01:09,82",
+        "JUV_A_INV": "01:11,12",
+        "JUV_B_VER": "01:12,41",
+        "JUV_B_INV": "01:13,70",
+        "INF_A": "01:16,29",
+        "INF_B": "01:18,23",
+        "JUV_A_ZON": "01:13,05",
+        "JUV_B_ZON": "01:14,99",
+        "INF_A_ZON": "01:18,23",
+        "INF_B_ZON": "01:21,46"
+      },
+      "200_M": {
+        "ABS": "02:21,94",
+        "SEN": "02:24,78",
+        "SUB21": "02:26,20",
+        "JUN": "02:27,62",
+        "JUN1": "02:30,46",
+        "JUV_A_VER": "02:33,30",
+        "JUV_A_INV": "02:36,13",
+        "JUV_B_VER": "02:38,97",
+        "JUV_B_INV": "02:41,81",
+        "INF_A": "02:47,49",
+        "INF_B": "02:51,75",
+        "JUV_A_ZON": "02:40,39",
+        "JUV_B_ZON": "02:44,65",
+        "INF_A_ZON": "02:51,75",
+        "INF_B_ZON": "02:58,84"
+      },
+      "100_E": {
+        "ABS": "01:06,89",
+        "SEN": "01:08,23",
+        "SUB21": "01:08,90",
+        "JUN": "01:09,57",
+        "JUN1": "01:10,90",
+        "JUV_A_VER": "01:12,24",
+        "JUV_A_INV": "01:13,58",
+        "JUV_B_VER": "01:14,92",
+        "JUV_B_INV": "01:16,25",
+        "INF_A": "01:18,93",
+        "INF_B": "01:20,94",
+        "JUV_A_ZON": "01:15,59",
+        "JUV_B_ZON": "01:17,59",
+        "INF_A_ZON": "01:20,94",
+        "INF_B_ZON": "01:24,28"
+      },
+      "200_E": {
+        "ABS": "02:22,41",
+        "SEN": "02:25,26",
+        "SUB21": "02:26,68",
+        "JUN": "02:28,11",
+        "JUN1": "02:30,95",
+        "JUV_A_VER": "02:33,80",
+        "JUV_A_INV": "02:36,65",
+        "JUV_B_VER": "02:39,50",
+        "JUV_B_INV": "02:42,35",
+        "INF_A": "02:48,04",
+        "INF_B": "02:52,32",
+        "JUV_A_ZON": "02:40,92",
+        "JUV_B_ZON": "02:45,20",
+        "INF_A_ZON": "02:52,32",
+        "INF_B_ZON": "02:59,44"
+      },
+      "400_E": {
+        "ABS": "04:58,69",
+        "SEN": "05:04,66",
+        "SUB21": "05:07,65",
+        "JUN": "05:10,64",
+        "JUN1": "05:16,61",
+        "JUV_A_VER": "05:22,59",
+        "JUV_A_INV": "05:28,56",
+        "JUV_B_VER": "05:34,53",
+        "JUV_B_INV": "05:40,51",
+        "INF_A": "05:52,45",
+        "INF_B": "06:01,41",
+        "JUV_A_ZON": "05:37,52",
+        "JUV_B_ZON": "05:46,48",
+        "INF_A_ZON": "06:01,41",
+        "INF_B_ZON": "06:16,35"
+      }
+    }
+  }
+};
+
+// ============================================================
+// RECORDES NACIONAIS (Open)
+// ============================================================
+var recordesNacionais = {
+  "longa": {
+    "M": {
+      "50_L": {
+        "tempo": "21,67",
+        "nome": "Ribeiro, Diogo Matos",
+        "data": "27/06/2025",
+        "local": "Samorin (SVK)"
+      },
+      "100_L": {
+        "tempo": "47,98",
+        "nome": "Ribeiro, Diogo Matos",
+        "data": "31/03/2023",
+        "local": "Funchal"
+      },
+      "400_L": {
+        "tempo": "3:50,56",
+        "nome": "Lopes, Jose Paulo",
+        "data": "06/06/2021",
+        "local": "Barcelona (ESP)"
+      },
+      "800_L": {
+        "tempo": "7:52,68",
+        "nome": "Lopes, Jose Paulo",
+        "data": "22/05/2021",
+        "local": "Budapeste (HUN)"
+      },
+      "1500_L": {
+        "tempo": "15:15,12",
+        "nome": "Pina, Guilherme Filipe",
+        "data": "30/03/2017",
+        "local": "Coimbra"
+      },
+      "50_C": {
+        "tempo": "25,25",
+        "nome": "Costa, Joao Nogueira",
+        "data": "04/04/2025",
+        "local": "Oeiras"
+      },
+      "100_C": {
+        "tempo": "53,71",
+        "nome": "Costa, Joao Nogueira",
+        "data": "24/07/2023",
+        "local": "Fukuoka (JPN)"
+      },
+      "100_B": {
+        "tempo": "1:01,01",
+        "nome": "Almeida, Carlos Esteves",
+        "data": "28/07/2013",
+        "local": "Barcelona (ESP)"
+      },
+      "200_B": {
+        "tempo": "2:11,92",
+        "nome": "Lopes, Gabriel Jose",
+        "data": "13/08/2022",
+        "local": "Roma (ITA)"
+      },
+      "50_M": {
+        "tempo": "22,77",
+        "nome": "Ribeiro, Diogo Matos",
+        "data": "28/07/2025",
+        "local": "Singapore (SGP)"
+      },
+      "100_M": {
+        "tempo": "51,17",
+        "nome": "Ribeiro, Diogo Matos",
+        "data": "17/02/2024",
+        "local": "Doha (QAT)"
+      },
+      "200_M": {
+        "tempo": "1:56,17",
+        "nome": "Oliveira, Pedro Diogo",
+        "data": "28/07/2009",
+        "local": "Roma (ITA)"
+      },
+      "200_E": {
+        "tempo": "1:58,19",
+        "nome": "Santos, Alexis Manacas",
+        "data": "06/04/2019",
+        "local": "Coimbra"
+      },
+      "400_E": {
+        "tempo": "4:15,84",
+        "nome": "Santos, Alexis Manacas",
+        "data": "06/08/2016",
+        "local": "Rio de Janeiro (BRA)"
+      }
+    },
+    "F": {
+      "50_L": {
+        "tempo": "25,25",
+        "nome": "Rodrigues, Ana Pinho",
+        "data": "30/03/2023",
+        "local": "Funchal"
+      },
+      "800_L": {
+        "tempo": "8:29,33",
+        "nome": "Duraes, Diana Margarida",
+        "data": "23/06/2018",
+        "local": "Tarragona (ESP)"
+      },
+      "1500_L": {
+        "tempo": "16:15,12",
+        "nome": "Duraes, Diana Margarida",
+        "data": "09/02/2020",
+        "local": "Lisboa"
+      },
+      "50_B": {
+        "tempo": "30,73",
+        "nome": "Rodrigues, Ana Pinho",
+        "data": "10/06/2023",
+        "local": "Porto"
+      },
+      "100_B": {
+        "tempo": "1:08,22",
+        "nome": "Rodrigues, Ana Pinho",
+        "data": "11/06/2023",
+        "local": "Porto"
+      },
+      "200_B": {
+        "tempo": "2:25,67",
+        "nome": "Kaminskaya, Victoria",
+        "data": "25/07/2019",
+        "local": "Gwangju (KOR)"
+      },
+      "50_M": {
+        "tempo": "26,58",
+        "nome": "Guedes, Ana Margarida",
+        "data": "06/06/2021",
+        "local": "Porto"
+      },
+      "100_M": {
+        "tempo": "58,76",
+        "nome": "Oliveira, Sara Freitas",
+        "data": "12/08/2010",
+        "local": "Budapeste (HUN)"
+      },
+      "200_M": {
+        "tempo": "2:08,03",
+        "nome": "Monteiro, Ana Catarina",
+        "data": "06/08/2018",
+        "local": "Glasgow (GBR)"
+      },
+      "200_E": {
+        "tempo": "2:13,87",
+        "nome": "Kaminskaya, Victoria",
+        "data": "10/04/2017",
+        "local": "Pontevedra (ESP)"
+      },
+      "400_E": {
+        "tempo": "4:40,11",
+        "nome": "Kaminskaya, Victoria",
+        "data": "09/04/2017",
+        "local": "Pontevedra (ESP)"
+      }
+    }
+  },
+  "curta": {
+    "M": {
+      "50_L": {
+        "tempo": "21,15",
+        "nome": "Ribeiro, Diogo Matos",
+        "data": "13/12/2025",
+        "local": "Leiria"
+      },
+      "100_L": {
+        "tempo": "46,55",
+        "nome": "Ribeiro, Diogo Matos",
+        "data": "15/12/2024",
+        "local": "Tomar"
+      },
+      "400_L": {
+        "tempo": "3:42,57",
+        "nome": "Lopes, Jose Paulo",
+        "data": "16/12/2021",
+        "local": "Abu Dhabi (UAE)"
+      },
+      "800_L": {
+        "tempo": "7:41,51",
+        "nome": "Lopes, Jose Paulo",
+        "data": "14/01/2024",
+        "local": "Felgueiras"
+      },
+      "1500_L": {
+        "tempo": "14:39,82",
+        "nome": "Lopes, Jose Paulo",
+        "data": "20/12/2021",
+        "local": "Abu Dhabi (UAE)"
+      },
+      "50_C": {
+        "tempo": "23,35",
+        "nome": "Santos, Alexis Manacas",
+        "data": "18/12/2021",
+        "local": "Abu Dhabi (UAE)"
+      },
+      "100_C": {
+        "tempo": "50,82",
+        "nome": "Lopes, Gabriel Jose",
+        "data": "11/12/2022",
+        "local": "Leiria"
+      },
+      "200_C": {
+        "tempo": "1:52,66",
+        "nome": "Lopes, Gabriel Jose",
+        "data": "16/12/2018",
+        "local": "Hangzhou (CHN)"
+      },
+      "100_B": {
+        "tempo": "58,19",
+        "nome": "Almeida, Carlos Esteves",
+        "data": "22/11/2012",
+        "local": "Chartres (FRA)"
+      },
+      "200_B": {
+        "tempo": "2:05,59",
+        "nome": "Almeida, Carlos Esteves",
+        "data": "25/11/2012",
+        "local": "Chartres (FRA)"
+      },
+      "50_M": {
+        "tempo": "22,48",
+        "nome": "Ribeiro, Diogo Matos",
+        "data": "14/12/2025",
+        "local": "Leiria"
+      },
+      "100_M": {
+        "tempo": "50,12",
+        "nome": "Ribeiro, Diogo Matos",
+        "data": "14/12/2024",
+        "local": "Tomar"
+      },
+      "200_M": {
+        "tempo": "1:53,39",
+        "nome": "Carvalho, Diogo Filipe",
+        "data": "12/12/2009",
+        "local": "Istambul (TUR)"
+      },
+      "100_E": {
+        "tempo": "52,73",
+        "nome": "Santos, Alexis Manacas",
+        "data": "07/12/2019",
+        "local": "Glasgow (GBR)"
+      },
+      "200_E": {
+        "tempo": "1:53,45",
+        "nome": "Carvalho, Diogo Filipe",
+        "data": "04/12/2015",
+        "local": "Netanya (ISR)"
+      },
+      "400_E": {
+        "tempo": "4:05,87",
+        "nome": "Lopes, Gabriel Jose",
+        "data": "09/12/2022",
+        "local": "Leiria"
+      }
+    },
+    "F": {
+      "50_L": {
+        "tempo": "24,94",
+        "nome": "Conceicao, Patricia Vilas",
+        "data": "20/12/2009",
+        "local": "S. António Cavaleiros"
+      },
+      "100_L": {
+        "tempo": "54,66",
+        "nome": "Rodrigues, Ana Pinho",
+        "data": "20/12/2019",
+        "local": "Felgueiras"
+      },
+      "800_L": {
+        "tempo": "8:20,97",
+        "nome": "Duraes, Diana Margarida",
+        "data": "04/12/2019",
+        "local": "Glasgow (GBR)"
+      },
+      "1500_L": {
+        "tempo": "15:55,19",
+        "nome": "Duraes, Diana Margarida",
+        "data": "23/11/2019",
+        "local": "Felgueiras"
+      },
+      "50_B": {
+        "tempo": "29,98",
+        "nome": "Rodrigues, Ana Pinho",
+        "data": "13/12/2025",
+        "local": "Leiria"
+      },
+      "100_B": {
+        "tempo": "1:06,41",
+        "nome": "Rodrigues, Ana Pinho",
+        "data": "14/12/2025",
+        "local": "Leiria (POL)"
+      },
+      "200_B": {
+        "tempo": "2:22,12",
+        "nome": "Pereira, Raquel Gomes",
+        "data": "29/06/2019",
+        "local": "Algés"
+      },
+      "50_M": {
+        "tempo": "26,12",
+        "nome": "Guedes, Ana Margarida",
+        "data": "23/04/2023",
+        "local": "Felgueiras"
+      },
+      "100_M": {
+        "tempo": "57,93",
+        "nome": "Cunha, Mariana Pacheco",
+        "data": "16/12/2025",
+        "local": "Leiria"
+      },
+      "200_M": {
+        "tempo": "2:05,74",
+        "nome": "Monteiro, Ana Catarina",
+        "data": "12/12/2018",
+        "local": "Hangzhou (CHN)"
+      },
+      "100_E": {
+        "tempo": "1:00,19",
+        "nome": "Cunha, Mariana Pacheco",
+        "data": "13/04/2025",
+        "local": "Felgueiras"
+      },
+      "400_E": {
+        "tempo": "4:36,19",
+        "nome": "Kaminskaya, Victoria",
+        "data": "13/12/2017",
+        "local": "Copenhagen (DEN)"
+      }
+    }
+  }
+};
+
+// ============================================================
+// RECORDES NACIONAIS POR IDADE
+// ============================================================
+var recordesIdade = {
+  "longa": {
+    "M": {
+      "open": {
+        "50_L": {
+          "tempo": "21,67",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "27/06/2025",
+          "local": "Samorin (SVK)"
+        },
+        "100_L": {
+          "tempo": "47,98",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "31/03/2023",
+          "local": "Funchal"
+        },
+        "400_L": {
+          "tempo": "3:50,56",
+          "nome": "Lopes, Jose Paulo",
+          "data": "06/06/2021",
+          "local": "Barcelona (ESP)"
+        },
+        "800_L": {
+          "tempo": "7:52,68",
+          "nome": "Lopes, Jose Paulo",
+          "data": "22/05/2021",
+          "local": "Budapeste (HUN)"
+        },
+        "1500_L": {
+          "tempo": "15:15,12",
+          "nome": "Pina, Guilherme Filipe",
+          "data": "30/03/2017",
+          "local": "Coimbra"
+        },
+        "50_C": {
+          "tempo": "25,25",
+          "nome": "Costa, Joao Nogueira",
+          "data": "04/04/2025",
+          "local": "Oeiras"
+        },
+        "100_C": {
+          "tempo": "53,71",
+          "nome": "Costa, Joao Nogueira",
+          "data": "24/07/2023",
+          "local": "Fukuoka (JPN)"
+        },
+        "100_B": {
+          "tempo": "1:01,01",
+          "nome": "Almeida, Carlos Esteves",
+          "data": "28/07/2013",
+          "local": "Barcelona (ESP)"
+        },
+        "200_B": {
+          "tempo": "2:11,92",
+          "nome": "Lopes, Gabriel Jose",
+          "data": "13/08/2022",
+          "local": "Roma (ITA)"
+        },
+        "50_M": {
+          "tempo": "22,77",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "28/07/2025",
+          "local": "Singapore (SGP)"
+        },
+        "100_M": {
+          "tempo": "51,17",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "17/02/2024",
+          "local": "Doha (QAT)"
+        },
+        "200_M": {
+          "tempo": "1:56,17",
+          "nome": "Oliveira, Pedro Diogo",
+          "data": "28/07/2009",
+          "local": "Roma (ITA)"
+        },
+        "200_E": {
+          "tempo": "1:58,19",
+          "nome": "Santos, Alexis Manacas",
+          "data": "06/04/2019",
+          "local": "Coimbra"
+        },
+        "400_E": {
+          "tempo": "4:15,84",
+          "nome": "Santos, Alexis Manacas",
+          "data": "06/08/2016",
+          "local": "Rio de Janeiro (BRA)"
+        }
+      },
+      "19+": {
+        "50_L": {
+          "tempo": "21,67",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "27/06/2025",
+          "local": "Samorin (SVK)"
+        },
+        "100_L": {
+          "tempo": "47,98",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "31/03/2023",
+          "local": "Funchal"
+        },
+        "400_L": {
+          "tempo": "3:50,56",
+          "nome": "Lopes, Jose Paulo",
+          "data": "06/06/2021",
+          "local": "Barcelona (ESP)"
+        },
+        "800_L": {
+          "tempo": "7:52,68",
+          "nome": "Lopes, Jose Paulo",
+          "data": "22/05/2021",
+          "local": "Budapeste (HUN)"
+        },
+        "1500_L": {
+          "tempo": "15:15,12",
+          "nome": "Pina, Guilherme Filipe",
+          "data": "30/03/2017",
+          "local": "Coimbra"
+        },
+        "50_C": {
+          "tempo": "25,25",
+          "nome": "Costa, Joao Nogueira",
+          "data": "04/04/2025",
+          "local": "Oeiras"
+        },
+        "100_C": {
+          "tempo": "53,71",
+          "nome": "Costa, Joao Nogueira",
+          "data": "24/07/2023",
+          "local": "Fukuoka (JPN)"
+        },
+        "100_B": {
+          "tempo": "1:01,01",
+          "nome": "Almeida, Carlos Esteves",
+          "data": "28/07/2013",
+          "local": "Barcelona (ESP)"
+        },
+        "200_B": {
+          "tempo": "2:11,92",
+          "nome": "Lopes, Gabriel Jose",
+          "data": "13/08/2022",
+          "local": "Roma (ITA)"
+        },
+        "50_M": {
+          "tempo": "22,77",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "28/07/2025",
+          "local": "Singapore (SGP)"
+        },
+        "100_M": {
+          "tempo": "51,17",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "17/02/2024",
+          "local": "Doha (QAT)"
+        },
+        "200_M": {
+          "tempo": "1:56,17",
+          "nome": "Oliveira, Pedro Diogo",
+          "data": "28/07/2009",
+          "local": "Roma (ITA)"
+        },
+        "200_E": {
+          "tempo": "1:58,19",
+          "nome": "Santos, Alexis Manacas",
+          "data": "06/04/2019",
+          "local": "Coimbra"
+        },
+        "400_E": {
+          "tempo": "4:15,84",
+          "nome": "Santos, Alexis Manacas",
+          "data": "06/08/2016",
+          "local": "Rio de Janeiro (BRA)"
+        }
+      },
+      "18": {
+        "50_L": {
+          "tempo": "21,92",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "02/09/2022",
+          "local": "Lima (PER)"
+        },
+        "100_L": {
+          "tempo": "48,52",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "12/08/2022",
+          "local": "Roma (ITA)"
+        },
+        "200_L": {
+          "tempo": "1:49,98",
+          "nome": "Venancio, Tiago Andre",
+          "data": "14/07/2005",
+          "local": "Budapeste (HUN)"
+        },
+        "400_L": {
+          "tempo": "3:53,79",
+          "nome": "Lopes, Jose Paulo",
+          "data": "28/07/2018",
+          "local": "Oeiras"
+        },
+        "800_L": {
+          "tempo": "8:06,97",
+          "nome": "Pina, Guilherme Filipe",
+          "data": "09/07/2016",
+          "local": "Hodmezovasarhely (HUN)"
+        },
+        "1500_L": {
+          "tempo": "15:23,46",
+          "nome": "Pina, Guilherme Filipe",
+          "data": "07/07/2016",
+          "local": "Hodmezovasarhely (HUN)"
+        },
+        "50_C": {
+          "tempo": "26,22",
+          "nome": "Costa, Joao Nogueira",
+          "data": "22/08/2019",
+          "local": "Budapest (HUN)"
+        },
+        "100_C": {
+          "tempo": "55,18",
+          "nome": "Costa, Joao Nogueira",
+          "data": "20/08/2019",
+          "local": "Budapest (HUN)"
+        },
+        "200_C": {
+          "tempo": "2:00,07",
+          "nome": "Costa, Joao Nogueira",
+          "data": "25/08/2019",
+          "local": "Budapest (HUN)"
+        },
+        "50_B": {
+          "tempo": "28,79",
+          "nome": "Nunes, Carlos Daniel",
+          "data": "04/07/2023",
+          "local": "Belgrado (SRB)"
+        },
+        "100_B": {
+          "tempo": "1:02,62",
+          "nome": "Mimoso, Rafael Miguel",
+          "data": "26/07/2025",
+          "local": "Coimbra"
+        },
+        "200_B": {
+          "tempo": "2:15,37",
+          "nome": "Mimoso, Rafael Miguel",
+          "data": "03/04/2025",
+          "local": "Oeiras"
+        },
+        "50_M": {
+          "tempo": "22,96",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "03/09/2022",
+          "local": "Lima (PER)"
+        },
+        "100_M": {
+          "tempo": "51,61",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "13/08/2022",
+          "local": "Roma (ITA)"
+        },
+        "200_M": {
+          "tempo": "2:01,46",
+          "nome": "Oliveira, Pedro Diogo",
+          "data": "08/07/2006",
+          "local": "Palma de Mallorca (ESP)"
+        },
+        "200_E": {
+          "tempo": "2:02,55",
+          "nome": "Lopes, Jose Paulo",
+          "data": "06/07/2018",
+          "local": "Helsinki (FIN)"
+        },
+        "400_E": {
+          "tempo": "4:21,42",
+          "nome": "Lopes, Jose Paulo",
+          "data": "08/07/2018",
+          "local": "Helsinki (FIN)"
+        }
+      },
+      "17": {
+        "50_L": {
+          "tempo": "22,95",
+          "nome": "Venancio, Tiago Andre",
+          "data": "16/07/2004",
+          "local": "Oeiras"
+        },
+        "100_L": {
+          "tempo": "49,34",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "07/07/2021",
+          "local": "Rome (ITA)"
+        },
+        "200_L": {
+          "tempo": "1:50,82",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "27/03/2021",
+          "local": "Coimbra"
+        },
+        "400_L": {
+          "tempo": "3:57,15",
+          "nome": "Santa, Gustavo Manuel",
+          "data": "14/07/2010",
+          "local": "Helsinquia (FIN)"
+        },
+        "800_L": {
+          "tempo": "8:13,49",
+          "nome": "Santa, Gustavo Manuel",
+          "data": "17/07/2010",
+          "local": "Helsinquia (FIN)"
+        },
+        "1500_L": {
+          "tempo": "15:42,78",
+          "nome": "Pereira, Rui Silva",
+          "data": "02/07/2025",
+          "local": "Samorin (SVK)"
+        },
+        "50_C": {
+          "tempo": "26,16",
+          "nome": "Oliveira, Miguel Reis",
+          "data": "23/01/2026",
+          "local": "Geneva (SUI)"
+        },
+        "100_C": {
+          "tempo": "57,11",
+          "nome": "Oliveira, Miguel Reis",
+          "data": "25/01/2026",
+          "local": "Geneva (SUI)"
+        },
+        "200_C": {
+          "tempo": "2:03,06",
+          "nome": "Oliveira, Pedro Diogo",
+          "data": "15/07/2005",
+          "local": "Budapeste (HUN)"
+        },
+        "50_B": {
+          "tempo": "29,10",
+          "nome": "Agostinho, Pedro Miguel",
+          "data": "10/07/2009",
+          "local": "Praga (CZE)"
+        },
+        "100_B": {
+          "tempo": "1:03,61",
+          "nome": "Mimoso, Rafael Miguel",
+          "data": "06/04/2024",
+          "local": "Coimbra"
+        },
+        "200_B": {
+          "tempo": "2:15,25",
+          "nome": "Mimoso, Rafael Miguel",
+          "data": "04/07/2024",
+          "local": "Vilnius (LTU)"
+        },
+        "50_M": {
+          "tempo": "24,09",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "07/07/2021",
+          "local": "Rome (ITA)"
+        },
+        "100_M": {
+          "tempo": "52,54",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "09/07/2021",
+          "local": "Rome (ITA)"
+        },
+        "200_M": {
+          "tempo": "2:02,12",
+          "nome": "Oliveira, Pedro Diogo",
+          "data": "16/07/2005",
+          "local": "Belgrado (HUN)"
+        },
+        "200_E": {
+          "tempo": "2:04,32",
+          "nome": "Almeida, Carlos Esteves",
+          "data": "17/07/2005",
+          "local": "Budapeste (HUN)"
+        },
+        "400_E": {
+          "tempo": "4:25,23",
+          "nome": "Vital, Joao Alexandre",
+          "data": "29/08/2015",
+          "local": "Singapore (SGP)"
+        }
+      },
+      "16": {
+        "50_L": {
+          "tempo": "23,53",
+          "nome": "Alecrim, Rodolfo Junior",
+          "data": "22/02/2026",
+          "local": "Coimbra"
+        },
+        "100_L": {
+          "tempo": "52,10",
+          "nome": "Venancio, Tiago Andre",
+          "data": "28/07/2003",
+          "local": "Paris (FRA)"
+        },
+        "200_L": {
+          "tempo": "1:54,18",
+          "nome": "Santa, Gustavo Manuel",
+          "data": "24/07/2009",
+          "local": "Tampere (FIN)"
+        },
+        "400_L": {
+          "tempo": "3:59,38",
+          "nome": "Santa, Gustavo Manuel",
+          "data": "21/07/2009",
+          "local": "Tampere (FIN)"
+        },
+        "800_L": {
+          "tempo": "8:23,54",
+          "nome": "Santa, Gustavo Manuel",
+          "data": "23/07/2009",
+          "local": "Tampere (FIN)"
+        },
+        "1500_L": {
+          "tempo": "15:45,55",
+          "nome": "Santa, Gustavo Manuel",
+          "data": "23/07/2009",
+          "local": "Tampere (FIN)"
+        },
+        "50_C": {
+          "tempo": "26,22",
+          "nome": "Oliveira, Miguel Reis",
+          "data": "21/08/2025",
+          "local": "Otopeni (ROU)"
+        },
+        "100_C": {
+          "tempo": "57,00",
+          "nome": "Oliveira, Miguel Reis",
+          "data": "24/07/2025",
+          "local": "Coimbra"
+        },
+        "200_C": {
+          "tempo": "2:06,59",
+          "nome": "Vital, Joao Alexandre",
+          "data": "28/06/2014",
+          "local": "Netanya (ISR)"
+        },
+        "100_B": {
+          "tempo": "1:03,71",
+          "nome": "Mimoso, Rafael Miguel",
+          "data": "28/07/2023",
+          "local": "Maribor (SLO)"
+        },
+        "200_B": {
+          "tempo": "2:15,98",
+          "nome": "Mimoso, Rafael Miguel",
+          "data": "24/07/2023",
+          "local": "Maribor (SLO)"
+        },
+        "50_M": {
+          "tempo": "25,35",
+          "nome": "Ferreira, Duarte Santos",
+          "data": "12/07/2024",
+          "local": "Oeiras"
+        },
+        "100_M": {
+          "tempo": "56,05",
+          "nome": "Vakulyuk, Paulo",
+          "data": "03/08/2019",
+          "local": "Funchal"
+        },
+        "200_M": {
+          "tempo": "2:03,76",
+          "nome": "Oliveira, Pedro Diogo",
+          "data": "31/07/2004",
+          "local": "Lisboa"
+        },
+        "200_E": {
+          "tempo": "2:08,11",
+          "nome": "Almeida, Carlos Esteves",
+          "data": "31/07/2004",
+          "local": "Lisboa"
+        }
+      },
+      "15": {
+        "50_L": {
+          "tempo": "23,42",
+          "nome": "Alecrim, Rodolfo Junior",
+          "data": "24/07/2025",
+          "local": "Skopje (MKD)"
+        },
+        "100_L": {
+          "tempo": "52,43",
+          "nome": "Alecrim, Rodolfo Junior",
+          "data": "23/07/2025",
+          "local": "Skopje (MKD)"
+        },
+        "200_L": {
+          "tempo": "1:53,96",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "02/08/2019",
+          "local": "Funchal"
+        },
+        "400_L": {
+          "tempo": "4:06,22",
+          "nome": "Costa, Rui Filipe",
+          "data": "29/07/2006",
+          "local": "Coimbra"
+        },
+        "800_L": {
+          "tempo": "8:32,97",
+          "nome": "Pereira, Rui Silva",
+          "data": "28/05/2023",
+          "local": "Coimbra"
+        },
+        "1500_L": {
+          "tempo": "16:11,75",
+          "nome": "Pereira, Rui Silva",
+          "data": "27/05/2023",
+          "local": "Coimbra"
+        },
+        "50_C": {
+          "tempo": "27,53",
+          "nome": "Oliveira, Miguel Reis",
+          "data": "13/07/2024",
+          "local": "Oeiras"
+        },
+        "100_C": {
+          "tempo": "59,34",
+          "nome": "Oliveira, Miguel Reis",
+          "data": "04/04/2024",
+          "local": "Coimbra"
+        },
+        "200_C": {
+          "tempo": "2:06,44",
+          "nome": "Vital, Joao Alexandre",
+          "data": "17/07/2013",
+          "local": "Utrecht (NED)"
+        },
+        "100_B": {
+          "tempo": "1:06,00",
+          "nome": "Almeida, David Xavier",
+          "data": "24/07/2025",
+          "local": "Skopje (MKD)"
+        },
+        "200_B": {
+          "tempo": "2:19,73",
+          "nome": "Mimoso, Rafael Miguel",
+          "data": "26/07/2022",
+          "local": "Banská Bystrica (SVK)"
+        },
+        "50_M": {
+          "tempo": "25,76",
+          "nome": "Alecrim, Rodolfo Junior",
+          "data": "05/04/2025",
+          "local": "Oeiras"
+        },
+        "100_M": {
+          "tempo": "56,61",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "03/08/2019",
+          "local": "Funchal"
+        },
+        "200_M": {
+          "tempo": "2:08,12",
+          "nome": "Silva, Jorge Jesus",
+          "data": "26/07/2015",
+          "local": "Coimbra"
+        },
+        "200_E": {
+          "tempo": "2:10,83",
+          "nome": "Silva, Jorge Jesus",
+          "data": "26/07/2015",
+          "local": "Coimbra"
+        },
+        "400_E": {
+          "tempo": "4:37,06",
+          "nome": "Vital, Joao Alexandre",
+          "data": "16/07/2013",
+          "local": "Utrecht (NED)"
+        }
+      },
+      "14": {
+        "100_L": {
+          "tempo": "55,53",
+          "nome": "Ferro, David Miguel",
+          "data": "26/07/1998",
+          "local": "Campanhã"
+        },
+        "200_L": {
+          "tempo": "2:00,20",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "21/07/2018",
+          "local": "S. Joao da Madeira"
+        },
+        "400_L": {
+          "tempo": "4:15,99",
+          "nome": "Oliveira, Pedro Fontoura",
+          "data": "11/07/2004",
+          "local": "Badajoz (ESP)"
+        },
+        "800_L": {
+          "tempo": "8:54,25",
+          "nome": "Oliveira, Pedro Fontoura",
+          "data": "29/05/2004",
+          "local": "Lisboa"
+        },
+        "1500_L": {
+          "tempo": "16:43,48",
+          "nome": "Oliveira, Pedro Fontoura",
+          "data": "19/06/2004",
+          "local": "Rio Maior"
+        },
+        "50_C": {
+          "tempo": "29,62",
+          "nome": "Almeida, Pedro Pereira",
+          "data": "18/07/2025",
+          "local": "Loulé"
+        },
+        "100_C": {
+          "tempo": "1:01,39",
+          "nome": "Ribas, Alexandre Lages",
+          "data": "22/07/2011",
+          "local": "Lisboa"
+        },
+        "200_C": {
+          "tempo": "2:14,56",
+          "nome": "Ribas, Alexandre Lages",
+          "data": "23/07/2011",
+          "local": "Lisboa"
+        },
+        "200_B": {
+          "tempo": "2:32,07",
+          "nome": "Carneiro, Joao Soares",
+          "data": "15/07/2017",
+          "local": "Loulé"
+        },
+        "100_M": {
+          "tempo": "59,19",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "21/07/2018",
+          "local": "S. Joao da Madeira"
+        },
+        "200_M": {
+          "tempo": "2:14,50",
+          "nome": "Silva, Fabio Parrilha da",
+          "data": "29/07/2001",
+          "local": "Campanhã"
+        },
+        "200_E": {
+          "tempo": "2:16,63",
+          "nome": "Ribas, Alexandre Lages",
+          "data": "24/07/2011",
+          "local": "Lisboa"
+        },
+        "400_E": {
+          "tempo": "4:46,20",
+          "nome": "Freitas, Tomas Miguel",
+          "data": "23/07/2004",
+          "local": "Póvoa Varzim"
+        }
+      },
+      "13": {
+        "50_L": {
+          "tempo": "26,99",
+          "nome": "Santos, Joao Daniel",
+          "data": "05/07/2025",
+          "local": "Coimbra"
+        },
+        "100_L": {
+          "tempo": "58,09",
+          "nome": "Alecrim, Rodolfo Junior",
+          "data": "08/07/2023",
+          "local": "Coimbra"
+        },
+        "200_L": {
+          "tempo": "2:06,18",
+          "nome": "Nunes, Joao Magalhaes",
+          "data": "21/07/2012",
+          "local": "Rio Maior"
+        },
+        "400_L": {
+          "tempo": "4:28,42",
+          "nome": "Oliveira, Pedro Fontoura",
+          "data": "26/07/2003",
+          "local": "Restelo"
+        },
+        "800_L": {
+          "tempo": "9:12,56",
+          "nome": "Oliveira, Pedro Fontoura",
+          "data": "27/07/2003",
+          "local": "Lisboa"
+        },
+        "1500_L": {
+          "tempo": "17:21,58",
+          "nome": "Oliveira, Pedro Fontoura",
+          "data": "27/07/2003",
+          "local": "Restelo"
+        },
+        "50_C": {
+          "tempo": "30,69",
+          "nome": "Santos, Joao Daniel",
+          "data": "06/07/2025",
+          "local": "Coimbra"
+        },
+        "200_C": {
+          "tempo": "2:20,07",
+          "nome": "Ruivo, Andre Vilas",
+          "data": "13/07/2013",
+          "local": "S. Joao da Madeira"
+        },
+        "100_B": {
+          "tempo": "1:11,95",
+          "nome": "Santos, Andre Goncalo",
+          "data": "24/07/2010",
+          "local": "Porto"
+        },
+        "200_B": {
+          "tempo": "2:38,94",
+          "nome": "Sousa, Duarte Anastacio",
+          "data": "19/07/2015",
+          "local": "Oeiras"
+        },
+        "100_M": {
+          "tempo": "1:03,64",
+          "nome": "Silva, Fabio Parrilha da",
+          "data": "22/07/2000",
+          "local": "S. Joao da Madeira"
+        },
+        "200_M": {
+          "tempo": "2:21,67",
+          "nome": "Silva, Fabio Parrilha da",
+          "data": "23/07/2000",
+          "local": "S. Joao da Madeira"
+        },
+        "200_E": {
+          "tempo": "2:22,36",
+          "nome": "Ruivo, Andre Vilas",
+          "data": "23/06/2013",
+          "local": "Coimbra"
+        },
+        "400_E": {
+          "tempo": "4:54,87",
+          "nome": "Ruivo, Andre Vilas",
+          "data": "12/07/2013",
+          "local": "S. Joao da Madeira"
+        }
+      }
+    },
+    "F": {
+      "open": {
+        "50_L": {
+          "tempo": "25,25",
+          "nome": "Rodrigues, Ana Pinho",
+          "data": "30/03/2023",
+          "local": "Funchal"
+        },
+        "800_L": {
+          "tempo": "8:29,33",
+          "nome": "Duraes, Diana Margarida",
+          "data": "23/06/2018",
+          "local": "Tarragona (ESP)"
+        },
+        "1500_L": {
+          "tempo": "16:15,12",
+          "nome": "Duraes, Diana Margarida",
+          "data": "09/02/2020",
+          "local": "Lisboa"
+        },
+        "50_B": {
+          "tempo": "30,73",
+          "nome": "Rodrigues, Ana Pinho",
+          "data": "10/06/2023",
+          "local": "Porto"
+        },
+        "100_B": {
+          "tempo": "1:08,22",
+          "nome": "Rodrigues, Ana Pinho",
+          "data": "11/06/2023",
+          "local": "Porto"
+        },
+        "200_B": {
+          "tempo": "2:25,67",
+          "nome": "Kaminskaya, Victoria",
+          "data": "25/07/2019",
+          "local": "Gwangju (KOR)"
+        },
+        "50_M": {
+          "tempo": "26,58",
+          "nome": "Guedes, Ana Margarida",
+          "data": "06/06/2021",
+          "local": "Porto"
+        },
+        "100_M": {
+          "tempo": "58,76",
+          "nome": "Oliveira, Sara Freitas",
+          "data": "12/08/2010",
+          "local": "Budapeste (HUN)"
+        },
+        "200_M": {
+          "tempo": "2:08,03",
+          "nome": "Monteiro, Ana Catarina",
+          "data": "06/08/2018",
+          "local": "Glasgow (GBR)"
+        },
+        "200_E": {
+          "tempo": "2:13,87",
+          "nome": "Kaminskaya, Victoria",
+          "data": "10/04/2017",
+          "local": "Pontevedra (ESP)"
+        },
+        "400_E": {
+          "tempo": "4:40,11",
+          "nome": "Kaminskaya, Victoria",
+          "data": "09/04/2017",
+          "local": "Pontevedra (ESP)"
+        }
+      },
+      "19+": {
+        "50_L": {
+          "tempo": "25,25",
+          "nome": "Rodrigues, Ana Pinho",
+          "data": "30/03/2023",
+          "local": "Funchal"
+        },
+        "800_L": {
+          "tempo": "8:29,33",
+          "nome": "Duraes, Diana Margarida",
+          "data": "23/06/2018",
+          "local": "Tarragona (ESP)"
+        },
+        "1500_L": {
+          "tempo": "16:15,12",
+          "nome": "Duraes, Diana Margarida",
+          "data": "09/02/2020",
+          "local": "Lisboa"
+        },
+        "50_B": {
+          "tempo": "30,73",
+          "nome": "Rodrigues, Ana Pinho",
+          "data": "10/06/2023",
+          "local": "Porto"
+        },
+        "100_B": {
+          "tempo": "1:08,22",
+          "nome": "Rodrigues, Ana Pinho",
+          "data": "11/06/2023",
+          "local": "Porto"
+        },
+        "200_B": {
+          "tempo": "2:25,67",
+          "nome": "Kaminskaya, Victoria",
+          "data": "25/07/2019",
+          "local": "Gwangju (KOR)"
+        },
+        "50_M": {
+          "tempo": "26,58",
+          "nome": "Guedes, Ana Margarida",
+          "data": "06/06/2021",
+          "local": "Porto"
+        },
+        "100_M": {
+          "tempo": "58,76",
+          "nome": "Oliveira, Sara Freitas",
+          "data": "12/08/2010",
+          "local": "Budapeste (HUN)"
+        },
+        "200_M": {
+          "tempo": "2:08,03",
+          "nome": "Monteiro, Ana Catarina",
+          "data": "06/08/2018",
+          "local": "Glasgow (GBR)"
+        },
+        "200_E": {
+          "tempo": "2:13,87",
+          "nome": "Kaminskaya, Victoria",
+          "data": "10/04/2017",
+          "local": "Pontevedra (ESP)"
+        },
+        "400_E": {
+          "tempo": "4:40,11",
+          "nome": "Kaminskaya, Victoria",
+          "data": "09/04/2017",
+          "local": "Pontevedra (ESP)"
+        }
+      },
+      "18": {
+        "50_L": {
+          "tempo": "26,41",
+          "nome": "Ferreira, Catarina Maria",
+          "data": "28/05/2016",
+          "local": "Coimbra"
+        },
+        "200_L": {
+          "tempo": "2:02,68",
+          "nome": "Cunha, Mariana Pacheco",
+          "data": "05/06/2022",
+          "local": "Porto"
+        },
+        "400_L": {
+          "tempo": "4:17,80",
+          "nome": "Holub, Tamila Hryhorivna",
+          "data": "08/04/2017",
+          "local": "Pontevedra (ESP)"
+        },
+        "800_L": {
+          "tempo": "8:38,40",
+          "nome": "Holub, Tamila Hryhorivna",
+          "data": "31/03/2017",
+          "local": ""
+        },
+        "1500_L": {
+          "tempo": "16:24,05",
+          "nome": "Holub, Tamila Hryhorivna",
+          "data": "24/07/2017",
+          "local": "Budapeste (HUN)"
+        },
+        "50_B": {
+          "tempo": "31,98",
+          "nome": "Rodrigues, Ana Pinho",
+          "data": "26/05/2012",
+          "local": "Debrecen (HUN)"
+        },
+        "100_B": {
+          "tempo": "1:09,89",
+          "nome": "Gomes, Diana Duarte",
+          "data": "28/07/2007",
+          "local": "Aveiro"
+        },
+        "200_B": {
+          "tempo": "2:28,78",
+          "nome": "Pereira, Raquel Gomes",
+          "data": "18/03/2018",
+          "local": "Coimbra"
+        },
+        "50_M": {
+          "tempo": "27,00",
+          "nome": "Guedes, Ana Margarida",
+          "data": "01/08/2019",
+          "local": "Funchal"
+        },
+        "100_M": {
+          "tempo": "59,36",
+          "nome": "Cunha, Mariana Pacheco",
+          "data": "04/07/2022",
+          "local": "Oran (ALG)"
+        },
+        "200_M": {
+          "tempo": "2:12,73",
+          "nome": "Cunha, Mariana Pacheco",
+          "data": "01/07/2022",
+          "local": "Oran (ALG)"
+        },
+        "200_E": {
+          "tempo": "2:15,47",
+          "nome": "Kaminskaya, Victoria",
+          "data": "25/05/2013",
+          "local": "Coimbra"
+        },
+        "400_E": {
+          "tempo": "4:49,60",
+          "nome": "Kaminskaya, Victoria",
+          "data": "26/05/2013",
+          "local": "Coimbra"
+        }
+      },
+      "17": {
+        "100_L": {
+          "tempo": "56,56",
+          "nome": "Sousa, Ana Reis",
+          "data": "04/04/2019",
+          "local": "Coimbra"
+        },
+        "400_L": {
+          "tempo": "4:14,67",
+          "nome": "Holub, Tamila Hryhorivna",
+          "data": "23/07/2016",
+          "local": "Oeiras"
+        },
+        "800_L": {
+          "tempo": "8:36,21",
+          "nome": "Holub, Tamila Hryhorivna",
+          "data": "28/05/2016",
+          "local": "Coimbra"
+        },
+        "1500_L": {
+          "tempo": "16:20,80",
+          "nome": "Holub, Tamila Hryhorivna",
+          "data": "08/07/2016",
+          "local": "Hodmezovasarhely (HUN)"
+        },
+        "200_C": {
+          "tempo": "2:15,53",
+          "nome": "Frischknecht, Rita Barros",
+          "data": "02/04/2015",
+          "local": "Coimbra"
+        },
+        "50_B": {
+          "tempo": "31,60",
+          "nome": "Carvalho, Joana Catarina",
+          "data": "30/05/2009",
+          "local": "Coimbra"
+        },
+        "100_B": {
+          "tempo": "1:10,00",
+          "nome": "Pereira, Raquel Gomes",
+          "data": "31/03/2017",
+          "local": "Coimbra"
+        },
+        "200_B": {
+          "tempo": "2:29,23",
+          "nome": "Pereira, Raquel Gomes",
+          "data": "02/04/2017",
+          "local": "Coimbra"
+        },
+        "50_M": {
+          "tempo": "27,10",
+          "nome": "Cunha, Mariana Pacheco",
+          "data": "09/07/2021",
+          "local": "Rome (ITA)"
+        },
+        "100_M": {
+          "tempo": "1:00,11",
+          "nome": "Cunha, Mariana Pacheco",
+          "data": "05/06/2021",
+          "local": "Porto"
+        },
+        "200_M": {
+          "tempo": "2:12,56",
+          "nome": "Oliveira, Sara Freitas",
+          "data": "04/08/2002",
+          "local": "Berlim (GER)"
+        },
+        "200_E": {
+          "tempo": "2:17,22",
+          "nome": "Pereira, Raquel Gomes",
+          "data": "30/03/2017",
+          "local": "Coimbra"
+        },
+        "400_E": {
+          "tempo": "4:52,12",
+          "nome": "Kaminskaya, Victoria",
+          "data": "27/07/2012",
+          "local": "Oeiras"
+        }
+      },
+      "16": {
+        "50_L": {
+          "tempo": "26,21",
+          "nome": "Rodrigues, Ana Pinho",
+          "data": "10/04/2010",
+          "local": "Coimbra"
+        },
+        "100_L": {
+          "tempo": "57,11",
+          "nome": "Sousa, Ana Reis",
+          "data": "04/07/2018",
+          "local": "Helsinki (FIN)"
+        },
+        "200_L": {
+          "tempo": "2:02,89",
+          "nome": "Sousa, Ana Reis",
+          "data": "06/07/2018",
+          "local": "Helsinki (FIN)"
+        },
+        "400_L": {
+          "tempo": "4:20,37",
+          "nome": "Ferreira, Marta Andreia",
+          "data": "04/08/2002",
+          "local": "Berlim (GER)"
+        },
+        "800_L": {
+          "tempo": "8:45,53",
+          "nome": "Holub, Tamila Hryhorivna",
+          "data": "30/05/2015",
+          "local": "Coimbra"
+        },
+        "1500_L": {
+          "tempo": "16:43,22",
+          "nome": "Holub, Tamila Hryhorivna",
+          "data": "29/08/2015",
+          "local": "Singapore (SGP)"
+        },
+        "50_B": {
+          "tempo": "31,92",
+          "nome": "Rodrigues, Ana Pinho",
+          "data": "28/03/2010",
+          "local": "Gorzow Wlwp (POL)"
+        },
+        "100_B": {
+          "tempo": "1:10,09",
+          "nome": "Gomes, Diana Duarte",
+          "data": "17/07/2005",
+          "local": "Budapeste (HUN)"
+        },
+        "200_B": {
+          "tempo": "2:29,51",
+          "nome": "Gomes, Diana Duarte",
+          "data": "15/07/2005",
+          "local": "Budapeste (HUN)"
+        },
+        "100_M": {
+          "tempo": "1:01,48",
+          "nome": "Cruz, Sara Francisco",
+          "data": "20/07/2009",
+          "local": "Faro"
+        },
+        "200_E": {
+          "tempo": "2:20,61",
+          "nome": "Duraes, Diana Margarida",
+          "data": "03/06/2012",
+          "local": "Porto"
+        },
+        "400_E": {
+          "tempo": "4:54,00",
+          "nome": "Rocha, Ines Neto",
+          "data": "20/05/2017",
+          "local": "Gijón (ESP)"
+        }
+      },
+      "15": {
+        "50_L": {
+          "tempo": "26,78",
+          "nome": "Pereira, Maria Gomes",
+          "data": "05/04/2019",
+          "local": "Coimbra"
+        },
+        "100_L": {
+          "tempo": "57,75",
+          "nome": "Rosa, Maria Carolina",
+          "data": "08/07/2009",
+          "local": "Prague (CZE)"
+        },
+        "400_L": {
+          "tempo": "4:20,78",
+          "nome": "Holub, Tamila Hryhorivna",
+          "data": "07/06/2014",
+          "local": "Porto"
+        },
+        "800_L": {
+          "tempo": "8:50,68",
+          "nome": "Holub, Tamila Hryhorivna",
+          "data": "27/07/2014",
+          "local": "Oeiras"
+        },
+        "1500_L": {
+          "tempo": "16:54,60",
+          "nome": "Holub, Tamila Hryhorivna",
+          "data": "11/07/2014",
+          "local": "Dordrecht (NED)"
+        },
+        "100_C": {
+          "tempo": "1:03,92",
+          "nome": "Silva, Joana Carina",
+          "data": "06/04/2012",
+          "local": "Coimbra"
+        },
+        "200_C": {
+          "tempo": "2:17,38",
+          "nome": "Silva, Joana Carina",
+          "data": "05/04/2012",
+          "local": "Coimbra"
+        },
+        "100_B": {
+          "tempo": "1:10,73",
+          "nome": "Rodrigues, Ana Pinho",
+          "data": "31/05/2009",
+          "local": "Coimbra"
+        },
+        "200_B": {
+          "tempo": "2:31,32",
+          "nome": "Gomes, Diana Duarte",
+          "data": "27/06/2004",
+          "local": "Mulhouse (FRA)"
+        },
+        "100_M": {
+          "tempo": "1:01,69",
+          "nome": "Cunha, Mariana Pacheco",
+          "data": "03/08/2019",
+          "local": "Funchal"
+        },
+        "200_M": {
+          "tempo": "2:15,56",
+          "nome": "Francisco, Ana Rita",
+          "data": "20/07/1995",
+          "local": "Genebra (SUI)"
+        },
+        "200_E": {
+          "tempo": "2:21,01",
+          "nome": "Pereira, Raquel Gomes",
+          "data": "04/04/2015",
+          "local": "Coimbra"
+        },
+        "400_E": {
+          "tempo": "4:58,08",
+          "nome": "Duraes, Diana Margarida",
+          "data": "05/08/2011",
+          "local": "Povoa de Varzim"
+        }
+      },
+      "14": {
+        "50_L": {
+          "tempo": "27,17",
+          "nome": "Guedes, Ana Margarida",
+          "data": "31/05/2015",
+          "local": "Coimbra"
+        },
+        "200_L": {
+          "tempo": "2:07,40",
+          "nome": "Cabral, Maria Francisca",
+          "data": "25/07/2014",
+          "local": "Oeiras"
+        },
+        "400_L": {
+          "tempo": "4:26,20",
+          "nome": "Cabral, Maria Francisca",
+          "data": "26/07/2014",
+          "local": "Oeiras"
+        },
+        "800_L": {
+          "tempo": "9:07,70",
+          "nome": "Silva, Alexandra Maria",
+          "data": "10/09/1981",
+          "local": "Split (CRO)"
+        },
+        "1500_L": {
+          "tempo": "17:34,28",
+          "nome": "Veloso, Maria Miguel",
+          "data": "08/07/2007",
+          "local": "Coimbra"
+        },
+        "100_C": {
+          "tempo": "1:04,90",
+          "nome": "Silva, Joana Carina",
+          "data": "25/03/2011",
+          "local": "Oeiras"
+        },
+        "100_B": {
+          "tempo": "1:12,89",
+          "nome": "Oliveira, Paula Alexandra",
+          "data": "29/07/2010",
+          "local": "Coimbra"
+        },
+        "200_B": {
+          "tempo": "2:36,99",
+          "nome": "Gomes, Diana Duarte",
+          "data": "28/07/2003",
+          "local": "Paris (FRA)"
+        },
+        "200_M": {
+          "tempo": "2:20,75",
+          "nome": "Miguel, Susana Patricia",
+          "data": "04/07/2004",
+          "local": "Génova (ITA)"
+        },
+        "200_E": {
+          "tempo": "2:23,60",
+          "nome": "Duraes, Diana Margarida",
+          "data": "01/08/2010",
+          "local": "Coimbra"
+        },
+        "400_E": {
+          "tempo": "5:01,00",
+          "nome": "Rocha, Ines Neto",
+          "data": "24/07/2015",
+          "local": "Coimbra"
+        }
+      },
+      "13": {
+        "200_L": {
+          "tempo": "2:10,86",
+          "nome": "Frazao, Alexandra Couto",
+          "data": "11/04/2015",
+          "local": "Oeiras"
+        },
+        "400_L": {
+          "tempo": "4:31,53",
+          "nome": "Silva, Alexandra Maria",
+          "data": "08/08/1980",
+          "local": "Skovde (SWE)"
+        },
+        "800_L": {
+          "tempo": "9:14,85",
+          "nome": "Silva, Alexandra Maria",
+          "data": "10/08/1980",
+          "local": "Skovde (SWE)"
+        },
+        "1500_L": {
+          "tempo": "18:05,56",
+          "nome": "Rosa, Mafalda Sofia",
+          "data": "24/06/2016",
+          "local": "Rio Maior"
+        },
+        "100_B": {
+          "tempo": "1:15,49",
+          "nome": "Rodrigues, Ana Pinho",
+          "data": "08/07/2007",
+          "local": "Coimbra"
+        },
+        "200_B": {
+          "tempo": "2:42,69",
+          "nome": "Pereira, Clara Gomes",
+          "data": "18/07/2015",
+          "local": "Oeiras"
+        },
+        "200_M": {
+          "tempo": "2:25,32",
+          "nome": "Miguel, Susana Patricia",
+          "data": "05/07/2003",
+          "local": "Restelo"
+        },
+        "400_E": {
+          "tempo": "5:11,29",
+          "nome": "Rocha, Diana Ramos",
+          "data": "20/07/2007",
+          "local": "Faro"
+        }
+      }
+    }
+  },
+  "curta": {
+    "M": {
+      "open": {
+        "50_L": {
+          "tempo": "21,15",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "13/12/2025",
+          "local": "Leiria"
+        },
+        "100_L": {
+          "tempo": "46,55",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "15/12/2024",
+          "local": "Tomar"
+        },
+        "400_L": {
+          "tempo": "3:42,57",
+          "nome": "Lopes, Jose Paulo",
+          "data": "16/12/2021",
+          "local": "Abu Dhabi (UAE)"
+        },
+        "800_L": {
+          "tempo": "7:41,51",
+          "nome": "Lopes, Jose Paulo",
+          "data": "14/01/2024",
+          "local": "Felgueiras"
+        },
+        "1500_L": {
+          "tempo": "14:39,82",
+          "nome": "Lopes, Jose Paulo",
+          "data": "20/12/2021",
+          "local": "Abu Dhabi (UAE)"
+        },
+        "50_C": {
+          "tempo": "23,35",
+          "nome": "Santos, Alexis Manacas",
+          "data": "18/12/2021",
+          "local": "Abu Dhabi (UAE)"
+        },
+        "100_C": {
+          "tempo": "50,82",
+          "nome": "Lopes, Gabriel Jose",
+          "data": "11/12/2022",
+          "local": "Leiria"
+        },
+        "200_C": {
+          "tempo": "1:52,66",
+          "nome": "Lopes, Gabriel Jose",
+          "data": "16/12/2018",
+          "local": "Hangzhou (CHN)"
+        },
+        "100_B": {
+          "tempo": "58,19",
+          "nome": "Almeida, Carlos Esteves",
+          "data": "22/11/2012",
+          "local": "Chartres (FRA)"
+        },
+        "200_B": {
+          "tempo": "2:05,59",
+          "nome": "Almeida, Carlos Esteves",
+          "data": "25/11/2012",
+          "local": "Chartres (FRA)"
+        },
+        "50_M": {
+          "tempo": "22,48",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "14/12/2025",
+          "local": "Leiria"
+        },
+        "100_M": {
+          "tempo": "50,12",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "14/12/2024",
+          "local": "Tomar"
+        },
+        "200_M": {
+          "tempo": "1:53,39",
+          "nome": "Carvalho, Diogo Filipe",
+          "data": "12/12/2009",
+          "local": "Istambul (TUR)"
+        },
+        "100_E": {
+          "tempo": "52,73",
+          "nome": "Santos, Alexis Manacas",
+          "data": "07/12/2019",
+          "local": "Glasgow (GBR)"
+        },
+        "200_E": {
+          "tempo": "1:53,45",
+          "nome": "Carvalho, Diogo Filipe",
+          "data": "04/12/2015",
+          "local": "Netanya (ISR)"
+        },
+        "400_E": {
+          "tempo": "4:05,87",
+          "nome": "Lopes, Gabriel Jose",
+          "data": "09/12/2022",
+          "local": "Leiria"
+        }
+      },
+      "19+": {
+        "50_L": {
+          "tempo": "21,15",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "13/12/2025",
+          "local": "Leiria"
+        },
+        "100_L": {
+          "tempo": "46,55",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "15/12/2024",
+          "local": "Tomar"
+        },
+        "400_L": {
+          "tempo": "3:42,57",
+          "nome": "Lopes, Jose Paulo",
+          "data": "16/12/2021",
+          "local": "Abu Dhabi (UAE)"
+        },
+        "800_L": {
+          "tempo": "7:41,51",
+          "nome": "Lopes, Jose Paulo",
+          "data": "14/04/2024",
+          "local": "Felgueiras"
+        },
+        "1500_L": {
+          "tempo": "14:39,82",
+          "nome": "Lopes, Jose Paulo",
+          "data": "20/12/2021",
+          "local": "Abu Dhabi (UAE)"
+        },
+        "50_C": {
+          "tempo": "23,35",
+          "nome": "Santos, Alexis Manacas",
+          "data": "18/12/2021",
+          "local": "Abu Dhabi (UAE)"
+        },
+        "100_C": {
+          "tempo": "50,82",
+          "nome": "Lopes, Gabriel Jose",
+          "data": "11/12/2022",
+          "local": "Leiria"
+        },
+        "200_C": {
+          "tempo": "1:52,66",
+          "nome": "Lopes, Gabriel Jose",
+          "data": "16/12/2018",
+          "local": "Hangzhou (FRA)"
+        },
+        "100_B": {
+          "tempo": "58,19",
+          "nome": "Almeida, Carlos Esteves",
+          "data": "22/11/2012",
+          "local": "Chartres (FRA)"
+        },
+        "200_B": {
+          "tempo": "2:05,59",
+          "nome": "Almeida, Carlos Esteves",
+          "data": "25/11/2012",
+          "local": "Chartres (FRA)"
+        },
+        "50_M": {
+          "tempo": "22,48",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "14/12/2025",
+          "local": "Leiria"
+        },
+        "100_M": {
+          "tempo": "50,12",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "24/12/2024",
+          "local": "Tomar"
+        },
+        "200_M": {
+          "tempo": "1:53,39",
+          "nome": "Carvalho, Diogo Filipe",
+          "data": "12/12/2009",
+          "local": "Istambul (TUR)"
+        },
+        "100_E": {
+          "tempo": "52,73",
+          "nome": "Santos, Alexis Manacas",
+          "data": "07/12/2019",
+          "local": "Glasgow (GBR)"
+        },
+        "200_E": {
+          "tempo": "1:53,45",
+          "nome": "Carvalho, Diogo Filipe",
+          "data": "04/12/2015",
+          "local": "Netanya (ISR)"
+        },
+        "400_E": {
+          "tempo": "4:05,87",
+          "nome": "Lopes, Gabriel Jose",
+          "data": "09/12/2022",
+          "local": "Leiria"
+        }
+      },
+      "18": {
+        "100_L": {
+          "tempo": "48,32",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "26/11/2021",
+          "local": "Leiria"
+        },
+        "200_L": {
+          "tempo": "1:47,73",
+          "nome": "Venancio, Tiago Andre",
+          "data": "12/12/2004",
+          "local": "Viena (AUT)"
+        },
+        "400_L": {
+          "tempo": "3:50,52",
+          "nome": "Niz, Adriano Miguel",
+          "data": "26/06/2004",
+          "local": "Fafe"
+        },
+        "800_L": {
+          "tempo": "7:56,76",
+          "nome": "Pina, Guilherme Filipe",
+          "data": "11/12/2015",
+          "local": "Porto"
+        },
+        "50_C": {
+          "tempo": "24,97",
+          "nome": "Pita, Pedro Miguel",
+          "data": "23/07/2024",
+          "local": "Funchal"
+        },
+        "100_C": {
+          "tempo": "53,88",
+          "nome": "Santos, Alexis Manacas",
+          "data": "05/12/2009",
+          "local": "Leiria"
+        },
+        "200_C": {
+          "tempo": "1:57,90",
+          "nome": "Januario, Tomas Maia",
+          "data": "09/12/2023",
+          "local": "Leiria"
+        },
+        "50_B": {
+          "tempo": "27,96",
+          "nome": "Bonniz, Pedro Goncalves",
+          "data": "15/06/2024",
+          "local": "Algés"
+        },
+        "100_B": {
+          "tempo": "1:00,28",
+          "nome": "Mimoso, Rafael Miguel",
+          "data": "13/12/2024",
+          "local": "Tomar"
+        },
+        "200_B": {
+          "tempo": "2:08,01",
+          "nome": "Mimoso, Rafael Miguel",
+          "data": "14/12/2024",
+          "local": "Tomar"
+        },
+        "50_M": {
+          "tempo": "23,82",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "26/11/2021",
+          "local": "Leiria"
+        },
+        "100_M": {
+          "tempo": "52,87",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "27/11/2021",
+          "local": "Leiria"
+        },
+        "200_M": {
+          "tempo": "1:58,64",
+          "nome": "Carvalho, Diogo Filipe",
+          "data": "09/12/2005",
+          "local": "Tomar"
+        },
+        "100_E": {
+          "tempo": "56,40",
+          "nome": "Costa, Joao Peres",
+          "data": "28/11/2021",
+          "local": "Leiria"
+        },
+        "200_E": {
+          "tempo": "2:00,59",
+          "nome": "Lopes, Gabriel Jose",
+          "data": "10/05/2015",
+          "local": "Coimbra"
+        },
+        "400_E": {
+          "tempo": "4:11,20",
+          "nome": "Vital, Joao Alexandre",
+          "data": "11/12/2015",
+          "local": "Porto"
+        }
+      },
+      "17": {
+        "100_L": {
+          "tempo": "49,56",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "22/12/2020",
+          "local": "Coimbra"
+        },
+        "200_L": {
+          "tempo": "1:47,65",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "11/04/2021",
+          "local": "Felgueiras"
+        },
+        "800_L": {
+          "tempo": "8:00,80",
+          "nome": "Santa, Gustavo Manuel",
+          "data": "06/12/2009",
+          "local": "Leiria"
+        },
+        "1500_L": {
+          "tempo": "15:05,57",
+          "nome": "Santa, Gustavo Manuel",
+          "data": "06/12/2009",
+          "local": "Leiria"
+        },
+        "50_C": {
+          "tempo": "25,24",
+          "nome": "Oliveira, Miguel Reis",
+          "data": "14/11/2025",
+          "local": "Felgueiras"
+        },
+        "100_C": {
+          "tempo": "53,79",
+          "nome": "Oliveira, Miguel Reis",
+          "data": "16/11/2025",
+          "local": "Quarteira"
+        },
+        "200_C": {
+          "tempo": "1:59,34",
+          "nome": "Niz, Adriano Miguel",
+          "data": "16/05/2003",
+          "local": "Alges"
+        },
+        "50_B": {
+          "tempo": "28,56",
+          "nome": "Agostinho, Pedro Miguel",
+          "data": "03/05/2009",
+          "local": "S. António Cavaleiros"
+        },
+        "100_B": {
+          "tempo": "1:01,63",
+          "nome": "Mimoso, Rafael Miguel",
+          "data": "08/12/2023",
+          "local": "Leiria"
+        },
+        "200_B": {
+          "tempo": "2:11,78",
+          "nome": "Mimoso, Rafael Miguel",
+          "data": "09/12/2023",
+          "local": "Leiria"
+        },
+        "50_M": {
+          "tempo": "24,49",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "23/12/2020",
+          "local": "Coimbra"
+        },
+        "100_M": {
+          "tempo": "53,97",
+          "nome": "Venancio, Tiago Andre",
+          "data": "15/02/2004",
+          "local": "Alapraia"
+        },
+        "200_M": {
+          "tempo": "1:59,93",
+          "nome": "Carvalho, Diogo Filipe",
+          "data": "05/03/2005",
+          "local": "Mealhada"
+        },
+        "100_E": {
+          "tempo": "57,40",
+          "nome": "Carvalho, Diogo Filipe",
+          "data": "14/05/2005",
+          "local": "Aveiro"
+        },
+        "200_E": {
+          "tempo": "2:02,96",
+          "nome": "Carvalho, Diogo Filipe",
+          "data": "06/03/2005",
+          "local": "Mealhada"
+        }
+      },
+      "16": {
+        "50_L": {
+          "tempo": "23,06",
+          "nome": "Alecrim, Rodolfo Alecrim",
+          "data": "01/12/2025",
+          "local": "Tomar"
+        },
+        "100_L": {
+          "tempo": "50,55",
+          "nome": "Alecrim, Rodolfo Junior",
+          "data": "01/12/2025",
+          "local": "Tomar"
+        },
+        "200_L": {
+          "tempo": "1:49,83",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "07/12/2019",
+          "local": "Mealhada"
+        },
+        "800_L": {
+          "tempo": "8:09,43",
+          "nome": "Costa, Rui Filipe",
+          "data": "12/05/2007",
+          "local": "Senhora da Hora"
+        },
+        "1500_L": {
+          "tempo": "15:36,31",
+          "nome": "Costa, Rui Filipe",
+          "data": "04/03/2007",
+          "local": "Braga"
+        },
+        "50_C": {
+          "tempo": "25,93",
+          "nome": "Oliveira, Miguel Reis",
+          "data": "15/11/2024",
+          "local": "Felgueiras"
+        },
+        "100_C": {
+          "tempo": "55,99",
+          "nome": "Oliveira, Miguel Reis",
+          "data": "21/12/2024",
+          "local": "Albufeira"
+        },
+        "200_C": {
+          "tempo": "2:01,43",
+          "nome": "Sousa, Diogo Gomes",
+          "data": "04/06/2011",
+          "local": "Algés"
+        },
+        "100_B": {
+          "tempo": "1:02,73",
+          "nome": "Mimoso, Rafael Miguel",
+          "data": "17/06/2023",
+          "local": "Algés"
+        },
+        "200_B": {
+          "tempo": "2:15,14",
+          "nome": "Mimoso, Rafael Miguel",
+          "data": "12/11/2022",
+          "local": "Albufeira"
+        },
+        "50_M": {
+          "tempo": "25,01",
+          "nome": "Ferreira, Duarte Santos",
+          "data": "20/07/2024",
+          "local": "Porto"
+        },
+        "100_M": {
+          "tempo": "55,48",
+          "nome": "Ferreira, Duarte Santos",
+          "data": "21/07/2024",
+          "local": "Porto"
+        },
+        "200_M": {
+          "tempo": "2:03,38",
+          "nome": "Silva, Diogo Parrilha da",
+          "data": "13/06/2009",
+          "local": "Alcobaça"
+        },
+        "100_E": {
+          "tempo": "59,16",
+          "nome": "Azevedo, Goncalo Carlos",
+          "data": "22/04/2023",
+          "local": "Felgueiras"
+        },
+        "200_E": {
+          "tempo": "2:05,34",
+          "nome": "Carvalho, Diogo Filipe",
+          "data": "15/05/2004",
+          "local": "Aveiro"
+        }
+      },
+      "15": {
+        "50_L": {
+          "tempo": "23,41",
+          "nome": "Alecrim, Rodolfo Junior",
+          "data": "06/07/2025",
+          "local": "Leiria"
+        },
+        "200_L": {
+          "tempo": "1:53,76",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "16/06/2019",
+          "local": "Coimbra"
+        },
+        "400_L": {
+          "tempo": "4:01,42",
+          "nome": "Pereira, Rui Silva",
+          "data": "15/01/2023",
+          "local": "Tomar"
+        },
+        "800_L": {
+          "tempo": "8:25,99",
+          "nome": "Pereira, Rui Silva",
+          "data": "14/01/2023",
+          "local": "Tomar"
+        },
+        "1500_L": {
+          "tempo": "15:55,78",
+          "nome": "Pereira, Rui Silva",
+          "data": "14/01/2023",
+          "local": "Tomar"
+        },
+        "50_C": {
+          "tempo": "26,38",
+          "nome": "Oliveira, Miguel Reis",
+          "data": "14/04/2024",
+          "local": "Felgueiras"
+        },
+        "100_C": {
+          "tempo": "57,20",
+          "nome": "Oliveira, Miguel Reis",
+          "data": "20/07/2019",
+          "local": "Felgueiras"
+        },
+        "50_B": {
+          "tempo": "30,36",
+          "nome": "Almeida, David Xavier",
+          "data": "05/07/2025",
+          "local": "Leiria"
+        },
+        "100_B": {
+          "tempo": "1:04,20",
+          "nome": "Mimoso, Rafael Miguel",
+          "data": "16/06/2022",
+          "local": "Algés"
+        },
+        "200_B": {
+          "tempo": "2:18,99",
+          "nome": "Mimoso, Rafael Miguel",
+          "data": "08/05/2022",
+          "local": "Felgueiras"
+        },
+        "50_M": {
+          "tempo": "25,59",
+          "nome": "Alecrim, Rodolfo Junior",
+          "data": "16/03/2025",
+          "local": "Leiria"
+        },
+        "100_M": {
+          "tempo": "56,68",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "23/06/2019",
+          "local": "Lousã"
+        },
+        "200_M": {
+          "tempo": "2:06,17",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "27/04/2019",
+          "local": "Felgueiras"
+        },
+        "100_E": {
+          "tempo": "59,22",
+          "nome": "Alecrim, Rodolfo Junior",
+          "data": "16/03/2025",
+          "local": "Leiria"
+        },
+        "200_E": {
+          "tempo": "2:08,27",
+          "nome": "Carvalho, Diogo Filipe",
+          "data": "10/05/2003",
+          "local": "Fafe"
+        },
+        "400_E": {
+          "tempo": "4:35,02",
+          "nome": "Carvalho, Diogo Filipe",
+          "data": "21/03/2003",
+          "local": "Braga"
+        }
+      },
+      "14": {
+        "100_L": {
+          "tempo": "54,35",
+          "nome": "Ribeiro, Diogo Matos",
+          "data": "01/07/2018",
+          "local": "S. António Cavaleiros"
+        },
+        "200_L": {
+          "tempo": "1:58,99",
+          "nome": "Oliveira, Pedro Fontoura",
+          "data": "10/06/2004",
+          "local": "Cova da Piedade"
+        },
+        "400_L": {
+          "tempo": "4:12,35",
+          "nome": "Ruivo, Andre Vilas",
+          "data": "29/03/2014",
+          "local": "Campo Maior"
+        },
+        "800_L": {
+          "tempo": "8:36,36",
+          "nome": "Ruivo, Andre Vilas",
+          "data": "25/05/2014",
+          "local": "Nazaré"
+        },
+        "1500_L": {
+          "tempo": "16:13,14",
+          "nome": "Ruivo, Andre Vilas",
+          "data": "30/03/2014",
+          "local": "Campo Maior"
+        },
+        "50_C": {
+          "tempo": "28,26",
+          "nome": "Oliveira, Miguel Reis",
+          "data": "23/04/2023",
+          "local": "Felgueiras"
+        },
+        "100_C": {
+          "tempo": "59,50",
+          "nome": "Silva, Ricardo Lopes",
+          "data": "10/06/2017",
+          "local": "Caldas da Rainha"
+        },
+        "100_B": {
+          "tempo": "1:07,92",
+          "nome": "Santos, Andre Goncalo",
+          "data": "12/03/2011",
+          "local": "Viseu"
+        },
+        "200_B": {
+          "tempo": "2:29,20",
+          "nome": "Alves, Paulo Rodrigues",
+          "data": "01/08/2018",
+          "local": "Funchal"
+        },
+        "50_M": {
+          "tempo": "27,42",
+          "nome": "Ribeiro, Keyser Jossub",
+          "data": "14/06/2025",
+          "local": "Algés"
+        },
+        "100_M": {
+          "tempo": "59,56",
+          "nome": "Silva, Fabio Parrilha da",
+          "data": "07/04/2001",
+          "local": "Leiria"
+        },
+        "200_M": {
+          "tempo": "2:12,42",
+          "nome": "Freitas, Tomas Miguel",
+          "data": "11/07/2004",
+          "local": "Funchal"
+        },
+        "200_E": {
+          "tempo": "2:13,38",
+          "nome": "Freitas, Tomas Miguel",
+          "data": "17/07/2004",
+          "local": "Funchal"
+        },
+        "400_E": {
+          "tempo": "4:40,32",
+          "nome": "Freitas, Tomas Miguel",
+          "data": "09/07/2004",
+          "local": "Funchal"
+        }
+      },
+      "13": {
+        "50_L": {
+          "tempo": "26,65",
+          "nome": "Lopes, Gabriel Jose",
+          "data": "19/06/2010",
+          "local": "Lousã"
+        },
+        "100_L": {
+          "tempo": "56,82",
+          "nome": "Alecrim, Rodolfo Junior",
+          "data": "20/05/2023",
+          "local": "Leiria"
+        },
+        "200_L": {
+          "tempo": "2:04,71",
+          "nome": "Santos, Joao Daniel",
+          "data": "28/06/2025",
+          "local": "Caldas da Rainha"
+        },
+        "400_L": {
+          "tempo": "4:21,95",
+          "nome": "Oliveira, Pedro Fontoura",
+          "data": "04/04/2003",
+          "local": "Santarém"
+        },
+        "800_L": {
+          "tempo": "9:07,20",
+          "nome": "Ruivo, Andre Vilas",
+          "data": "03/03/2013",
+          "local": "Leiria"
+        },
+        "1500_L": {
+          "tempo": "17:11,29",
+          "nome": "Ruivo, Andre Vilas",
+          "data": "03/03/2013",
+          "local": "Leiria"
+        },
+        "100_C": {
+          "tempo": "1:04,13",
+          "nome": "Oliveira, Miguel Reis",
+          "data": "22/05/2022",
+          "local": "Braga"
+        },
+        "200_C": {
+          "tempo": "2:15,27",
+          "nome": "Ruivo, Andre Vilas",
+          "data": "16/03/2013",
+          "local": "S. António Cavaleiros"
+        },
+        "100_B": {
+          "tempo": "1:09,54",
+          "nome": "Santos, Andre Goncalo",
+          "data": "15/05/2010",
+          "local": "Lousada"
+        },
+        "200_B": {
+          "tempo": "2:37,57",
+          "nome": "Freitas, Tomas Miguel",
+          "data": "13/07/2003",
+          "local": "Funchal"
+        },
+        "100_M": {
+          "tempo": "1:01,78",
+          "nome": "Silva, Fabio Parrilha da",
+          "data": "01/04/2000",
+          "local": "Penafiel"
+        },
+        "200_M": {
+          "tempo": "2:19,18",
+          "nome": "Ruivo, Andre Vilas",
+          "data": "01/06/2013",
+          "local": "Nazaré"
+        },
+        "200_E": {
+          "tempo": "2:17,96",
+          "nome": "Ruivo, Andre Vilas",
+          "data": "02/06/2013",
+          "local": "Nazaré"
+        },
+        "400_E": {
+          "tempo": "4:49,65",
+          "nome": "Ruivo, Andre Vilas",
+          "data": "15/03/2013",
+          "local": "S. António Cavaleiros"
+        }
+      }
+    },
+    "F": {
+      "open": {
+        "50_L": {
+          "tempo": "24,94",
+          "nome": "Conceicao, Patricia Vilas",
+          "data": "20/12/2009",
+          "local": "S. António Cavaleiros"
+        },
+        "100_L": {
+          "tempo": "54,66",
+          "nome": "Rodrigues, Ana Pinho",
+          "data": "20/12/2019",
+          "local": "Felgueiras"
+        },
+        "800_L": {
+          "tempo": "8:20,97",
+          "nome": "Duraes, Diana Margarida",
+          "data": "04/12/2019",
+          "local": "Glasgow (GBR)"
+        },
+        "1500_L": {
+          "tempo": "15:55,19",
+          "nome": "Duraes, Diana Margarida",
+          "data": "23/11/2019",
+          "local": "Felgueiras"
+        },
+        "50_B": {
+          "tempo": "29,98",
+          "nome": "Rodrigues, Ana Pinho",
+          "data": "13/12/2025",
+          "local": "Leiria"
+        },
+        "100_B": {
+          "tempo": "1:06,41",
+          "nome": "Rodrigues, Ana Pinho",
+          "data": "14/12/2025",
+          "local": "Leiria (POL)"
+        },
+        "200_B": {
+          "tempo": "2:22,12",
+          "nome": "Pereira, Raquel Gomes",
+          "data": "29/06/2019",
+          "local": "Algés"
+        },
+        "50_M": {
+          "tempo": "26,12",
+          "nome": "Guedes, Ana Margarida",
+          "data": "23/04/2023",
+          "local": "Felgueiras"
+        },
+        "100_M": {
+          "tempo": "57,93",
+          "nome": "Cunha, Mariana Pacheco",
+          "data": "16/12/2025",
+          "local": "Leiria"
+        },
+        "200_M": {
+          "tempo": "2:05,74",
+          "nome": "Monteiro, Ana Catarina",
+          "data": "12/12/2018",
+          "local": "Hangzhou (CHN)"
+        },
+        "100_E": {
+          "tempo": "1:00,19",
+          "nome": "Cunha, Mariana Pacheco",
+          "data": "13/04/2025",
+          "local": "Felgueiras"
+        },
+        "400_E": {
+          "tempo": "4:36,19",
+          "nome": "Kaminskaya, Victoria",
+          "data": "13/12/2017",
+          "local": "Copenhagen (DEN)"
+        }
+      },
+      "19+": {
+        "50_L": {
+          "tempo": "24,94",
+          "nome": "Conceicao, Patricia Vilas",
+          "data": "20/12/2009",
+          "local": "S. António Cavaleiros"
+        },
+        "100_L": {
+          "tempo": "54,66",
+          "nome": "Rodrigues, Ana Pinho",
+          "data": "20/12/2019",
+          "local": "Felgueiras"
+        },
+        "800_L": {
+          "tempo": "8:20,97",
+          "nome": "Duraes, Diana Margarida",
+          "data": "04/12/2019",
+          "local": "Glasgow (GBR)"
+        },
+        "1500_L": {
+          "tempo": "15:55,19",
+          "nome": "Duraes, Diana Margarida",
+          "data": "23/11/2019",
+          "local": "Felgueiras"
+        },
+        "50_B": {
+          "tempo": "29,98",
+          "nome": "Rodrigues, Ana Pinho",
+          "data": "13/12/2025",
+          "local": "Leiria"
+        },
+        "100_B": {
+          "tempo": "1:06,41",
+          "nome": "Rodrigues, Ana Pinho",
+          "data": "14/12/2025",
+          "local": "Leiria (POL)"
+        },
+        "200_B": {
+          "tempo": "2:22,12",
+          "nome": "Pereira, Raquel Gomes",
+          "data": "29/06/2019",
+          "local": "Algés"
+        },
+        "50_M": {
+          "tempo": "26,12",
+          "nome": "Guedes, Ana Margarida",
+          "data": "23/04/2023",
+          "local": "Felgueiras"
+        },
+        "100_M": {
+          "tempo": "57,93",
+          "nome": "Cunha, Mariana Pacheco",
+          "data": "16/12/2025",
+          "local": "Leiria"
+        },
+        "200_M": {
+          "tempo": "2:05,74",
+          "nome": "Monteiro, Ana Catarina",
+          "data": "12/12/2018",
+          "local": "Hangzhou (CHN)"
+        },
+        "100_E": {
+          "tempo": "1:00,19",
+          "nome": "Cunha, Mariana Pacheco",
+          "data": "13/04/2025",
+          "local": "Felgueiras"
+        },
+        "400_E": {
+          "tempo": "4:36,19",
+          "nome": "Kaminskaya, Victoria",
+          "data": "13/12/2017",
+          "local": "Copenhagen (DEN)"
+        }
+      },
+      "18": {
+        "50_L": {
+          "tempo": "26,05",
+          "nome": "Guedes, Ana Margarida",
+          "data": "22/12/2018",
+          "local": "Felgueiras"
+        },
+        "100_L": {
+          "tempo": "55,57",
+          "nome": "Cunha, Mariana Pacheco",
+          "data": "26/11/2021",
+          "local": "Leiria"
+        },
+        "800_L": {
+          "tempo": "8:30,86",
+          "nome": "Holub, Tamila Hryhorivna",
+          "data": "03/08/2017",
+          "local": "Moscovo (RUS)"
+        },
+        "1500_L": {
+          "tempo": "16:46,74",
+          "nome": "Andre, Angelica Maria",
+          "data": "12/05/2012",
+          "local": "Lousada"
+        },
+        "50_B": {
+          "tempo": "31,90",
+          "nome": "Pereira, Raquel Gomes",
+          "data": "10/12/2017",
+          "local": "Porto"
+        },
+        "100_B": {
+          "tempo": "1:07,37",
+          "nome": "Pereira, Raquel Gomes",
+          "data": "08/12/2017",
+          "local": "Porto"
+        },
+        "200_B": {
+          "tempo": "2:23,46",
+          "nome": "Pereira, Raquel Gomes",
+          "data": "09/12/2017",
+          "local": "Porto"
+        },
+        "50_M": {
+          "tempo": "27,05",
+          "nome": "Guedes, Ana Margarida",
+          "data": "21/12/2018",
+          "local": "Felgueiras"
+        },
+        "100_M": {
+          "tempo": "58,51",
+          "nome": "Cunha, Mariana Pacheco",
+          "data": "07/05/2022",
+          "local": "Felgueiras"
+        },
+        "200_M": {
+          "tempo": "2:11,46",
+          "nome": "Cunha, Mariana Pacheco",
+          "data": "08/05/2022",
+          "local": "Leiria"
+        },
+        "100_E": {
+          "tempo": "1:01,68",
+          "nome": "Cunha, Mariana Pacheco",
+          "data": "08/05/2022",
+          "local": "Felgueiras"
+        },
+        "200_E": {
+          "tempo": "2:13,83",
+          "nome": "Cunha, Mariana Pacheco",
+          "data": "07/05/2022",
+          "local": "Felgueiras"
+        },
+        "400_E": {
+          "tempo": "4:41,02",
+          "nome": "Kaminskaya, Victoria",
+          "data": "07/12/2012",
+          "local": "Porto"
+        }
+      },
+      "17": {
+        "200_L": {
+          "tempo": "1:59,62",
+          "nome": "Andre, Leticia Maia",
+          "data": "23/12/2018",
+          "local": "Felgueiras"
+        },
+        "400_L": {
+          "tempo": "4:10,52",
+          "nome": "Holub, Tamila Hryhorivna",
+          "data": "12/12/2015",
+          "local": "Porto"
+        },
+        "800_L": {
+          "tempo": "8:32,83",
+          "nome": "Holub, Tamila Hryhorivna",
+          "data": "13/12/2015",
+          "local": "Porto"
+        },
+        "1500_L": {
+          "tempo": "16:11,67",
+          "nome": "Holub, Tamila Hryhorivna",
+          "data": "11/12/2015",
+          "local": "Porto"
+        },
+        "50_B": {
+          "tempo": "32,09",
+          "nome": "Pereira, Raquel Gomes",
+          "data": "11/12/2016",
+          "local": "Funchal"
+        },
+        "100_B": {
+          "tempo": "1:08,02",
+          "nome": "Pereira, Raquel Gomes",
+          "data": "09/12/2016",
+          "local": "Funchal"
+        },
+        "200_B": {
+          "tempo": "2:26,47",
+          "nome": "Pereira, Raquel Gomes",
+          "data": "10/12/2016",
+          "local": "Funchal"
+        },
+        "50_M": {
+          "tempo": "26,74",
+          "nome": "Cunha, Mariana Pacheco",
+          "data": "11/04/2021",
+          "local": "Felgueiras"
+        },
+        "100_M": {
+          "tempo": "59,36",
+          "nome": "Cunha, Mariana Pacheco",
+          "data": "10/04/2021",
+          "local": "Felgueiras"
+        },
+        "200_M": {
+          "tempo": "2:10,12",
+          "nome": "Cruz, Sara Francisco",
+          "data": "04/12/2009",
+          "local": "Leiria"
+        },
+        "200_E": {
+          "tempo": "2:15,10",
+          "nome": "Cunha, Mariana Pacheco",
+          "data": "10/04/2021",
+          "local": "Felgueiras"
+        },
+        "400_E": {
+          "tempo": "4:46,89",
+          "nome": "Rocha, Ines Neto",
+          "data": "15/04/2018",
+          "local": "Felgueiras"
+        }
+      },
+      "16": {
+        "50_L": {
+          "tempo": "26,01",
+          "nome": "Coutinho, Eva Alexandra",
+          "data": "10/06/2025",
+          "local": "Vila Real"
+        },
+        "100_L": {
+          "tempo": "56,72",
+          "nome": "Sousa, Ana Reis",
+          "data": "08/12/2017",
+          "local": "Porto"
+        },
+        "400_L": {
+          "tempo": "4:13,53",
+          "nome": "Sousa, Ana Reis",
+          "data": "09/12/2017",
+          "local": "Porto"
+        },
+        "800_L": {
+          "tempo": "8:45,41",
+          "nome": "Holub, Tamila Hryhorivna",
+          "data": "21/12/2014",
+          "local": "Porto"
+        },
+        "1500_L": {
+          "tempo": "16:44,26",
+          "nome": "Holub, Tamila Hryhorivna",
+          "data": "19/12/2014",
+          "local": "Porto"
+        },
+        "50_B": {
+          "tempo": "31,46",
+          "nome": "Rodrigues, Ana Pinho",
+          "data": "06/12/2009",
+          "local": "Leiria"
+        },
+        "100_B": {
+          "tempo": "1:08,85",
+          "nome": "Rodrigues, Ana Pinho",
+          "data": "13/12/2009",
+          "local": "Ponte de Sôr"
+        },
+        "200_B": {
+          "tempo": "2:26,87",
+          "nome": "Pereira, Raquel Gomes",
+          "data": "11/12/2015",
+          "local": "Porto"
+        },
+        "200_M": {
+          "tempo": "2:13,60",
+          "nome": "Francisco, Ana Rita",
+          "data": "11/02/1996",
+          "local": "Gelsenkirchen (GER)"
+        },
+        "100_E": {
+          "tempo": "1:03,25",
+          "nome": "Cunha, Mariana Pacheco",
+          "data": "22/12/2019",
+          "local": "Felgueiras"
+        },
+        "200_E": {
+          "tempo": "2:14,94",
+          "nome": "Rosa, Maria Carolina",
+          "data": "19/12/2009",
+          "local": "S. António Cavaleiros"
+        },
+        "400_E": {
+          "tempo": "4:50,85",
+          "nome": "Duraes, Diana Margarida",
+          "data": "02/12/2011",
+          "local": "Silves"
+        }
+      },
+      "15": {
+        "200_L": {
+          "tempo": "2:03,90",
+          "nome": "Moura, Maria Ferreira",
+          "data": "29/06/2019",
+          "local": "Algés"
+        },
+        "400_L": {
+          "tempo": "4:18,39",
+          "nome": "Santos, Ana Claudia",
+          "data": "20/12/2004",
+          "local": "Cantanhede"
+        },
+        "800_L": {
+          "tempo": "8:46,74",
+          "nome": "Santos, Ana Claudia",
+          "data": "19/12/2004",
+          "local": "Cantanhede"
+        },
+        "1500_L": {
+          "tempo": "16:54,39",
+          "nome": "Holub, Tamila Hryhorivna",
+          "data": "16/03/2014",
+          "local": "Vila Praia Ancora"
+        },
+        "100_B": {
+          "tempo": "1:09,59",
+          "nome": "Gomes, Diana Duarte",
+          "data": "13/03/2004",
+          "local": "Tomar"
+        },
+        "200_B": {
+          "tempo": "2:32,36",
+          "nome": "Gomes, Diana Duarte",
+          "data": "07/02/2004",
+          "local": "Alcobaça"
+        },
+        "200_M": {
+          "tempo": "2:17,51",
+          "nome": "Felgueiras, Raquel Maria",
+          "data": "05/03/1995",
+          "local": "Algés"
+        },
+        "200_E": {
+          "tempo": "2:18,13",
+          "nome": "Cunha, Mariana Pacheco",
+          "data": "27/04/2019",
+          "local": "Felgueiras"
+        },
+        "400_E": {
+          "tempo": "4:51,85",
+          "nome": "Santos, Ana Claudia",
+          "data": "21/11/2004",
+          "local": "Setubal"
+        }
+      },
+      "14": {
+        "50_L": {
+          "tempo": "26,85",
+          "nome": "Guedes, Ana Margarida",
+          "data": "05/07/2015",
+          "local": "Bragança"
+        },
+        "400_L": {
+          "tempo": "4:23,08",
+          "nome": "Miguel, Susana Patricia",
+          "data": "15/05/2004",
+          "local": "Alhandra"
+        },
+        "800_L": {
+          "tempo": "9:00,27",
+          "nome": "Silva, Alexandra Maria",
+          "data": "20/12/1980",
+          "local": "Antibbes (FRA)"
+        },
+        "1500_L": {
+          "tempo": "17:17,43",
+          "nome": "Holub, Tamila Hryhorivna",
+          "data": "30/06/2013",
+          "local": "Vila Praia Ancora"
+        },
+        "50_C": {
+          "tempo": "29,82",
+          "nome": "Taveira, Carolina Ratola",
+          "data": "21/07/2024",
+          "local": "Porto"
+        },
+        "200_C": {
+          "tempo": "2:17,86",
+          "nome": "Martinheira, Catia Raquel",
+          "data": "21/12/2008",
+          "local": "Sines"
+        },
+        "100_B": {
+          "tempo": "1:11,76",
+          "nome": "Gomes, Diana Duarte",
+          "data": "28/06/2003",
+          "local": "Reboleira"
+        },
+        "200_B": {
+          "tempo": "2:34,51",
+          "nome": "Gomes, Diana Duarte",
+          "data": "28/06/2003",
+          "local": "Reboleira"
+        },
+        "50_M": {
+          "tempo": "29,15",
+          "nome": "Silva, Leonor Carnide",
+          "data": "23/04/2023",
+          "local": "Felgueiras"
+        },
+        "100_M": {
+          "tempo": "1:02,36",
+          "nome": "Cunha, Mariana Pacheco",
+          "data": "14/04/2018",
+          "local": "Felgueiras"
+        },
+        "200_M": {
+          "tempo": "2:18,29",
+          "nome": "Cunha, Mariana Pacheco",
+          "data": "15/04/2018",
+          "local": "Felgueiras"
+        },
+        "100_E": {
+          "tempo": "1:06,81",
+          "nome": "Taveira, Carolina Ratola",
+          "data": "21/07/2024",
+          "local": "Porto"
+        },
+        "200_E": {
+          "tempo": "2:19,79",
+          "nome": "Cunha, Mariana Pacheco",
+          "data": "14/04/2018",
+          "local": "Felgueiras"
+        },
+        "400_E": {
+          "tempo": "4:56,53",
+          "nome": "Cunha, Mariana Pacheco",
+          "data": "05/05/2018",
+          "local": "Porto"
+        }
+      },
+      "13": {
+        "50_L": {
+          "tempo": "27,43",
+          "nome": "Brites, Marta Lopes",
+          "data": "12/07/2019",
+          "local": "Ponta Delgada"
+        },
+        "400_L": {
+          "tempo": "4:25,30",
+          "nome": "Silva, Alexandra Maria",
+          "data": "19/07/1980",
+          "local": "Porto"
+        },
+        "800_L": {
+          "tempo": "9:03,90",
+          "nome": "Silva, Alexandra Maria",
+          "data": "13/07/1980",
+          "local": "Porto"
+        },
+        "1500_L": {
+          "tempo": "17:18,20",
+          "nome": "Silva, Alexandra Maria",
+          "data": "23/07/1980",
+          "local": "Porto"
+        },
+        "100_C": {
+          "tempo": "1:04,85",
+          "nome": "Peixeira, Filipa Ramos",
+          "data": "18/03/2016",
+          "local": "Tomar"
+        },
+        "100_B": {
+          "tempo": "1:13,43",
+          "nome": "Pereira, Raquel Gomes",
+          "data": "13/04/2013",
+          "local": "Abrantes"
+        },
+        "200_B": {
+          "tempo": "2:36,86",
+          "nome": "Pereira, Clara Gomes",
+          "data": "06/06/2015",
+          "local": "Algés"
+        }
+      }
+    }
+  }
+};
+
+
+
+var dadosInternacionais = {
+  olimpicos: {
+    M: {
+      "50_L":"00:21,91","100_L":"00:48,34","200_L":"01:46,26","400_L":"03:46,78",
+      "800_L":"07:48,90","1500_L":"15:00,99","50_C":"00:24,74","100_C":"00:53,68",
+      "200_C":"01:57,50","50_B":"00:27,05","100_B":"00:59,49","200_B":"02:09,68",
+      "50_M":"00:23,24","100_M":"00:51,58","200_M":"01:55,78","200_E":"01:57,94","400_E":"04:12,50"
+    },
+    F: {
+      "50_L":"00:24,69","100_L":"00:53,61","200_L":"01:57,26","400_L":"04:07,90",
+      "800_L":"08:26,71","1500_L":"16:09,09","50_C":"00:28,13","100_C":"00:59,99",
+      "200_C":"02:10,30","50_B":"00:30,69","100_B":"01:06,69","200_B":"02:23,91",
+      "50_M":"00:25,98","100_M":"00:57,82","200_M":"02:08,43","200_E":"02:11,47","400_E":"04:38,53"
+    }
+  },
+  europeus: {
+    M: {
+      "50_L":"00:22,26","100_L":"00:49,07","200_L":"01:47,91","400_L":"03:50,19",
+      "800_L":"07:56,09","1500_L":"15:14,69","50_C":"00:25,13","100_C":"00:54,51",
+      "200_C":"01:59,37","50_B":"00:27,47","100_B":"01:00,43","200_B":"02:11,65",
+      "50_M":"00:23,60","100_M":"00:52,38","200_M":"01:57,62","200_E":"01:59,73","400_E":"04:16,42"
+    },
+    F: {
+      "50_L":"00:25,08","100_L":"00:54,43","200_L":"01:59,07","400_L":"04:11,89",
+      "800_L":"08:34,67","1500_L":"16:24,66","50_C":"00:28,57","100_C":"01:00,94",
+      "200_C":"02:12,43","50_B":"00:31,18","100_B":"01:07,72","200_B":"02:26,18",
+      "50_M":"00:26,41","100_M":"00:58,72","200_M":"02:10,50","200_E":"02:13,52","400_E":"04:42,94"
+    }
+  },
+  europeus_jun: {
+    M: {
+      "50_L":"00:23,34","100_L":"00:51,33","200_L":"01:53,05","400_L":"04:00,75",
+      "800_L":"08:18,41","1500_L":"15:57,20","50_C":"00:26,37","100_C":"00:57,09",
+      "200_C":"02:05,21","50_B":"00:28,78","100_B":"01:03,34","200_B":"02:17,75",
+      "50_M":"00:24,73","100_M":"00:54,87","200_M":"02:03,36","200_E":"02:05,30","400_E":"04:28,61"
+    },
+    F: {
+      "50_L":"00:26,29","100_L":"00:56,98","200_L":"02:04,69","400_L":"04:24,34",
+      "800_L":"08:59,46","1500_L":"17:13,28","50_C":"00:29,96","100_C":"01:03,88",
+      "200_C":"02:19,08","50_B":"00:32,72","100_B":"01:10,93","200_B":"02:33,94",
+      "50_M":"00:27,76","100_M":"01:01,52","200_M":"02:16,98","200_E":"02:19,89","400_E":"04:56,67"
+    }
+  }
+};
+
+// ============================================================
+// DADOS DE COMPETICOES POR ESCALAO
+// ============================================================
+var COMPS = {
+  INF_B:  [{v:'INF_B_ZON',  l:'Zonais'}, {v:'INF_B',     l:'Nacional Verão'}],
+  INF_A:  [{v:'INF_A_ZON',  l:'Zonais'}, {v:'INF_A',     l:'Nacional Verão'}],
+  JUV_B:  [{v:'JUV_B_ZON',  l:'Zonais'}, {v:'JUV_B_INV', l:'Nacional Inverno'}, {v:'JUV_B_VER', l:'Nacional Verão'}],
+  JUV_A:  [{v:'JUV_A_ZON',  l:'Zonais'}, {v:'JUV_A_INV', l:'Nacional Inverno'}, {v:'JUV_A_VER', l:'Nacional Verão'}],
+  JUN1:   [{v:'JUN1', l:'Nacional'}, {v:'EUR_JUN', l:'Europeus Juniores'}, {v:'EUR', l:'Europeus'}],
+  JUN:    [{v:'JUN',  l:'Nacional'}, {v:'EUR_JUN', l:'Europeus Juniores'}, {v:'EUR', l:'Europeus'}],
+  SUB21:  [{v:'SUB21', l:'Nacional'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}],
+  SEN:    [{v:'SEN',   l:'Nacional'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}],
+  ABS:    [{v:'ABS',   l:'Nacional'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}]
+};
+
+// Map comp value to column in tempos
+var COL_MAP = {
+  'ABS':'ABS','SEN':'SEN','SUB21':'SUB21','JUN':'JUN','JUN1':'JUN1',
+  'JUV_A_VER':'JUV_A_VER','JUV_A_INV':'JUV_A_INV','JUV_B_VER':'JUV_B_VER','JUV_B_INV':'JUV_B_INV',
+  'INF_A':'INF_A','INF_B':'INF_B',
+  'JUV_A_ZON':'JUV_A_ZON','JUV_B_ZON':'JUV_B_ZON','INF_A_ZON':'INF_A_ZON','INF_B_ZON':'INF_B_ZON',
+  'EUR_JUN':'EUR_JUN','EUR':'EUR','OLI':'OLI'
+};
+
+// Comp dates info
+var COMP_DATES = {
+  'INF_B_ZON':  'Torneios Zonais de Infantis · 20-22 fev 2026 · Ponte de Sor',
+  'INF_A_ZON':  'Torneios Zonais de Infantis · 20-22 fev 2026 · Ponte de Sor',
+  'INF_B':      'Campeonato Nacional de Infantis · 17-19 jul 2026 · Manteigas',
+  'INF_A':      'Campeonato Nacional de Infantis · 17-19 jul 2026 · Manteigas',
+  'JUV_A_ZON':  'Torneios Zonais de Juvenis · Piscina Municipal da Quarteira',
+  'JUV_B_ZON':  'Torneios Zonais de Juvenis · Piscina Municipal da Quarteira',
+  'JUV_A_INV':  'Campeonato Nacional de Juvenis · 20-22 mar 2026 · Coimbra',
+  'JUV_B_INV':  'Campeonato Nacional de Juvenis · 20-22 mar 2026 · Coimbra',
+  'JUV_A_VER':  'Campeonatos Nacionais de Juvenis, Juniores e Seniores · 23-25 jul 2026 · Jamor',
+  'JUV_B_VER':  'Campeonatos Nacionais de Juvenis, Juniores e Seniores · 23-25 jul 2026 · Jamor',
+  'JUN1':       'Campeonatos Nacionais · 13-16 dez 2025 Leiria · 28-31 mar 2026 Coimbra · 23-25 jul 2026 Jamor',
+  'JUN':        'Campeonatos Nacionais · 13-16 dez 2025 Leiria · 28-31 mar 2026 Coimbra · 23-25 jul 2026 Jamor',
+  'SUB21':      'Campeonatos Nacionais · 13-16 dez 2025 Leiria · 28-31 mar 2026 Coimbra · 23-25 jul 2026 Jamor',
+  'SEN':        'Campeonatos Nacionais · 13-16 dez 2025 Leiria · 28-31 mar 2026 Coimbra · 23-25 jul 2026 Jamor',
+  'ABS':        'Campeonatos Nacionais · 13-16 dez 2025 Leiria · 28-31 mar 2026 Coimbra · 23-25 jul 2026 Jamor',
+  'EUR_JUN':    'Europeus de Juniores de Piscina Longa · 7-12 jul 2026 · Munique, Alemanha',
+  'EUR':        'Europeus de Piscina Longa · 31 jul-16 ago 2026 · Paris, França',
+  'OLI':        'Jogos Olímpicos 2028 · Los Angeles 2028'
+};
+
+// Estilo map
+var ESTILO_LABELS = {L:'Livres', C:'Costas', B:'Bruços', M:'Mariposa', E:'Estilos', X:'Estafetas'};
+var ESTILO_PROVAS_LONGA = {
+  L:['50','100','200','400','800','1500'], C:['50','100','200'],
+  B:['50','100','200'], M:['50','100','200'], E:['200','400'], X:['4x50L','4x100L','4x50E','4x100E']
+};
+var ESTILO_PROVAS_CURTA = {
+  L:['50','100','200','400','800','1500'], C:['50','100','200'],
+  B:['50','100','200'], M:['50','100','200'], E:['100','200','400'], X:['4x50L','4x100L','4x50E','4x100E']
+};
+
+// ============================================================
+// MAIN CALCULATOR
+// ============================================================
+function onGeneroChange() {
+  var genero = document.getElementById('genero').value;
+  var estilo = document.getElementById('estilo').value;
+  var dist = document.getElementById('distancia').value;
+  popularEstilos();
+  if (estilo && document.getElementById('estilo').querySelector('option[value="' + estilo + '"]')) {
+    document.getElementById('estilo').value = estilo;
+    popularDistanciasPorEstilo();
+    if (dist && document.getElementById('distancia').querySelector('option[value="' + dist + '"]')) {
+      document.getElementById('distancia').value = dist;
+    }
+  }
+  calcular();
+}
+
+function onEscalaoChange() {
+  var escalao = document.getElementById('escalao').value;
+  var compEl = document.getElementById('competicao');
+  var prevComp = compEl.value;
+  compEl.innerHTML = '<option value="">Selecionar</option>';
+  if (escalao && COMPS[escalao]) {
+    var comps = COMPS[escalao];
+    for (var i = 0; i < comps.length; i++) {
+      var opt = document.createElement('option');
+      opt.value = comps[i].v;
+      opt.textContent = comps[i].l;
+      compEl.appendChild(opt);
+    }
+    // Restore if still valid
+    if (compEl.querySelector('option[value="' + prevComp + '"]')) {
+      compEl.value = prevComp;
+    }
+  }
+  popularEstilos();
+  calcular();
+}
+
+function popularEstilos() {
+  var genero = document.getElementById('genero').value;
+  var piscina = document.getElementById('piscina').value;
+  var estiloEl = document.getElementById('estilo');
+  var prevEstilo = estiloEl.value;
+  estiloEl.innerHTML = '<option value="">Selecionar</option>';
+  if (!genero || !piscina) { popularDistanciasPorEstilo(); return; }
+  
+  var estilos = genero === 'X' ? ['X'] : (piscina === 'longa' 
+    ? Object.keys(ESTILO_PROVAS_LONGA).filter(function(e){ return e !== 'X'; })
+    : Object.keys(ESTILO_PROVAS_CURTA).filter(function(e){ return e !== 'X'; }));
+  if (genero === 'X') estilos = ['X'];
+
+  for (var i = 0; i < estilos.length; i++) {
+    var opt = document.createElement('option');
+    opt.value = estilos[i];
+    opt.textContent = ESTILO_LABELS[estilos[i]];
+    estiloEl.appendChild(opt);
+  }
+  if (estiloEl.querySelector('option[value="' + prevEstilo + '"]')) {
+    estiloEl.value = prevEstilo;
+  }
+  popularDistanciasPorEstilo();
+}
+
+function updateDistanciasPorEstilo() { popularDistanciasPorEstilo(); }
+
+function popularDistanciasPorEstilo() {
+  var piscina = document.getElementById('piscina').value;
+  var estilo = document.getElementById('estilo').value;
+  var distEl = document.getElementById('distancia');
+  var prevDist = distEl.value;
+  distEl.innerHTML = '<option value="">Selecionar</option>';
+  if (!piscina || !estilo) return;
+  var provas = piscina === 'longa' ? ESTILO_PROVAS_LONGA[estilo] : ESTILO_PROVAS_CURTA[estilo];
+  if (!provas) return;
+  for (var i = 0; i < provas.length; i++) {
+    var opt = document.createElement('option');
+    opt.value = provas[i];
+    opt.textContent = provas[i] + 'm';
+    distEl.appendChild(opt);
+  }
+  if (distEl.querySelector('option[value="' + prevDist + '"]')) {
+    distEl.value = prevDist;
+  }
+}
+
+function getTempo(piscina, genero, dist, estilo, col) {
+  // International competitions have their own data table
+  var intlKey = null;
+  if (col === 'OLI') intlKey = 'olimpicos';
+  else if (col === 'EUR') intlKey = 'europeus';
+  else if (col === 'EUR_JUN') intlKey = 'europeus_jun';
+  if (intlKey) {
+    try {
+      var key = dist + '_' + estilo;
+      var val = dadosInternacionais[intlKey][genero][key];
+      return (val && val !== '') ? val : null;
+    } catch(e) { return null; }
+  }
+  // National competitions from tempos table
+  try {
+    var key = dist + '_' + estilo;
+    var val = tempos[piscina][genero][key][col];
+    return (val && val !== '') ? val : null;
+  } catch(e) { return null; }
+}
+
+function calcular() {
+  var piscina = document.getElementById('piscina').value;
+  var genero = document.getElementById('genero').value;
+  var escalao = document.getElementById('escalao').value;
+  var comp = document.getElementById('competicao').value;
+  var estilo = document.getElementById('estilo').value;
+  var dist = document.getElementById('distancia').value;
+  var resultEl = document.getElementById('result');
+
+  if (!piscina || !genero || !escalao || !comp || !estilo || !dist) {
+    resultEl.innerHTML = '<div class="result-empty"><span class="icon"></span>Preenche os campos acima para ver o tempo mínimo de qualificação.</div>';
+    return;
+  }
+
+  var col = COL_MAP[comp];
+  var g = (genero === 'X') ? 'M' : genero; // estafetas usam M como base
+  var tempo = getTempo(piscina, g, dist, estilo, col);
+
+  if (!tempo) {
+    resultEl.innerHTML = '<div class="result-empty"><span class="icon"></span>Sem mínimo definido para esta combinação.</div>';
+    return;
+  }
+
+  var datesInfo = COMP_DATES[comp] || '';
+  var isIntl = (comp === 'EUR' || comp === 'EUR_JUN' || comp === 'OLI');
+
+  var html = '<div class="result-box">';
+  html += '<div class="result-label">Tempo mínimo de qualificação</div>';
+  html += '<div class="result-time">' + tempo + '</div>';
+
+  if (datesInfo || isIntl) {
+    html += '<div class="result-dates">';
+    if (datesInfo) {
+      var lines = datesInfo.split(' · ');
+      if (lines.length >= 1) html += '<div class="result-dates-title">' + lines[0] + '</div>';
+      for (var di = 1; di < lines.length; di++) {
+        html += '<div class="result-dates-item">' + lines[di] + '</div>';
+      }
+    }
+    if (isIntl) html += '<div class="result-dates-item" style="color:#f0a500;margin-top:4px;">Apenas piscina longa (50m)</div>';
+    html += '</div>';
+  }
+  // Personal time input - inside the blue result box
+  html += '<div class="personal-wrap">';
+  html += '<div class="personal-label">O teu tempo</div>';
+  html += '<div class="personal-input-row">';
+  html += '<input type="tel" id="personal-time" class="personal-input" placeholder="ex: 10543" oninput="calcularDiff()" maxlength="7">';
+  html += '<div id="personal-time-preview" style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:var(--aqua);letter-spacing:2px;min-width:70px;"></div>';
+  html += '</div>';
+  html += '</div>';
+  html += '<div id="diff-result"></div>';
+  html += '</div>';
+
+  resultEl.innerHTML = html;
+}
+
+function calcularDiff() {
+  var input = document.getElementById('personal-time');
+  var preview = document.getElementById('personal-time-preview');
+  var diffEl = document.getElementById('diff-result');
+  var raw = input.value.replace(/\D/g,'');
+  if (!raw) { preview.textContent = ''; diffEl.innerHTML = ''; return; }
+
+  // Parse digits: up to 7 digits = m:ss,cc or ss,cc
+  var padded = raw.padStart(6, '0');
+  var cc = parseInt(padded.slice(-2));
+  var ss = parseInt(padded.slice(-4,-2));
+  var mm = parseInt(padded.slice(0,-4)) || 0;
+  var totalMs = (mm*60+ss)*100+cc;
+  var formatted = mm > 0 ? mm+':'+('0'+ss).slice(-2)+','+('0'+cc).slice(-2) : ss+','+('0'+cc).slice(-2);
+  preview.textContent = formatted;
+
+  // Get minimo
+  var piscina = document.getElementById('piscina').value;
+  var genero = document.getElementById('genero').value;
+  var escalao = document.getElementById('escalao').value;
+  var comp = document.getElementById('competicao').value;
+  var estilo = document.getElementById('estilo').value;
+  var dist = document.getElementById('distancia').value;
+  var col = COL_MAP[comp];
+  var g = genero === 'X' ? 'M' : genero;
+  var minimoStr = getTempo(piscina, g, dist, estilo, col);
+  if (!minimoStr) return;
+
+  // Parse minimo
+  var mStr = minimoStr.replace(',','.');
+  var mParts = mStr.match(/^(?:(\d+):)?(\d+)\.(\d+)$/);
+  if (!mParts) return;
+  var mMs = ((parseInt(mParts[1]||0)*60)+parseInt(mParts[2]))*100+parseInt(mParts[3]);
+  var diff = totalMs - mMs;
+
+  if (diff <= 0) {
+    var absDiff = Math.abs(diff);
+    var dcc = absDiff%100, dss = Math.floor(absDiff/100)%60, dmm = Math.floor(absDiff/6000);
+    var dFmt = (dmm>0?dmm+':':'')+(dmm>0?('0'+dss).slice(-2):dss)+','+('0'+dcc).slice(-2);
+    diffEl.innerHTML = '<div class="diff-result passa">'
+      + '<div class="diff-time">-' + dFmt + '</div>'
+      + '<div class="diff-msg">Parabéns! Tens o mínimo</div>'
+      + '</div>';
+  } else {
+    var dcc = diff%100, dss = Math.floor(diff/100)%60, dmm = Math.floor(diff/6000);
+    var dFmt = (dmm>0?dmm+':':'')+(dmm>0?('0'+dss).slice(-2):dss)+','+('0'+dcc).slice(-2);
+    var pct = Math.round(mMs/totalMs*100);
+    diffEl.innerHTML = '<div class="diff-result falta">'
+      + '<div class="diff-time">+' + dFmt + '</div>'
+      + '<div class="diff-msg">Ainda precisas de baixar este tempo</div>'
+      + '</div>'
+      + '<div class="progress-wrap">'
+      + '<div class="progress-bar-bg"><div class="progress-bar-fill" style="width:' + Math.min(pct,100) + '%;background:' + (pct>=90?'var(--aqua)':'rgba(0,196,204,0.5)') + ';"></div></div>'
+      + '<div class="progress-pct">' + pct + '% do objetivo</div>'
+      + '</div>';
+  }
+}
+
+// ============================================================
+// TOGGLE SECTIONS
+// ============================================================
+function toggleFPN() {
+  var section = document.getElementById('fpn-section');
+  var btn = document.getElementById('fpn-btn');
+  if (section.style.display === 'none') {
+    section.style.display = 'block';
+    section.scrollIntoView({behavior:'smooth', block:'start'});
+    btn.textContent = 'Fechar Pontos FPN';
+  } else {
+    section.style.display = 'none';
+    btn.textContent = 'Calcular Pontos FPN';
+  }
+}
+
+function toggleIdades() {
+  var section = document.getElementById('idades-section');
+  var btn = document.getElementById('idades-btn');
+  if (section.style.display === 'none') {
+    section.style.display = 'block';
+    section.scrollIntoView({behavior:'smooth', block:'start'});
+    btn.textContent = 'Fechar Recordes Nacionais';
+  } else {
+    section.style.display = 'none';
+    btn.textContent = 'Recordes Nacionais';
+  }
+}
+
+// ============================================================
+// PONTOS FPN
+// ============================================================
+function fpnUpdateEstilos() {
+  var piscina = document.getElementById('fpn-piscina').value;
+  var sexo = document.getElementById('fpn-sexo').value;
+  var estiloEl = document.getElementById('fpn-estilo');
+  var prevE = estiloEl.value;
+  estiloEl.innerHTML = '<option value="">Selecionar</option>';
+  if (!piscina || !sexo) return;
+  var estilos = piscina === 'longa'
+    ? ['L','C','B','M','E']
+    : ['L','C','B','M','E'];
+  for (var i = 0; i < estilos.length; i++) {
+    var opt = document.createElement('option');
+    opt.value = estilos[i];
+    opt.textContent = ESTILO_LABELS[estilos[i]];
+    estiloEl.appendChild(opt);
+  }
+  if (estiloEl.querySelector('option[value="' + prevE + '"]')) estiloEl.value = prevE;
+  fpnUpdateDistancias();
+}
+
+function fpnUpdateDistancias() {
+  var piscina = document.getElementById('fpn-piscina').value;
+  var estilo = document.getElementById('fpn-estilo').value;
+  var distEl = document.getElementById('fpn-distancia');
+  var prevD = distEl.value;
+  distEl.innerHTML = '<option value="">Selecionar</option>';
+  if (!piscina || !estilo) return;
+  var provas = piscina === 'longa' ? ESTILO_PROVAS_LONGA[estilo] : ESTILO_PROVAS_CURTA[estilo];
+  if (!provas) return;
+  for (var i = 0; i < provas.length; i++) {
+    var opt = document.createElement('option');
+    opt.value = provas[i];
+    opt.textContent = provas[i] + 'm';
+    distEl.appendChild(opt);
+  }
+  if (distEl.querySelector('option[value="' + prevD + '"]')) distEl.value = prevD;
+}
+
+function calcularPontosFPN() {
+  var piscina = document.getElementById('fpn-piscina').value;
+  var sexo = document.getElementById('fpn-sexo').value;
+  var estilo = document.getElementById('fpn-estilo').value;
+  var dist = document.getElementById('fpn-distancia').value;
+  var tempoInput = document.getElementById('fpn-tempo').value.trim();
+  var resultEl = document.getElementById('fpn-result');
+
+  if (!piscina || !sexo || !estilo || !dist || !tempoInput) {
+    resultEl.innerHTML = '<div style="color:#7ab8d4;font-size:13px;">Preenche todos os campos.</div>';
+    return;
+  }
+
+  // Get record
+  var key = dist + '_' + estilo;
+  var rec = null;
+  try { rec = recordesNacionais[piscina][sexo][key]; } catch(e) {}
+  if (!rec) {
+    resultEl.innerHTML = '<div style="color:#e74c3c;font-size:13px;">Sem recorde nacional para esta prova.</div>';
+    return;
+  }
+
+  function parseT(s) {
+    s = s.trim().replace(',','.');
+    var m;
+    m = s.match(/^(\d+):(\d{2})\.(\d{2})$/);
+    if (m) return (parseInt(m[1])*60+parseInt(m[2]))*100+parseInt(m[3]);
+    m = s.match(/^(\d+)\.(\d{2})$/);
+    if (m) return parseInt(m[1])*100+parseInt(m[2]);
+    if (/^\d+$/.test(s)) {
+      var n = parseInt(s);
+      return (Math.floor(n/10000)*60+Math.floor(n/100)%100)*100+n%100;
+    }
+    return null;
+  }
+
+  var B = parseT(rec.tempo);
+  var T = parseT(tempoInput);
+  if (!B || !T) { resultEl.innerHTML = '<div style="color:#e74c3c;font-size:13px;">Tempo inválido.</div>'; return; }
+
+  var pontos = Math.round(1000 * Math.pow(B/T, 3));
+
+  var html = '<div class="fpn-result-box">';
+  html += '<div class="fpn-pontos">' + pontos + '</div>';
+  html += '<div class="fpn-pontos-label">Pontos FPN</div>';
+  html += '<div class="fpn-divider"></div>';
+  html += '<div class="fpn-rn-label">Recorde Nacional: ' + rec.tempo + '</div>';
+  html += '<div class="fpn-rn-nome">' + rec.nome + '</div>';
+  html += '<div class="fpn-rn-info">' + rec.data + ' · ' + rec.local + '</div>';
+  html += '</div>';
+  resultEl.innerHTML = html;
+}
+function fpnOnTempoInput(event) {
+  var raw = event.target.value.replace(/\D/g,'');
+  event.target.value = raw;
+  var prev = document.getElementById('fpn-tempo-preview');
+  if (!raw) { prev.textContent = ''; return; }
+  var padded = raw.padStart(6,'0');
+  var cc = parseInt(padded.slice(-2));
+  var ss = parseInt(padded.slice(-4,-2));
+  var mm = parseInt(padded.slice(0,-4)) || 0;
+  var fmt = mm > 0 ? mm+':'+('0'+ss).slice(-2)+','+('0'+cc).slice(-2) : ss+','+('0'+cc).slice(-2);
+  prev.textContent = fmt;
+  calcularPontosFPN();
+}
+
+
+
+// ============================================================
+// RECORDES POR IDADE
+// ============================================================
+function idadeUpdateEstilos() {
+  var piscina = document.getElementById('id-piscina').value;
+  var sexo = document.getElementById('id-sexo').value;
+  var estiloEl = document.getElementById('id-estilo');
+  var prevE = estiloEl.value;
+  estiloEl.innerHTML = '<option value="">Selecionar</option>';
+  if (!piscina || !sexo) return;
+  var estilos = ['L','C','B','M','E','X'];
+  if (sexo === 'X') estilos = ['X'];
+  for (var i = 0; i < estilos.length; i++) {
+    var opt = document.createElement('option');
+    opt.value = estilos[i];
+    opt.textContent = ESTILO_LABELS[estilos[i]];
+    estiloEl.appendChild(opt);
+  }
+  if (estiloEl.querySelector('option[value="' + prevE + '"]')) estiloEl.value = prevE;
+  idadeUpdateDistancias();
+}
+
+function idadeUpdateDistancias() {
+  var piscina = document.getElementById('id-piscina').value;
+  var sexo = document.getElementById('id-sexo').value;
+  var estilo = document.getElementById('id-estilo').value;
+  var distEl = document.getElementById('id-distancia');
+  var prevD = distEl.value;
+  distEl.innerHTML = '<option value="">Selecionar</option>';
+  if (!piscina || !estilo) return;
+  var provas = piscina === 'longa' ? ESTILO_PROVAS_LONGA[estilo] : ESTILO_PROVAS_CURTA[estilo];
+  if (!provas) return;
+  for (var i = 0; i < provas.length; i++) {
+    var opt = document.createElement('option');
+    opt.value = provas[i];
+    opt.textContent = provas[i] + 'm';
+    distEl.appendChild(opt);
+  }
+  if (distEl.querySelector('option[value="' + prevD + '"]')) distEl.value = prevD;
+  mostrarRecordeIdade();
+}
+
+function mostrarRecordeIdade() {
+  var piscina = document.getElementById('id-piscina').value;
+  var sexo = document.getElementById('id-sexo').value;
+  var estilo = document.getElementById('id-estilo').value;
+  var dist = document.getElementById('id-distancia').value;
+  var idade = document.getElementById('id-idade').value;
+  var resultEl = document.getElementById('id-result');
+
+  if (!piscina || !sexo || !estilo || !dist || !idade) {
+    resultEl.innerHTML = '';
+    return;
+  }
+
+  var pisc = piscina === 'curta' ? 'curta' : 'longa';
+  var ageKey = idade === 'open' ? 'open' : idade;
+  var isEstafeta = (estilo === 'X' || sexo === 'X');
+  var rec = null;
+
+  if (isEstafeta) {
+    // dist is like '4x50L','4x100E' (from ESTILO_PROVAS X values)
+    // Parse: '4x50L' -> dist='50', estiloRelay='L'
+    var lookupSexo = sexo === 'X' ? 'X' : sexo;
+    var relayMatch = dist.match(/^4x(\d+)([LE])$/);
+    if (relayMatch) {
+      var relayDist = relayMatch[1];
+      var relayEstilo = relayMatch[2];
+      var key = relayDist + '_' + relayEstilo;
+      try { rec = recordesEstafetas[pisc][lookupSexo][ageKey][key]; } catch(e) {}
+    }
+  } else {
+    var key = dist + '_' + estilo;
+    try { rec = recordesIdade[pisc][sexo][ageKey][key]; } catch(e) {}
+  }
+
+  if (!rec) {
+    resultEl.innerHTML = '<div class="fpn-result-box" style="margin-top:12px;">'
+      + '<div class="fpn-pontos-label" style="font-size:16px;color:var(--aqua);">Sem registo</div>'
+      + '</div>';
+    return;
+  }
+
+  var html = '<div class="fpn-result-box" style="margin-top:12px;">';
+  html += '<div class="fpn-pontos">' + rec.tempo + '</div>';
+  html += '<div class="fpn-divider"></div>';
+  if (isEstafeta) {
+    html += '<div class="fpn-rn-nome">' + rec.clube + '</div>';
+    if (rec.nadadores) html += '<div class="fpn-rn-info" style="margin-bottom:4px;">' + rec.nadadores + '</div>';
+  } else {
+    html += '<div class="fpn-rn-nome">' + rec.nome + '</div>';
+  }
+  html += '<div class="fpn-rn-info">' + rec.data + ' · ' + rec.local + '</div>';
+  html += '</div>';
+  resultEl.innerHTML = html;
+}
+
+
 
 
 // ============================================================
