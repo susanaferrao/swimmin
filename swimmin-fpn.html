@@ -5438,19 +5438,17 @@ function idadeUpdateEstilos() {
   var prevE = estiloEl.value;
   estiloEl.innerHTML = '<option value="">Selecionar</option>';
   if (!piscina || !sexo) return;
-  var estilos = sexo === 'X' ? ['L','E'] : ['L','C','B','M','E','X'];
+  var estilos = ['L','C','B','M','E','X'];
+  if (sexo === 'X') estilos = ['X'];
   for (var i = 0; i < estilos.length; i++) {
     var opt = document.createElement('option');
     opt.value = estilos[i];
-    opt.textContent = estilos[i] === 'X' ? 'Estafetas' : ESTILO_LABELS[estilos[i]];
+    opt.textContent = ESTILO_LABELS[estilos[i]];
     estiloEl.appendChild(opt);
   }
   if (estiloEl.querySelector('option[value="' + prevE + '"]')) estiloEl.value = prevE;
   idadeUpdateDistancias();
 }
-
-var ESTAFETA_PROVAS_LONGA = {'L':['50','100','200'],'E':['50','100']};
-var ESTAFETA_PROVAS_CURTA = {'L':['50','100','200'],'E':['50','100']};
 
 function idadeUpdateDistancias() {
   var piscina = document.getElementById('id-piscina').value;
@@ -5460,23 +5458,12 @@ function idadeUpdateDistancias() {
   var prevD = distEl.value;
   distEl.innerHTML = '<option value="">Selecionar</option>';
   if (!piscina || !estilo) return;
-  var provas;
-  if (estilo === 'X') {
-    // Estafetas individuais (M ou F): Livres e Estilos
-    provas = piscina === 'longa' ? ['50','100','200'] : ['50','100','200'];
-  } else if (sexo === 'X') {
-    // Misto estafetas
-    var misto = piscina === 'longa' ? ESTAFETA_PROVAS_LONGA : ESTAFETA_PROVAS_CURTA;
-    provas = misto[estilo] || [];
-  } else {
-    provas = piscina === 'longa' ? ESTILO_PROVAS_LONGA[estilo] : ESTILO_PROVAS_CURTA[estilo];
-  }
+  var provas = piscina === 'longa' ? ESTILO_PROVAS_LONGA[estilo] : ESTILO_PROVAS_CURTA[estilo];
   if (!provas) return;
   for (var i = 0; i < provas.length; i++) {
     var opt = document.createElement('option');
-    var label = (estilo === 'X' || sexo === 'X') ? '4x' + provas[i] + 'm' : provas[i] + 'm';
     opt.value = provas[i];
-    opt.textContent = label;
+    opt.textContent = provas[i] + 'm';
     distEl.appendChild(opt);
   }
   if (distEl.querySelector('option[value="' + prevD + '"]')) distEl.value = prevD;
@@ -5502,11 +5489,16 @@ function mostrarRecordeIdade() {
   var rec = null;
 
   if (isEstafeta) {
-    // Estafetas: sexo X or estilo X
+    // dist is like '4x50L','4x100E' (from ESTILO_PROVAS X values)
+    // Parse: '4x50L' -> dist='50', estiloRelay='L'
     var lookupSexo = sexo === 'X' ? 'X' : sexo;
-    var lookupEstilo = sexo === 'X' ? estilo : estilo; // estilo L or E
-    var key = dist + '_' + lookupEstilo;
-    try { rec = recordesEstafetas[pisc][lookupSexo][ageKey][key]; } catch(e) {}
+    var relayMatch = dist.match(/^4x(\d+)([LE])$/);
+    if (relayMatch) {
+      var relayDist = relayMatch[1];
+      var relayEstilo = relayMatch[2];
+      var key = relayDist + '_' + relayEstilo;
+      try { rec = recordesEstafetas[pisc][lookupSexo][ageKey][key]; } catch(e) {}
+    }
   } else {
     var key = dist + '_' + estilo;
     try { rec = recordesIdade[pisc][sexo][ageKey][key]; } catch(e) {}
