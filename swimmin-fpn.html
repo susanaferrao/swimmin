@@ -596,6 +596,90 @@
 
   
   <div class="fpn-btn-wrap">
+    <button class="fpn-btn" id="atleta-btn" onclick="toggleAtleta()">Os meus minimos</button>
+  </div>
+
+  <div class="fpn-section" id="atleta-section" style="display:none">
+    <div class="fpn-title">Os meus minimos</div>
+    <div class="fpn-subtitle">Compara os teus tempos com os minimos FPN</div>
+
+    <div id="atleta-view-intro">
+      <div id="atleta-profile-bar" style="display:none;margin-bottom:14px;">
+        <div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#7ab8d4;margin-bottom:6px;">Nadador</div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <select id="atleta-profile-select" onchange="mudarPerfil(this.value)" style="flex:1;padding:10px 12px;border-radius:10px;background:#f0f7ff;border:1.5px solid #c0d8ee;color:#1a3a4a;font-size:14px;font-weight:600;cursor:pointer;"></select>
+          <button onclick="novoPerfilAtleta()" title="Novo nadador" style="padding:10px 14px;border-radius:10px;background:var(--aqua);color:var(--dark);border:none;font-weight:700;font-size:18px;cursor:pointer;line-height:1;">+</button>
+        </div>
+        <button onclick="eliminarPerfilAtleta()" id="atleta-delete-btn" style="margin-top:8px;padding:7px 12px;border-radius:8px;background:transparent;border:1.5px solid #e74c3c;color:#e74c3c;font-size:12px;font-weight:600;cursor:pointer;width:100%;">Eliminar este nadador</button>
+      </div>
+      <div id="atleta-saved-summary"></div>
+      <div id="atleta-comp-selector" style="display:none;margin-top:16px;">
+        <div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#7ab8d4;margin-bottom:6px;">Ver mínimos para</div>
+        <select id="atleta-comp-select" onchange="selecionarCompAtleta(this.value)" style="width:100%;padding:12px 14px;border-radius:10px;background:#f0f7ff;border:1.5px solid #c0d8ee;color:#1a3a4a;font-size:15px;font-weight:600;cursor:pointer;appearance:auto;">
+        </select>
+        <div style="background:#fff8e1;border-radius:8px;padding:10px 14px;margin-top:12px;border-left:3px solid #f0a500;">
+          <div style="font-size:12px;color:#7a5a00;line-height:1.5;">Para participação nas competições, ter em conta a data de obtenção dos tempos.</div>
+        </div>
+      </div>
+      <button onclick="mostrarFormulario()" id="atleta-editar-btn" style="display:none;margin-top:14px;padding:10px 18px;border-radius:8px;background:transparent;border:2px solid var(--aqua);color:var(--aqua);font-weight:700;font-size:14px;cursor:pointer;width:100%;">Atualizar tempos e escalão</button>
+    </div>
+
+    <div id="atleta-form" style="display:none">
+      <div class="field">
+        <label>O teu nome</label>
+        <input type="text" id="atleta-nome" placeholder="ex: Ana Silva" style="background:var(--white);border:1.5px solid #d0e4f0;color:var(--text);font-size:16px;padding:10px 14px;border-radius:8px;width:100%;box-sizing:border-box;">
+      </div>
+      <div class="field">
+        <label>Escalao</label>
+        <select id="atleta-escalao" style="background:var(--white);border:1.5px solid #d0e4f0;color:var(--text);font-size:16px;padding:10px 14px;border-radius:8px;width:100%;box-sizing:border-box;">
+          <option value="">Selecionar</option>
+          <option value="INF_B">Infantil B</option>
+          <option value="INF_A">Infantil A</option>
+          <option value="JUV_B">Juvenil B</option>
+          <option value="JUV_A">Juvenil A</option>
+          <option value="JUN1">1 Junior</option>
+          <option value="JUN">Junior</option>
+          <option value="SUB21">Sub 21</option>
+          <option value="SEN">Senior</option>
+          <option value="ABS">Absoluto</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Sexo</label>
+        <select id="atleta-sexo" style="background:var(--white);border:1.5px solid #d0e4f0;color:var(--text);font-size:16px;padding:10px 14px;border-radius:8px;width:100%;box-sizing:border-box;">
+          <option value="">Selecionar</option>
+          <option value="M">Masculino</option>
+          <option value="F">Feminino</option>
+        </select>
+      </div>
+
+      <div style="margin-top:4px;margin-bottom:16px;background:#e8f4fb;border-radius:10px;padding:12px 14px;">
+        <div style="font-size:12px;color:#1a5a7a;line-height:1.6;">Introduz os teus melhores tempos (PB). Formato: M:SS,cc ou SS,cc (ex: 1:02,34 ou 27,45). Deixa em branco as provas que nao nadas.<br><strong>Nota:</strong> os minimos exigem tempos feitos nos ultimos 18 meses. Verifica sempre as datas.</div>
+      </div>
+
+      <div style="background:rgba(0,196,204,0.1);border-radius:8px;padding:10px 14px;margin-bottom:14px;border-left:3px solid var(--aqua);">
+        <div style="font-size:12px;color:var(--blue-deep);font-weight:600;margin-bottom:3px;">Como inserir os tempos</div>
+        <div style="font-size:12px;color:#1a5a7a;line-height:1.6;">
+          Escreve só os dígitos, sem pontuação:<br>
+          <strong>30,43</strong> → escreve <strong>3043</strong><br>
+          <strong>1:17,09</strong> → escreve <strong>11709</strong>
+        </div>
+      </div>
+      <div style="font-size:13px;font-weight:700;color:var(--aqua);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Piscina Curta (25m)</div>
+      <div id="form-curta"></div>
+
+      <div style="font-size:13px;font-weight:700;color:var(--aqua);text-transform:uppercase;letter-spacing:.05em;margin-top:18px;margin-bottom:10px;">Piscina Longa (50m)</div>
+      <div id="form-longa"></div>
+
+      <button onclick="guardarAtleta()" style="margin-top:18px;padding:14px;border-radius:8px;background:var(--aqua);color:var(--dark);font-weight:700;font-size:16px;border:none;cursor:pointer;width:100%;">Guardar e ver resultados</button>
+      <button onclick="cancelarFormulario()" style="margin-top:8px;padding:10px;border-radius:8px;background:transparent;border:1px solid #ccc;color:#7ab8d4;font-size:14px;cursor:pointer;width:100%;">Cancelar</button>
+    </div>
+
+    <div id="atleta-resultados" style="margin-top:20px;"></div>
+    <div class="footer">Dados guardados localmente no dispositivo</div>
+  </div>
+
+  <div class="fpn-btn-wrap">
     <button class="fpn-btn" id="fpn-btn" onclick="toggleFPN()">Calcular Pontos FPN</button>
   </div>
 
@@ -698,90 +782,6 @@
     </div>
     <div id="id-result"></div>
     <div class="footer">Dados FPN · atualizado a 04/03/2026 (50m) e 25/02/2026 (25m)</div>
-  </div>
-
-  <div class="fpn-btn-wrap">
-    <button class="fpn-btn" id="atleta-btn" onclick="toggleAtleta()">Os meus minimos</button>
-  </div>
-
-  <div class="fpn-section" id="atleta-section" style="display:none">
-    <div class="fpn-title">Os meus minimos</div>
-    <div class="fpn-subtitle">Compara os teus tempos com os minimos FPN</div>
-
-    <div id="atleta-view-intro">
-      <div id="atleta-profile-bar" style="display:none;margin-bottom:14px;">
-        <div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#7ab8d4;margin-bottom:6px;">Nadador</div>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <select id="atleta-profile-select" onchange="mudarPerfil(this.value)" style="flex:1;padding:10px 12px;border-radius:10px;background:#f0f7ff;border:1.5px solid #c0d8ee;color:#1a3a4a;font-size:14px;font-weight:600;cursor:pointer;"></select>
-          <button onclick="novoPerfilAtleta()" title="Novo nadador" style="padding:10px 14px;border-radius:10px;background:var(--aqua);color:var(--dark);border:none;font-weight:700;font-size:18px;cursor:pointer;line-height:1;">+</button>
-        </div>
-        <button onclick="eliminarPerfilAtleta()" id="atleta-delete-btn" style="margin-top:8px;padding:7px 12px;border-radius:8px;background:transparent;border:1.5px solid #e74c3c;color:#e74c3c;font-size:12px;font-weight:600;cursor:pointer;width:100%;">Eliminar este nadador</button>
-      </div>
-      <div id="atleta-saved-summary"></div>
-      <div id="atleta-comp-selector" style="display:none;margin-top:16px;">
-        <div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#7ab8d4;margin-bottom:6px;">Ver mínimos para</div>
-        <select id="atleta-comp-select" onchange="selecionarCompAtleta(this.value)" style="width:100%;padding:12px 14px;border-radius:10px;background:#f0f7ff;border:1.5px solid #c0d8ee;color:#1a3a4a;font-size:15px;font-weight:600;cursor:pointer;appearance:auto;">
-        </select>
-        <div style="background:#fff8e1;border-radius:8px;padding:10px 14px;margin-top:12px;border-left:3px solid #f0a500;">
-          <div style="font-size:12px;color:#7a5a00;line-height:1.5;">Para participação nas competições, ter em conta a data de obtenção dos tempos.</div>
-        </div>
-      </div>
-      <button onclick="mostrarFormulario()" id="atleta-editar-btn" style="display:none;margin-top:14px;padding:10px 18px;border-radius:8px;background:transparent;border:2px solid var(--aqua);color:var(--aqua);font-weight:700;font-size:14px;cursor:pointer;width:100%;">Atualizar tempos e escalão</button>
-    </div>
-
-    <div id="atleta-form" style="display:none">
-      <div class="field">
-        <label>O teu nome</label>
-        <input type="text" id="atleta-nome" placeholder="ex: Ana Silva" style="background:var(--white);border:1.5px solid #d0e4f0;color:var(--text);font-size:16px;padding:10px 14px;border-radius:8px;width:100%;box-sizing:border-box;">
-      </div>
-      <div class="field">
-        <label>Escalao</label>
-        <select id="atleta-escalao" style="background:var(--white);border:1.5px solid #d0e4f0;color:var(--text);font-size:16px;padding:10px 14px;border-radius:8px;width:100%;box-sizing:border-box;">
-          <option value="">Selecionar</option>
-          <option value="INF_B">Infantil B</option>
-          <option value="INF_A">Infantil A</option>
-          <option value="JUV_B">Juvenil B</option>
-          <option value="JUV_A">Juvenil A</option>
-          <option value="JUN1">1 Junior</option>
-          <option value="JUN">Junior</option>
-          <option value="SUB21">Sub 21</option>
-          <option value="SEN">Senior</option>
-          <option value="ABS">Absoluto</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Sexo</label>
-        <select id="atleta-sexo" style="background:var(--white);border:1.5px solid #d0e4f0;color:var(--text);font-size:16px;padding:10px 14px;border-radius:8px;width:100%;box-sizing:border-box;">
-          <option value="">Selecionar</option>
-          <option value="M">Masculino</option>
-          <option value="F">Feminino</option>
-        </select>
-      </div>
-
-      <div style="margin-top:4px;margin-bottom:16px;background:#e8f4fb;border-radius:10px;padding:12px 14px;">
-        <div style="font-size:12px;color:#1a5a7a;line-height:1.6;">Introduz os teus melhores tempos (PB). Formato: M:SS,cc ou SS,cc (ex: 1:02,34 ou 27,45). Deixa em branco as provas que nao nadas.<br><strong>Nota:</strong> os minimos exigem tempos feitos nos ultimos 18 meses. Verifica sempre as datas.</div>
-      </div>
-
-      <div style="background:rgba(0,196,204,0.1);border-radius:8px;padding:10px 14px;margin-bottom:14px;border-left:3px solid var(--aqua);">
-        <div style="font-size:12px;color:var(--blue-deep);font-weight:600;margin-bottom:3px;">Como inserir os tempos</div>
-        <div style="font-size:12px;color:#1a5a7a;line-height:1.6;">
-          Escreve só os dígitos, sem pontuação:<br>
-          <strong>30,43</strong> → escreve <strong>3043</strong><br>
-          <strong>1:17,09</strong> → escreve <strong>11709</strong>
-        </div>
-      </div>
-      <div style="font-size:13px;font-weight:700;color:var(--aqua);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Piscina Curta (25m)</div>
-      <div id="form-curta"></div>
-
-      <div style="font-size:13px;font-weight:700;color:var(--aqua);text-transform:uppercase;letter-spacing:.05em;margin-top:18px;margin-bottom:10px;">Piscina Longa (50m)</div>
-      <div id="form-longa"></div>
-
-      <button onclick="guardarAtleta()" style="margin-top:18px;padding:14px;border-radius:8px;background:var(--aqua);color:var(--dark);font-weight:700;font-size:16px;border:none;cursor:pointer;width:100%;">Guardar e ver resultados</button>
-      <button onclick="cancelarFormulario()" style="margin-top:8px;padding:10px;border-radius:8px;background:transparent;border:1px solid #ccc;color:#7ab8d4;font-size:14px;cursor:pointer;width:100%;">Cancelar</button>
-    </div>
-
-    <div id="atleta-resultados" style="margin-top:20px;"></div>
-    <div class="footer">Dados guardados localmente no dispositivo</div>
   </div>
 
 
@@ -5718,6 +5718,8 @@ function eliminarPerfilAtleta() {
   iniciarAtleta();
 }
 
+var REBUILDING_SELECT = false;
+
 function renderCompButtons(data) {
   var comps = COMP_POR_ESCALAO[data.escalao] || [];
   var selectorEl = document.getElementById('atleta-comp-selector');
@@ -5725,6 +5727,7 @@ function renderCompButtons(data) {
   if (comps.length === 0) { selectorEl.style.display = 'none'; return; }
   selectorEl.style.display = 'block';
   if (!ATLETA_COMP_ATUAL) ATLETA_COMP_ATUAL = comps[0].id;
+  REBUILDING_SELECT = true;
   selectEl.innerHTML = '';
   for (var i = 0; i < comps.length; i++) {
     var opt = document.createElement('option');
@@ -5733,13 +5736,16 @@ function renderCompButtons(data) {
     if (comps[i].id === ATLETA_COMP_ATUAL) opt.selected = true;
     selectEl.appendChild(opt);
   }
+  REBUILDING_SELECT = false;
   renderAtletaResultados(data, ATLETA_COMP_ATUAL);
 }
 
 function selecionarCompAtleta(compId) {
+  if (REBUILDING_SELECT) return;
   ATLETA_COMP_ATUAL = compId;
-  var data = loadAtleta();
-  if (data) renderCompButtons(data);
+  var activeId = getActiveProfileId();
+  var data = activeId ? (getAllProfiles()[activeId] || null) : loadAtleta();
+  if (data) renderAtletaResultados(data, ATLETA_COMP_ATUAL);
 }
 
 function mostrarFormulario() {
