@@ -5142,23 +5142,12 @@ function popularDistanciasPorEstilo() {
   var prevDist = distEl.value;
   distEl.innerHTML = '<option value="">Selecionar</option>';
   if (!piscina || !estilo) return;
-  var provas;
-  if (sexo === 'X') {
-    // Misto: only relay distances
-    provas = estilo === 'L' ? ['4x50L','4x100L'] : ['4x50E','4x100E'];
-  } else {
-    // M/F: normal distances
-    provas = piscina === 'longa' ? ESTILO_PROVAS_LONGA[estilo] : ESTILO_PROVAS_CURTA[estilo];
-    // Append relay distances for L and E
-    if (estilo === 'L') provas = provas.concat(['4x50L','4x100L','4x200L']);
-    if (estilo === 'E') provas = provas.concat(['4x50E','4x100E']);
-  }
+  var provas = piscina === 'longa' ? ESTILO_PROVAS_LONGA[estilo] : ESTILO_PROVAS_CURTA[estilo];
   if (!provas) return;
   for (var i = 0; i < provas.length; i++) {
     var opt = document.createElement('option');
-    var isRelay = provas[i].indexOf('4x') === 0;
     opt.value = provas[i];
-    opt.textContent = isRelay ? provas[i].replace('L','').replace('E','') + 'm estafeta' : provas[i] + 'm';
+    opt.textContent = provas[i] + 'm';
     distEl.appendChild(opt);
   }
   if (distEl.querySelector('option[value="' + prevDist + '"]')) {
@@ -11024,23 +11013,12 @@ function popularDistanciasPorEstilo() {
   var prevDist = distEl.value;
   distEl.innerHTML = '<option value="">Selecionar</option>';
   if (!piscina || !estilo) return;
-  var provas;
-  if (sexo === 'X') {
-    // Misto: only relay distances
-    provas = estilo === 'L' ? ['4x50L','4x100L'] : ['4x50E','4x100E'];
-  } else {
-    // M/F: normal distances
-    provas = piscina === 'longa' ? ESTILO_PROVAS_LONGA[estilo] : ESTILO_PROVAS_CURTA[estilo];
-    // Append relay distances for L and E
-    if (estilo === 'L') provas = provas.concat(['4x50L','4x100L','4x200L']);
-    if (estilo === 'E') provas = provas.concat(['4x50E','4x100E']);
-  }
+  var provas = piscina === 'longa' ? ESTILO_PROVAS_LONGA[estilo] : ESTILO_PROVAS_CURTA[estilo];
   if (!provas) return;
   for (var i = 0; i < provas.length; i++) {
     var opt = document.createElement('option');
-    var isRelay = provas[i].indexOf('4x') === 0;
     opt.value = provas[i];
-    opt.textContent = isRelay ? provas[i].replace('L','').replace('E','') + 'm estafeta' : provas[i] + 'm';
+    opt.textContent = provas[i] + 'm';
     distEl.appendChild(opt);
   }
   if (distEl.querySelector('option[value="' + prevDist + '"]')) {
