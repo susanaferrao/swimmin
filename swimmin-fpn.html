@@ -5307,6 +5307,21 @@ function calcularPontosFPN() {
   html += '</div>';
   resultEl.innerHTML = html;
 }
+function fpnOnTempoInput(event) {
+  var raw = event.target.value.replace(/\D/g,'');
+  event.target.value = raw;
+  var prev = document.getElementById('fpn-tempo-preview');
+  if (!raw) { prev.textContent = ''; return; }
+  var padded = raw.padStart(6,'0');
+  var cc = parseInt(padded.slice(-2));
+  var ss = parseInt(padded.slice(-4,-2));
+  var mm = parseInt(padded.slice(0,-4)) || 0;
+  var fmt = mm > 0 ? mm+':'+('0'+ss).slice(-2)+','+('0'+cc).slice(-2) : ss+','+('0'+cc).slice(-2);
+  prev.textContent = fmt;
+  calcularPontosFPN();
+}
+
+
 
 // ============================================================
 // RECORDES POR IDADE
@@ -5554,7 +5569,7 @@ function renderCompButtons(data) {
     var bg = isActive ? 'var(--aqua)' : 'transparent';
     var col = isActive ? 'var(--dark)' : 'var(--aqua)';
     var border = '2px solid var(--aqua)';
-    html += '<button onclick="selecionarCompAtleta('' + c.id + '')" style="padding:8px 14px;border-radius:8px;background:' + bg + ';color:' + col + ';border:' + border + ';font-weight:700;font-size:13px;cursor:pointer;">' + c.label + '</button>';
+    html += '<button onclick="selecionarCompAtleta(' + JSON.stringify(c.id) + ')" style="padding:8px 14px;border-radius:8px;background:' + bg + ';color:' + col + ';border:' + border + ';font-weight:700;font-size:13px;cursor:pointer;">' + c.label + '</button>';
   }
   buttonsEl.innerHTML = html;
   renderAtletaResultados(data, ATLETA_COMP_ATUAL);
