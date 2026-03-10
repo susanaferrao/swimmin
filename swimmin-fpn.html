@@ -710,11 +710,15 @@
 
     <div id="atleta-view-intro">
       <div id="atleta-saved-summary"></div>
-      <div id="atleta-comp-selector" style="display:none;margin-top:14px;">
-        <div style="font-size:13px;color:#7ab8d4;margin-bottom:6px;">Ver minimos para:</div>
-        <div id="atleta-comp-buttons" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+      <div id="atleta-comp-selector" style="display:none;margin-top:16px;">
+        <div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#7ab8d4;margin-bottom:6px;">Ver mínimos para</div>
+        <select id="atleta-comp-select" onchange="selecionarCompAtleta(this.value)" style="width:100%;padding:12px 14px;border-radius:10px;background:#f0f7ff;border:1.5px solid #c0d8ee;color:#1a3a4a;font-size:15px;font-weight:600;cursor:pointer;appearance:auto;">
+        </select>
+        <div style="background:#fff8e1;border-radius:8px;padding:10px 14px;margin-top:12px;border-left:3px solid #f0a500;">
+          <div style="font-size:12px;color:#7a5a00;line-height:1.5;">Para participação nas competições, ter em conta a data de obtenção dos tempos.</div>
+        </div>
       </div>
-      <button onclick="mostrarFormulario()" id="atleta-editar-btn" style="display:none;margin-top:14px;padding:10px 18px;border-radius:8px;background:transparent;border:2px solid var(--aqua);color:var(--aqua);font-weight:700;font-size:14px;cursor:pointer;width:100%;">Atualizar tempos e escalao</button>
+      <button onclick="mostrarFormulario()" id="atleta-editar-btn" style="display:none;margin-top:14px;padding:10px 18px;border-radius:8px;background:transparent;border:2px solid var(--aqua);color:var(--aqua);font-weight:700;font-size:14px;cursor:pointer;width:100%;">Atualizar tempos e escalão</button>
     </div>
 
     <div id="atleta-form" style="display:none">
@@ -5593,21 +5597,18 @@ function iniciarAtleta() {
 function renderCompButtons(data) {
   var comps = COMP_POR_ESCALAO[data.escalao] || [];
   var selectorEl = document.getElementById('atleta-comp-selector');
-  var buttonsEl = document.getElementById('atleta-comp-buttons');
+  var selectEl = document.getElementById('atleta-comp-select');
   if (comps.length === 0) { selectorEl.style.display = 'none'; return; }
   selectorEl.style.display = 'block';
-  // Default to first comp
   if (!ATLETA_COMP_ATUAL) ATLETA_COMP_ATUAL = comps[0].id;
-  var html = '';
+  selectEl.innerHTML = '';
   for (var i = 0; i < comps.length; i++) {
-    var c = comps[i];
-    var isActive = c.id === ATLETA_COMP_ATUAL;
-    var bg = isActive ? 'var(--aqua)' : 'transparent';
-    var col = isActive ? 'var(--dark)' : 'var(--aqua)';
-    var border = '2px solid var(--aqua)';
-    html += '<button onclick="selecionarCompAtleta(' + JSON.stringify(c.id) + ')" style="padding:8px 14px;border-radius:8px;background:' + bg + ';color:' + col + ';border:' + border + ';font-weight:700;font-size:13px;cursor:pointer;">' + c.label + '</button>';
+    var opt = document.createElement('option');
+    opt.value = comps[i].id;
+    opt.textContent = comps[i].label;
+    if (comps[i].id === ATLETA_COMP_ATUAL) opt.selected = true;
+    selectEl.appendChild(opt);
   }
-  buttonsEl.innerHTML = html;
   renderAtletaResultados(data, ATLETA_COMP_ATUAL);
 }
 
@@ -5738,8 +5739,7 @@ function renderAtletaResultados(data, compId) {
     else semMinimo.push({label:provaLabel, tempo:melhorTempo, pisc:melhorPisc, minimo:melhorMin, diff:melhorDiff});
   }
 
-  var html = '<div style="background:#fff8e1;border-radius:8px;padding:10px 14px;margin-bottom:16px;border-left:3px solid #f0a500;">';
-  html += '<div style="font-size:12px;color:#7a5a00;">Os minimos exigem tempos feitos nos ultimos 18 meses. Verifica as datas no Swimrankings.</div></div>';
+  var html = '';
 
   // Summary
   var total = comMinimo.length + semMinimo.length;
