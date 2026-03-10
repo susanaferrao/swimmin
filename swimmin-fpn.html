@@ -688,7 +688,77 @@
     </div>
     <div id="id-result"></div>
     <div class="footer">Dados FPN · atualizado a 04/03/2026 (50m) e 25/02/2026 (25m)</div>
+  </div
+  <div class="fpn-btn-wrap">
+    <button class="fpn-btn" id="atleta-btn" onclick="toggleAtleta()">O meu ponto de situacao</button>
   </div>
+
+  <div class="fpn-section" id="atleta-section" style="display:none">
+    <div class="fpn-title">O meu ponto de situacao</div>
+    <div class="fpn-subtitle">Compara os teus tempos com os minimos FPN</div>
+
+    <div style="display:flex;gap:8px;margin-bottom:18px;">
+      <button id="tab-auto-btn" onclick="switchAtletaTab('auto')" style="flex:1;padding:10px;border-radius:8px;border:2px solid var(--aqua);background:var(--aqua);color:var(--dark);font-weight:700;font-size:14px;cursor:pointer;">Automatico</button>
+      <button id="tab-manual-btn" onclick="switchAtletaTab('manual')" style="flex:1;padding:10px;border-radius:8px;border:2px solid var(--aqua);background:transparent;color:var(--aqua);font-weight:700;font-size:14px;cursor:pointer;">Manual</button>
+    </div>
+
+    <div id="tab-auto-content">
+      <p style="font-size:13px;color:#7ab8d4;margin-bottom:10px;line-height:1.5;">Introduz o teu ID do Swimrankings. Encontras-o no URL do teu perfil em swimrankings.net, apos <em>athleteId=</em></p>
+      <div style="display:flex;gap:8px;align-items:flex-end;">
+        <div class="field" style="flex:1;margin-bottom:0">
+          <label>ID Swimrankings</label>
+          <input type="tel" id="swimr-id-input" placeholder="ex: 4046710" style="background:var(--white);border:1.5px solid #d0e4f0;color:var(--text);font-size:18px;padding:10px 14px;border-radius:8px;width:100%;box-sizing:border-box;">
+        </div>
+        <button onclick="buscarAtletaSwimr()" style="padding:12px 18px;border-radius:8px;background:var(--aqua);color:var(--dark);font-weight:700;font-size:14px;border:none;cursor:pointer;white-space:nowrap;margin-bottom:0;">Pesquisar</button>
+      </div>
+      <div style="margin-top:8px;font-size:12px;">
+        <a href="https://www.swimrankings.net/index.php?page=athleteSelect&nationId=POR&selectPage=SEARCH" target="_blank" style="color:var(--aqua);">Encontrar o meu ID no Swimrankings</a>
+      </div>
+      <div id="auto-status" style="margin-top:12px;font-size:14px;color:#7ab8d4;min-height:20px;"></div>
+    </div>
+
+    <div id="tab-manual-content" style="display:none">
+      <p style="font-size:13px;color:#7ab8d4;margin-bottom:10px;line-height:1.5;">Introduz os teus melhores tempos. Ficam guardados no dispositivo para a proxima visita.</p>
+      <div class="grid">
+        <div class="field">
+          <label>Piscina</label>
+          <select id="manual-piscina" onchange="renderManualProvas()">
+            <option value="">Selecionar</option>
+            <option value="curta">25m Curta</option>
+            <option value="longa">50m Longa</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Sexo</label>
+          <select id="manual-sexo" onchange="renderManualProvas()">
+            <option value="">Selecionar</option>
+            <option value="M">Masculino</option>
+            <option value="F">Feminino</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Escalao</label>
+        <select id="manual-escalao" onchange="renderManualProvas()">
+          <option value="">Selecionar</option>
+          <option value="INF_B">Infantil B</option>
+          <option value="INF_A">Infantil A</option>
+          <option value="JUV_B">Juvenil B</option>
+          <option value="JUV_A">Juvenil A</option>
+          <option value="JUN1">1 Junior</option>
+          <option value="JUN">Junior</option>
+          <option value="SUB21">Sub 21</option>
+          <option value="SEN">Senior</option>
+          <option value="ABS">Absoluto</option>
+        </select>
+      </div>
+      <div id="manual-provas-container"></div>
+    </div>
+
+    <div id="atleta-resultados" style="margin-top:20px;"></div>
+    <div class="footer">Dados guardados localmente no dispositivo</div>
+  </div>
+>
 
 <script>
 // ============================================================
@@ -4731,6 +4801,445 @@ function toggleIdades() {
     section.style.display = 'none';
     btn.textContent = 'Recordes Nacionais';
   }
+}
+</script>
+
+<script>
+// ============================================================
+// PONTO DE SITUACAO — Toggle
+// ============================================================
+function toggleAtleta() {
+  var section = document.getElementById('atleta-section');
+  var btn = document.getElementById('atleta-btn');
+  if (section.style.display === 'none') {
+    section.style.display = 'block';
+    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    btn.textContent = 'Fechar ponto de situacao';
+    loadSavedAtletaData();
+  } else {
+    section.style.display = 'none';
+    btn.textContent = 'O meu ponto de situacao';
+  }
+}
+
+function switchAtletaTab(tab) {
+  var autoContent = document.getElementById('tab-auto-content');
+  var manualContent = document.getElementById('tab-manual-content');
+  var autoBtn = document.getElementById('tab-auto-btn');
+  var manualBtn = document.getElementById('tab-manual-btn');
+  if (tab === 'auto') {
+    autoContent.style.display = 'block';
+    manualContent.style.display = 'none';
+    autoBtn.style.background = 'var(--aqua)';
+    autoBtn.style.color = 'var(--dark)';
+    manualBtn.style.background = 'transparent';
+    manualBtn.style.color = 'var(--aqua)';
+  } else {
+    autoContent.style.display = 'none';
+    manualContent.style.display = 'block';
+    autoBtn.style.background = 'transparent';
+    autoBtn.style.color = 'var(--aqua)';
+    manualBtn.style.background = 'var(--aqua)';
+    manualBtn.style.color = 'var(--dark)';
+  }
+}
+
+// ============================================================
+// STORAGE — Guardar e carregar dados do atleta
+// ============================================================
+var STORAGE_KEY = 'swimmin_atleta_v1';
+
+function saveAtletaData(data) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
+}
+
+function loadAtletaDataRaw() {
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch(e) { return null; }
+}
+
+function loadSavedAtletaData() {
+  var data = loadAtletaDataRaw();
+  if (!data) return;
+  if (data.swimrId) {
+    document.getElementById('swimr-id-input').value = data.swimrId;
+    if (data.times && data.escalao) {
+      var esc = data.escalao;
+      var piscina = data.piscina;
+      var sexo = data.sexo;
+      renderAtletaResultados(data.times, esc, piscina, sexo, data.nome || '');
+    }
+  }
+  if (data.manual) {
+    var m = data.manual;
+    if (m.piscina) document.getElementById('manual-piscina').value = m.piscina;
+    if (m.sexo) document.getElementById('manual-sexo').value = m.sexo;
+    if (m.escalao) document.getElementById('manual-escalao').value = m.escalao;
+    if (m.piscina && m.sexo && m.escalao) renderManualProvas(m.tempos);
+  }
+}
+
+// ============================================================
+// PROVAS DISPONIVEIS por piscina
+// ============================================================
+var PROVAS_CURTA = [
+  {key:'50_L', label:'50m Livres'},
+  {key:'100_L', label:'100m Livres'},
+  {key:'200_L', label:'200m Livres'},
+  {key:'400_L', label:'400m Livres'},
+  {key:'800_L', label:'800m Livres'},
+  {key:'1500_L', label:'1500m Livres'},
+  {key:'50_C', label:'50m Costas'},
+  {key:'100_C', label:'100m Costas'},
+  {key:'200_C', label:'200m Costas'},
+  {key:'50_B', label:'50m Brucos'},
+  {key:'100_B', label:'100m Brucos'},
+  {key:'200_B', label:'200m Brucos'},
+  {key:'50_M', label:'50m Mariposa'},
+  {key:'100_M', label:'100m Mariposa'},
+  {key:'200_M', label:'200m Mariposa'},
+  {key:'100_E', label:'100m Estilos'},
+  {key:'200_E', label:'200m Estilos'},
+  {key:'400_E', label:'400m Estilos'}
+];
+var PROVAS_LONGA = [
+  {key:'50_L', label:'50m Livres'},
+  {key:'100_L', label:'100m Livres'},
+  {key:'200_L', label:'200m Livres'},
+  {key:'400_L', label:'400m Livres'},
+  {key:'800_L', label:'800m Livres'},
+  {key:'1500_L', label:'1500m Livres'},
+  {key:'50_C', label:'50m Costas'},
+  {key:'100_C', label:'100m Costas'},
+  {key:'200_C', label:'200m Costas'},
+  {key:'50_B', label:'50m Brucos'},
+  {key:'100_B', label:'100m Brucos'},
+  {key:'200_B', label:'200m Brucos'},
+  {key:'50_M', label:'50m Mariposa'},
+  {key:'100_M', label:'100m Mariposa'},
+  {key:'200_M', label:'200m Mariposa'},
+  {key:'200_E', label:'200m Estilos'},
+  {key:'400_E', label:'400m Estilos'}
+];
+
+function getProvas(piscina) {
+  return piscina === 'curta' ? PROVAS_CURTA : PROVAS_LONGA;
+}
+
+// ============================================================
+// TEMPOS — parse e format
+// ============================================================
+function parseTempoToMs(str) {
+  // accepts: 1:05,00 or 1:05.00 or 10500 or 65.00
+  if (!str || str.trim() === '') return null;
+  str = str.trim().replace(',','.');
+  // format: mm:ss.cc
+  var re1 = /^(\d+):(\d{2})\.(\d{2})$/;
+  var m = str.match(re1);
+  if (m) return (parseInt(m[1])*60 + parseInt(m[2]))*100 + parseInt(m[3]);
+  // format: ss.cc
+  var re2 = /^(\d+)\.(\d{2})$/;
+  m = str.match(re2);
+  if (m) return parseInt(m[1])*100 + parseInt(m[2]);
+  // format: raw digits e.g. 10500 = 1:05,00
+  var re3 = /^\d+$/;
+  if (re3.test(str)) {
+    var n = parseInt(str);
+    if (str.length <= 4) return n; // centisecs directly
+    // interpret as mmsscc
+    var cc = n % 100;
+    var ss = Math.floor(n / 100) % 100;
+    var mm = Math.floor(n / 10000);
+    return (mm*60 + ss)*100 + cc;
+  }
+  return null;
+}
+
+function formatMs(ms) {
+  if (ms === null || ms === undefined) return '--';
+  var cc = ms % 100;
+  var totalSec = Math.floor(ms / 100);
+  var ss = totalSec % 60;
+  var mm = Math.floor(totalSec / 60);
+  var ccStr = cc < 10 ? '0' + cc : '' + cc;
+  var ssStr = ss < 10 ? '0' + ss : '' + ss;
+  if (mm > 0) return mm + ':' + ssStr + ',' + ccStr;
+  return ss + ',' + ccStr;
+}
+
+// ============================================================
+// MINIMOS — buscar minimo para prova/escalao/piscina/sexo
+// ============================================================
+function getMinimoMs(piscina, sexo, escalao, provaKey) {
+  // provaKey e.g. "50_L" -> dist=50, estilo=L
+  var parts = provaKey.split('_');
+  var dist = parts[0];
+  var estilo = parts[1];
+  // Build the key used in the tempos object
+  // tempos[piscina][genero][dist_estilo][col]
+  // genero: M or F
+  var genero = sexo;
+  // map escalao to column
+  var colMap = {
+    'ABS': 'ABS', 'SEN': 'SEN', 'SUB21': 'SUB21', 'JUN': 'JUN', 'JUN1': 'JUN1',
+    'JUV_A': 'JUV_A_VER', 'JUV_B': 'JUV_B_VER',
+    'INF_A': 'INF_A', 'INF_B': 'INF_B'
+  };
+  var col = colMap[escalao];
+  if (!col) return null;
+  try {
+    var t = tempos[piscina][genero][dist + '_' + estilo];
+    if (!t) return null;
+    var val = t[col];
+    if (!val || val === '' || val === '-') return null;
+    return parseTempoToMs(val);
+  } catch(e) { return null; }
+}
+
+// ============================================================
+// RENDER RESULTADOS
+// ============================================================
+function renderAtletaResultados(times, escalao, piscina, sexo, nome) {
+  // times: {provaKey: {sb: ms, pb: ms}} or {provaKey: ms}
+  var provas = getProvas(piscina);
+  var comMinimo = [];
+  var semMinimo = [];
+  var semDados = [];
+
+  for (var i = 0; i < provas.length; i++) {
+    var p = provas[i];
+    var minimo = getMinimoMs(piscina, sexo, escalao, p.key);
+    var tempoData = times[p.key];
+    var pb = null, sb = null;
+    if (tempoData) {
+      if (typeof tempoData === 'object' && tempoData.pb !== undefined) {
+        pb = tempoData.pb;
+        sb = tempoData.sb;
+      } else {
+        pb = tempoData;
+        sb = null;
+      }
+    }
+    var entry = {label: p.label, key: p.key, minimo: minimo, pb: pb, sb: sb};
+    if (minimo === null) continue; // prova sem minimo para este escalao
+    if (pb === null && sb === null) { semDados.push(entry); continue; }
+    var melhor = sb !== null ? sb : pb;
+    if (melhor <= minimo) comMinimo.push(entry);
+    else semMinimo.push(entry);
+  }
+
+  var html = '';
+  if (nome) html += '<div style="font-size:16px;font-weight:700;color:var(--aqua);margin-bottom:12px;">' + nome + '</div>';
+
+  // Summary bar
+  var total = comMinimo.length + semMinimo.length;
+  var pct = total > 0 ? Math.round(comMinimo.length / total * 100) : 0;
+  html += '<div style="background:#1a3a4a;border-radius:10px;padding:14px;margin-bottom:16px;">';
+  html += '<div style="font-size:13px;color:#7ab8d4;margin-bottom:6px;">Provas com minimos atingidos</div>';
+  html += '<div style="font-size:28px;font-weight:700;color:var(--aqua);">' + comMinimo.length + '<span style="font-size:16px;color:#7ab8d4;"> / ' + total + '</span></div>';
+  if (total > 0) {
+    html += '<div style="margin-top:8px;background:#0d2232;border-radius:6px;height:8px;overflow:hidden;">';
+    html += '<div style="height:8px;border-radius:6px;background:var(--aqua);width:' + pct + '%;transition:width .5s;"></div></div>';
+  }
+  html += '</div>';
+
+  function renderProvaRow(e, achieved) {
+    var melhor = e.sb !== null ? e.sb : e.pb;
+    var diff = melhor !== null ? melhor - e.minimo : null;
+    var cor = achieved ? '#2ecc71' : '#e74c3c';
+    var row = '<div style="border-bottom:1px solid #1a3a4a;padding:10px 0;display:flex;justify-content:space-between;align-items:center;">';
+    row += '<div><div style="font-size:14px;font-weight:600;color:var(--white);">' + e.label + '</div>';
+    if (melhor !== null) {
+      row += '<div style="font-size:12px;color:#7ab8d4;margin-top:2px;">';
+      if (e.sb !== null) row += 'Época: <strong style="color:' + cor + ';">' + formatMs(e.sb) + '</strong>';
+      if (e.pb !== null && e.pb !== e.sb) row += (e.sb !== null ? ' &nbsp;·&nbsp; ' : '') + 'PB: <strong style="color:var(--aqua);">' + formatMs(e.pb) + '</strong>';
+      row += '</div>';
+    }
+    row += '</div>';
+    row += '<div style="text-align:right;">';
+    row += '<div style="font-size:13px;color:#7ab8d4;">Min: ' + formatMs(e.minimo) + '</div>';
+    if (diff !== null) {
+      if (achieved) row += '<div style="font-size:12px;color:#2ecc71;">-' + formatMs(Math.abs(diff)) + '</div>';
+      else row += '<div style="font-size:12px;color:#e74c3c;">faltam ' + formatMs(diff) + '</div>';
+    }
+    row += '</div></div>';
+    return row;
+  }
+
+  if (comMinimo.length > 0) {
+    html += '<div style="font-size:13px;font-weight:700;color:#2ecc71;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">Com minimos (' + comMinimo.length + ')</div>';
+    for (var i = 0; i < comMinimo.length; i++) html += renderProvaRow(comMinimo[i], true);
+  }
+  if (semMinimo.length > 0) {
+    html += '<div style="font-size:13px;font-weight:700;color:#e74c3c;margin-top:14px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">Sem minimos ainda (' + semMinimo.length + ')</div>';
+    for (var i = 0; i < semMinimo.length; i++) html += renderProvaRow(semMinimo[i], false);
+  }
+  if (semDados.length > 0) {
+    html += '<div style="font-size:13px;font-weight:700;color:#7ab8d4;margin-top:14px;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;">Sem tempo registado (' + semDados.length + ')</div>';
+    for (var i = 0; i < semDados.length; i++) {
+      html += '<div style="border-bottom:1px solid #1a3a4a;padding:10px 0;display:flex;justify-content:space-between;align-items:center;">';
+      html += '<div style="font-size:14px;color:#4a7a8a;">' + semDados[i].label + '</div>';
+      html += '<div style="font-size:13px;color:#4a7a8a;">Min: ' + formatMs(semDados[i].minimo) + '</div></div>';
+    }
+  }
+
+  document.getElementById('atleta-resultados').innerHTML = html;
+}
+
+// ============================================================
+// AUTO — Buscar atleta via Claude API (proxy)
+// ============================================================
+function buscarAtletaSwimr() {
+  var id = document.getElementById('swimr-id-input').value.trim();
+  if (!id || !/^\d+$/.test(id)) {
+    document.getElementById('auto-status').innerHTML = '<span style="color:#e74c3c;">Introduz um ID valido (so numeros)</span>';
+    return;
+  }
+  var escalao = 'SEN'; // default - depois perguntar
+  document.getElementById('auto-status').innerHTML = 'A pesquisar...';
+
+  // Show escalao selector
+  var html = '<div style="margin-top:12px;">';
+  html += '<div style="font-size:13px;color:#7ab8d4;margin-bottom:6px;">Para qual escalao queres ver os minimos?</div>';
+  html += '<select id="auto-escalao" style="background:var(--white);border:1.5px solid #d0e4f0;color:var(--text);font-size:15px;padding:8px 12px;border-radius:8px;width:100%;">';
+  html += '<option value="INF_B">Infantil B</option><option value="INF_A">Infantil A</option>';
+  html += '<option value="JUV_B">Juvenil B</option><option value="JUV_A">Juvenil A</option>';
+  html += '<option value="JUN1">1 Junior</option><option value="JUN">Junior</option>';
+  html += '<option value="SUB21">Sub 21</option><option value="SEN" selected>Senior</option>';
+  html += '<option value="ABS">Absoluto</option></select>';
+  html += '<div style="display:flex;gap:8px;margin-top:8px;">';
+  html += '<div style="flex:1;"><div style="font-size:12px;color:#7ab8d4;margin-bottom:4px;">Piscina</div>';
+  html += '<select id="auto-piscina" style="background:var(--white);border:1.5px solid #d0e4f0;color:var(--text);font-size:15px;padding:8px 12px;border-radius:8px;width:100%;">';
+  html += '<option value="curta">25m Curta</option><option value="longa">50m Longa</option></select></div>';
+  html += '<div style="flex:1;"><div style="font-size:12px;color:#7ab8d4;margin-bottom:4px;">Sexo</div>';
+  html += '<select id="auto-sexo" style="background:var(--white);border:1.5px solid #d0e4f0;color:var(--text);font-size:15px;padding:8px 12px;border-radius:8px;width:100%;">';
+  html += '<option value="M">Masculino</option><option value="F">Feminino</option></select></div></div>';
+  html += '<button onclick="confirmarBuscarAtleta()" style="margin-top:10px;padding:10px 18px;border-radius:8px;background:var(--aqua);color:var(--dark);font-weight:700;font-size:14px;border:none;cursor:pointer;width:100%;">Confirmar e pesquisar</button>';
+  html += '</div>';
+  document.getElementById('auto-status').innerHTML = html;
+}
+
+function confirmarBuscarAtleta() {
+  var id = document.getElementById('swimr-id-input').value.trim();
+  var escalao = document.getElementById('auto-escalao').value;
+  var piscina = document.getElementById('auto-piscina').value;
+  var sexo = document.getElementById('auto-sexo').value;
+  document.getElementById('auto-status').innerHTML = '<div style="color:#7ab8d4;">A carregar dados do Swimrankings... aguarda um momento.</div>';
+
+  var prompt = 'Vai a esta pagina do Swimrankings e extrai o nome do atleta, todos os seus melhores tempos da epoca atual (SB - season best) e de todos os tempos (PB - personal best). URL: https://www.swimrankings.net/index.php?page=athleteDetail&athleteId=' + id + '&pbest=1\n\nResponde APENAS com JSON no seguinte formato, sem texto adicional:\n{\n  "nome": "nome do atleta",\n  "tempos": {\n    "50_L": {"sb": "tempo em formato MM:SS,cc ou null", "pb": "tempo ou null"},\n    "100_L": {"sb": ..., "pb": ...},\n    "200_L": {"sb": ..., "pb": ...},\n    "400_L": {"sb": ..., "pb": ...},\n    "800_L": {"sb": ..., "pb": ...},\n    "1500_L": {"sb": ..., "pb": ...},\n    "50_C": {"sb": ..., "pb": ...},\n    "100_C": {"sb": ..., "pb": ...},\n    "200_C": {"sb": ..., "pb": ...},\n    "50_B": {"sb": ..., "pb": ...},\n    "100_B": {"sb": ..., "pb": ...},\n    "200_B": {"sb": ..., "pb": ...},\n    "50_M": {"sb": ..., "pb": ...},\n    "100_M": {"sb": ..., "pb": ...},\n    "200_M": {"sb": ..., "pb": ...},\n    "100_E": {"sb": ..., "pb": ...},\n    "200_E": {"sb": ..., "pb": ...},\n    "400_E": {"sb": ..., "pb": ...}\n  }\n}\nSe uma prova nao existir para este atleta, usa null. Os tempos devem ser strings no formato M:SS,cc (ex: 1:02,34) ou SS,cc (ex: 27,45). Inclui 100m Estilos apenas se for piscina curta.';
+
+  fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      tools: [{"type": "web_search_20250305", "name": "web_search"}],
+      messages: [{role: 'user', content: prompt}]
+    })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    var text = '';
+    for (var i = 0; i < data.content.length; i++) {
+      if (data.content[i].type === 'text') text += data.content[i].text;
+    }
+    // Extract JSON
+    var jsonStr = text.replace(/```json|```/g,'').trim();
+    var firstBrace = jsonStr.indexOf('{');
+    var lastBrace = jsonStr.lastIndexOf('}');
+    if (firstBrace >= 0 && lastBrace >= 0) jsonStr = jsonStr.slice(firstBrace, lastBrace+1);
+    var parsed = JSON.parse(jsonStr);
+    var nome = parsed.nome || '';
+    var rawTimes = parsed.tempos || {};
+    // Convert times to ms
+    var times = {};
+    for (var key in rawTimes) {
+      var entry = rawTimes[key];
+      if (entry && (entry.sb || entry.pb)) {
+        times[key] = {
+          pb: entry.pb ? parseTempoToMs(entry.pb) : null,
+          sb: entry.sb ? parseTempoToMs(entry.sb) : null
+        };
+      }
+    }
+    // Save
+    var saved = loadAtletaDataRaw() || {};
+    saved.swimrId = id;
+    saved.escalao = escalao;
+    saved.piscina = piscina;
+    saved.sexo = sexo;
+    saved.nome = nome;
+    saved.times = times;
+    saveAtletaData(saved);
+    document.getElementById('auto-status').innerHTML = '';
+    renderAtletaResultados(times, escalao, piscina, sexo, nome);
+  })
+  .catch(function(err) {
+    document.getElementById('auto-status').innerHTML = '<span style="color:#e74c3c;">Nao foi possivel carregar os dados. Verifica o ID e tenta de novo.</span>';
+  });
+}
+
+// ============================================================
+// MANUAL — Render provas com inputs
+// ============================================================
+function renderManualProvas(savedTempos) {
+  var piscina = document.getElementById('manual-piscina').value;
+  var sexo = document.getElementById('manual-sexo').value;
+  var escalao = document.getElementById('manual-escalao').value;
+  if (!piscina || !sexo || !escalao) return;
+
+  var saved = loadAtletaDataRaw();
+  var temposGuardados = savedTempos || (saved && saved.manual && saved.manual.tempos) || {};
+
+  var provas = getProvas(piscina);
+  var html = '<div style="margin-top:12px;">';
+  html += '<div style="font-size:12px;color:#7ab8d4;margin-bottom:10px;">Formato: M:SS,cc (ex: 1:02,34) ou SS,cc (ex: 27,45). Podes tambem escrever so os digitos (ex: 10234)</div>';
+
+  for (var i = 0; i < provas.length; i++) {
+    var p = provas[i];
+    var minimo = getMinimoMs(piscina, sexo, escalao, p.key);
+    if (minimo === null) continue;
+    var savedVal = temposGuardados[p.key] || {};
+    var pbVal = savedVal.pb ? formatMs(savedVal.pb) : '';
+    var sbVal = savedVal.sb ? formatMs(savedVal.sb) : '';
+    html += '<div style="border-bottom:1px solid #1a3a4a;padding:10px 0;">';
+    html += '<div style="font-size:14px;font-weight:600;color:var(--white);margin-bottom:6px;">' + p.label + ' <span style="font-size:12px;color:#7ab8d4;font-weight:400;">min: ' + formatMs(minimo) + '</span></div>';
+    html += '<div style="display:flex;gap:8px;">';
+    html += '<div style="flex:1;"><div style="font-size:11px;color:#7ab8d4;margin-bottom:3px;">Epoca (SB)</div>';
+    html += '<input type="text" id="manual-sb-' + p.key + '" placeholder="--" value="' + sbVal + '" style="width:100%;background:#1a3a4a;border:1px solid #2a5a6a;color:var(--white);font-size:15px;padding:7px 10px;border-radius:6px;box-sizing:border-box;"></div>';
+    html += '<div style="flex:1;"><div style="font-size:11px;color:#7ab8d4;margin-bottom:3px;">PB</div>';
+    html += '<input type="text" id="manual-pb-' + p.key + '" placeholder="--" value="' + pbVal + '" style="width:100%;background:#1a3a4a;border:1px solid #2a5a6a;color:var(--white);font-size:15px;padding:7px 10px;border-radius:6px;box-sizing:border-box;"></div>';
+    html += '</div></div>';
+  }
+
+  html += '<button onclick="guardarManual()" style="margin-top:14px;padding:12px;border-radius:8px;background:var(--aqua);color:var(--dark);font-weight:700;font-size:15px;border:none;cursor:pointer;width:100%;">Guardar e ver resultados</button>';
+  html += '</div>';
+  document.getElementById('manual-provas-container').innerHTML = html;
+}
+
+function guardarManual() {
+  var piscina = document.getElementById('manual-piscina').value;
+  var sexo = document.getElementById('manual-sexo').value;
+  var escalao = document.getElementById('manual-escalao').value;
+  var provas = getProvas(piscina);
+  var tempos = {};
+  for (var i = 0; i < provas.length; i++) {
+    var key = provas[i].key;
+    var sbInput = document.getElementById('manual-sb-' + key);
+    var pbInput = document.getElementById('manual-pb-' + key);
+    if (!sbInput) continue;
+    var sb = sbInput.value.trim() ? parseTempoToMs(sbInput.value.trim()) : null;
+    var pb = pbInput.value.trim() ? parseTempoToMs(pbInput.value.trim()) : null;
+    if (sb !== null || pb !== null) tempos[key] = {sb: sb, pb: pb};
+  }
+  var saved = loadAtletaDataRaw() || {};
+  saved.manual = {piscina: piscina, sexo: sexo, escalao: escalao, tempos: tempos};
+  saveAtletaData(saved);
+  renderAtletaResultados(tempos, escalao, piscina, sexo, '');
+  document.getElementById('atleta-resultados').scrollIntoView({behavior:'smooth',block:'start'});
 }
 </script>
 
