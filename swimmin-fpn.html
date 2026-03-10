@@ -707,16 +707,20 @@
     </div>
 
     <div id="tab-auto-content">
-      <p style="font-size:13px;color:#7ab8d4;margin-bottom:10px;line-height:1.5;">Introduz o teu ID do Swimrankings. Encontras-o no URL do teu perfil em swimrankings.net, apos <em>athleteId=</em></p>
+      <p style="font-size:13px;color:#7ab8d4;margin-bottom:10px;line-height:1.5;">Introduz o teu ID do Swimrankings e abre o teu perfil. Depois usa o separador <strong style="color:var(--aqua)">Manual</strong> para introduzir os tempos que la encontras.</p>
       <div style="display:flex;gap:8px;align-items:flex-end;">
         <div class="field" style="flex:1;margin-bottom:0">
           <label>ID Swimrankings</label>
-          <input type="tel" id="swimr-id-input" placeholder="ex: 4046710" style="background:var(--white);border:1.5px solid #d0e4f0;color:var(--text);font-size:18px;padding:10px 14px;border-radius:8px;width:100%;box-sizing:border-box;position:relative;z-index:10;">
+          <input type="tel" id="swimr-id-input" placeholder="ex: 4046710" style="background:var(--white);border:1.5px solid #d0e4f0;color:var(--text);font-size:18px;padding:10px 14px;border-radius:8px;width:100%;box-sizing:border-box;">
         </div>
-        <button onclick="buscarAtletaSwimr()" style="padding:12px 18px;border-radius:8px;background:var(--aqua);color:var(--dark);font-weight:700;font-size:14px;border:none;cursor:pointer;white-space:nowrap;margin-bottom:0;">Pesquisar</button>
+        <button onclick="abrirSwimrankings()" style="padding:12px 18px;border-radius:8px;background:var(--aqua);color:var(--dark);font-weight:700;font-size:14px;border:none;cursor:pointer;white-space:nowrap;margin-bottom:0;">Abrir perfil</button>
       </div>
-      <div style="margin-top:8px;font-size:12px;">
-        <a href="https://www.swimrankings.net/index.php?page=athleteSelect&nationId=POR&selectPage=SEARCH" target="_blank" style="color:var(--aqua);">Encontrar o meu ID no Swimrankings</a>
+      <div style="margin-top:10px;font-size:12px;">
+        <a href="https://www.swimrankings.net/index.php?page=athleteSelect&nationId=POR&selectPage=SEARCH" target="_blank" style="color:var(--aqua);">Nao sei o meu ID - pesquisar no Swimrankings</a>
+      </div>
+      <div style="margin-top:12px;background:#e8f8f2;border-radius:10px;padding:12px 14px;border-left:3px solid #2ecc71;">
+        <div style="font-size:12px;color:#1a7a4a;font-weight:600;margin-bottom:4px;">Como funciona:</div>
+        <div style="font-size:12px;color:#2a8a5a;line-height:1.6;">1. Introduz o teu ID e clica "Abrir perfil"<br>2. No Swimrankings ve os teus melhores tempos<br>3. Volta aqui e usa o separador Manual para os introduzir</div>
       </div>
       <div id="auto-status" style="margin-top:12px;font-size:14px;color:#7ab8d4;min-height:20px;"></div>
     </div>
@@ -5095,95 +5099,19 @@ function renderAtletaResultados(times, escalao, piscina, sexo, nome) {
 // ============================================================
 // AUTO — Buscar atleta via Claude API (proxy)
 // ============================================================
-function buscarAtletaSwimr() {
+function abrirSwimrankings() {
   var id = document.getElementById('swimr-id-input').value.trim();
   if (!id || !/^\d+$/.test(id)) {
     document.getElementById('auto-status').innerHTML = '<span style="color:#e74c3c;">Introduz um ID valido (so numeros)</span>';
     return;
   }
-  var escalao = 'SEN'; // default - depois perguntar
-  document.getElementById('auto-status').innerHTML = 'A pesquisar...';
-
-  // Show escalao selector
-  var html = '<div style="margin-top:12px;">';
-  html += '<div style="font-size:13px;color:#7ab8d4;margin-bottom:6px;">Para qual escalao queres ver os minimos?</div>';
-  html += '<select id="auto-escalao" style="background:var(--white);border:1.5px solid #d0e4f0;color:var(--text);font-size:15px;padding:8px 12px;border-radius:8px;width:100%;">';
-  html += '<option value="INF_B">Infantil B</option><option value="INF_A">Infantil A</option>';
-  html += '<option value="JUV_B">Juvenil B</option><option value="JUV_A">Juvenil A</option>';
-  html += '<option value="JUN1">1 Junior</option><option value="JUN">Junior</option>';
-  html += '<option value="SUB21">Sub 21</option><option value="SEN" selected>Senior</option>';
-  html += '<option value="ABS">Absoluto</option></select>';
-  html += '<div style="display:flex;gap:8px;margin-top:8px;">';
-  html += '<div style="flex:1;"><div style="font-size:12px;color:#7ab8d4;margin-bottom:4px;">Piscina</div>';
-  html += '<select id="auto-piscina" style="background:var(--white);border:1.5px solid #d0e4f0;color:var(--text);font-size:15px;padding:8px 12px;border-radius:8px;width:100%;">';
-  html += '<option value="curta">25m Curta</option><option value="longa">50m Longa</option></select></div>';
-  html += '<div style="flex:1;"><div style="font-size:12px;color:#7ab8d4;margin-bottom:4px;">Sexo</div>';
-  html += '<select id="auto-sexo" style="background:var(--white);border:1.5px solid #d0e4f0;color:var(--text);font-size:15px;padding:8px 12px;border-radius:8px;width:100%;">';
-  html += '<option value="M">Masculino</option><option value="F">Feminino</option></select></div></div>';
-  html += '<button onclick="confirmarBuscarAtleta()" style="margin-top:10px;padding:10px 18px;border-radius:8px;background:var(--aqua);color:var(--dark);font-weight:700;font-size:14px;border:none;cursor:pointer;width:100%;">Confirmar e pesquisar</button>';
-  html += '</div>';
-  document.getElementById('auto-status').innerHTML = html;
-}
-
-function confirmarBuscarAtleta() {
-  var id = document.getElementById('swimr-id-input').value.trim();
-  var escalao = document.getElementById('auto-escalao').value;
-  var piscina = document.getElementById('auto-piscina').value;
-  var sexo = document.getElementById('auto-sexo').value;
-  document.getElementById('auto-status').innerHTML = '<div style="color:#7ab8d4;">A carregar dados do Swimrankings... aguarda um momento.</div>';
-
-  var prompt = 'Vai a esta pagina do Swimrankings e extrai o nome do atleta, todos os seus melhores tempos da epoca atual (SB - season best) e de todos os tempos (PB - personal best). URL: https://www.swimrankings.net/index.php?page=athleteDetail&athleteId=' + id + '&pbest=1\n\nResponde APENAS com JSON no seguinte formato, sem texto adicional:\n{\n  "nome": "nome do atleta",\n  "tempos": {\n    "50_L": {"sb": "tempo em formato MM:SS,cc ou null", "pb": "tempo ou null"},\n    "100_L": {"sb": ..., "pb": ...},\n    "200_L": {"sb": ..., "pb": ...},\n    "400_L": {"sb": ..., "pb": ...},\n    "800_L": {"sb": ..., "pb": ...},\n    "1500_L": {"sb": ..., "pb": ...},\n    "50_C": {"sb": ..., "pb": ...},\n    "100_C": {"sb": ..., "pb": ...},\n    "200_C": {"sb": ..., "pb": ...},\n    "50_B": {"sb": ..., "pb": ...},\n    "100_B": {"sb": ..., "pb": ...},\n    "200_B": {"sb": ..., "pb": ...},\n    "50_M": {"sb": ..., "pb": ...},\n    "100_M": {"sb": ..., "pb": ...},\n    "200_M": {"sb": ..., "pb": ...},\n    "100_E": {"sb": ..., "pb": ...},\n    "200_E": {"sb": ..., "pb": ...},\n    "400_E": {"sb": ..., "pb": ...}\n  }\n}\nSe uma prova nao existir para este atleta, usa null. Os tempos devem ser strings no formato M:SS,cc (ex: 1:02,34) ou SS,cc (ex: 27,45). Inclui 100m Estilos apenas se for piscina curta.';
-
-  fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1000,
-      tools: [{"type": "web_search_20250305", "name": "web_search"}],
-      messages: [{role: 'user', content: prompt}]
-    })
-  })
-  .then(function(r) { return r.json(); })
-  .then(function(data) {
-    var text = '';
-    for (var i = 0; i < data.content.length; i++) {
-      if (data.content[i].type === 'text') text += data.content[i].text;
-    }
-    // Extract JSON
-    var jsonStr = text.replace(/```json|```/g,'').trim();
-    var firstBrace = jsonStr.indexOf('{');
-    var lastBrace = jsonStr.lastIndexOf('}');
-    if (firstBrace >= 0 && lastBrace >= 0) jsonStr = jsonStr.slice(firstBrace, lastBrace+1);
-    var parsed = JSON.parse(jsonStr);
-    var nome = parsed.nome || '';
-    var rawTimes = parsed.tempos || {};
-    // Convert times to ms
-    var times = {};
-    for (var key in rawTimes) {
-      var entry = rawTimes[key];
-      if (entry && (entry.sb || entry.pb)) {
-        times[key] = {
-          pb: entry.pb ? parseTempoToMs(entry.pb) : null,
-          sb: entry.sb ? parseTempoToMs(entry.sb) : null
-        };
-      }
-    }
-    // Save
-    var saved = loadAtletaDataRaw() || {};
-    saved.swimrId = id;
-    saved.escalao = escalao;
-    saved.piscina = piscina;
-    saved.sexo = sexo;
-    saved.nome = nome;
-    saved.times = times;
-    saveAtletaData(saved);
-    document.getElementById('auto-status').innerHTML = '';
-    renderAtletaResultados(times, escalao, piscina, sexo, nome);
-  })
-  .catch(function(err) {
-    document.getElementById('auto-status').innerHTML = '<span style="color:#e74c3c;">Nao foi possivel carregar os dados. Verifica o ID e tenta de novo.</span>';
-  });
+  // Save the ID
+  var saved = loadAtletaDataRaw() || {};
+  saved.swimrId = id;
+  saveAtletaData(saved);
+  // Open swimrankings in new tab
+  window.open('https://www.swimrankings.net/index.php?page=athleteDetail&athleteId=' + id + '&pbest=1', '_blank');
+  document.getElementById('auto-status').innerHTML = '<div style="color:#2ecc71;">Perfil aberto numa nova aba. Depois usa o separador <strong>Manual</strong> para introduzir os teus tempos.</div>';
 }
 
 // ============================================================
@@ -5193,35 +5121,46 @@ function renderManualProvas(savedTempos) {
   var piscina = document.getElementById('manual-piscina').value;
   var sexo = document.getElementById('manual-sexo').value;
   var escalao = document.getElementById('manual-escalao').value;
-  if (!piscina || !sexo || !escalao) return;
+  var container = document.getElementById('manual-provas-container');
+
+  if (!piscina || !sexo || !escalao) {
+    container.innerHTML = '';
+    return;
+  }
 
   var saved = loadAtletaDataRaw();
-  var temposGuardados = savedTempos || (saved && saved.manual && saved.manual.tempos) || {};
+  var temposGuardados = savedTempos || (saved && saved.manual && saved.manual.piscina === piscina && saved.manual.sexo === sexo && saved.manual.escalao === escalao ? saved.manual.tempos : {});
 
   var provas = getProvas(piscina);
-  var html = '<div style="margin-top:12px;">';
-  html += '<div style="font-size:12px;color:#7ab8d4;margin-bottom:10px;">Formato: M:SS,cc (ex: 1:02,34) ou SS,cc (ex: 27,45). Podes tambem escrever so os digitos (ex: 10234)</div>';
+  var html = '<div style="margin-top:4px;">';
+  html += '<div style="font-size:12px;color:#7ab8d4;margin-bottom:12px;line-height:1.5;">Formato: M:SS,cc (ex: 1:02,34) ou SS,cc (ex: 27,45)<br>Podes tambem escrever so os digitos (ex: 10234)</div>';
 
+  var count = 0;
   for (var i = 0; i < provas.length; i++) {
     var p = provas[i];
     var minimo = getMinimoMs(piscina, sexo, escalao, p.key);
     if (minimo === null) continue;
+    count++;
     var savedVal = temposGuardados[p.key] || {};
     var pbVal = savedVal.pb ? formatMs(savedVal.pb) : '';
     var sbVal = savedVal.sb ? formatMs(savedVal.sb) : '';
-    html += '<div style="border-bottom:1px solid #1a3a4a;padding:10px 0;">';
-    html += '<div style="font-size:14px;font-weight:600;color:var(--white);margin-bottom:6px;">' + p.label + ' <span style="font-size:12px;color:#7ab8d4;font-weight:400;">min: ' + formatMs(minimo) + '</span></div>';
+    html += '<div style="border-bottom:1px solid #e0eef5;padding:10px 0;">';
+    html += '<div style="font-size:14px;font-weight:600;color:var(--blue-deep);margin-bottom:6px;">' + p.label + ' <span style="font-size:12px;color:#7ab8d4;font-weight:400;">min: ' + formatMs(minimo) + '</span></div>';
     html += '<div style="display:flex;gap:8px;">';
-    html += '<div style="flex:1;"><div style="font-size:11px;color:#7ab8d4;margin-bottom:3px;">Epoca (SB)</div>';
-    html += '<input type="text" id="manual-sb-' + p.key + '" placeholder="--" value="' + sbVal + '" style="width:100%;background:#1a3a4a;border:1px solid #2a5a6a;color:var(--white);font-size:15px;padding:7px 10px;border-radius:6px;box-sizing:border-box;"></div>';
-    html += '<div style="flex:1;"><div style="font-size:11px;color:#7ab8d4;margin-bottom:3px;">PB</div>';
-    html += '<input type="text" id="manual-pb-' + p.key + '" placeholder="--" value="' + pbVal + '" style="width:100%;background:#1a3a4a;border:1px solid #2a5a6a;color:var(--white);font-size:15px;padding:7px 10px;border-radius:6px;box-sizing:border-box;"></div>';
+    html += '<div style="flex:1;"><div style="font-size:11px;color:#7ab8d4;margin-bottom:3px;">Epoca atual (SB)</div>';
+    html += '<input type="text" id="manual-sb-' + p.key + '" placeholder="--" value="' + sbVal + '" style="width:100%;background:#f0f8ff;border:1.5px solid #d0e4f0;color:#1a3a4a;font-size:15px;padding:8px 10px;border-radius:6px;box-sizing:border-box;"></div>';
+    html += '<div style="flex:1;"><div style="font-size:11px;color:#7ab8d4;margin-bottom:3px;">Melhor de sempre (PB)</div>';
+    html += '<input type="text" id="manual-pb-' + p.key + '" placeholder="--" value="' + pbVal + '" style="width:100%;background:#f0f8ff;border:1.5px solid #d0e4f0;color:#1a3a4a;font-size:15px;padding:8px 10px;border-radius:6px;box-sizing:border-box;"></div>';
     html += '</div></div>';
   }
 
-  html += '<button onclick="guardarManual()" style="margin-top:14px;padding:12px;border-radius:8px;background:var(--aqua);color:var(--dark);font-weight:700;font-size:15px;border:none;cursor:pointer;width:100%;">Guardar e ver resultados</button>';
+  if (count === 0) {
+    html += '<div style="color:#7ab8d4;font-size:13px;padding:10px 0;">Nao ha provas com minimos para este escalao e piscina.</div>';
+  } else {
+    html += '<button onclick="guardarManual()" style="margin-top:14px;padding:12px;border-radius:8px;background:var(--aqua);color:var(--dark);font-weight:700;font-size:15px;border:none;cursor:pointer;width:100%;">Guardar e ver resultados</button>';
+  }
   html += '</div>';
-  document.getElementById('manual-provas-container').innerHTML = html;
+  container.innerHTML = html;
 }
 
 function guardarManual() {
