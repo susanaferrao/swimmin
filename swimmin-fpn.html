@@ -708,7 +708,11 @@
 
     <div id="atleta-view-intro">
       <div id="atleta-saved-summary"></div>
-      <button onclick="mostrarFormulario()" id="atleta-editar-btn" style="display:none;margin-top:10px;padding:10px 18px;border-radius:8px;background:transparent;border:2px solid var(--aqua);color:var(--aqua);font-weight:700;font-size:14px;cursor:pointer;width:100%;">Atualizar tempos e escalao</button>
+      <div id="atleta-comp-selector" style="display:none;margin-top:14px;">
+        <div style="font-size:13px;color:#7ab8d4;margin-bottom:6px;">Ver minimos para:</div>
+        <div id="atleta-comp-buttons" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+      </div>
+      <button onclick="mostrarFormulario()" id="atleta-editar-btn" style="display:none;margin-top:14px;padding:10px 18px;border-radius:8px;background:transparent;border:2px solid var(--aqua);color:var(--aqua);font-weight:700;font-size:14px;cursor:pointer;width:100%;">Atualizar tempos e escalao</button>
     </div>
 
     <div id="atleta-form" style="display:none">
@@ -4937,6 +4941,445 @@ var recordesIdade = {
 };
 
 
+
+// ============================================================
+// DADOS DE COMPETICOES POR ESCALAO
+// ============================================================
+var COMPS = {
+  INF_B:  [{v:'INF_B_ZON',  l:'Zonais'}, {v:'INF_B',     l:'Nacional Verão'}],
+  INF_A:  [{v:'INF_A_ZON',  l:'Zonais'}, {v:'INF_A',     l:'Nacional Verão'}],
+  JUV_B:  [{v:'JUV_B_ZON',  l:'Zonais'}, {v:'JUV_B_INV', l:'Nacional Inverno'}, {v:'JUV_B_VER', l:'Nacional Verão'}],
+  JUV_A:  [{v:'JUV_A_ZON',  l:'Zonais'}, {v:'JUV_A_INV', l:'Nacional Inverno'}, {v:'JUV_A_VER', l:'Nacional Verão'}],
+  JUN1:   [{v:'JUN1', l:'Nacional'}, {v:'EUR_JUN', l:'Europeus Juniores'}, {v:'EUR', l:'Europeus'}],
+  JUN:    [{v:'JUN',  l:'Nacional'}, {v:'EUR_JUN', l:'Europeus Juniores'}, {v:'EUR', l:'Europeus'}],
+  SUB21:  [{v:'SUB21', l:'Nacional'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}],
+  SEN:    [{v:'SEN',   l:'Nacional'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}],
+  ABS:    [{v:'ABS',   l:'Nacional'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}]
+};
+
+// Map comp value to column in tempos
+var COL_MAP = {
+  'ABS':'ABS','SEN':'SEN','SUB21':'SUB21','JUN':'JUN','JUN1':'JUN1',
+  'JUV_A_VER':'JUV_A_VER','JUV_A_INV':'JUV_A_INV','JUV_B_VER':'JUV_B_VER','JUV_B_INV':'JUV_B_INV',
+  'INF_A':'INF_A','INF_B':'INF_B',
+  'JUV_A_ZON':'JUV_A_ZON','JUV_B_ZON':'JUV_B_ZON','INF_A_ZON':'INF_A_ZON','INF_B_ZON':'INF_B_ZON',
+  'EUR_JUN':'SEN','EUR':'SEN','OLI':'SEN'
+};
+
+// Comp dates info
+var COMP_DATES = {
+  'INF_B_ZON':  'Torneios Zonais de Infantis · 20-22 fev 2026 · Ponte de Sor',
+  'INF_A_ZON':  'Torneios Zonais de Infantis · 20-22 fev 2026 · Ponte de Sor',
+  'INF_B':      'Campeonato Nacional de Infantis · 17-19 jul 2026 · Manteigas',
+  'INF_A':      'Campeonato Nacional de Infantis · 17-19 jul 2026 · Manteigas',
+  'JUV_A_ZON':  'Torneios Zonais de Juvenis · Piscina Municipal da Quarteira',
+  'JUV_B_ZON':  'Torneios Zonais de Juvenis · Piscina Municipal da Quarteira',
+  'JUV_A_INV':  'Campeonato Nacional de Juvenis · 20-22 mar 2026 · Coimbra',
+  'JUV_B_INV':  'Campeonato Nacional de Juvenis · 20-22 mar 2026 · Coimbra',
+  'JUV_A_VER':  'Campeonatos Nacionais de Juvenis, Juniores e Seniores · 23-25 jul 2026 · Jamor',
+  'JUV_B_VER':  'Campeonatos Nacionais de Juvenis, Juniores e Seniores · 23-25 jul 2026 · Jamor',
+  'JUN1':       'Campeonatos Nacionais · 13-16 dez 2025 Leiria · 28-31 mar 2026 Coimbra · 23-25 jul 2026 Jamor',
+  'JUN':        'Campeonatos Nacionais · 13-16 dez 2025 Leiria · 28-31 mar 2026 Coimbra · 23-25 jul 2026 Jamor',
+  'SUB21':      'Campeonatos Nacionais · 13-16 dez 2025 Leiria · 28-31 mar 2026 Coimbra · 23-25 jul 2026 Jamor',
+  'SEN':        'Campeonatos Nacionais · 13-16 dez 2025 Leiria · 28-31 mar 2026 Coimbra · 23-25 jul 2026 Jamor',
+  'ABS':        'Campeonatos Nacionais · 13-16 dez 2025 Leiria · 28-31 mar 2026 Coimbra · 23-25 jul 2026 Jamor',
+  'EUR_JUN':    'Europeus de Juniores de Piscina Longa · 7-12 jul 2026 · Munique, Alemanha',
+  'EUR':        'Europeus de Piscina Longa · 31 jul-16 ago 2026 · Paris, França',
+  'OLI':        'Jogos Olímpicos 2028 · Los Angeles 2028'
+};
+
+// Estilo map
+var ESTILO_LABELS = {L:'Livres', C:'Costas', B:'Bruços', M:'Mariposa', E:'Estilos', X:'Estafetas'};
+var ESTILO_PROVAS_LONGA = {
+  L:['50','100','200','400','800','1500'], C:['50','100','200'],
+  B:['50','100','200'], M:['50','100','200'], E:['200','400'], X:['4x50L','4x100L','4x50E','4x100E']
+};
+var ESTILO_PROVAS_CURTA = {
+  L:['50','100','200','400','800','1500'], C:['50','100','200'],
+  B:['50','100','200'], M:['50','100','200'], E:['100','200','400'], X:['4x50L','4x100L','4x50E','4x100E']
+};
+
+// ============================================================
+// MAIN CALCULATOR
+// ============================================================
+function onGeneroChange() {
+  var genero = document.getElementById('genero').value;
+  var estilo = document.getElementById('estilo').value;
+  var dist = document.getElementById('distancia').value;
+  popularEstilos();
+  if (estilo && document.getElementById('estilo').querySelector('option[value="' + estilo + '"]')) {
+    document.getElementById('estilo').value = estilo;
+    popularDistanciasPorEstilo();
+    if (dist && document.getElementById('distancia').querySelector('option[value="' + dist + '"]')) {
+      document.getElementById('distancia').value = dist;
+    }
+  }
+  calcular();
+}
+
+function onEscalaoChange() {
+  var escalao = document.getElementById('escalao').value;
+  var compEl = document.getElementById('competicao');
+  var prevComp = compEl.value;
+  compEl.innerHTML = '<option value="">Selecionar</option>';
+  if (escalao && COMPS[escalao]) {
+    var comps = COMPS[escalao];
+    for (var i = 0; i < comps.length; i++) {
+      var opt = document.createElement('option');
+      opt.value = comps[i].v;
+      opt.textContent = comps[i].l;
+      compEl.appendChild(opt);
+    }
+    // Restore if still valid
+    if (compEl.querySelector('option[value="' + prevComp + '"]')) {
+      compEl.value = prevComp;
+    }
+  }
+  popularEstilos();
+  calcular();
+}
+
+function popularEstilos() {
+  var genero = document.getElementById('genero').value;
+  var piscina = document.getElementById('piscina').value;
+  var estiloEl = document.getElementById('estilo');
+  var prevEstilo = estiloEl.value;
+  estiloEl.innerHTML = '<option value="">Selecionar</option>';
+  if (!genero || !piscina) { popularDistanciasPorEstilo(); return; }
+  
+  var estilos = genero === 'X' ? ['X'] : (piscina === 'longa' 
+    ? Object.keys(ESTILO_PROVAS_LONGA).filter(function(e){ return e !== 'X'; })
+    : Object.keys(ESTILO_PROVAS_CURTA).filter(function(e){ return e !== 'X'; }));
+  if (genero === 'X') estilos = ['X'];
+
+  for (var i = 0; i < estilos.length; i++) {
+    var opt = document.createElement('option');
+    opt.value = estilos[i];
+    opt.textContent = ESTILO_LABELS[estilos[i]];
+    estiloEl.appendChild(opt);
+  }
+  if (estiloEl.querySelector('option[value="' + prevEstilo + '"]')) {
+    estiloEl.value = prevEstilo;
+  }
+  popularDistanciasPorEstilo();
+}
+
+function updateDistanciasPorEstilo() { popularDistanciasPorEstilo(); }
+
+function popularDistanciasPorEstilo() {
+  var piscina = document.getElementById('piscina').value;
+  var estilo = document.getElementById('estilo').value;
+  var distEl = document.getElementById('distancia');
+  var prevDist = distEl.value;
+  distEl.innerHTML = '<option value="">Selecionar</option>';
+  if (!piscina || !estilo) return;
+  var provas = piscina === 'longa' ? ESTILO_PROVAS_LONGA[estilo] : ESTILO_PROVAS_CURTA[estilo];
+  if (!provas) return;
+  for (var i = 0; i < provas.length; i++) {
+    var opt = document.createElement('option');
+    opt.value = provas[i];
+    opt.textContent = provas[i] + 'm';
+    distEl.appendChild(opt);
+  }
+  if (distEl.querySelector('option[value="' + prevDist + '"]')) {
+    distEl.value = prevDist;
+  }
+}
+
+function getTempo(piscina, genero, dist, estilo, col) {
+  try {
+    var key = dist + '_' + estilo;
+    var val = tempos[piscina][genero][key][col];
+    return (val && val !== '') ? val : null;
+  } catch(e) { return null; }
+}
+
+function calcular() {
+  var piscina = document.getElementById('piscina').value;
+  var genero = document.getElementById('genero').value;
+  var escalao = document.getElementById('escalao').value;
+  var comp = document.getElementById('competicao').value;
+  var estilo = document.getElementById('estilo').value;
+  var dist = document.getElementById('distancia').value;
+  var resultEl = document.getElementById('result');
+
+  if (!piscina || !genero || !escalao || !comp || !estilo || !dist) {
+    resultEl.innerHTML = '<div class="result-empty"><span class="icon"></span>Preenche os campos acima para ver o tempo mínimo de qualificação.</div>';
+    return;
+  }
+
+  var col = COL_MAP[comp];
+  var g = (genero === 'X') ? 'M' : genero; // estafetas usam M como base
+  var tempo = getTempo(piscina, g, dist, estilo, col);
+
+  if (!tempo) {
+    resultEl.innerHTML = '<div class="result-empty"><span class="icon"></span>Sem mínimo definido para esta combinação.</div>';
+    return;
+  }
+
+  var datesInfo = COMP_DATES[comp] || '';
+  var isIntl = (comp === 'EUR' || comp === 'EUR_JUN' || comp === 'OLI');
+
+  var html = '<div class="result-box">';
+  html += '<div class="result-label">Tempo mínimo de qualificação</div>';
+  html += '<div class="result-time">' + tempo + '</div>';
+  if (datesInfo) html += '<div class="result-dates">' + datesInfo + '</div>';
+  if (isIntl) html += '<div class="result-dates" style="color:#e67e22;">Apenas piscina longa (50m)</div>';
+  html += '</div>';
+
+  // Personal time input
+  html += '<div class="personal-time-wrap">';
+  html += '<label class="personal-time-label">O teu tempo</label>';
+  html += '<input type="tel" id="personal-time" class="personal-time-input" placeholder="ex: 12345" oninput="calcularDiff()" maxlength="7">';
+  html += '<div id="personal-time-preview" class="personal-time-preview"></div>';
+  html += '</div>';
+  html += '<div id="diff-result"></div>';
+
+  resultEl.innerHTML = html;
+}
+
+function calcularDiff() {
+  var input = document.getElementById('personal-time');
+  var preview = document.getElementById('personal-time-preview');
+  var diffEl = document.getElementById('diff-result');
+  var raw = input.value.replace(/\D/g,'');
+  if (!raw) { preview.textContent = ''; diffEl.innerHTML = ''; return; }
+
+  // Parse digits: up to 7 digits = m:ss,cc or ss,cc
+  var padded = raw.padStart(6, '0');
+  var cc = parseInt(padded.slice(-2));
+  var ss = parseInt(padded.slice(-4,-2));
+  var mm = parseInt(padded.slice(0,-4)) || 0;
+  var totalMs = (mm*60+ss)*100+cc;
+  var formatted = mm > 0 ? mm+':'+('0'+ss).slice(-2)+','+('0'+cc).slice(-2) : ss+','+('0'+cc).slice(-2);
+  preview.textContent = formatted;
+
+  // Get minimo
+  var piscina = document.getElementById('piscina').value;
+  var genero = document.getElementById('genero').value;
+  var escalao = document.getElementById('escalao').value;
+  var comp = document.getElementById('competicao').value;
+  var estilo = document.getElementById('estilo').value;
+  var dist = document.getElementById('distancia').value;
+  var col = COL_MAP[comp];
+  var g = genero === 'X' ? 'M' : genero;
+  var minimoStr = getTempo(piscina, g, dist, estilo, col);
+  if (!minimoStr) return;
+
+  // Parse minimo
+  var mStr = minimoStr.replace(',','.');
+  var mParts = mStr.match(/^(?:(\d+):)?(\d+)\.(\d+)$/);
+  if (!mParts) return;
+  var mMs = ((parseInt(mParts[1]||0)*60)+parseInt(mParts[2]))*100+parseInt(mParts[3]);
+  var diff = totalMs - mMs;
+
+  if (diff <= 0) {
+    var absDiff = Math.abs(diff);
+    var dcc = absDiff%100, dss = Math.floor(absDiff/100)%60, dmm = Math.floor(absDiff/6000);
+    var dFmt = (dmm>0?dmm+':':'')+(dmm>0?('0'+dss).slice(-2):dss)+','+('0'+dcc).slice(-2);
+    diffEl.innerHTML = '<div class="diff-ok">Parabéns! Tens mínimo · -' + dFmt + '</div>';
+  } else {
+    var dcc = diff%100, dss = Math.floor(diff/100)%60, dmm = Math.floor(diff/6000);
+    var dFmt = (dmm>0?dmm+':':'')+(dmm>0?('0'+dss).slice(-2):dss)+','+('0'+dcc).slice(-2);
+    var pct = Math.round(mMs/totalMs*100);
+    diffEl.innerHTML = '<div class="diff-no">Ainda precisas de baixar ' + dFmt + '</div>';
+    diffEl.innerHTML += '<div class="progress-bar-wrap"><div class="progress-bar" style="width:' + Math.min(pct,100) + '%"></div></div>';
+    diffEl.innerHTML += '<div class="progress-pct">' + pct + '% do objetivo</div>';
+  }
+}
+
+// ============================================================
+// TOGGLE SECTIONS
+// ============================================================
+function toggleFPN() {
+  var section = document.getElementById('fpn-section');
+  var btn = document.getElementById('fpn-btn');
+  if (section.style.display === 'none') {
+    section.style.display = 'block';
+    section.scrollIntoView({behavior:'smooth', block:'start'});
+    btn.textContent = 'Fechar Pontos FPN';
+  } else {
+    section.style.display = 'none';
+    btn.textContent = 'Calcular Pontos FPN';
+  }
+}
+
+function toggleIdades() {
+  var section = document.getElementById('idades-section');
+  var btn = document.getElementById('idades-btn');
+  if (section.style.display === 'none') {
+    section.style.display = 'block';
+    section.scrollIntoView({behavior:'smooth', block:'start'});
+    btn.textContent = 'Fechar Recordes Nacionais';
+  } else {
+    section.style.display = 'none';
+    btn.textContent = 'Recordes Nacionais';
+  }
+}
+
+// ============================================================
+// PONTOS FPN
+// ============================================================
+function fpnUpdateEstilos() {
+  var piscina = document.getElementById('fpn-piscina').value;
+  var sexo = document.getElementById('fpn-sexo').value;
+  var estiloEl = document.getElementById('fpn-estilo');
+  var prevE = estiloEl.value;
+  estiloEl.innerHTML = '<option value="">Selecionar</option>';
+  if (!piscina || !sexo) return;
+  var estilos = piscina === 'longa'
+    ? ['L','C','B','M','E']
+    : ['L','C','B','M','E'];
+  for (var i = 0; i < estilos.length; i++) {
+    var opt = document.createElement('option');
+    opt.value = estilos[i];
+    opt.textContent = ESTILO_LABELS[estilos[i]];
+    estiloEl.appendChild(opt);
+  }
+  if (estiloEl.querySelector('option[value="' + prevE + '"]')) estiloEl.value = prevE;
+  fpnUpdateDistancias();
+}
+
+function fpnUpdateDistancias() {
+  var piscina = document.getElementById('fpn-piscina').value;
+  var estilo = document.getElementById('fpn-estilo').value;
+  var distEl = document.getElementById('fpn-distancia');
+  var prevD = distEl.value;
+  distEl.innerHTML = '<option value="">Selecionar</option>';
+  if (!piscina || !estilo) return;
+  var provas = piscina === 'longa' ? ESTILO_PROVAS_LONGA[estilo] : ESTILO_PROVAS_CURTA[estilo];
+  if (!provas) return;
+  for (var i = 0; i < provas.length; i++) {
+    var opt = document.createElement('option');
+    opt.value = provas[i];
+    opt.textContent = provas[i] + 'm';
+    distEl.appendChild(opt);
+  }
+  if (distEl.querySelector('option[value="' + prevD + '"]')) distEl.value = prevD;
+}
+
+function calcularPontosFPN() {
+  var piscina = document.getElementById('fpn-piscina').value;
+  var sexo = document.getElementById('fpn-sexo').value;
+  var estilo = document.getElementById('fpn-estilo').value;
+  var dist = document.getElementById('fpn-distancia').value;
+  var tempoInput = document.getElementById('fpn-tempo').value.trim();
+  var resultEl = document.getElementById('fpn-result');
+
+  if (!piscina || !sexo || !estilo || !dist || !tempoInput) {
+    resultEl.innerHTML = '<div style="color:#7ab8d4;font-size:13px;">Preenche todos os campos.</div>';
+    return;
+  }
+
+  // Get record
+  var key = dist + '_' + estilo;
+  var rec = null;
+  try { rec = recordesNacionais[piscina][sexo][key]; } catch(e) {}
+  if (!rec) {
+    resultEl.innerHTML = '<div style="color:#e74c3c;font-size:13px;">Sem recorde nacional para esta prova.</div>';
+    return;
+  }
+
+  function parseT(s) {
+    s = s.trim().replace(',','.');
+    var m;
+    m = s.match(/^(\d+):(\d{2})\.(\d{2})$/);
+    if (m) return (parseInt(m[1])*60+parseInt(m[2]))*100+parseInt(m[3]);
+    m = s.match(/^(\d+)\.(\d{2})$/);
+    if (m) return parseInt(m[1])*100+parseInt(m[2]);
+    if (/^\d+$/.test(s)) {
+      var n = parseInt(s);
+      return (Math.floor(n/10000)*60+Math.floor(n/100)%100)*100+n%100;
+    }
+    return null;
+  }
+
+  var B = parseT(rec.tempo);
+  var T = parseT(tempoInput);
+  if (!B || !T) { resultEl.innerHTML = '<div style="color:#e74c3c;font-size:13px;">Tempo inválido.</div>'; return; }
+
+  var pontos = Math.round(1000 * Math.pow(B/T, 3));
+
+  var html = '<div style="background:#e8f4fb;border-radius:10px;padding:16px;margin-top:12px;">';
+  html += '<div style="font-size:13px;color:#7ab8d4;margin-bottom:4px;">Pontos FPN</div>';
+  html += '<div style="font-size:36px;font-weight:700;color:var(--blue-deep);">' + pontos + '</div>';
+  html += '<div style="font-size:12px;color:#7ab8d4;margin-top:8px;">Recorde nacional: ' + rec.tempo + ' · ' + rec.nome + ' · ' + rec.data + '</div>';
+  html += '</div>';
+  resultEl.innerHTML = html;
+}
+
+// ============================================================
+// RECORDES POR IDADE
+// ============================================================
+function idadeUpdateEstilos() {
+  var piscina = document.getElementById('id-piscina').value;
+  var sexo = document.getElementById('id-sexo').value;
+  var estiloEl = document.getElementById('id-estilo');
+  var prevE = estiloEl.value;
+  estiloEl.innerHTML = '<option value="">Selecionar</option>';
+  if (!piscina || !sexo) return;
+  var estilos = ['L','C','B','M','E'];
+  for (var i = 0; i < estilos.length; i++) {
+    var opt = document.createElement('option');
+    opt.value = estilos[i];
+    opt.textContent = ESTILO_LABELS[estilos[i]];
+    estiloEl.appendChild(opt);
+  }
+  if (estiloEl.querySelector('option[value="' + prevE + '"]')) estiloEl.value = prevE;
+  idadeUpdateDistancias();
+}
+
+function idadeUpdateDistancias() {
+  var piscina = document.getElementById('id-piscina').value;
+  var estilo = document.getElementById('id-estilo').value;
+  var distEl = document.getElementById('id-distancia');
+  var prevD = distEl.value;
+  distEl.innerHTML = '<option value="">Selecionar</option>';
+  if (!piscina || !estilo) return;
+  var provas = piscina === 'longa' ? ESTILO_PROVAS_LONGA[estilo] : ESTILO_PROVAS_CURTA[estilo];
+  if (!provas) return;
+  for (var i = 0; i < provas.length; i++) {
+    var opt = document.createElement('option');
+    opt.value = provas[i];
+    opt.textContent = provas[i] + 'm';
+    distEl.appendChild(opt);
+  }
+  if (distEl.querySelector('option[value="' + prevD + '"]')) distEl.value = prevD;
+  mostrarRecordeIdade();
+}
+
+function mostrarRecordeIdade() {
+  var piscina = document.getElementById('id-piscina').value;
+  var sexo = document.getElementById('id-sexo').value;
+  var estilo = document.getElementById('id-estilo').value;
+  var dist = document.getElementById('id-distancia').value;
+  var idade = document.getElementById('id-idade').value;
+  var resultEl = document.getElementById('id-result');
+
+  if (!piscina || !sexo || !estilo || !dist || !idade) {
+    resultEl.innerHTML = '';
+    return;
+  }
+
+  var pisc = piscina === 'curta' ? 'curta' : 'longa';
+  var ageKey = idade === 'open' ? 'open' : idade;
+  var key = dist + '_' + estilo;
+  var rec = null;
+  try { rec = recordesIdade[pisc][sexo][ageKey][key]; } catch(e) {}
+
+  if (!rec) {
+    resultEl.innerHTML = '<div style="font-size:14px;color:#7ab8d4;margin-top:10px;">Recorde por estabelecer</div>';
+    return;
+  }
+
+  var html = '<div style="background:#e8f4fb;border-radius:10px;padding:14px;margin-top:12px;">';
+  html += '<div style="font-size:28px;font-weight:700;color:var(--blue-deep);">' + rec.tempo + '</div>';
+  html += '<div style="font-size:13px;color:#1a5a7a;margin-top:4px;">' + rec.nome + '</div>';
+  html += '<div style="font-size:12px;color:#7ab8d4;margin-top:2px;">' + rec.data + ' · ' + rec.local + '</div>';
+  html += '</div>';
+  resultEl.innerHTML = html;
+}
+
 // ============================================================
 // OS MEUS MINIMOS
 // ============================================================
@@ -5079,6 +5522,8 @@ function toggleAtleta() {
   }
 }
 
+var ATLETA_COMP_ATUAL = null;
+
 function iniciarAtleta() {
   var data = loadAtleta();
   if (data && data.escalao && data.sexo) {
@@ -5088,10 +5533,37 @@ function iniciarAtleta() {
     var escLabel = {'INF_B':'Infantil B','INF_A':'Infantil A','JUV_B':'Juvenil B','JUV_A':'Juvenil A','JUN1':'1 Junior','JUN':'Junior','SUB21':'Sub 21','SEN':'Senior','ABS':'Absoluto'};
     var nome = data.nome || 'Atleta';
     document.getElementById('atleta-saved-summary').innerHTML = '<div style="font-size:15px;color:var(--blue-deep);margin-bottom:4px;"><strong>' + nome + '</strong> · ' + (escLabel[data.escalao]||data.escalao) + '</div>';
-    renderAtletaResultados(data);
+    renderCompButtons(data);
   } else {
     mostrarFormulario();
   }
+}
+
+function renderCompButtons(data) {
+  var comps = COMP_POR_ESCALAO[data.escalao] || [];
+  var selectorEl = document.getElementById('atleta-comp-selector');
+  var buttonsEl = document.getElementById('atleta-comp-buttons');
+  if (comps.length === 0) { selectorEl.style.display = 'none'; return; }
+  selectorEl.style.display = 'block';
+  // Default to first comp
+  if (!ATLETA_COMP_ATUAL) ATLETA_COMP_ATUAL = comps[0].id;
+  var html = '';
+  for (var i = 0; i < comps.length; i++) {
+    var c = comps[i];
+    var isActive = c.id === ATLETA_COMP_ATUAL;
+    var bg = isActive ? 'var(--aqua)' : 'transparent';
+    var col = isActive ? 'var(--dark)' : 'var(--aqua)';
+    var border = '2px solid var(--aqua)';
+    html += '<button onclick="selecionarCompAtleta('' + c.id + '')" style="padding:8px 14px;border-radius:8px;background:' + bg + ';color:' + col + ';border:' + border + ';font-weight:700;font-size:13px;cursor:pointer;">' + c.label + '</button>';
+  }
+  buttonsEl.innerHTML = html;
+  renderAtletaResultados(data, ATLETA_COMP_ATUAL);
+}
+
+function selecionarCompAtleta(compId) {
+  ATLETA_COMP_ATUAL = compId;
+  var data = loadAtleta();
+  if (data) renderCompButtons(data);
 }
 
 function mostrarFormulario() {
@@ -5167,87 +5639,89 @@ function guardarAtleta() {
   document.getElementById('atleta-resultados').scrollIntoView({behavior:'smooth', block:'start'});
 }
 
-function renderAtletaResultados(data) {
+function renderAtletaResultados(data, compId) {
   var escalao = data.escalao;
   var sexo = data.sexo;
   var tAtleta = data.tempos || {};
   var comps = COMP_POR_ESCALAO[escalao] || [];
-  var html = '';
-  html += '<div style="background:#fff8e1;border-radius:8px;padding:10px 14px;margin-bottom:16px;border-left:3px solid #f0a500;">';
-  html += '<div style="font-size:12px;color:#7a5a00;line-height:1.5;">Atencao: os minimos exigem tempos feitos nos ultimos 18 meses. Verifica as datas dos teus resultados no Swimrankings.</div>';
+
+  // Filter to just the selected comp
+  var comp = null;
+  for (var ci = 0; ci < comps.length; ci++) {
+    if (comps[ci].id === compId) { comp = comps[ci]; break; }
+  }
+  if (!comp && comps.length > 0) comp = comps[0];
+  if (!comp) { document.getElementById('atleta-resultados').innerHTML = ''; return; }
+
+  var piscinasValidas = comp.longa_only ? ['longa'] : ['curta','longa'];
+  var todasProvas = {};
+  for (var pi = 0; pi < piscinasValidas.length; pi++) {
+    var lista = piscinasValidas[pi] === 'curta' ? PROVAS_INDIVIDUAIS_CURTA : PROVAS_INDIVIDUAIS_LONGA;
+    for (var i = 0; i < lista.length; i++) todasProvas[lista[i].key] = lista[i].label;
+  }
+
+  var comMinimo = [], semMinimo = [], semTempo = [];
+  for (var provaKey in todasProvas) {
+    var provaLabel = todasProvas[provaKey];
+    var hasAnyMinimo = false;
+    for (var pi = 0; pi < piscinasValidas.length; pi++) {
+      if (getMinimoAtleta(piscinasValidas[pi], sexo, escalao, comp.id, provaKey) !== null) { hasAnyMinimo = true; break; }
+    }
+    if (!hasAnyMinimo) continue;
+    var atingiu = false;
+    var melhorTempo = null, melhorPisc = null, melhorMin = null, melhorDiff = null;
+    for (var pi = 0; pi < piscinasValidas.length; pi++) {
+      var pisc = piscinasValidas[pi];
+      var tp = tAtleta[pisc] && tAtleta[pisc][provaKey] ? tAtleta[pisc][provaKey] : null;
+      var min = getMinimoAtleta(pisc, sexo, escalao, comp.id, provaKey);
+      if (!min) continue;
+      if (tp !== null) {
+        var diff = tp - min;
+        if (tp <= min && !atingiu) { atingiu = true; melhorTempo = tp; melhorPisc = pisc; melhorMin = min; melhorDiff = min - tp; }
+        if (!atingiu && (melhorDiff === null || diff < melhorDiff)) { melhorDiff = diff; melhorTempo = tp; melhorPisc = pisc; melhorMin = min; }
+      }
+    }
+    if (melhorTempo === null) semTempo.push({label:provaLabel, key:provaKey});
+    else if (atingiu) comMinimo.push({label:provaLabel, tempo:melhorTempo, pisc:melhorPisc, minimo:melhorMin, diff:melhorMin-melhorTempo});
+    else semMinimo.push({label:provaLabel, tempo:melhorTempo, pisc:melhorPisc, minimo:melhorMin, diff:melhorDiff});
+  }
+
+  var html = '<div style="background:#fff8e1;border-radius:8px;padding:10px 14px;margin-bottom:16px;border-left:3px solid #f0a500;">';
+  html += '<div style="font-size:12px;color:#7a5a00;">Os minimos exigem tempos feitos nos ultimos 18 meses. Verifica as datas no Swimrankings.</div></div>';
+
+  // Summary
+  var total = comMinimo.length + semMinimo.length;
+  var pct = total > 0 ? Math.round(comMinimo.length/total*100) : 0;
+  html += '<div style="background:#e8f4fb;border-radius:10px;padding:12px 14px;margin-bottom:14px;">';
+  html += '<div style="font-size:12px;color:#7ab8d4;margin-bottom:4px;">Provas com minimos atingidos</div>';
+  html += '<div style="font-size:28px;font-weight:700;color:var(--blue-deep);">' + comMinimo.length + '<span style="font-size:16px;color:#7ab8d4;"> / ' + total + '</span></div>';
+  if (total > 0) {
+    html += '<div style="margin-top:8px;background:#c8dce8;border-radius:6px;height:8px;overflow:hidden;">';
+    html += '<div style="height:8px;border-radius:6px;background:var(--aqua);width:' + pct + '%;"></div></div>';
+  }
   html += '</div>';
 
-  for (var ci = 0; ci < comps.length; ci++) {
-    var comp = comps[ci];
-    var piscinasValidas = comp.longa_only ? ['longa'] : ['curta','longa'];
-    var todasProvas = {};
-    for (var pi = 0; pi < piscinasValidas.length; pi++) {
-      var lista = piscinasValidas[pi] === 'curta' ? PROVAS_INDIVIDUAIS_CURTA : PROVAS_INDIVIDUAIS_LONGA;
-      for (var i = 0; i < lista.length; i++) todasProvas[lista[i].key] = lista[i].label;
-    }
-    var comMinimo = [], semMinimo = [], semTempo = [];
-    for (var provaKey in todasProvas) {
-      var provaLabel = todasProvas[provaKey];
-      var hasAnyMinimo = false;
-      for (var pi = 0; pi < piscinasValidas.length; pi++) {
-        if (getMinimoAtleta(piscinasValidas[pi], sexo, escalao, comp.id, provaKey) !== null) { hasAnyMinimo = true; break; }
-      }
-      if (!hasAnyMinimo) continue;
-      var atingiu = false;
-      var melhorTempo = null, melhorPisc = null, melhorMin = null, melhorDiff = null;
-      for (var pi = 0; pi < piscinasValidas.length; pi++) {
-        var pisc = piscinasValidas[pi];
-        var tp = tAtleta[pisc] && tAtleta[pisc][provaKey] ? tAtleta[pisc][provaKey] : null;
-        var min = getMinimoAtleta(pisc, sexo, escalao, comp.id, provaKey);
-        if (!min) continue;
-        if (tp !== null) {
-          var diff = tp - min;
-          if (tp <= min) {
-            atingiu = true;
-            melhorTempo = tp; melhorPisc = pisc; melhorMin = min; melhorDiff = diff;
-            break;
-          }
-          if (melhorDiff === null || diff < melhorDiff) {
-            melhorDiff = diff; melhorTempo = tp; melhorPisc = pisc; melhorMin = min;
-          }
-        }
-      }
-      if (melhorTempo === null) {
-        semTempo.push({label:provaLabel, key:provaKey});
-      } else if (atingiu) {
-        comMinimo.push({label:provaLabel, tempo:melhorTempo, pisc:melhorPisc, minimo:melhorMin, diff:melhorMin - melhorTempo});
-      } else {
-        semMinimo.push({label:provaLabel, tempo:melhorTempo, pisc:melhorPisc, minimo:melhorMin, diff:melhorDiff});
-      }
-    }
-    html += '<div style="margin-bottom:22px;">';
-    html += '<div style="font-size:15px;font-weight:700;color:var(--blue-deep);padding:10px 14px;background:#e8f4fb;border-radius:8px;margin-bottom:2px;">' + comp.label;
-    if (comp.longa_only) html += ' <span style="font-size:11px;color:#7ab8d4;font-weight:400;">so piscina longa</span>';
-    html += '</div>';
-    if (comMinimo.length === 0 && semMinimo.length === 0 && semTempo.length === 0) {
-      html += '<div style="font-size:13px;color:#aaa;padding:8px 0 0;">Sem tempos introduzidos para esta competicao.</div>';
-    }
-    for (var i = 0; i < comMinimo.length; i++) {
-      var e = comMinimo[i];
-      html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 4px;border-bottom:1px solid #e8f5e9;">';
-      html += '<div><div style="font-size:14px;font-weight:600;color:#1a7a3a;">&#10003; ' + e.label + '</div>';
-      html += '<div style="font-size:12px;color:#27ae60;">' + formatAtletaMs(e.tempo) + ' (' + (e.pisc==='curta'?'25m':'50m') + ')&nbsp; -' + formatAtletaMs(e.diff) + '</div></div>';
-      html += '<div style="font-size:12px;color:#7ab8d4;text-align:right;">min<br>' + formatAtletaMs(e.minimo) + '</div></div>';
-    }
-    for (var i = 0; i < semMinimo.length; i++) {
-      var e = semMinimo[i];
-      html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 4px;border-bottom:1px solid #fde8e8;">';
-      html += '<div><div style="font-size:14px;font-weight:600;color:#c0392b;">&#10007; ' + e.label + '</div>';
-      html += '<div style="font-size:12px;color:#e74c3c;">' + formatAtletaMs(e.tempo) + ' (' + (e.pisc==='curta'?'25m':'50m') + ')&nbsp; faltam ' + formatAtletaMs(e.diff) + '</div></div>';
-      html += '<div style="font-size:12px;color:#7ab8d4;text-align:right;">min<br>' + formatAtletaMs(e.minimo) + '</div></div>';
-    }
-    if (semTempo.length > 0 && (comMinimo.length > 0 || semMinimo.length > 0)) {
-      html += '<div style="font-size:12px;color:#bbb;margin-top:6px;padding:4px 0;">Sem tempo: ';
-      var labs = []; for (var i=0;i<semTempo.length;i++) labs.push(semTempo[i].label);
-      html += labs.join(' · ') + '</div>';
-    }
-    html += '</div>';
+  if (comp.longa_only) html += '<div style="font-size:12px;color:#e67e22;margin-bottom:10px;">Apenas piscina longa (50m) conta para esta competição.</div>';
+
+  for (var i = 0; i < comMinimo.length; i++) {
+    var e = comMinimo[i];
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 4px;border-bottom:1px solid #e8f5e9;">';
+    html += '<div><div style="font-size:14px;font-weight:600;color:#1a7a3a;">&#10003; ' + e.label + '</div>';
+    html += '<div style="font-size:12px;color:#27ae60;">' + formatAtletaMs(e.tempo) + ' (' + (e.pisc==='curta'?'25m':'50m') + ') · -' + formatAtletaMs(e.diff) + '</div></div>';
+    html += '<div style="font-size:12px;color:#7ab8d4;text-align:right;">min<br>' + formatAtletaMs(e.minimo) + '</div></div>';
   }
+  for (var i = 0; i < semMinimo.length; i++) {
+    var e = semMinimo[i];
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 4px;border-bottom:1px solid #fde8e8;">';
+    html += '<div><div style="font-size:14px;font-weight:600;color:#c0392b;">&#10007; ' + e.label + '</div>';
+    html += '<div style="font-size:12px;color:#e74c3c;">' + formatAtletaMs(e.tempo) + ' (' + (e.pisc==='curta'?'25m':'50m') + ') · faltam ' + formatAtletaMs(e.diff) + '</div></div>';
+    html += '<div style="font-size:12px;color:#7ab8d4;text-align:right;">min<br>' + formatAtletaMs(e.minimo) + '</div></div>';
+  }
+  if (semTempo.length > 0 && total > 0) {
+    var labs = []; for (var i=0;i<semTempo.length;i++) labs.push(semTempo[i].label);
+    html += '<div style="font-size:12px;color:#bbb;margin-top:8px;">Sem tempo: ' + labs.join(' · ') + '</div>';
+  }
+
   document.getElementById('atleta-resultados').innerHTML = html;
 }
 
