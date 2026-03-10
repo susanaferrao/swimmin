@@ -524,6 +524,8 @@
     <div class="subtitle">TEMPOS MÍNIMOS FPN</div>
   </div>
 
+  <div id="btn-instalar" onclick="instalarApp()" style="display:none;background:var(--aqua);color:#001f3a;font-weight:700;font-size:13px;text-align:center;padding:10px 16px;border-radius:10px;margin:0 16px 14px 16px;cursor:pointer;letter-spacing:1px;">&#11015; INSTALAR APP</div>
+
   <div class="card">
     <div class="grid">
       <div class="field">
@@ -11907,6 +11909,30 @@ function renderAtletaResultados(data, compId) {
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+
+var deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', function(e) {
+  e.preventDefault();
+  deferredPrompt = e;
+  var btn = document.getElementById('btn-instalar');
+  if (btn) btn.style.display = 'block';
+});
+
+window.addEventListener('appinstalled', function() {
+  var btn = document.getElementById('btn-instalar');
+  if (btn) btn.style.display = 'none';
+  deferredPrompt = null;
+});
+
+function instalarApp() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(function() {
+    deferredPrompt = null;
+    var btn = document.getElementById('btn-instalar');
+    if (btn) btn.style.display = 'none';
   });
 }
 
