@@ -3958,7 +3958,7 @@ function calcular() {
   }
 
   var datesInfo = COMP_DATES[comp] || '';
-  var isIntl = (comp === 'EUR' || comp === 'EUR_JUN' || comp === 'OLI');
+  var isIntl = (comp === 'EUR' || comp === 'EUR_JUN' || comp === 'EUR_SUB23' || comp === 'OLI');
 
   var html = '<div class="result-box">';
   html += '<div class="result-label">Tempo mínimo de qualificação</div>';
@@ -3973,7 +3973,6 @@ function calcular() {
         html += '<div class="result-dates-item">' + lines[di] + '</div>';
       }
     }
-    if (isIntl) html += '<div class="result-dates-item" style="color:#f0a500;margin-top:4px;">Apenas piscina longa (50m)</div>';
     html += '</div>';
   }
   // Personal time input - inside the blue result box
@@ -9831,7 +9830,7 @@ function calcular() {
   }
 
   var datesInfo = COMP_DATES[comp] || '';
-  var isIntl = (comp === 'EUR' || comp === 'EUR_JUN' || comp === 'OLI');
+  var isIntl = (comp === 'EUR' || comp === 'EUR_JUN' || comp === 'EUR_SUB23' || comp === 'OLI');
 
   var html = '<div class="result-box">';
   html += '<div class="result-label">Tempo mínimo de qualificação</div>';
@@ -9846,7 +9845,6 @@ function calcular() {
         html += '<div class="result-dates-item">' + lines[di] + '</div>';
       }
     }
-    if (isIntl) html += '<div class="result-dates-item" style="color:#f0a500;margin-top:4px;">Apenas piscina longa (50m)</div>';
     html += '</div>';
   }
   // Personal time input - inside the blue result box
