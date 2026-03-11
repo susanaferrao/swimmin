@@ -513,6 +513,163 @@
     letter-spacing: 0.5px;
   }
 
+
+/* ===== TREINADOR ===== */
+.coach-wrap { margin-top: 28px; text-align: center; }
+.coach-btn {
+  background: linear-gradient(135deg, #e07b00, #ff9f1c) !important;
+  box-shadow: 0 4px 20px rgba(255,159,28,0.30) !important;
+  width: 100%;
+}
+.coach-btn:hover { background: linear-gradient(135deg, #ff9f1c, #e07b00) !important; }
+
+#coach-section {
+  display: none; margin-bottom: 24px;
+}
+.coach-card {
+  background: #fff; border-radius: 20px;
+  padding: 24px 20px; box-shadow: 0 2px 16px rgba(0,0,0,0.07); margin: 0;
+}
+.coach-card h2 {
+  font-family: 'Bebas Neue', sans-serif; font-size: 26px;
+  color: #0a2a4a; letter-spacing: 2px; margin: 0 0 4px 0;
+}
+.coach-card .subtitle {
+  font-size: 11px; color: #888; letter-spacing: 1px;
+  text-transform: uppercase; margin-bottom: 20px;
+}
+.coach-team-wrap { margin-bottom: 20px; }
+.coach-team-wrap label {
+  font-size: 11px; font-weight: 700; color: #0a2a4a;
+  letter-spacing: 1px; text-transform: uppercase; display: block; margin-bottom: 6px;
+}
+.coach-team-input {
+  width: 100%; padding: 12px 14px; border-radius: 10px;
+  border: 1.5px solid #e0e8f0; font-size: 15px;
+  background: #f4f8fb; box-sizing: border-box;
+  font-family: inherit; color: #0a2a4a;
+}
+.coach-team-input:focus { outline: none; border-color: #00c4cc; }
+
+/* Athletes list */
+.athlete-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+.athlete-item {
+  background: #f4f8fb; border-radius: 12px; padding: 12px 14px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px;
+}
+.athlete-item-info { flex: 1; }
+.athlete-item-name { font-weight: 700; font-size: 14px; color: #0a2a4a; }
+.athlete-item-meta { font-size: 12px; color: #888; margin-top: 2px; }
+.athlete-item-actions { display: flex; gap: 6px; }
+.btn-edit, .btn-del {
+  border: none; border-radius: 8px; padding: 6px 12px;
+  font-size: 12px; cursor: pointer; font-family: inherit; font-weight: 600;
+}
+.btn-edit { background: #e8f4fb; color: #0a2a4a; }
+.btn-del { background: #fdecea; color: #c0392b; }
+
+/* Add athlete form */
+.add-athlete-form {
+  background: #f0fafc; border-radius: 14px; padding: 16px;
+  margin-bottom: 16px; display: none;
+}
+.add-athlete-form.open { display: block; }
+.form-row { display: flex; gap: 10px; margin-bottom: 10px; }
+.form-row .field { flex: 1; }
+.form-row .field label {
+  font-size: 10px; font-weight: 700; color: #0a2a4a;
+  letter-spacing: 1px; text-transform: uppercase; display: block; margin-bottom: 4px;
+}
+.form-row .field input,
+.form-row .field select {
+  width: 100%; padding: 9px 10px; border-radius: 8px;
+  border: 1.5px solid #cce0e8; font-size: 13px;
+  background: #fff; box-sizing: border-box; font-family: inherit; color: #0a2a4a;
+}
+.form-row .field input:focus,
+.form-row .field select:focus { outline: none; border-color: #00c4cc; }
+.times-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px;
+}
+.time-field label {
+  font-size: 10px; font-weight: 700; color: #0a2a4a;
+  letter-spacing: 1px; text-transform: uppercase; display: block; margin-bottom: 3px;
+}
+.time-field input {
+  width: 100%; padding: 8px 10px; border-radius: 8px;
+  border: 1.5px solid #cce0e8; font-size: 13px;
+  background: #fff; box-sizing: border-box; font-family: inherit; color: #0a2a4a;
+  text-align: center;
+}
+.time-field input:focus { outline: none; border-color: #00c4cc; }
+.time-preview {
+  font-size: 11px; color: var(--aqua); font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 1px; min-height: 16px; margin-top: 2px; text-align: center;
+}
+.btn-save-athlete, .btn-cancel-athlete, .btn-del-form, .btn-add-athlete {
+  border: none; border-radius: 10px; padding: 11px 22px;
+  font-size: 14px; cursor: pointer; font-family: inherit; font-weight: 700;
+}
+.btn-save-athlete { background: var(--aqua); color: #fff; }
+.btn-cancel-athlete { background: #e0e8f0; color: #0a2a4a; }
+.btn-del-form { background: #fdecea; color: #c0392b; }
+.btn-add-athlete {
+  display: block; width: 100%; background: #e8f4fb; color: #0a2a4a;
+  font-size: 15px; letter-spacing: 1px; margin-bottom: 20px;
+  border-radius: 12px; padding: 13px;
+}
+.btn-add-athlete:hover { background: #d0eaf5; }
+
+/* Relay calculator */
+.relay-calc { border-top: 1.5px solid #e0e8f0; padding-top: 18px; }
+.relay-calc h3 {
+  font-family: 'Bebas Neue', sans-serif; font-size: 20px;
+  color: #0a2a4a; letter-spacing: 2px; margin: 0 0 14px 0;
+}
+.relay-selects { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+.relay-selects select {
+  width: 100%; padding: 11px 14px; border-radius: 10px;
+  border: 1.5px solid #e0e8f0; font-size: 14px;
+  background: #f4f8fb; font-family: inherit; color: #0a2a4a;
+}
+.relay-selects select:focus { outline: none; border-color: #00c4cc; }
+.btn-calc-relay {
+  width: 100%; padding: 14px; background: var(--aqua); color: #fff;
+  border: none; border-radius: 12px; font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px; letter-spacing: 2px; cursor: pointer; margin-bottom: 16px;
+}
+.relay-results { display: flex; flex-direction: column; gap: 12px; }
+.relay-result-item {
+  background: #f4f8fb; border-radius: 14px; padding: 14px 16px;
+  border: 2px solid transparent;
+}
+.relay-result-item.best {
+  background: linear-gradient(135deg, #e8fafc, #f0fff4);
+  border-color: var(--aqua);
+}
+.relay-rank {
+  font-family: 'Bebas Neue', sans-serif; font-size: 13px;
+  color: #888; letter-spacing: 1px; margin-bottom: 4px;
+}
+.relay-result-item.best .relay-rank { color: var(--aqua); }
+.relay-total {
+  font-family: 'Bebas Neue', sans-serif; font-size: 28px;
+  color: #0a2a4a; letter-spacing: 2px; margin-bottom: 8px;
+}
+.relay-result-item.best .relay-total { color: var(--aqua); }
+.relay-legs { display: flex; flex-direction: column; gap: 4px; }
+.relay-leg {
+  font-size: 13px; color: #0a2a4a;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.relay-leg-name { font-weight: 600; }
+.relay-leg-style {
+  font-size: 11px; color: #888; background: #e0e8f0;
+  border-radius: 6px; padding: 2px 7px;
+}
+.relay-leg-time { font-family: 'Bebas Neue', sans-serif; color: var(--aqua); font-size: 15px; }
+.relay-empty { font-size: 14px; color: #888; text-align: center; padding: 12px 0; }
 </style>
 </head>
 <body>
@@ -6036,6 +6193,547 @@ function instalarApp() {
   });
 }
 
+
+
 </script>
+
+  <!-- TREINADOR BUTTON -->
+  <div class="coach-wrap" style="margin-top:18px;">
+    <button class="fpn-btn coach-btn" id="coach-btn" onclick="toggleCoach()">Clubes · Melhores Estafetas</button>
+  </div>
+
+  <!-- TREINADOR SECTION -->
+  <div id="coach-section">
+    <div class="coach-card">
+      <h2>TREINADOR</h2>
+      <p class="subtitle">Gestão de atletas e otimização de estafetas</p>
+
+      <!-- Team name -->
+      <div class="coach-team-wrap">
+        <label>Nome da Equipa</label>
+        <input type="text" class="coach-team-input" id="coach-team-name"
+          placeholder="Ex: Sporting CP" oninput="saveTeamName()" />
+      </div>
+
+      <!-- Athlete list -->
+      <div class="athlete-list" id="athlete-list"></div>
+
+      <!-- Add athlete form -->
+      <div class="add-athlete-form" id="add-athlete-form">
+        <div class="form-row">
+          <div class="field">
+            <label>Nome</label>
+            <input type="text" id="ath-nome" placeholder="Nome do atleta" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label>Sexo</label>
+            <select id="ath-sexo">
+              <option value="">Selecionar</option>
+              <option value="M">Masculino</option>
+              <option value="F">Feminino</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Escalão</label>
+            <select id="ath-escalao">
+              <option value="">Selecionar</option>
+              <option value="INFB">Infantil B</option>
+              <option value="INFA">Infantil A</option>
+              <option value="JUVB">Juvenil B</option>
+              <option value="JUVA">Juvenil A</option>
+              <option value="JUN">Júnior</option>
+              <option value="SEN">Sénior</option>
+            </select>
+          </div>
+        </div>
+        <div class="times-grid">
+          <div class="time-field">
+            <label>50L</label>
+            <input type="tel" id="ath-50L" maxlength="6" placeholder="ex: 2543"
+              oninput="coachPreviewTime(this,'ath-50L-p')" />
+            <div class="time-preview" id="ath-50L-p"></div>
+          </div>
+          <div class="time-field">
+            <label>50C</label>
+            <input type="tel" id="ath-50C" maxlength="6" placeholder="ex: 2934"
+              oninput="coachPreviewTime(this,'ath-50C-p')" />
+            <div class="time-preview" id="ath-50C-p"></div>
+          </div>
+          <div class="time-field">
+            <label>50B</label>
+            <input type="tel" id="ath-50B" maxlength="6" placeholder="ex: 3012"
+              oninput="coachPreviewTime(this,'ath-50B-p')" />
+            <div class="time-preview" id="ath-50B-p"></div>
+          </div>
+          <div class="time-field">
+            <label>50M</label>
+            <input type="tel" id="ath-50M" maxlength="6" placeholder="ex: 2789"
+              oninput="coachPreviewTime(this,'ath-50M-p')" />
+            <div class="time-preview" id="ath-50M-p"></div>
+          </div>
+          <div class="time-field">
+            <label>100L</label>
+            <input type="tel" id="ath-100L" maxlength="7" placeholder="ex: 5432"
+              oninput="coachPreviewTime(this,'ath-100L-p')" />
+            <div class="time-preview" id="ath-100L-p"></div>
+          </div>
+          <div class="time-field">
+            <label>100C</label>
+            <input type="tel" id="ath-100C" maxlength="7" placeholder="ex: 10234"
+              oninput="coachPreviewTime(this,'ath-100C-p')" />
+            <div class="time-preview" id="ath-100C-p"></div>
+          </div>
+          <div class="time-field">
+            <label>100B</label>
+            <input type="tel" id="ath-100B" maxlength="7" placeholder="ex: 11045"
+              oninput="coachPreviewTime(this,'ath-100B-p')" />
+            <div class="time-preview" id="ath-100B-p"></div>
+          </div>
+          <div class="time-field">
+            <label>100M</label>
+            <input type="tel" id="ath-100M" maxlength="7" placeholder="ex: 5876"
+              oninput="coachPreviewTime(this,'ath-100M-p')" />
+            <div class="time-preview" id="ath-100M-p"></div>
+          </div>
+          <div class="time-field">
+            <label>200L</label>
+            <input type="tel" id="ath-200L" maxlength="7" placeholder="ex: 11543"
+              oninput="coachPreviewTime(this,'ath-200L-p')" />
+            <div class="time-preview" id="ath-200L-p"></div>
+          </div>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:4px;">
+          <button class="btn-save-athlete" onclick="saveAthlete()">Guardar</button>
+          <button class="btn-cancel-athlete" onclick="cancelAthlete()">Cancelar</button>
+          <button class="btn-del-form" id="btn-del-athlete" style="display:none;" onclick="deleteAthleteFromForm()">Eliminar</button>
+        </div>
+      </div>
+
+      <button class="btn-add-athlete" id="btn-add-athlete" onclick="openAddAthlete()">
+        + Adicionar Atleta
+      </button>
+
+      <!-- Relay calculator -->
+      <div class="relay-calc">
+        <h3>MELHOR ESTAFETA</h3>
+        <div class="relay-selects">
+          <select id="relay-escalao" onchange="calcRelay()">
+            <option value="">Selecionar Escalão</option>
+            <option value="INFB">Infantil B</option>
+            <option value="INFA">Infantil A</option>
+            <option value="INF">Infantis (A+B)</option>
+            <option value="JUVB">Juvenil B</option>
+            <option value="JUVA">Juvenil A</option>
+            <option value="JUV">Juvenis (A+B)</option>
+            <option value="JUN">Júnior (+ 1º Júnior)</option>
+            <option value="SEN">Sénior</option>
+            <option value="ABS">Absoluto</option>
+          </select>
+          <select id="relay-type" onchange="calcRelay()">
+            <option value="">Selecionar Estafeta</option>
+            <option value="4x50L-M">4x50m Livres — Masculino</option>
+            <option value="4x50L-F">4x50m Livres — Feminino</option>
+            <option value="4x50L-X">4x50m Livres — Misto</option>
+            <option value="4x50E-M">4x50m Estilos — Masculino</option>
+            <option value="4x50E-F">4x50m Estilos — Feminino</option>
+            <option value="4x50E-X">4x50m Estilos — Misto</option>
+            <option value="4x100L-M">4x100m Livres — Masculino</option>
+            <option value="4x100L-F">4x100m Livres — Feminino</option>
+            <option value="4x100L-X">4x100m Livres — Misto</option>
+            <option value="4x100E-M">4x100m Estilos — Masculino</option>
+            <option value="4x100E-F">4x100m Estilos — Feminino</option>
+            <option value="4x100E-X">4x100m Estilos — Misto</option>
+            <option value="4x200L-M">4x200m Livres — Masculino</option>
+            <option value="4x200L-F">4x200m Livres — Feminino</option>
+          </select>
+        </div>
+        <div id="relay-results"></div>
+      </div>
+    </div>
+  </div>
+
+<script>
+// ===== CLUBES - MELHORES ESTAFETAS =====
+
+var coachAthletes = [];
+var coachEditingIdx = -1;
+
+try {
+  var _saved = localStorage.getItem('coachAthletes');
+  if (_saved) coachAthletes = JSON.parse(_saved);
+} catch(e) { coachAthletes = []; }
+
+function saveTeamName() {
+  try { localStorage.setItem('coachTeamName', document.getElementById('coach-team-name').value); } catch(e) {}
+}
+
+function toggleCoach() {
+  var s = document.getElementById('coach-section');
+  var btn = document.getElementById('coach-btn');
+  if (!s || !btn) return;
+  if (s.style.display === 'none' || s.style.display === '') {
+    s.style.display = 'block';
+    btn.textContent = 'Fechar Clubes';
+    var saved = localStorage.getItem('coachTeamName') || '';
+    document.getElementById('coach-team-name').value = saved;
+    renderAthletes();
+  } else {
+    s.style.display = 'none';
+    btn.textContent = 'Clubes · Melhores Estafetas';
+  }
+}
+
+function coachPreviewTime(input, previewId) {
+  var raw = input.value.replace(/\D/g, '');
+  input.value = raw;
+  var prev = document.getElementById(previewId);
+  if (!prev) return;
+  if (!raw) { prev.textContent = ''; return; }
+  var padded = raw.padStart(6, '0');
+  var cc = parseInt(padded.slice(-2), 10);
+  var ss = parseInt(padded.slice(-4, -2), 10);
+  var mm = parseInt(padded.slice(0, -4), 10) || 0;
+  prev.textContent = mm > 0
+    ? mm + ':' + ('0'+ss).slice(-2) + ',' + ('0'+cc).slice(-2)
+    : ss + ',' + ('0'+cc).slice(-2);
+}
+
+function coachParseTime(raw) {
+  if (!raw) return null;
+  raw = String(raw).replace(/\D/g, '');
+  if (!raw) return null;
+  var padded = raw.padStart(6, '0');
+  var cc = parseInt(padded.slice(-2), 10);
+  var ss = parseInt(padded.slice(-4, -2), 10);
+  var mm = parseInt(padded.slice(0, -4), 10) || 0;
+  return mm * 6000 + ss * 100 + cc;
+}
+
+function coachFormatTime(cs) {
+  if (cs === null || cs === undefined) return '—';
+  var mm = Math.floor(cs / 6000);
+  var ss = Math.floor((cs % 6000) / 100);
+  var cc = cs % 100;
+  return mm > 0
+    ? mm + ':' + ('0'+ss).slice(-2) + ',' + ('0'+cc).slice(-2)
+    : ss + ',' + ('0'+cc).slice(-2);
+}
+
+function openAddAthlete(idx) {
+  coachEditingIdx = (idx !== undefined && idx >= 0) ? idx : -1;
+  var provas = ['50L','50C','50B','50M','100L','100C','100B','100M','200L'];
+  if (coachEditingIdx >= 0) {
+    var a = coachAthletes[coachEditingIdx];
+    document.getElementById('ath-nome').value = a.nome || '';
+    document.getElementById('ath-sexo').value = a.sexo || '';
+    document.getElementById('ath-escalao').value = a.escalao || '';
+    provas.forEach(function(p) {
+      var el = document.getElementById('ath-' + p);
+      if (el) { el.value = a.tempos[p] || ''; coachPreviewTime(el, 'ath-' + p + '-p'); }
+    });
+  } else {
+    document.getElementById('ath-nome').value = '';
+    document.getElementById('ath-sexo').value = '';
+    document.getElementById('ath-escalao').value = '';
+    provas.forEach(function(p) {
+      var el = document.getElementById('ath-' + p);
+      if (el) { el.value = ''; }
+      var pr = document.getElementById('ath-' + p + '-p');
+      if (pr) pr.textContent = '';
+    });
+  }
+  document.getElementById('add-athlete-form').classList.add('open');
+  document.getElementById('btn-add-athlete').style.display = 'none';
+  var delBtn = document.getElementById('btn-del-athlete');
+  if (delBtn) delBtn.style.display = coachEditingIdx >= 0 ? 'block' : 'none';
+}
+
+function cancelAthlete() {
+  document.getElementById('add-athlete-form').classList.remove('open');
+  document.getElementById('btn-add-athlete').style.display = 'block';
+  var delBtn = document.getElementById('btn-del-athlete');
+  if (delBtn) delBtn.style.display = 'none';
+  coachEditingIdx = -1;
+}
+
+function saveAthlete() {
+  var nome = document.getElementById('ath-nome').value.trim();
+  var sexo = document.getElementById('ath-sexo').value;
+  var escalao = document.getElementById('ath-escalao').value;
+  if (!nome || !sexo || !escalao) {
+    alert('Preenche o nome, sexo e escalao.');
+    return;
+  }
+  var provas = ['50L','50C','50B','50M','100L','100C','100B','100M','200L'];
+  var tempos = {};
+  provas.forEach(function(p) {
+    var el = document.getElementById('ath-' + p);
+    if (el && el.value.trim()) tempos[p] = el.value.trim();
+  });
+  var athlete = { nome: nome, sexo: sexo, escalao: escalao, tempos: tempos };
+  if (coachEditingIdx >= 0) {
+    coachAthletes[coachEditingIdx] = athlete;
+  } else {
+    coachAthletes.push(athlete);
+  }
+  try { localStorage.setItem('coachAthletes', JSON.stringify(coachAthletes)); } catch(e) {}
+  cancelAthlete();
+  renderAthletes();
+  calcRelay();
+}
+
+function deleteAthlete(idx) {
+  coachAthletes.splice(idx, 1);
+  try { localStorage.setItem('coachAthletes', JSON.stringify(coachAthletes)); } catch(e) {}
+  renderAthletes();
+  calcRelay();
+}
+
+function deleteAthleteFromForm() {
+  if (coachEditingIdx < 0) return;
+  var idx = coachEditingIdx;
+  cancelAthlete();
+  coachAthletes.splice(idx, 1);
+  try { localStorage.setItem('coachAthletes', JSON.stringify(coachAthletes)); } catch(e) {}
+  renderAthletes();
+  calcRelay();
+}
+
+var ESCALAO_LABELS = {
+  INFB:'Infantil B', INFA:'Infantil A', JUVB:'Juvenil B',
+  JUVA:'Juvenil A', JUN:'Junior', SEN:'Senior'
+};
+
+function renderAthletes() {
+  var list = document.getElementById('athlete-list');
+  if (!list) return;
+  if (!coachAthletes.length) {
+    list.innerHTML = '<div class="relay-empty">Nenhum atleta adicionado.</div>';
+    return;
+  }
+  var rows = '';
+  for (var i = 0; i < coachAthletes.length; i++) {
+    var a = coachAthletes[i];
+    var np = Object.keys(a.tempos).length;
+    var sexoLabel = a.sexo === 'M' ? 'Masculino' : 'Feminino';
+    var escLabel = ESCALAO_LABELS[a.escalao] || a.escalao;
+    rows += '<div class="athlete-item">'
+      + '<div class="athlete-item-info">'
+      + '<div class="athlete-item-name">' + a.nome + '</div>'
+      + '<div class="athlete-item-meta">' + sexoLabel + ' · ' + escLabel + ' · ' + np + ' tempo' + (np !== 1 ? 's' : '') + '</div>'
+      + '</div>'
+      + '<div class="athlete-item-actions">'
+      + '<button class="btn-edit" onclick="openAddAthlete(' + i + ')">Editar</button>'
+      + '</div></div>';
+  }
+  list.innerHTML = rows;
+}
+
+function getAthletesForEscalao(esc) {
+  var map = {
+    INFB:['INFB'], INFA:['INFA'], INF:['INFA','INFB'],
+    JUVB:['JUVB'], JUVA:['JUVA'], JUV:['JUVA','JUVB'],
+    JUN:['JUN'], SEN:['SEN'],
+    ABS:['INFB','INFA','JUVB','JUVA','JUN','SEN']
+  };
+  var allowed = map[esc] || [];
+  return coachAthletes.filter(function(a) { return allowed.indexOf(a.escalao) >= 0; });
+}
+
+function calcRelay() {
+  var escalaoSel = document.getElementById('relay-escalao').value;
+  var typeSel    = document.getElementById('relay-type').value;
+  var resEl      = document.getElementById('relay-results');
+  if (!escalaoSel || !typeSel) { resEl.innerHTML = ''; return; }
+
+  var parts    = typeSel.split('-');
+  var relayCode = parts[0];
+  var gender    = parts[1];
+  var distMatch = relayCode.match(/4x(\d+)([LE])/);
+  if (!distMatch) { resEl.innerHTML = ''; return; }
+  var dist      = distMatch[1];
+  var isEstilos = distMatch[2] === 'E';
+
+  var athletes = getAthletesForEscalao(escalaoSel);
+  var males    = athletes.filter(function(a) { return a.sexo === 'M'; });
+  var females  = athletes.filter(function(a) { return a.sexo === 'F'; });
+  var pool     = gender === 'M' ? males : gender === 'F' ? females : null;
+
+  var results = [];
+
+  if (!isEstilos) {
+    var key = dist + 'L';
+    if (gender === 'X') {
+      var bM = getBestN(males, key, 2);
+      var bF = getBestN(females, key, 2);
+      if (bM.length < 2 || bF.length < 2) {
+        resEl.innerHTML = '<div class="relay-empty">Atletas insuficientes para esta estafeta.</div>';
+        return;
+      }
+      var combo = bM.concat(bF);
+      combo.sort(function(a,b) { return a.t - b.t; });
+      var tot = 0;
+      for (var i=0;i<combo.length;i++) tot += combo[i].t;
+      results.push({ total: tot, legs: combo.map(function(x) { return { nome: x.nome, estilo: 'Livres', time: x.t }; }) });
+    } else {
+      if (!pool || pool.length < 4) {
+        resEl.innerHTML = '<div class="relay-empty">Atletas insuficientes para esta estafeta.</div>';
+        return;
+      }
+      results = getTopCombos(pool, key, 3);
+    }
+  } else {
+    if (gender === 'X') {
+      results = getBestEstilosMisto(males, females, dist, 3);
+    } else {
+      if (!pool || pool.length < 4) {
+        resEl.innerHTML = '<div class="relay-empty">Atletas insuficientes para esta estafeta.</div>';
+        return;
+      }
+      results = getBestEstilos(pool, dist, 3);
+    }
+  }
+
+  if (!results.length) {
+    resEl.innerHTML = '<div class="relay-empty">Nao foi possivel calcular. Verifica se os atletas têm tempos suficientes.</div>';
+    return;
+  }
+
+  var out = '';
+  for (var ri = 0; ri < results.length; ri++) {
+    var r = results[ri];
+    var isBest = ri === 0;
+    out += '<div class="relay-result-item' + (isBest ? ' best' : '') + '">';
+    out += '<div class="relay-rank">' + (isBest ? 'MELHOR OPÇÃO' : (ri === 1 ? '2ª MELHOR OPÇÃO' : '3ª MELHOR OPÇÃO')) + ' · Tempo estimado</div>';
+    out += '<div class="relay-total">' + coachFormatTime(r.total) + '</div>';
+    out += '<div class="relay-legs">';
+    for (var li = 0; li < r.legs.length; li++) {
+      var leg = r.legs[li];
+      out += '<div class="relay-leg">'
+        + '<span class="relay-leg-name">' + (li+1) + '. ' + leg.nome + '</span>'
+        + '<span class="relay-leg-style">' + leg.estilo + '</span>'
+        + '<span class="relay-leg-time">' + coachFormatTime(leg.time) + '</span>'
+        + '</div>';
+    }
+    out += '</div></div>';
+  }
+  resEl.innerHTML = out;
+}
+
+function getBestN(pool, key, n) {
+  var res = [];
+  for (var i=0;i<pool.length;i++) {
+    var t = coachParseTime(pool[i].tempos[key]);
+    if (t !== null) res.push({ nome: pool[i].nome, t: t });
+  }
+  res.sort(function(a,b) { return a.t-b.t; });
+  return res.slice(0, n);
+}
+
+function getTopCombos(pool, key, topN) {
+  var elig = [];
+  for (var i=0;i<pool.length;i++) {
+    var t = coachParseTime(pool[i].tempos[key]);
+    if (t !== null) elig.push({ nome: pool[i].nome, t: t });
+  }
+  elig.sort(function(a,b) { return a.t-b.t; });
+  if (elig.length < 4) return [];
+  var cands = elig.slice(0, Math.min(8, elig.length));
+  var combos = [];
+  for (var a=0;a<cands.length-3;a++)
+    for (var b=a+1;b<cands.length-2;b++)
+      for (var c=b+1;c<cands.length-1;c++)
+        for (var d=c+1;d<cands.length;d++) {
+          var team = [cands[a],cands[b],cands[c],cands[d]];
+          var tot = team[0].t+team[1].t+team[2].t+team[3].t;
+          combos.push({ total: tot, legs: team.map(function(x) { return { nome:x.nome, estilo:'Livres', time:x.t }; }) });
+        }
+  combos.sort(function(a,b) { return a.total-b.total; });
+  return combos.slice(0, topN);
+}
+
+function getBestEstilos(pool, dist, topN) {
+  var legs = ['C','B','M','L'];
+  var legLabel = {C:'Costas',B:'Brucos',M:'Mariposa',L:'Livres'};
+  var elig = {};
+  for (var li=0;li<legs.length;li++) {
+    var leg = legs[li];
+    var key = dist+leg;
+    elig[leg] = [];
+    for (var i=0;i<pool.length;i++) {
+      var t = coachParseTime(pool[i].tempos[key]);
+      if (t !== null) elig[leg].push({ nome: pool[i].nome, t: t });
+    }
+    elig[leg].sort(function(a,b) { return a.t-b.t; });
+  }
+  var results = [];
+  function recurse(legIdx, used, current, total) {
+    if (legIdx === 4) { results.push({ total: total, legs: current.slice() }); return; }
+    var leg = legs[legIdx];
+    var cands = elig[leg].filter(function(x) { return used.indexOf(x.nome) < 0; }).slice(0,4);
+    for (var i=0;i<cands.length;i++) {
+      used.push(cands[i].nome);
+      current.push({ nome:cands[i].nome, estilo:legLabel[leg], time:cands[i].t });
+      recurse(legIdx+1, used, current, total+cands[i].t);
+      current.pop(); used.pop();
+    }
+  }
+  recurse(0,[],[],0);
+  results.sort(function(a,b) { return a.total-b.total; });
+  return results.slice(0, topN);
+}
+
+function getBestEstilosMisto(males, females, dist, topN) {
+  var legs = ['C','B','M','L'];
+  var legLabel = {C:'Costas',B:'Brucos',M:'Mariposa',L:'Livres'};
+  var maleLegsOptions = [[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]];
+  var results = [];
+
+  for (var oi=0;oi<maleLegsOptions.length;oi++) {
+    var mLegs = maleLegsOptions[oi];
+    var fLegs = [0,1,2,3].filter(function(i) { return mLegs.indexOf(i) < 0; });
+    var elig = {};
+    for (var li=0;li<4;li++) {
+      var leg = legs[li];
+      var key = dist+leg;
+      var srcPool = mLegs.indexOf(li) >= 0 ? males : females;
+      elig[li] = [];
+      for (var pi=0;pi<srcPool.length;pi++) {
+        var t = coachParseTime(srcPool[pi].tempos[key]);
+        if (t !== null) elig[li].push({ nome: srcPool[pi].nome, t: t });
+      }
+      elig[li].sort(function(a,b) { return a.t-b.t; });
+    }
+    var ok = true;
+    for (var li2=0;li2<4;li2++) { if (!elig[li2].length) { ok=false; break; } }
+    if (!ok) continue;
+
+    function recurseM(legIdx, usedM, usedF, current, total) {
+      if (legIdx === 4) { results.push({ total: total, legs: current.slice() }); return; }
+      var isMale = mLegs.indexOf(legIdx) >= 0;
+      var used = isMale ? usedM : usedF;
+      var cands = elig[legIdx].filter(function(x) { return used.indexOf(x.nome) < 0; }).slice(0,3);
+      for (var i=0;i<cands.length;i++) {
+        used.push(cands[i].nome);
+        current.push({ nome:cands[i].nome, estilo:legLabel[legs[legIdx]], time:cands[i].t });
+        recurseM(legIdx+1, usedM, usedF, current, total+cands[i].t);
+        current.pop(); used.pop();
+      }
+    }
+    recurseM(0,[],[],[],0);
+  }
+
+  results.sort(function(a,b) { return a.total-b.total; });
+  var seen = [], deduped = [];
+  for (var i=0;i<results.length;i++) {
+    var k = results[i].legs.map(function(l) { return l.nome+l.estilo; }).join('|');
+    if (seen.indexOf(k) < 0) { seen.push(k); deduped.push(results[i]); }
+  }
+  return deduped.slice(0, topN);
+}
+</script>
+
 </body>
 </html>
