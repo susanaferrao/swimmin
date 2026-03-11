@@ -530,7 +530,7 @@
     <div class="grid">
       <div class="field">
         <label>Piscina</label>
-        <select id="piscina" onchange="calcular()">
+        <select id="piscina" onchange="onEscalaoChange(); popularEstilos();">
           <option value="">Selecionar</option>
           <option value="curta">25m · Piscina Curta</option>
           <option value="longa">50m · Piscina Longa</option>
@@ -3850,7 +3850,10 @@ function onEscalaoChange() {
   compEl.innerHTML = '<option value="">Selecionar</option>';
   if (escalao && COMPS[escalao]) {
     var comps = COMPS[escalao];
+    var pisc = document.getElementById('piscina').value;
+    var intlComps = ['EUR_JUN','EUR_SUB23','EUR','OLI'];
     for (var i = 0; i < comps.length; i++) {
+      if (pisc === 'curta' && intlComps.indexOf(comps[i].v) >= 0) continue;
       var opt = document.createElement('option');
       opt.value = comps[i].v;
       opt.textContent = comps[i].l;
@@ -3953,7 +3956,7 @@ function calcular() {
   var tempo = getTempo(piscina, g, dist, estilo, col);
 
   if (!tempo) {
-    resultEl.innerHTML = '<div class="result-empty"><span class="icon"></span>Sem mínimo definido para esta combinação.</div>';
+    resultEl.innerHTML = '<div class="result-empty"><span class="icon"></span>Sem mínimo definido. [debug: comp=' + comp + ' col=' + col + ' g=' + g + ' dist=' + dist + ' estilo=' + estilo + ' piscina=' + piscina + ']</div>';
     return;
   }
 
@@ -9722,7 +9725,10 @@ function onEscalaoChange() {
   compEl.innerHTML = '<option value="">Selecionar</option>';
   if (escalao && COMPS[escalao]) {
     var comps = COMPS[escalao];
+    var pisc = document.getElementById('piscina').value;
+    var intlComps = ['EUR_JUN','EUR_SUB23','EUR','OLI'];
     for (var i = 0; i < comps.length; i++) {
+      if (pisc === 'curta' && intlComps.indexOf(comps[i].v) >= 0) continue;
       var opt = document.createElement('option');
       opt.value = comps[i].v;
       opt.textContent = comps[i].l;
@@ -9825,7 +9831,7 @@ function calcular() {
   var tempo = getTempo(piscina, g, dist, estilo, col);
 
   if (!tempo) {
-    resultEl.innerHTML = '<div class="result-empty"><span class="icon"></span>Sem mínimo definido para esta combinação.</div>';
+    resultEl.innerHTML = '<div class="result-empty"><span class="icon"></span>Sem mínimo definido. [debug: comp=' + comp + ' col=' + col + ' g=' + g + ' dist=' + dist + ' estilo=' + estilo + ' piscina=' + piscina + ']</div>';
     return;
   }
 
