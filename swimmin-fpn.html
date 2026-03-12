@@ -524,7 +524,7 @@
 .coach-btn:hover { background: linear-gradient(135deg, #ff9f1c, #e07b00) !important; }
 
 #coach-section {
-  display: none; margin-bottom: 24px;
+  display: none; margin-top: 20px; margin-bottom: 24px;
 }
 .coach-card {
   background: #fff; border-radius: 20px;
@@ -679,6 +679,7 @@
   <div class="header">
     <div class="logo">Swim<span>Min</span></div>
     <div class="subtitle">TEMPOS MÍNIMOS FPN</div>
+    <div class="subtitle" style="font-size:11px; color:var(--aqua); font-weight:700; letter-spacing:1px; margin-top:2px;">Época 2025/26</div>
   </div>
 
   <div id="btn-instalar" onclick="instalarApp()" style="display:none;background:var(--aqua);color:#001f3a;font-weight:700;font-size:13px;text-align:center;padding:10px 16px;border-radius:10px;margin:0 16px 14px 16px;cursor:pointer;letter-spacing:1px;">&#11015; INSTALAR APP</div>
@@ -6026,7 +6027,7 @@ function renderFormProvas(data) {
   for (var i = 0; i < PROVAS_INDIVIDUAIS_CURTA.length; i++) {
     var p = PROVAS_INDIVIDUAIS_CURTA[i];
     var val = tg['curta'] && tg['curta'][p.key] ? formatAtletaMs(tg['curta'][p.key]) : '';
-    htmlC += '<div style="display:flex;align-items:center;border-bottom:1px solid #e0eef5;padding:8px 0;gap:10px;">';
+    htmlC += '<div style="display:flex;align-items:center;border-bottom:1px solid #e0eef5;padding:12px 0;gap:10px;">';
     htmlC += '<div style="flex:1;font-size:14px;color:var(--blue-deep);font-weight:500;">' + p.label + '</div>';
     htmlC += '<input type="tel" inputmode="numeric" id="fc-' + p.key + '" value="' + val + '" placeholder="--" style="width:90px;background:#f5faff;border:1.5px solid #d0e4f0;color:#1a3a4a;font-size:15px;padding:7px 10px;border-radius:6px;text-align:center;">';
     htmlC += '</div>';
@@ -6036,7 +6037,7 @@ function renderFormProvas(data) {
   for (var i = 0; i < PROVAS_INDIVIDUAIS_LONGA.length; i++) {
     var p = PROVAS_INDIVIDUAIS_LONGA[i];
     var val = tg['longa'] && tg['longa'][p.key] ? formatAtletaMs(tg['longa'][p.key]) : '';
-    htmlL += '<div style="display:flex;align-items:center;border-bottom:1px solid #e0eef5;padding:8px 0;gap:10px;">';
+    htmlL += '<div style="display:flex;align-items:center;border-bottom:1px solid #e0eef5;padding:12px 0;gap:10px;">';
     htmlL += '<div style="flex:1;font-size:14px;color:var(--blue-deep);font-weight:500;">' + p.label + '</div>';
     htmlL += '<input type="tel" inputmode="numeric" id="fl-' + p.key + '" value="' + val + '" placeholder="--" style="width:90px;background:#f5faff;border:1.5px solid #d0e4f0;color:#1a3a4a;font-size:15px;padding:7px 10px;border-radius:6px;text-align:center;">';
     htmlL += '</div>';
@@ -6198,7 +6199,7 @@ function instalarApp() {
 </script>
 
   <!-- TREINADOR BUTTON -->
-  <div class="coach-wrap" style="margin-top:18px;">
+  <div class="coach-wrap" style="margin-top:28px;">
     <button class="fpn-btn coach-btn" id="coach-btn" onclick="toggleCoach()">Clubes · Melhores Estafetas</button>
   </div>
 
@@ -6210,9 +6211,9 @@ function instalarApp() {
 
       <!-- Team name -->
       <div class="coach-team-wrap">
-        <label>Nome da Equipa</label>
+        <label>Clube</label>
         <input type="text" class="coach-team-input" id="coach-team-name"
-          placeholder="Ex: Sporting CP" oninput="saveTeamName()" />
+          placeholder="" oninput="saveTeamName()" />
       </div>
 
       <!-- Athlete list -->
@@ -6248,60 +6249,131 @@ function instalarApp() {
             </select>
           </div>
         </div>
+                <div style="background:#e8f6f8;border-radius:10px;padding:12px 14px;margin-bottom:12px;">
+          <div style="font-size:13px;font-weight:700;color:#0a2a4a;margin-bottom:6px;">Como inserir os tempos</div>
+          <div style="font-size:12px;color:#0a2a4a;line-height:1.6;">
+            Escreve só os dígitos, sem pontuação:<br>
+            <strong>30,43</strong> &rarr; escreve <strong>3043</strong><br>
+            <strong>1:17,09</strong> &rarr; escreve <strong>11709</strong>
+          </div>
+        </div>
+        <div style="font-size:12px;font-weight:700;color:#0a2a4a;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;padding:6px 10px;background:#ddf0f4;border-radius:8px;">
+          PISCINA 25m
+        </div>
         <div class="times-grid">
           <div class="time-field">
             <label>50L</label>
-            <input type="tel" id="ath-50L" maxlength="6" placeholder="ex: 2543"
-              oninput="coachPreviewTime(this,'ath-50L-p')" />
-            <div class="time-preview" id="ath-50L-p"></div>
+            <input type="tel" id="ath-25-50L" maxlength="6" placeholder=""
+              oninput="coachPreviewTime(this,'ath-25-50L-p')" />
+            <div class="time-preview" id="ath-25-50L-p"></div>
           </div>
           <div class="time-field">
             <label>50C</label>
-            <input type="tel" id="ath-50C" maxlength="6" placeholder="ex: 2934"
-              oninput="coachPreviewTime(this,'ath-50C-p')" />
-            <div class="time-preview" id="ath-50C-p"></div>
+            <input type="tel" id="ath-25-50C" maxlength="6" placeholder=""
+              oninput="coachPreviewTime(this,'ath-25-50C-p')" />
+            <div class="time-preview" id="ath-25-50C-p"></div>
           </div>
           <div class="time-field">
             <label>50B</label>
-            <input type="tel" id="ath-50B" maxlength="6" placeholder="ex: 3012"
-              oninput="coachPreviewTime(this,'ath-50B-p')" />
-            <div class="time-preview" id="ath-50B-p"></div>
+            <input type="tel" id="ath-25-50B" maxlength="6" placeholder=""
+              oninput="coachPreviewTime(this,'ath-25-50B-p')" />
+            <div class="time-preview" id="ath-25-50B-p"></div>
           </div>
           <div class="time-field">
             <label>50M</label>
-            <input type="tel" id="ath-50M" maxlength="6" placeholder="ex: 2789"
-              oninput="coachPreviewTime(this,'ath-50M-p')" />
-            <div class="time-preview" id="ath-50M-p"></div>
+            <input type="tel" id="ath-25-50M" maxlength="6" placeholder=""
+              oninput="coachPreviewTime(this,'ath-25-50M-p')" />
+            <div class="time-preview" id="ath-25-50M-p"></div>
           </div>
           <div class="time-field">
             <label>100L</label>
-            <input type="tel" id="ath-100L" maxlength="7" placeholder="ex: 5432"
-              oninput="coachPreviewTime(this,'ath-100L-p')" />
-            <div class="time-preview" id="ath-100L-p"></div>
+            <input type="tel" id="ath-25-100L" maxlength="7" placeholder=""
+              oninput="coachPreviewTime(this,'ath-25-100L-p')" />
+            <div class="time-preview" id="ath-25-100L-p"></div>
           </div>
           <div class="time-field">
             <label>100C</label>
-            <input type="tel" id="ath-100C" maxlength="7" placeholder="ex: 10234"
-              oninput="coachPreviewTime(this,'ath-100C-p')" />
-            <div class="time-preview" id="ath-100C-p"></div>
+            <input type="tel" id="ath-25-100C" maxlength="7" placeholder=""
+              oninput="coachPreviewTime(this,'ath-25-100C-p')" />
+            <div class="time-preview" id="ath-25-100C-p"></div>
           </div>
           <div class="time-field">
             <label>100B</label>
-            <input type="tel" id="ath-100B" maxlength="7" placeholder="ex: 11045"
-              oninput="coachPreviewTime(this,'ath-100B-p')" />
-            <div class="time-preview" id="ath-100B-p"></div>
+            <input type="tel" id="ath-25-100B" maxlength="7" placeholder=""
+              oninput="coachPreviewTime(this,'ath-25-100B-p')" />
+            <div class="time-preview" id="ath-25-100B-p"></div>
           </div>
           <div class="time-field">
             <label>100M</label>
-            <input type="tel" id="ath-100M" maxlength="7" placeholder="ex: 5876"
-              oninput="coachPreviewTime(this,'ath-100M-p')" />
-            <div class="time-preview" id="ath-100M-p"></div>
+            <input type="tel" id="ath-25-100M" maxlength="7" placeholder=""
+              oninput="coachPreviewTime(this,'ath-25-100M-p')" />
+            <div class="time-preview" id="ath-25-100M-p"></div>
           </div>
           <div class="time-field">
             <label>200L</label>
-            <input type="tel" id="ath-200L" maxlength="7" placeholder="ex: 11543"
-              oninput="coachPreviewTime(this,'ath-200L-p')" />
-            <div class="time-preview" id="ath-200L-p"></div>
+            <input type="tel" id="ath-25-200L" maxlength="7" placeholder=""
+              oninput="coachPreviewTime(this,'ath-25-200L-p')" />
+            <div class="time-preview" id="ath-25-200L-p"></div>
+          </div>
+        </div>
+
+        <div style="font-size:12px;font-weight:700;color:#0a2a4a;letter-spacing:1px;text-transform:uppercase;margin:14px 0 8px 0;padding:6px 10px;background:#dde8f4;border-radius:8px;">
+          PISCINA 50m
+        </div>
+        <div class="times-grid">
+          <div class="time-field">
+            <label>50L</label>
+            <input type="tel" id="ath-50-50L" maxlength="6" placeholder=""
+              oninput="coachPreviewTime(this,'ath-50-50L-p')" />
+            <div class="time-preview" id="ath-50-50L-p"></div>
+          </div>
+          <div class="time-field">
+            <label>50C</label>
+            <input type="tel" id="ath-50-50C" maxlength="6" placeholder=""
+              oninput="coachPreviewTime(this,'ath-50-50C-p')" />
+            <div class="time-preview" id="ath-50-50C-p"></div>
+          </div>
+          <div class="time-field">
+            <label>50B</label>
+            <input type="tel" id="ath-50-50B" maxlength="6" placeholder=""
+              oninput="coachPreviewTime(this,'ath-50-50B-p')" />
+            <div class="time-preview" id="ath-50-50B-p"></div>
+          </div>
+          <div class="time-field">
+            <label>50M</label>
+            <input type="tel" id="ath-50-50M" maxlength="6" placeholder=""
+              oninput="coachPreviewTime(this,'ath-50-50M-p')" />
+            <div class="time-preview" id="ath-50-50M-p"></div>
+          </div>
+          <div class="time-field">
+            <label>100L</label>
+            <input type="tel" id="ath-50-100L" maxlength="7" placeholder=""
+              oninput="coachPreviewTime(this,'ath-50-100L-p')" />
+            <div class="time-preview" id="ath-50-100L-p"></div>
+          </div>
+          <div class="time-field">
+            <label>100C</label>
+            <input type="tel" id="ath-50-100C" maxlength="7" placeholder=""
+              oninput="coachPreviewTime(this,'ath-50-100C-p')" />
+            <div class="time-preview" id="ath-50-100C-p"></div>
+          </div>
+          <div class="time-field">
+            <label>100B</label>
+            <input type="tel" id="ath-50-100B" maxlength="7" placeholder=""
+              oninput="coachPreviewTime(this,'ath-50-100B-p')" />
+            <div class="time-preview" id="ath-50-100B-p"></div>
+          </div>
+          <div class="time-field">
+            <label>100M</label>
+            <input type="tel" id="ath-50-100M" maxlength="7" placeholder=""
+              oninput="coachPreviewTime(this,'ath-50-100M-p')" />
+            <div class="time-preview" id="ath-50-100M-p"></div>
+          </div>
+          <div class="time-field">
+            <label>200L</label>
+            <input type="tel" id="ath-50-200L" maxlength="7" placeholder=""
+              oninput="coachPreviewTime(this,'ath-50-200L-p')" />
+            <div class="time-preview" id="ath-50-200L-p"></div>
           </div>
         </div>
         <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:4px;">
@@ -6319,6 +6391,11 @@ function instalarApp() {
       <div class="relay-calc">
         <h3>MELHOR ESTAFETA</h3>
         <div class="relay-selects">
+          <select id="relay-pool" onchange="calcRelay()">
+            <option value="">Selecionar Piscina</option>
+            <option value="25">Piscina Curta (25m)</option>
+            <option value="50">Piscina Longa (50m)</option>
+          </select>
           <select id="relay-escalao" onchange="calcRelay()">
             <option value="">Selecionar Escalão</option>
             <option value="INFB">Infantil B</option>
@@ -6421,27 +6498,36 @@ function coachFormatTime(cs) {
     : ss + ',' + ('0'+cc).slice(-2);
 }
 
+var COACH_PROVAS = ['50L','50C','50B','50M','100L','100C','100B','100M','200L'];
+var POOL_KEYS = ['25','50'];
+
 function openAddAthlete(idx) {
   coachEditingIdx = (idx !== undefined && idx >= 0) ? idx : -1;
-  var provas = ['50L','50C','50B','50M','100L','100C','100B','100M','200L'];
   if (coachEditingIdx >= 0) {
     var a = coachAthletes[coachEditingIdx];
     document.getElementById('ath-nome').value = a.nome || '';
     document.getElementById('ath-sexo').value = a.sexo || '';
     document.getElementById('ath-escalao').value = a.escalao || '';
-    provas.forEach(function(p) {
-      var el = document.getElementById('ath-' + p);
-      if (el) { el.value = a.tempos[p] || ''; coachPreviewTime(el, 'ath-' + p + '-p'); }
+    POOL_KEYS.forEach(function(pool) {
+      COACH_PROVAS.forEach(function(p) {
+        var el = document.getElementById('ath-' + pool + '-' + p);
+        if (el) {
+          el.value = (a.tempos && a.tempos[pool] && a.tempos[pool][p]) ? a.tempos[pool][p] : '';
+          coachPreviewTime(el, 'ath-' + pool + '-' + p + '-p');
+        }
+      });
     });
   } else {
     document.getElementById('ath-nome').value = '';
     document.getElementById('ath-sexo').value = '';
     document.getElementById('ath-escalao').value = '';
-    provas.forEach(function(p) {
-      var el = document.getElementById('ath-' + p);
-      if (el) { el.value = ''; }
-      var pr = document.getElementById('ath-' + p + '-p');
-      if (pr) pr.textContent = '';
+    POOL_KEYS.forEach(function(pool) {
+      COACH_PROVAS.forEach(function(p) {
+        var el = document.getElementById('ath-' + pool + '-' + p);
+        if (el) el.value = '';
+        var pr = document.getElementById('ath-' + pool + '-' + p + '-p');
+        if (pr) pr.textContent = '';
+      });
     });
   }
   document.getElementById('add-athlete-form').classList.add('open');
@@ -6466,11 +6552,13 @@ function saveAthlete() {
     alert('Preenche o nome, sexo e escalao.');
     return;
   }
-  var provas = ['50L','50C','50B','50M','100L','100C','100B','100M','200L'];
   var tempos = {};
-  provas.forEach(function(p) {
-    var el = document.getElementById('ath-' + p);
-    if (el && el.value.trim()) tempos[p] = el.value.trim();
+  POOL_KEYS.forEach(function(pool) {
+    tempos[pool] = {};
+    COACH_PROVAS.forEach(function(p) {
+      var el = document.getElementById('ath-' + pool + '-' + p);
+      if (el && el.value.trim()) tempos[pool][p] = el.value.trim();
+    });
   });
   var athlete = { nome: nome, sexo: sexo, escalao: escalao, tempos: tempos };
   if (coachEditingIdx >= 0) {
@@ -6516,13 +6604,19 @@ function renderAthletes() {
   var rows = '';
   for (var i = 0; i < coachAthletes.length; i++) {
     var a = coachAthletes[i];
-    var np = Object.keys(a.tempos).length;
+    var np25 = a.tempos && a.tempos['25'] ? Object.keys(a.tempos['25']).length : 0;
+    var np50 = a.tempos && a.tempos['50'] ? Object.keys(a.tempos['50']).length : 0;
     var sexoLabel = a.sexo === 'M' ? 'Masculino' : 'Feminino';
     var escLabel = ESCALAO_LABELS[a.escalao] || a.escalao;
+    var tempoInfo = '';
+    if (np25 > 0) tempoInfo += '25m: ' + np25 + ' tempo' + (np25 !== 1 ? 's' : '');
+    if (np25 > 0 && np50 > 0) tempoInfo += ' · ';
+    if (np50 > 0) tempoInfo += '50m: ' + np50 + ' tempo' + (np50 !== 1 ? 's' : '');
+    if (!tempoInfo) tempoInfo = 'Sem tempos';
     rows += '<div class="athlete-item">'
       + '<div class="athlete-item-info">'
       + '<div class="athlete-item-name">' + a.nome + '</div>'
-      + '<div class="athlete-item-meta">' + sexoLabel + ' · ' + escLabel + ' · ' + np + ' tempo' + (np !== 1 ? 's' : '') + '</div>'
+      + '<div class="athlete-item-meta">' + sexoLabel + ' · ' + escLabel + ' · ' + tempoInfo + '</div>'
       + '</div>'
       + '<div class="athlete-item-actions">'
       + '<button class="btn-edit" onclick="openAddAthlete(' + i + ')">Editar</button>'
@@ -6545,10 +6639,11 @@ function getAthletesForEscalao(esc) {
 function calcRelay() {
   var escalaoSel = document.getElementById('relay-escalao').value;
   var typeSel    = document.getElementById('relay-type').value;
+  var poolSel    = document.getElementById('relay-pool').value;
   var resEl      = document.getElementById('relay-results');
-  if (!escalaoSel || !typeSel) { resEl.innerHTML = ''; return; }
+  if (!escalaoSel || !typeSel || !poolSel) { resEl.innerHTML = ''; return; }
 
-  var parts    = typeSel.split('-');
+  var parts     = typeSel.split('-');
   var relayCode = parts[0];
   var gender    = parts[1];
   var distMatch = relayCode.match(/4x(\d+)([LE])/);
@@ -6566,8 +6661,8 @@ function calcRelay() {
   if (!isEstilos) {
     var key = dist + 'L';
     if (gender === 'X') {
-      var bM = getBestN(males, key, 2);
-      var bF = getBestN(females, key, 2);
+      var bM = getBestN(males, key, poolSel, 2);
+      var bF = getBestN(females, key, poolSel, 2);
       if (bM.length < 2 || bF.length < 2) {
         resEl.innerHTML = '<div class="relay-empty">Atletas insuficientes para esta estafeta.</div>';
         return;
@@ -6582,22 +6677,22 @@ function calcRelay() {
         resEl.innerHTML = '<div class="relay-empty">Atletas insuficientes para esta estafeta.</div>';
         return;
       }
-      results = getTopCombos(pool, key, 3);
+      results = getTopCombos(pool, key, poolSel, 3);
     }
   } else {
     if (gender === 'X') {
-      results = getBestEstilosMisto(males, females, dist, 3);
+      results = getBestEstilosMisto(males, females, dist, poolSel, 3);
     } else {
       if (!pool || pool.length < 4) {
         resEl.innerHTML = '<div class="relay-empty">Atletas insuficientes para esta estafeta.</div>';
         return;
       }
-      results = getBestEstilos(pool, dist, 3);
+      results = getBestEstilos(pool, dist, poolSel, 3);
     }
   }
 
   if (!results.length) {
-    resEl.innerHTML = '<div class="relay-empty">Nao foi possivel calcular. Verifica se os atletas têm tempos suficientes.</div>';
+    resEl.innerHTML = '<div class="relay-empty">Nao foi possivel calcular. Verifica se os atletas têm tempos na piscina selecionada.</div>';
     return;
   }
 
@@ -6606,7 +6701,7 @@ function calcRelay() {
     var r = results[ri];
     var isBest = ri === 0;
     out += '<div class="relay-result-item' + (isBest ? ' best' : '') + '">';
-    out += '<div class="relay-rank">' + (isBest ? 'MELHOR OPÇÃO' : (ri === 1 ? '2ª MELHOR OPÇÃO' : '3ª MELHOR OPÇÃO')) + ' · Tempo estimado</div>';
+    out += '<div class="relay-rank">' + (isBest ? 'MELHOR OPCAO' : (ri === 1 ? '2ª MELHOR OPCAO' : '3ª MELHOR OPCAO')) + ' · Tempo estimado</div>';
     out += '<div class="relay-total">' + coachFormatTime(r.total) + '</div>';
     out += '<div class="relay-legs">';
     for (var li = 0; li < r.legs.length; li++) {
@@ -6622,20 +6717,20 @@ function calcRelay() {
   resEl.innerHTML = out;
 }
 
-function getBestN(pool, key, n) {
+function getBestN(pool, key, poolKey, n) {
   var res = [];
   for (var i=0;i<pool.length;i++) {
-    var t = coachParseTime(pool[i].tempos[key]);
+    var t = coachParseTime(pool[i].tempos && pool[i].tempos[poolKey] ? pool[i].tempos[poolKey][key] : null);
     if (t !== null) res.push({ nome: pool[i].nome, t: t });
   }
   res.sort(function(a,b) { return a.t-b.t; });
   return res.slice(0, n);
 }
 
-function getTopCombos(pool, key, topN) {
+function getTopCombos(pool, key, poolKey, topN) {
   var elig = [];
   for (var i=0;i<pool.length;i++) {
-    var t = coachParseTime(pool[i].tempos[key]);
+    var t = coachParseTime(pool[i].tempos && pool[i].tempos[poolKey] ? pool[i].tempos[poolKey][key] : null);
     if (t !== null) elig.push({ nome: pool[i].nome, t: t });
   }
   elig.sort(function(a,b) { return a.t-b.t; });
@@ -6646,15 +6741,14 @@ function getTopCombos(pool, key, topN) {
     for (var b=a+1;b<cands.length-2;b++)
       for (var c=b+1;c<cands.length-1;c++)
         for (var d=c+1;d<cands.length;d++) {
-          var team = [cands[a],cands[b],cands[c],cands[d]];
-          var tot = team[0].t+team[1].t+team[2].t+team[3].t;
-          combos.push({ total: tot, legs: team.map(function(x) { return { nome:x.nome, estilo:'Livres', time:x.t }; }) });
+          var tot = cands[a].t+cands[b].t+cands[c].t+cands[d].t;
+          combos.push({ total: tot, legs: [cands[a],cands[b],cands[c],cands[d]].map(function(x) { return { nome:x.nome, estilo:'Livres', time:x.t }; }) });
         }
   combos.sort(function(a,b) { return a.total-b.total; });
   return combos.slice(0, topN);
 }
 
-function getBestEstilos(pool, dist, topN) {
+function getBestEstilos(pool, dist, poolKey, topN) {
   var legs = ['C','B','M','L'];
   var legLabel = {C:'Costas',B:'Brucos',M:'Mariposa',L:'Livres'};
   var elig = {};
@@ -6663,7 +6757,7 @@ function getBestEstilos(pool, dist, topN) {
     var key = dist+leg;
     elig[leg] = [];
     for (var i=0;i<pool.length;i++) {
-      var t = coachParseTime(pool[i].tempos[key]);
+      var t = coachParseTime(pool[i].tempos && pool[i].tempos[poolKey] ? pool[i].tempos[poolKey][key] : null);
       if (t !== null) elig[leg].push({ nome: pool[i].nome, t: t });
     }
     elig[leg].sort(function(a,b) { return a.t-b.t; });
@@ -6685,15 +6779,13 @@ function getBestEstilos(pool, dist, topN) {
   return results.slice(0, topN);
 }
 
-function getBestEstilosMisto(males, females, dist, topN) {
+function getBestEstilosMisto(males, females, dist, poolKey, topN) {
   var legs = ['C','B','M','L'];
   var legLabel = {C:'Costas',B:'Brucos',M:'Mariposa',L:'Livres'};
   var maleLegsOptions = [[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]];
   var results = [];
-
   for (var oi=0;oi<maleLegsOptions.length;oi++) {
     var mLegs = maleLegsOptions[oi];
-    var fLegs = [0,1,2,3].filter(function(i) { return mLegs.indexOf(i) < 0; });
     var elig = {};
     for (var li=0;li<4;li++) {
       var leg = legs[li];
@@ -6701,7 +6793,7 @@ function getBestEstilosMisto(males, females, dist, topN) {
       var srcPool = mLegs.indexOf(li) >= 0 ? males : females;
       elig[li] = [];
       for (var pi=0;pi<srcPool.length;pi++) {
-        var t = coachParseTime(srcPool[pi].tempos[key]);
+        var t = coachParseTime(srcPool[pi].tempos && srcPool[pi].tempos[poolKey] ? srcPool[pi].tempos[poolKey][key] : null);
         if (t !== null) elig[li].push({ nome: srcPool[pi].nome, t: t });
       }
       elig[li].sort(function(a,b) { return a.t-b.t; });
@@ -6709,22 +6801,23 @@ function getBestEstilosMisto(males, females, dist, topN) {
     var ok = true;
     for (var li2=0;li2<4;li2++) { if (!elig[li2].length) { ok=false; break; } }
     if (!ok) continue;
-
-    function recurseM(legIdx, usedM, usedF, current, total) {
-      if (legIdx === 4) { results.push({ total: total, legs: current.slice() }); return; }
-      var isMale = mLegs.indexOf(legIdx) >= 0;
-      var used = isMale ? usedM : usedF;
-      var cands = elig[legIdx].filter(function(x) { return used.indexOf(x.nome) < 0; }).slice(0,3);
-      for (var i=0;i<cands.length;i++) {
-        used.push(cands[i].nome);
-        current.push({ nome:cands[i].nome, estilo:legLabel[legs[legIdx]], time:cands[i].t });
-        recurseM(legIdx+1, usedM, usedF, current, total+cands[i].t);
-        current.pop(); used.pop();
+    var mLegsSnap = mLegs.slice();
+    (function(mLegsLocal) {
+      function recurseM(legIdx, usedM, usedF, current, total) {
+        if (legIdx === 4) { results.push({ total: total, legs: current.slice() }); return; }
+        var isMale = mLegsLocal.indexOf(legIdx) >= 0;
+        var used = isMale ? usedM : usedF;
+        var cands = elig[legIdx].filter(function(x) { return used.indexOf(x.nome) < 0; }).slice(0,3);
+        for (var i=0;i<cands.length;i++) {
+          used.push(cands[i].nome);
+          current.push({ nome:cands[i].nome, estilo:legLabel[legs[legIdx]], time:cands[i].t });
+          recurseM(legIdx+1, usedM, usedF, current, total+cands[i].t);
+          current.pop(); used.pop();
+        }
       }
-    }
-    recurseM(0,[],[],[],0);
+      recurseM(0,[],[],[],0);
+    })(mLegsSnap);
   }
-
   results.sort(function(a,b) { return a.total-b.total; });
   var seen = [], deduped = [];
   for (var i=0;i<results.length;i++) {
