@@ -322,17 +322,19 @@
     justify-content: center;
   }
   .personal-input {
-    background: rgba(255,255,255,0.1);
-    border: 1.5px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.92);
+    border: 1.5px solid rgba(255,255,255,0.4);
     border-radius: 10px;
     padding: 10px 14px;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px;
-    letter-spacing: 2px;
-    color: white;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.3px;
+    color: #1a2a3a;
     width: 100%;
-    text-align: center;
+    text-align: left;
   }
+  .personal-input::placeholder { color: #8a9ab0; }
+  .personal-input:focus { outline: none; border-color: #00d4ff; background: #fff; }
   .personal-input::placeholder { color: rgba(255,255,255,0.3); font-size: 16px; font-family: 'DM Sans', sans-serif; letter-spacing: 0; }
   .personal-input:focus { outline: none; border-color: var(--aqua); }
 
@@ -673,6 +675,8 @@
 </style>
 </head>
 <body>
+<div id="auth-toast" style="display:none;position:fixed;top:24px;left:50%;transform:translateX(-50%);z-index:9999;min-width:240px;max-width:90vw;padding:14px 22px;border-radius:14px;font-size:14px;font-weight:600;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.25);transition:opacity 0.4s;"></div>
+
 
 
 <div class="container">
@@ -755,7 +759,42 @@
   </div>
 
   
-  <div class="fpn-btn-wrap">
+  
+<div class="fpn-section" id="auth-section" style="margin-top:20px;">
+  <!-- Estado: não autenticado (expandido) -->
+  <div id="auth-logged-out">
+    <div class="fpn-title">Conta</div>
+    <div class="fpn-subtitle">Guarda os teus dados e acede em qualquer dispositivo</div>
+    <div class="grid" style="margin-top:14px;">
+      <div class="field"><label>Email</label><input id="auth-email" type="email" class="personal-input" placeholder="teu@email.com"></div>
+      <div class="field"><label>Palavra-passe</label><input id="auth-password" type="password" class="personal-input" placeholder="Mínimo 6 caracteres"></div>
+    </div>
+    <!-- 2 botões + link recuperar password -->
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button class="fpn-btn coach-btn" style="flex:1;padding:12px 10px;font-size:14px;font-weight:700;" id="btn-register">Criar conta</button>
+      <button class="fpn-btn" style="flex:1;padding:12px 10px;font-size:14px;font-weight:700;" id="btn-login">Entrar</button>
+    </div>
+    <div style="text-align:center;margin-top:12px;">
+      <span id="btn-forgot" style="color:#1a6fa8;font-size:13px;cursor:pointer;text-decoration:underline;font-weight:500;">Esqueci-me da palavra-passe</span><br><span style="color:#888;font-size:11px;">(verificar spam)</span>
+    </div>
+    <div id="auth-msg" style="margin-top:8px;font-size:13px;color:#d9f6ff;text-align:center;"></div>
+  </div>
+
+  <!-- Estado: autenticado -->
+  <div id="auth-logged-in" style="display:none;">
+    <div style="background:linear-gradient(135deg,#00c98d,#00a86b);border-radius:12px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+      <div>
+        <div style="color:#fff;font-size:13px;font-weight:700;">Sessão iniciada</div>
+        <div style="color:rgba(255,255,255,0.85);font-size:12px;" id="auth-user-email"></div>
+        <div style="color:rgba(255,255,255,0.75);font-size:11px;margin-top:2px;">Dados sincronizados na cloud ☁️</div>
+      </div>
+      <button id="btn-logout" style="background:rgba(255,255,255,0.2);color:#fff;border:1.5px solid rgba(255,255,255,0.5);border-radius:50px;padding:6px 16px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;">Terminar sessão</button>
+    </div>
+  </div>
+</div>
+
+
+<div class="fpn-btn-wrap">
     <button class="fpn-btn" id="atleta-btn" onclick="toggleAtleta()">Os meus minimos</button>
   </div>
 
@@ -6442,8 +6481,12 @@ try {
   if (_saved) coachAthletes = JSON.parse(_saved);
 } catch(e) { coachAthletes = []; }
 
-function saveTeamName() {
-  try { localStorage.setItem('coachTeamName', document.getElementById('coach-team-name').value); } catch(e) {}
+async function saveTeamName() {
+  try {
+    const teamName = document.getElementById('coach-team-name').value;
+    localStorage.setItem('coachTeamName', teamName);
+    if (window.currentFirebaseUser && window.firebaseSaveCoachData) await window.firebaseSaveCoachData(teamName, coachAthletes);
+  } catch(e) {}
 }
 
 function toggleCoach() {
@@ -6544,7 +6587,7 @@ function cancelAthlete() {
   coachEditingIdx = -1;
 }
 
-function saveAthlete() {
+async function saveAthlete() {
   var nome = document.getElementById('ath-nome').value.trim();
   var sexo = document.getElementById('ath-sexo').value;
   var escalao = document.getElementById('ath-escalao').value;
@@ -6567,24 +6610,27 @@ function saveAthlete() {
     coachAthletes.push(athlete);
   }
   try { localStorage.setItem('coachAthletes', JSON.stringify(coachAthletes)); } catch(e) {}
+  if (window.currentFirebaseUser && window.firebaseSaveCoachData) { try { await window.firebaseSaveCoachData(localStorage.getItem('coachTeamName') || '', coachAthletes); } catch(e) {} }
   cancelAthlete();
   renderAthletes();
   calcRelay();
 }
 
-function deleteAthlete(idx) {
+async function deleteAthlete(idx) {
   coachAthletes.splice(idx, 1);
   try { localStorage.setItem('coachAthletes', JSON.stringify(coachAthletes)); } catch(e) {}
+  if (window.currentFirebaseUser && window.firebaseSaveCoachData) { try { await window.firebaseSaveCoachData(localStorage.getItem('coachTeamName') || '', coachAthletes); } catch(e) {} }
   renderAthletes();
   calcRelay();
 }
 
-function deleteAthleteFromForm() {
+async function deleteAthleteFromForm() {
   if (coachEditingIdx < 0) return;
   var idx = coachEditingIdx;
   cancelAthlete();
   coachAthletes.splice(idx, 1);
   try { localStorage.setItem('coachAthletes', JSON.stringify(coachAthletes)); } catch(e) {}
+  if (window.currentFirebaseUser && window.firebaseSaveCoachData) { try { await window.firebaseSaveCoachData(localStorage.getItem('coachTeamName') || '', coachAthletes); } catch(e) {} }
   renderAthletes();
   calcRelay();
 }
@@ -6826,6 +6872,154 @@ function getBestEstilosMisto(males, females, dist, poolKey, topN) {
   }
   return deduped.slice(0, topN);
 }
+</script>
+
+
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDBludqJvuUW3nBI4hyrXN3a-71h7yU4lU",
+  authDomain: "swimmin-34ff7.firebaseapp.com",
+  projectId: "swimmin-34ff7",
+  storageBucket: "swimmin-34ff7.firebasestorage.app",
+  messagingSenderId: "955483049347",
+  appId: "1:955483049347:web:d0f1bb8e2bf7a8d26dfab6"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+window.firebaseAuth = auth;
+window.firebaseDb = db;
+window.currentFirebaseUser = null;
+
+async function saveUserDoc(path, data) {
+  if (!auth.currentUser) return false;
+  await setDoc(doc(db, 'users', auth.currentUser.uid, 'app', path), data, { merge: true });
+  return true;
+}
+
+async function loadUserDoc(path) {
+  if (!auth.currentUser) return null;
+  const snap = await getDoc(doc(db, 'users', auth.currentUser.uid, 'app', path));
+  return snap.exists() ? snap.data() : null;
+}
+
+window.firebaseSaveAtletaProfiles = async function(profiles) {
+  return saveUserDoc('atletaProfiles', { profiles: profiles || {} });
+}
+window.firebaseLoadAtletaProfiles = async function() {
+  const data = await loadUserDoc('atletaProfiles');
+  return data && data.profiles ? data.profiles : null;
+}
+window.firebaseSaveCoachData = async function(teamName, athletes) {
+  return saveUserDoc('coachData', { teamName: teamName || '', athletes: athletes || [] });
+}
+window.firebaseLoadCoachData = async function() {
+  const data = await loadUserDoc('coachData');
+  return data || null;
+}
+
+function showAuthToast(msg, success=true) {
+  const t = document.getElementById('auth-toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.style.background = success ? '#00c98d' : '#e74c3c';
+  t.style.color = '#fff';
+  t.style.display = 'block';
+  t.style.opacity = '1';
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => {
+    t.style.opacity = '0';
+    setTimeout(() => { t.style.display = 'none'; }, 400);
+  }, 3500);
+}
+
+// Módulo é defer por definição, DOM já está pronto
+(function() {
+  document.getElementById('btn-login').addEventListener('click', async () => {
+    const email = document.getElementById('auth-email').value.trim();
+    const password = document.getElementById('auth-password').value;
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      showAuthToast('✅ Sessão iniciada com sucesso!');
+    } catch (e) { showAuthToast('Erro no login: ' + (e.message || e), false); }
+  });
+
+  document.getElementById('btn-register').addEventListener('click', async () => {
+    const email = document.getElementById('auth-email').value.trim();
+    const password = document.getElementById('auth-password').value;
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      showAuthToast('✅ Conta criada com sucesso!');
+    } catch (e) { showAuthToast('Erro ao criar conta: ' + (e.message || e), false); }
+  });
+
+  document.getElementById('btn-forgot').addEventListener('click', async () => {
+    const email = document.getElementById('auth-email').value.trim();
+    if (!email) {
+      showAuthToast('Escreve o teu email primeiro.', false);
+      return;
+    }
+    try {
+      await sendPasswordResetEmail(auth, email);
+      showAuthToast('✅ Email enviado para ' + email + '! Verifica a caixa de entrada.');
+    } catch(e) {
+      console.error('Reset error:', e);
+      showAuthToast('Erro: ' + (e.message || e), false);
+    }
+  });
+
+  const btnLogout = document.getElementById('btn-logout');
+  if (btnLogout) btnLogout.addEventListener('click', async () => {
+    await signOut(auth);
+    showAuthToast('Sessão terminada.', true);
+  });
+})();
+
+onAuthStateChanged(auth, async (user) => {
+  window.currentFirebaseUser = user || null;
+  const loggedOut = document.getElementById('auth-logged-out');
+  const loggedIn = document.getElementById('auth-logged-in');
+  const userEmail = document.getElementById('auth-user-email');
+  if (loggedOut && loggedIn) {
+    loggedOut.style.display = user ? 'none' : 'block';
+    loggedIn.style.display = user ? 'block' : 'none';
+  }
+  if (userEmail) userEmail.textContent = user ? user.email : '';
+  if (user) {
+    const section = document.getElementById('auth-section');
+    if (section) setTimeout(() => section.scrollIntoView({ behavior: 'smooth', block: 'center' }), 200);
+  }
+
+  if (user) {
+    try {
+      const coach = await window.firebaseLoadCoachData();
+      if (coach) {
+        localStorage.setItem('coachTeamName', coach.teamName || '');
+        localStorage.setItem('coachAthletes', JSON.stringify(coach.athletes || []));
+      }
+      const atletaProfiles = await window.firebaseLoadAtletaProfiles();
+      if (atletaProfiles) {
+        localStorage.setItem('swimmin_profiles_v1', JSON.stringify(atletaProfiles));
+      }
+      if (typeof coachAthletes !== 'undefined') {
+        try { coachAthletes = JSON.parse(localStorage.getItem('coachAthletes') || '[]'); } catch(e) {}
+        if (typeof renderAthletes === 'function') renderAthletes();
+        if (typeof calcRelay === 'function') calcRelay();
+        const teamInput = document.getElementById('coach-team-name');
+        if (teamInput) teamInput.value = localStorage.getItem('coachTeamName') || '';
+      }
+      if (typeof renderProfileBar === 'function') renderProfileBar();
+    } catch (e) {
+      console.error('Firebase load error', e);
+    }
+  }
+});
 </script>
 
 </body>
