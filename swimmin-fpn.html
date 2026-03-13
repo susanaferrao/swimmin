@@ -6557,7 +6557,7 @@ async function saveTeamName() {
   try {
     const teamName = document.getElementById('coach-team-name').value;
     localStorage.setItem('coachTeamName', teamName);
-    if (window.currentFirebaseUser && window.firebaseSaveCoachData) await window.firebaseSaveCoachData(teamName, coachAthletes);
+    if (window.currentFirebaseUser && window.firebaseSaveCoachData) { try { window.firebaseSaveCoachData({ teamName: teamName, athletes: coachAthletes }); } catch(e) {} }
   } catch(e) {}
 }
 
@@ -6682,16 +6682,20 @@ async function saveAthlete() {
     coachAthletes.push(athlete);
   }
   try { localStorage.setItem('coachAthletes', JSON.stringify(coachAthletes)); } catch(e) {}
-  if (window.currentFirebaseUser && window.firebaseSaveCoachData) { try { await window.firebaseSaveCoachData(localStorage.getItem('coachTeamName') || '', coachAthletes); } catch(e) {} }
+  if (window.currentFirebaseUser && window.firebaseSaveCoachData) {
+    try { window.firebaseSaveCoachData({ teamName: localStorage.getItem('coachTeamName') || '', athletes: coachAthletes }); } catch(e) {}
+  }
   cancelAthlete();
   renderAthletes();
   calcRelay();
 }
 
-async function deleteAthlete(idx) {
+function deleteAthlete(idx) {
   coachAthletes.splice(idx, 1);
   try { localStorage.setItem('coachAthletes', JSON.stringify(coachAthletes)); } catch(e) {}
-  if (window.currentFirebaseUser && window.firebaseSaveCoachData) { try { await window.firebaseSaveCoachData(localStorage.getItem('coachTeamName') || '', coachAthletes); } catch(e) {} }
+  if (window.currentFirebaseUser && window.firebaseSaveCoachData) {
+    try { window.firebaseSaveCoachData({ teamName: localStorage.getItem('coachTeamName') || '', athletes: coachAthletes }); } catch(e) {}
+  }
   renderAthletes();
   calcRelay();
 }
@@ -6702,7 +6706,7 @@ async function deleteAthleteFromForm() {
   cancelAthlete();
   coachAthletes.splice(idx, 1);
   try { localStorage.setItem('coachAthletes', JSON.stringify(coachAthletes)); } catch(e) {}
-  if (window.currentFirebaseUser && window.firebaseSaveCoachData) { try { await window.firebaseSaveCoachData(localStorage.getItem('coachTeamName') || '', coachAthletes); } catch(e) {} }
+  if (window.currentFirebaseUser && window.firebaseSaveCoachData) { try { window.firebaseSaveCoachData({ teamName: localStorage.getItem('coachTeamName') || '', athletes: coachAthletes }); } catch(e) {} }
   renderAthletes();
   calcRelay();
 }
