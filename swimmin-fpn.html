@@ -7052,7 +7052,7 @@ onAuthStateChanged(auth, async (user) => {
     try {
       const coach = await window.firebaseLoadCoachData();
       if (coach) {
-        localStorage.setItem('coachTeamName', coach.teamName || '');
+        localStorage.setItem('coachTeamName', typeof coach.teamName === 'string' ? coach.teamName : '');
         localStorage.setItem('coachAthletes', JSON.stringify(coach.athletes || []));
       }
       const atletaProfiles = await window.firebaseLoadAtletaProfiles();
