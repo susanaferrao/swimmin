@@ -1,4 +1,4 @@
-const CACHE = 'swimmin-v17';
+const CACHE = 'swimmin-v21';
 const FILES = ['./swimmin-fpn.html', './manifest.json'];
 
 self.addEventListener('install', e => {
