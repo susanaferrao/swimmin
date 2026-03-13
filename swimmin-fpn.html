@@ -793,7 +793,7 @@
   </div>
   <div id="backup-wrap" style="margin-top:10px;display:none;">
     <button id="btn-backup" onclick="fazerBackupCloud()" style="width:100%;padding:10px;border-radius:10px;background:rgba(0,196,204,0.15);border:1.5px solid rgba(0,196,204,0.5);color:#00c4cc;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;">
-      ☁️ Fazer backup para a cloud
+      Fazer backup para a cloud
     </button>
     <div id="backup-msg" style="font-size:12px;text-align:center;margin-top:6px;min-height:16px;"></div>
   </div>
@@ -6224,14 +6224,27 @@ function fazerBackupCloud() {
     msg.textContent = 'Tens de iniciar sessão primeiro.';
     return;
   }
+  if (!window.firebaseSaveAtletaProfiles) {
+    msg.style.color = '#e74c3c';
+    msg.textContent = 'Firebase não inicializado. Recarrega a app.';
+    return;
+  }
   btn.disabled = true;
-  btn.textContent = '⏳ A guardar...';
+  btn.textContent = 'A guardar...';
   msg.textContent = '';
   var promises = [];
   // Backup nadadores
   if (window.firebaseSaveAtletaProfiles) {
     try {
-      var profiles = getAllProfiles ? getAllProfiles() : {};
+      var rawProfiles = localStorage.getItem('swimmin_profiles_v1');
+      var profiles = rawProfiles ? JSON.parse(rawProfiles) : {};
+      if (Object.keys(profiles).length === 0) {
+        msg.style.color = '#e07b00';
+        msg.textContent = 'Nenhum nadador encontrado no dispositivo.';
+        btn.disabled = false;
+        btn.textContent = 'Fazer backup para a cloud';
+        return;
+      }
       promises.push(window.firebaseSaveAtletaProfiles(profiles));
     } catch(e) {}
   }
@@ -6245,15 +6258,16 @@ function fazerBackupCloud() {
   }
   Promise.all(promises).then(function() {
     btn.disabled = false;
-    btn.textContent = '☁️ Fazer backup para a cloud';
+    btn.textContent = 'Fazer backup para a cloud';
     msg.style.color = '#00c4cc';
-    msg.textContent = '✅ Backup feito com sucesso!';
-    setTimeout(function() { msg.textContent = ''; }, 4000);
+    var nProfiles = Object.keys(JSON.parse(localStorage.getItem('swimmin_profiles_v1') || '{}')).length;
+    msg.textContent = 'Backup feito com sucesso! (' + nProfiles + ' nadador' + (nProfiles !== 1 ? 'es' : '') + ')';
+    setTimeout(function() { msg.textContent = ''; }, 5000);
   }).catch(function(e) {
     btn.disabled = false;
-    btn.textContent = '☁️ Fazer backup para a cloud';
+    btn.textContent = 'Fazer backup para a cloud';
     msg.style.color = '#e74c3c';
-    msg.textContent = '❌ Erro: ' + e.message;
+    msg.textContent = 'Erro: ' + (e.code || '') + ' ' + (e.message || JSON.stringify(e));
   });
 }
 
@@ -7066,6 +7080,9 @@ onAuthStateChanged(auth, async (user) => {
       const atletaProfiles = await window.firebaseLoadAtletaProfiles();
       if (atletaProfiles) {
         localStorage.setItem('swimmin_profiles_v1', JSON.stringify(atletaProfiles));
+      }
+      if (atletaProfiles && typeof mostrarPerfilAtivo === 'function') {
+        mostrarPerfilAtivo();
       }
       if (typeof coachAthletes !== 'undefined') {
         try { coachAthletes = JSON.parse(localStorage.getItem('coachAthletes') || '[]'); } catch(e) {}
