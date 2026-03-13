@@ -792,10 +792,8 @@
     </div>
   </div>
   <div id="backup-wrap" style="margin-top:10px;display:none;">
-    <button id="btn-backup" onclick="fazerBackupCloud()" style="width:100%;padding:10px;border-radius:10px;background:rgba(0,196,204,0.15);border:1.5px solid rgba(0,196,204,0.5);color:#00c4cc;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;">
-      Fazer backup para a cloud
-    </button>
-    <div id="backup-msg" style="font-size:12px;text-align:center;margin-top:6px;min-height:16px;"></div>
+    <button onclick="fazerBackupCloud()" style="width:100%;padding:10px;border-radius:10px;background:rgba(0,196,204,0.15);border:1.5px solid rgba(0,196,204,0.5);color:#00c4cc;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;" id="btn-backup">Fazer backup para a cloud</button>
+    <div id="backup-msg" style="font-size:12px;text-align:center;margin-top:6px;min-height:16px;color:#00c4cc;"></div>
   </div>
 </div>
 
@@ -6116,11 +6114,10 @@ function guardarAtleta() {
   saveProfile(activeId, data);
   saveAtleta(data);
   ATLETA_COMP_ATUAL = null;
-  mostrarPerfilAtivo();
-  // Sync para Firebase se sessão activa
   if (window.currentFirebaseUser && window.firebaseSaveAtletaProfiles) {
     try { window.firebaseSaveAtletaProfiles(getAllProfiles()); } catch(e) {}
   }
+  mostrarPerfilAtivo();
   setTimeout(function() {
     var el = document.getElementById('atleta-comp-selector');
     if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
@@ -6214,63 +6211,36 @@ function renderAtletaResultados(data, compId) {
 
 </script>
 
-<script>
 
+<script>
 function fazerBackupCloud() {
   var btn = document.getElementById('btn-backup');
   var msg = document.getElementById('backup-msg');
-  if (!window.currentFirebaseUser) {
-    msg.style.color = '#e74c3c';
-    msg.textContent = 'Tens de iniciar sessão primeiro.';
-    return;
-  }
-  if (!window.firebaseSaveAtletaProfiles) {
-    msg.style.color = '#e74c3c';
-    msg.textContent = 'Firebase não inicializado. Recarrega a app.';
-    return;
-  }
+  if (!window.currentFirebaseUser) { msg.style.color='#e74c3c'; msg.textContent='Tens de iniciar sessao primeiro.'; return; }
+  if (!window.firebaseSaveAtletaProfiles) { msg.style.color='#e74c3c'; msg.textContent='Firebase nao inicializado. Recarrega a app.'; return; }
   btn.disabled = true;
   btn.textContent = 'A guardar...';
   msg.textContent = '';
-  var promises = [];
-  // Backup nadadores
-  if (window.firebaseSaveAtletaProfiles) {
-    try {
-      var rawProfiles = localStorage.getItem('swimmin_profiles_v1');
-      var profiles = rawProfiles ? JSON.parse(rawProfiles) : {};
-      if (Object.keys(profiles).length === 0) {
-        msg.style.color = '#e07b00';
-        msg.textContent = 'Nenhum nadador encontrado no dispositivo.';
-        btn.disabled = false;
-        btn.textContent = 'Fazer backup para a cloud';
-        return;
-      }
-      promises.push(window.firebaseSaveAtletaProfiles(profiles));
-    } catch(e) {}
-  }
-  // Backup clubes/estafetas
-  if (window.firebaseSaveCoachData) {
-    try {
-      var athletes = JSON.parse(localStorage.getItem('coachAthletes') || '[]');
-      var teamName = localStorage.getItem('coachTeamName') || '';
-      promises.push(window.firebaseSaveCoachData({ teamName: teamName, athletes: athletes }));
-    } catch(e) {}
-  }
-  Promise.all(promises).then(function() {
+  var rawProfiles = localStorage.getItem('swimmin_profiles_v1');
+  var profiles = rawProfiles ? JSON.parse(rawProfiles) : {};
+  var athletes = JSON.parse(localStorage.getItem('coachAthletes') || '[]');
+  var teamName = localStorage.getItem('coachTeamName') || '';
+  var p1 = window.firebaseSaveAtletaProfiles(profiles);
+  var p2 = window.firebaseSaveCoachData ? window.firebaseSaveCoachData({ teamName: teamName, athletes: athletes }) : Promise.resolve();
+  Promise.all([p1, p2]).then(function() {
     btn.disabled = false;
     btn.textContent = 'Fazer backup para a cloud';
     msg.style.color = '#00c4cc';
-    var nProfiles = Object.keys(JSON.parse(localStorage.getItem('swimmin_profiles_v1') || '{}')).length;
-    msg.textContent = 'Backup feito com sucesso! (' + nProfiles + ' nadador' + (nProfiles !== 1 ? 'es' : '') + ')';
+    var n = Object.keys(profiles).length;
+    msg.textContent = 'Backup feito! (' + n + ' nadador' + (n !== 1 ? 'es' : '') + ', ' + athletes.length + ' atleta' + (athletes.length !== 1 ? 's' : '') + ')';
     setTimeout(function() { msg.textContent = ''; }, 5000);
   }).catch(function(e) {
     btn.disabled = false;
     btn.textContent = 'Fazer backup para a cloud';
     msg.style.color = '#e74c3c';
-    msg.textContent = 'Erro: ' + (e.code || '') + ' ' + (e.message || JSON.stringify(e));
+    msg.textContent = 'Erro: ' + (e.code || e.message || JSON.stringify(e));
   });
 }
-
 </script>
 
 <script>
@@ -6557,7 +6527,9 @@ async function saveTeamName() {
   try {
     const teamName = document.getElementById('coach-team-name').value;
     localStorage.setItem('coachTeamName', teamName);
-    if (window.currentFirebaseUser && window.firebaseSaveCoachData) { try { window.firebaseSaveCoachData({ teamName: teamName, athletes: coachAthletes }); } catch(e) {} }
+    if (window.currentFirebaseUser && window.firebaseSaveCoachData) {
+    try { window.firebaseSaveCoachData({ teamName: teamName, athletes: coachAthletes }); } catch(e) {}
+  }
   } catch(e) {}
 }
 
@@ -6690,7 +6662,7 @@ async function saveAthlete() {
   calcRelay();
 }
 
-function deleteAthlete(idx) {
+async function deleteAthlete(idx) {
   coachAthletes.splice(idx, 1);
   try { localStorage.setItem('coachAthletes', JSON.stringify(coachAthletes)); } catch(e) {}
   if (window.currentFirebaseUser && window.firebaseSaveCoachData) {
@@ -6706,7 +6678,9 @@ async function deleteAthleteFromForm() {
   cancelAthlete();
   coachAthletes.splice(idx, 1);
   try { localStorage.setItem('coachAthletes', JSON.stringify(coachAthletes)); } catch(e) {}
-  if (window.currentFirebaseUser && window.firebaseSaveCoachData) { try { window.firebaseSaveCoachData({ teamName: localStorage.getItem('coachTeamName') || '', athletes: coachAthletes }); } catch(e) {} }
+  if (window.currentFirebaseUser && window.firebaseSaveCoachData) {
+    try { window.firebaseSaveCoachData({ teamName: localStorage.getItem('coachTeamName') || '', athletes: coachAthletes }); } catch(e) {}
+  }
   renderAthletes();
   calcRelay();
 }
@@ -7084,27 +7058,14 @@ onAuthStateChanged(auth, async (user) => {
       const atletaProfiles = await window.firebaseLoadAtletaProfiles();
       if (atletaProfiles) {
         localStorage.setItem('swimmin_profiles_v1', JSON.stringify(atletaProfiles));
-      }
-      if (atletaProfiles && typeof mostrarPerfilAtivo === 'function') {
-        // Se não há perfil ativo, definir o primeiro disponível
+        // Definir perfil ativo se não existir
         var activeId = localStorage.getItem('swimmin_active_profile_v1');
         if (!activeId) {
           var ids = Object.keys(atletaProfiles);
           if (ids.length > 0) localStorage.setItem('swimmin_active_profile_v1', ids[0]);
         }
-        mostrarPerfilAtivo();
+        if (typeof mostrarPerfilAtivo === 'function') mostrarPerfilAtivo();
       }
-      setTimeout(function() {
-        try {
-          if (typeof coachAthletes !== 'undefined') {
-            coachAthletes = JSON.parse(localStorage.getItem('coachAthletes') || '[]');
-          }
-          if (typeof renderAthletes === 'function') renderAthletes();
-          if (typeof calcRelay === 'function') calcRelay();
-          var teamInput = document.getElementById('coach-team-name');
-          if (teamInput) teamInput.value = localStorage.getItem('coachTeamName') || '';
-        } catch(e) {}
-      }, 500);
       if (typeof coachAthletes !== 'undefined') {
         try { coachAthletes = JSON.parse(localStorage.getItem('coachAthletes') || '[]'); } catch(e) {}
         if (typeof renderAthletes === 'function') renderAthletes();
