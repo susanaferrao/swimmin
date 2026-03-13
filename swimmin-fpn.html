@@ -7082,8 +7082,25 @@ onAuthStateChanged(auth, async (user) => {
         localStorage.setItem('swimmin_profiles_v1', JSON.stringify(atletaProfiles));
       }
       if (atletaProfiles && typeof mostrarPerfilAtivo === 'function') {
+        // Se não há perfil ativo, definir o primeiro disponível
+        var activeId = localStorage.getItem('swimmin_active_profile_v1');
+        if (!activeId) {
+          var ids = Object.keys(atletaProfiles);
+          if (ids.length > 0) localStorage.setItem('swimmin_active_profile_v1', ids[0]);
+        }
         mostrarPerfilAtivo();
       }
+      setTimeout(function() {
+        try {
+          if (typeof coachAthletes !== 'undefined') {
+            coachAthletes = JSON.parse(localStorage.getItem('coachAthletes') || '[]');
+          }
+          if (typeof renderAthletes === 'function') renderAthletes();
+          if (typeof calcRelay === 'function') calcRelay();
+          var teamInput = document.getElementById('coach-team-name');
+          if (teamInput) teamInput.value = localStorage.getItem('coachTeamName') || '';
+        } catch(e) {}
+      }, 500);
       if (typeof coachAthletes !== 'undefined') {
         try { coachAthletes = JSON.parse(localStorage.getItem('coachAthletes') || '[]'); } catch(e) {}
         if (typeof renderAthletes === 'function') renderAthletes();
