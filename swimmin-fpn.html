@@ -5997,6 +5997,9 @@ function mostrarPerfilAtivo() {
 
   ATLETA_COMP_ATUAL = null;
   renderCompButtons(data);
+  window._cartaoFPNAtivo = data.cartaoFPN || null;
+  var btnWrap = document.getElementById('ver-cartao-btn-wrap');
+  if (btnWrap) btnWrap.style.display = data.cartaoFPN ? 'block' : 'none';
 }
 
 function mudarPerfil(id) {
@@ -6067,10 +6070,24 @@ function mostrarFormulario() {
     document.getElementById('atleta-nome').value = data.nome || '';
     document.getElementById('atleta-escalao').value = data.escalao || '';
     document.getElementById('atleta-sexo').value = data.sexo || '';
+    // Pré-visualizar cartão FPN se existir
+    window._cartaoFPNAtivo = data.cartaoFPN || null;
+    window._cartaoFPNData = null;
+    if (data.cartaoFPN) {
+      document.getElementById('cartao-preview-img').src = data.cartaoFPN;
+      document.getElementById('cartao-preview-wrap').style.display = 'block';
+    } else {
+      document.getElementById('cartao-preview-img').src = '';
+      document.getElementById('cartao-preview-wrap').style.display = 'none';
+    }
   } else {
     document.getElementById('atleta-nome').value = '';
     document.getElementById('atleta-escalao').value = '';
     document.getElementById('atleta-sexo').value = '';
+    window._cartaoFPNAtivo = null;
+    window._cartaoFPNData = null;
+    document.getElementById('cartao-preview-img').src = '';
+    document.getElementById('cartao-preview-wrap').style.display = 'none';
   }
   renderFormProvas(data);
 }
@@ -6127,7 +6144,8 @@ function guardarAtleta() {
   var activeId = getActiveProfileId();
   if (!activeId) activeId = generateProfileId();
   setActiveProfileId(activeId);
-  var data = {id:activeId, nome:nome, escalao:escalao, sexo:sexo, tempos:ts};
+  var cartaoData = window._cartaoFPNData || null;
+  var data = {id:activeId, nome:nome, escalao:escalao, sexo:sexo, tempos:ts, cartaoFPN: cartaoData !== null ? cartaoData : (window._cartaoFPNAtivo || null)};
   saveProfile(activeId, data);
   saveAtleta(data);
   ATLETA_COMP_ATUAL = null;
