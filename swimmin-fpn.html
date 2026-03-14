@@ -5972,21 +5972,22 @@ function mostrarPerfilAtivo() {
   document.getElementById('atleta-view-intro').style.display = 'block';
   document.getElementById('atleta-editar-btn').style.display = 'block';
 
-  // Profile bar - only show if more than 1 profile, but always show to allow adding
+  // Profile bar - só mostrar se houver mais do que 1 perfil
   var profileBar = document.getElementById('atleta-profile-bar');
-  profileBar.style.display = 'block';
-  var sel = document.getElementById('atleta-profile-select');
-  sel.innerHTML = '';
-  for (var i = 0; i < ids.length; i++) {
-    var p = profiles[ids[i]];
-    var opt = document.createElement('option');
-    opt.value = ids[i];
-    opt.textContent = (p.nome || 'Nadador') + ' · ' + (ESC_LABEL[p.escalao] || p.escalao);
-    if (ids[i] === activeId) opt.selected = true;
-    sel.appendChild(opt);
+  profileBar.style.display = ids.length > 1 ? 'block' : 'none';
+  if (ids.length > 1) {
+    var sel = document.getElementById('atleta-profile-select');
+    sel.innerHTML = '';
+    for (var i = 0; i < ids.length; i++) {
+      var p = profiles[ids[i]];
+      var opt = document.createElement('option');
+      opt.value = ids[i];
+      opt.textContent = (p.nome || 'Nadador') + ' · ' + (ESC_LABEL[p.escalao] || p.escalao);
+      if (ids[i] === activeId) opt.selected = true;
+      sel.appendChild(opt);
+    }
+    document.getElementById('atleta-delete-btn').style.display = 'block';
   }
-  // Hide delete button if only 1 profile
-  document.getElementById('atleta-delete-btn').style.display = ids.length > 1 ? 'block' : 'none';
 
   document.getElementById('atleta-saved-summary').innerHTML =
     '<div style="font-size:15px;color:var(--blue-deep);margin-bottom:4px;">' +
@@ -5996,8 +5997,10 @@ function mostrarPerfilAtivo() {
   renderCompButtons(data);
   var cartaoGuardado = null;
   try { cartaoGuardado = localStorage.getItem('cartaoFPN_' + activeId); } catch(e) {}
-  // Fallback: verificar memória se localStorage não tiver
+  // Fallback: verificar memória
   if (!cartaoGuardado && window._cartaoFPNMemory && window._cartaoFPNMemory[activeId]) cartaoGuardado = window._cartaoFPNMemory[activeId];
+  // Fallback: preservar o que já está em _cartaoFPNAtivo (pode ter sido definido em guardarAtleta)
+  if (!cartaoGuardado && window._cartaoFPNAtivo) cartaoGuardado = window._cartaoFPNAtivo;
   window._cartaoFPNAtivo = cartaoGuardado || null;
   var btnWrap = document.getElementById('ver-cartao-btn-wrap');
   if (btnWrap) btnWrap.style.display = cartaoGuardado ? 'block' : 'none';
@@ -6168,19 +6171,13 @@ function guardarAtleta() {
     try { window.firebaseSaveAtletaProfiles(getAllProfiles()); } catch(e) {}
   }
   mostrarPerfilAtivo();
-  // Forçar visibilidade do botão cartão após guardar
+  // Mostrar botão cartão e fazer scroll — usa _cartaoFPNAtivo já definido acima
   setTimeout(function() {
-    var aid = getActiveProfileId();
-    var c = null;
-    try { c = localStorage.getItem('cartaoFPN_' + aid); } catch(e) {}
-    // Fallback: verificar memória se localStorage não tiver
-    if (!c && window._cartaoFPNMemory && window._cartaoFPNMemory[aid]) c = window._cartaoFPNMemory[aid];
     var bw = document.getElementById('ver-cartao-btn-wrap');
-    if (bw) bw.style.display = c ? 'block' : 'none';
-    window._cartaoFPNAtivo = c || null;
+    if (bw) bw.style.display = window._cartaoFPNAtivo ? 'block' : 'none';
     var el = document.getElementById('atleta-comp-selector');
     if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
-  }, 300);
+  }, 100);
 }
 
 function renderAtletaResultados(data, compId) {
