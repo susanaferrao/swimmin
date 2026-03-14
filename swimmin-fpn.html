@@ -6162,6 +6162,10 @@ function guardarAtleta() {
       window._cartaoFPNMemory[activeId] = cartaoFinal;
     }
     window._cartaoFPNAtivo = cartaoFinal;
+  } else {
+    var c = null;
+    try { c = localStorage.getItem('cartaoFPN_' + activeId); } catch(e) {}
+    window._cartaoFPNAtivo = c || null;
   }
   var data = {id:activeId, nome:nome, escalao:escalao, sexo:sexo, tempos:ts};
   saveProfile(activeId, data);
@@ -6173,6 +6177,10 @@ function guardarAtleta() {
   mostrarPerfilAtivo();
   // Mostrar botão cartão e fazer scroll — usa _cartaoFPNAtivo já definido acima
   setTimeout(function() {
+    var aid2 = getActiveProfileId();
+    var c2 = window._cartaoFPNAtivo;
+    if (!c2) { try { c2 = localStorage.getItem('cartaoFPN_' + aid2); } catch(e) {} }
+    window._cartaoFPNAtivo = c2 || null;
     var bw = document.getElementById('ver-cartao-btn-wrap');
     if (bw) bw.style.display = window._cartaoFPNAtivo ? 'block' : 'none';
     var el = document.getElementById('atleta-comp-selector');
