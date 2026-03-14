@@ -791,10 +791,7 @@
       <button id="btn-logout" style="background:rgba(255,255,255,0.2);color:#fff;border:1.5px solid rgba(255,255,255,0.5);border-radius:50px;padding:6px 16px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;">Terminar sessão</button>
     </div>
   </div>
-  <div id="backup-wrap" style="margin-top:10px;display:none;">
-    <button onclick="fazerBackupCloud()" style="width:100%;padding:10px;border-radius:10px;background:rgba(0,196,204,0.15);border:1.5px solid rgba(0,196,204,0.5);color:#00c4cc;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;" id="btn-backup">Fazer backup para a cloud</button>
-    <div id="backup-msg" style="font-size:12px;text-align:center;margin-top:6px;min-height:16px;color:#00c4cc;"></div>
-  </div>
+
 </div>
 
 
@@ -5999,6 +5996,8 @@ function mostrarPerfilAtivo() {
   renderCompButtons(data);
   var cartaoGuardado = null;
   try { cartaoGuardado = localStorage.getItem('cartaoFPN_' + activeId); } catch(e) {}
+  // Fallback: verificar memória se localStorage não tiver
+  if (!cartaoGuardado && window._cartaoFPNMemory && window._cartaoFPNMemory[activeId]) cartaoGuardado = window._cartaoFPNMemory[activeId];
   window._cartaoFPNAtivo = cartaoGuardado || null;
   var btnWrap = document.getElementById('ver-cartao-btn-wrap');
   if (btnWrap) btnWrap.style.display = cartaoGuardado ? 'block' : 'none';
@@ -6075,6 +6074,7 @@ function mostrarFormulario() {
     // Pré-visualizar cartão FPN se existir
     var cartaoEdit = null;
     try { cartaoEdit = localStorage.getItem('cartaoFPN_' + activeId); } catch(e) {}
+    if (!cartaoEdit && window._cartaoFPNMemory && window._cartaoFPNMemory[activeId]) cartaoEdit = window._cartaoFPNMemory[activeId];
     window._cartaoFPNAtivo = cartaoEdit || null;
     window._cartaoFPNData = null;
     if (cartaoEdit) {
@@ -6151,7 +6151,14 @@ function guardarAtleta() {
   var cartaoData = window._cartaoFPNData || null;
   var cartaoFinal = cartaoData !== null ? cartaoData : (window._cartaoFPNAtivo || null);
   if (cartaoFinal) {
-    try { localStorage.setItem('cartaoFPN_' + activeId, cartaoFinal); } catch(e) {}
+    var guardadoOk = false;
+    try { localStorage.setItem('cartaoFPN_' + activeId, cartaoFinal); guardadoOk = true; } catch(e) {}
+    // Se localStorage falhou (imagem demasiado grande), guarda em memória
+    if (!guardadoOk) {
+      if (!window._cartaoFPNMemory) window._cartaoFPNMemory = {};
+      window._cartaoFPNMemory[activeId] = cartaoFinal;
+    }
+    window._cartaoFPNAtivo = cartaoFinal;
   }
   var data = {id:activeId, nome:nome, escalao:escalao, sexo:sexo, tempos:ts};
   saveProfile(activeId, data);
@@ -6166,6 +6173,8 @@ function guardarAtleta() {
     var aid = getActiveProfileId();
     var c = null;
     try { c = localStorage.getItem('cartaoFPN_' + aid); } catch(e) {}
+    // Fallback: verificar memória se localStorage não tiver
+    if (!c && window._cartaoFPNMemory && window._cartaoFPNMemory[aid]) c = window._cartaoFPNMemory[aid];
     var bw = document.getElementById('ver-cartao-btn-wrap');
     if (bw) bw.style.display = c ? 'block' : 'none';
     window._cartaoFPNAtivo = c || null;
@@ -6263,34 +6272,6 @@ function renderAtletaResultados(data, compId) {
 
 
 <script>
-function fazerBackupCloud() {
-  var btn = document.getElementById('btn-backup');
-  var msg = document.getElementById('backup-msg');
-  if (!window.currentFirebaseUser) { msg.style.color='#e74c3c'; msg.textContent='Tens de iniciar sessao primeiro.'; return; }
-  if (!window.firebaseSaveAtletaProfiles) { msg.style.color='#e74c3c'; msg.textContent='Firebase nao inicializado. Recarrega a app.'; return; }
-  btn.disabled = true;
-  btn.textContent = 'A guardar...';
-  msg.textContent = '';
-  var rawProfiles = localStorage.getItem('swimmin_profiles_v1');
-  var profiles = rawProfiles ? JSON.parse(rawProfiles) : {};
-  var athletes = JSON.parse(localStorage.getItem('coachAthletes') || '[]');
-  var teamName = localStorage.getItem('coachTeamName') || '';
-  var p1 = window.firebaseSaveAtletaProfiles(profiles);
-  var p2 = window.firebaseSaveCoachData ? window.firebaseSaveCoachData({ teamName: teamName, athletes: athletes }) : Promise.resolve();
-  Promise.all([p1, p2]).then(function() {
-    btn.disabled = false;
-    btn.textContent = 'Fazer backup para a cloud';
-    msg.style.color = '#00c4cc';
-    var n = Object.keys(profiles).length;
-    msg.textContent = 'Backup feito! (' + n + ' nadador' + (n !== 1 ? 'es' : '') + ', ' + athletes.length + ' atleta' + (athletes.length !== 1 ? 's' : '') + ')';
-    setTimeout(function() { msg.textContent = ''; }, 5000);
-  }).catch(function(e) {
-    btn.disabled = false;
-    btn.textContent = 'Fazer backup para a cloud';
-    msg.style.color = '#e74c3c';
-    msg.textContent = 'Erro: ' + (e.code || e.message || JSON.stringify(e));
-  });
-}
 </script>
 
 <script>
@@ -7089,8 +7070,7 @@ onAuthStateChanged(auth, async (user) => {
   if (loggedOut && loggedIn) {
     loggedOut.style.display = user ? 'none' : 'block';
     loggedIn.style.display = user ? 'block' : 'none';
-    var bw = document.getElementById('backup-wrap');
-    if (bw) bw.style.display = user ? 'block' : 'none';
+
   }
   if (userEmail) userEmail.textContent = user ? user.email : '';
   if (user) {
