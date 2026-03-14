@@ -7130,17 +7130,21 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-// ===== CARTÃO FPN =====
+// ===== FIM MÓDULO FIREBASE =====
+</script>
+
+<!-- ===== CARTÃO FPN — script global (fora do módulo para acesso via onclick) ===== -->
+<script>
 function previewCartaoFPN(event) {
   var file = event.target.files[0];
   if (!file) return;
-  var maxSize = 2 * 1024 * 1024; // 2MB
   var reader = new FileReader();
   reader.onload = function(e) {
     var img = new Image();
     img.onload = function() {
       var canvas = document.createElement('canvas');
-      var maxW = 1200, maxH = 900;
+      // Resolução reduzida para caber no localStorage (~5MB limite)
+      var maxW = 800, maxH = 600;
       var w = img.width, h = img.height;
       if (w > maxW || h > maxH) {
         var ratio = Math.min(maxW/w, maxH/h);
@@ -7149,7 +7153,8 @@ function previewCartaoFPN(event) {
       }
       canvas.width = w; canvas.height = h;
       canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      var dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+      // Qualidade 0.70 para garantir que cabe no localStorage
+      var dataUrl = canvas.toDataURL('image/jpeg', 0.70);
       document.getElementById('cartao-preview-img').src = dataUrl;
       document.getElementById('cartao-preview-wrap').style.display = 'block';
       window._cartaoFPNData = dataUrl;
@@ -7165,7 +7170,7 @@ function removerCartaoFPN() {
   document.getElementById('cartao-fpn-input').value = '';
   window._cartaoFPNData = null;
   window._cartaoFPNAtivo = null;
-  var activeId = getActiveProfileId();
+  var activeId = typeof getActiveProfileId === 'function' ? getActiveProfileId() : null;
   if (activeId) { try { localStorage.removeItem('cartaoFPN_' + activeId); } catch(e) {} }
   var btnWrap = document.getElementById('ver-cartao-btn-wrap');
   if (btnWrap) btnWrap.style.display = 'none';
@@ -7184,7 +7189,6 @@ function fecharCartaoFPN() {
   document.getElementById('cartao-fpn-overlay').style.display = 'none';
   document.body.style.overflow = '';
 }
-// ===== FIM CARTÃO FPN =====
 </script>
 
 
