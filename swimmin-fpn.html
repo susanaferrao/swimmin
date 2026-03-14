@@ -5997,9 +5997,11 @@ function mostrarPerfilAtivo() {
 
   ATLETA_COMP_ATUAL = null;
   renderCompButtons(data);
-  window._cartaoFPNAtivo = data.cartaoFPN || null;
+  var cartaoGuardado = null;
+  try { cartaoGuardado = localStorage.getItem('cartaoFPN_' + activeId); } catch(e) {}
+  window._cartaoFPNAtivo = cartaoGuardado || null;
   var btnWrap = document.getElementById('ver-cartao-btn-wrap');
-  if (btnWrap) btnWrap.style.display = data.cartaoFPN ? 'block' : 'none';
+  if (btnWrap) btnWrap.style.display = cartaoGuardado ? 'block' : 'none';
 }
 
 function mudarPerfil(id) {
@@ -6071,10 +6073,12 @@ function mostrarFormulario() {
     document.getElementById('atleta-escalao').value = data.escalao || '';
     document.getElementById('atleta-sexo').value = data.sexo || '';
     // Pré-visualizar cartão FPN se existir
-    window._cartaoFPNAtivo = data.cartaoFPN || null;
+    var cartaoEdit = null;
+    try { cartaoEdit = localStorage.getItem('cartaoFPN_' + activeId); } catch(e) {}
+    window._cartaoFPNAtivo = cartaoEdit || null;
     window._cartaoFPNData = null;
-    if (data.cartaoFPN) {
-      document.getElementById('cartao-preview-img').src = data.cartaoFPN;
+    if (cartaoEdit) {
+      document.getElementById('cartao-preview-img').src = cartaoEdit;
       document.getElementById('cartao-preview-wrap').style.display = 'block';
     } else {
       document.getElementById('cartao-preview-img').src = '';
@@ -6145,7 +6149,11 @@ function guardarAtleta() {
   if (!activeId) activeId = generateProfileId();
   setActiveProfileId(activeId);
   var cartaoData = window._cartaoFPNData || null;
-  var data = {id:activeId, nome:nome, escalao:escalao, sexo:sexo, tempos:ts, cartaoFPN: cartaoData !== null ? cartaoData : (window._cartaoFPNAtivo || null)};
+  var cartaoFinal = cartaoData !== null ? cartaoData : (window._cartaoFPNAtivo || null);
+  if (cartaoFinal) {
+    try { localStorage.setItem('cartaoFPN_' + activeId, cartaoFinal); } catch(e) {}
+  }
+  var data = {id:activeId, nome:nome, escalao:escalao, sexo:sexo, tempos:ts};
   saveProfile(activeId, data);
   saveAtleta(data);
   ATLETA_COMP_ATUAL = null;
@@ -7149,6 +7157,11 @@ function removerCartaoFPN() {
   document.getElementById('cartao-preview-wrap').style.display = 'none';
   document.getElementById('cartao-fpn-input').value = '';
   window._cartaoFPNData = null;
+  window._cartaoFPNAtivo = null;
+  var activeId = getActiveProfileId();
+  if (activeId) { try { localStorage.removeItem('cartaoFPN_' + activeId); } catch(e) {} }
+  var btnWrap = document.getElementById('ver-cartao-btn-wrap');
+  if (btnWrap) btnWrap.style.display = 'none';
 }
 
 function abrirCartaoFPN() {
