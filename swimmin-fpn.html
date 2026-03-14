@@ -799,11 +799,11 @@
 
 
 <div class="fpn-btn-wrap">
-    <button class="fpn-btn" id="atleta-btn" onclick="toggleAtleta()">Os meus minimos</button>
+    <button class="fpn-btn" id="atleta-btn" onclick="toggleAtleta()">Zona do Nadador</button>
   </div>
 
   <div class="fpn-section" id="atleta-section" style="display:none">
-    <div class="fpn-title">Os meus minimos</div>
+    <div class="fpn-title">Zona do Nadador</div>
     <div class="fpn-subtitle">Compara os teus tempos com os minimos FPN</div>
 
     <div id="atleta-view-intro">
@@ -824,7 +824,10 @@
           <div style="font-size:12px;color:#7a5a00;line-height:1.5;">Para participação nas competições, ter em conta a data de obtenção dos tempos.</div>
         </div>
       </div>
-      <button onclick="mostrarFormulario()" id="atleta-editar-btn" style="display:none;margin-top:14px;padding:10px 18px;border-radius:8px;background:transparent;border:2px solid var(--aqua);color:var(--aqua);font-weight:700;font-size:14px;cursor:pointer;width:100%;">Atualizar tempos e escalão</button>
+      <button onclick="mostrarFormulario()" id="atleta-editar-btn" style="display:none;margin-top:14px;padding:10px 18px;border-radius:8px;background:transparent;border:2px solid var(--aqua);color:var(--aqua);font-weight:700;font-size:14px;cursor:pointer;width:100%;">Atualizar dados</button>
+    <div id="ver-cartao-btn-wrap" style="display:none;margin-top:8px;">
+      <button onclick="abrirCartaoFPN()" style="background:var(--blue-deep);color:#fff;border:none;border-radius:10px;padding:12px;font-size:15px;font-weight:700;cursor:pointer;text-align:center;width:100%;">🪪 Ver cartão FPN</button>
+    </div>
     </div>
 
     <div id="atleta-form" style="display:none">
@@ -840,10 +843,10 @@
           <option value="INF_A">Infantil A</option>
           <option value="JUV_B">Juvenil B</option>
           <option value="JUV_A">Juvenil A</option>
-          <option value="JUN1">1 Junior</option>
-          <option value="JUN">Junior</option>
+          <option value="JUN1">1º Júnior</option>
+          <option value="JUN">Júnior</option>
           <option value="SUB21">Sub 21</option>
-          <option value="SEN">Senior</option>
+          <option value="SEN">Sénior</option>
           <option value="ABS">Absoluto</option>
         </select>
       </div>
@@ -856,9 +859,23 @@
         </select>
       </div>
 
-      <div style="margin-top:4px;margin-bottom:16px;background:#e8f4fb;border-radius:10px;padding:12px 14px;">
-        <div style="font-size:12px;color:#1a5a7a;line-height:1.6;">Introduz os teus melhores tempos (PB). Formato: M:SS,cc ou SS,cc (ex: 1:02,34 ou 27,45). Deixa em branco as provas que nao nadas.<br><strong>Nota:</strong> os minimos exigem tempos feitos nos ultimos 18 meses. Verifica sempre as datas.</div>
+      <!-- Cartão FPN (opcional) -->
+      <div class="field" id="campo-cartao-fpn" style="margin-bottom:18px;">
+        <label style="display:flex;align-items:center;gap:6px;">
+          Cartão FPN
+          <span style="font-size:11px;color:#888;font-weight:400;">(opcional)</span>
+        </label>
+        <div id="cartao-preview-wrap" style="display:none;margin-bottom:8px;">
+          <img id="cartao-preview-img" src="" alt="Cartão FPN" style="width:100%;border-radius:8px;border:1.5px solid #d0e4f0;">
+          <button type="button" onclick="removerCartaoFPN()" style="margin-top:6px;background:#ffeaea;color:#c0392b;border:none;border-radius:7px;padding:7px 14px;font-size:13px;cursor:pointer;width:100%;">Remover cartão</button>
+        </div>
+        <label for="cartao-fpn-input" style="display:block;background:var(--aqua);color:#fff;border-radius:8px;padding:10px 14px;text-align:center;font-size:15px;cursor:pointer;font-weight:600;">
+          Carregar cartão FPN
+        </label>
+        <input type="file" id="cartao-fpn-input" accept="image/*" style="display:none;" onchange="previewCartaoFPN(event)">
       </div>
+
+
 
       <div style="background:rgba(0,196,204,0.1);border-radius:8px;padding:10px 14px;margin-bottom:14px;border-left:3px solid var(--aqua);">
         <div style="font-size:12px;color:var(--blue-deep);font-weight:600;margin-bottom:3px;">Como inserir os tempos</div>
@@ -879,7 +896,7 @@
     </div>
 
     <div id="atleta-resultados" style="margin-top:20px;"></div>
-    <div class="footer">Dados guardados localmente no dispositivo</div>
+    <div class="footer">Dados guardados na nuvem</div>
   </div>
 
   <div class="fpn-btn-wrap">
@@ -5714,7 +5731,7 @@ function mostrarRecordeIdade() {
 
 
 // ============================================================
-// OS MEUS MINIMOS
+// ZONA DO NADADOR
 // ============================================================
 var ATLETA_KEY = 'swimmin_atleta_v2';
 var PROFILES_KEY = 'swimmin_profiles_v1';
@@ -5906,11 +5923,11 @@ function toggleAtleta() {
   if (section.style.display === 'none') {
     section.style.display = 'block';
     section.scrollIntoView({behavior:'smooth', block:'start'});
-    btn.textContent = 'Fechar os meus minimos';
+    btn.textContent = 'Fechar zona do nadador';
     iniciarAtleta();
   } else {
     section.style.display = 'none';
-    btn.textContent = 'Os meus minimos';
+    btn.textContent = 'Zona do Nadador';
   }
 }
 
@@ -7079,7 +7096,70 @@ onAuthStateChanged(auth, async (user) => {
     }
   }
 });
+
+// ===== CARTÃO FPN =====
+function previewCartaoFPN(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  var maxSize = 2 * 1024 * 1024; // 2MB
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var img = new Image();
+    img.onload = function() {
+      var canvas = document.createElement('canvas');
+      var maxW = 1200, maxH = 900;
+      var w = img.width, h = img.height;
+      if (w > maxW || h > maxH) {
+        var ratio = Math.min(maxW/w, maxH/h);
+        w = Math.round(w * ratio);
+        h = Math.round(h * ratio);
+      }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      var dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+      document.getElementById('cartao-preview-img').src = dataUrl;
+      document.getElementById('cartao-preview-wrap').style.display = 'block';
+      window._cartaoFPNData = dataUrl;
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function removerCartaoFPN() {
+  document.getElementById('cartao-preview-img').src = '';
+  document.getElementById('cartao-preview-wrap').style.display = 'none';
+  document.getElementById('cartao-fpn-input').value = '';
+  window._cartaoFPNData = null;
+}
+
+function abrirCartaoFPN() {
+  var src = window._cartaoFPNAtivo || '';
+  if (!src) return;
+  document.getElementById('cartao-fpn-fullscreen').src = src;
+  var overlay = document.getElementById('cartao-fpn-overlay');
+  overlay.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function fecharCartaoFPN() {
+  document.getElementById('cartao-fpn-overlay').style.display = 'none';
+  document.body.style.overflow = '';
+}
+// ===== FIM CARTÃO FPN =====
 </script>
 
+
+
+  <!-- Overlay Cartão FPN fullscreen -->
+  <div id="cartao-fpn-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:9999;align-items:center;justify-content:center;">
+    <button onclick="fecharCartaoFPN()" style="position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.2);border:none;color:#fff;font-size:26px;width:44px;height:44px;border-radius:50%;cursor:pointer;z-index:10000;display:flex;align-items:center;justify-content:center;">✕</button>
+    <img id="cartao-fpn-fullscreen" src="" alt="Cartão FPN" style="max-width:100%;max-height:100%;object-fit:contain;">
+  </div>
+
+  <!-- Footer -->
+  <div style="text-align:center; padding: 18px 0 10px 0; font-size: 0.78em; color: #888; letter-spacing: 0.01em;">
+    © Susana Ferrão, todos os direitos reservados
+  </div>
 </body>
 </html>
