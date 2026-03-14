@@ -511,7 +511,7 @@
     text-align: center;
     margin-top: 20px;
     font-size: 12px;
-    color: rgba(184,223,245,0.5);
+    color: rgba(90,150,200,0.85);
     letter-spacing: 0.5px;
   }
 
@@ -519,11 +519,8 @@
 /* ===== TREINADOR ===== */
 .coach-wrap { margin-top: 28px; text-align: center; }
 .coach-btn {
-  background: linear-gradient(135deg, #e07b00, #ff9f1c) !important;
-  box-shadow: 0 4px 20px rgba(255,159,28,0.30) !important;
   width: 100%;
 }
-.coach-btn:hover { background: linear-gradient(135deg, #ff9f1c, #e07b00) !important; }
 
 #coach-section {
   display: none; margin-top: 20px; margin-bottom: 24px;
@@ -673,6 +670,8 @@
 .relay-leg-time { font-family: 'Bebas Neue', sans-serif; color: var(--aqua); font-size: 15px; }
 .relay-empty { font-size: 14px; color: #888; text-align: center; padding: 12px 0; }
 </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 </head>
 <body>
 <div id="auth-toast" style="display:none;position:fixed;top:24px;left:50%;transform:translateX(-50%);z-index:9999;min-width:240px;max-width:90vw;padding:14px 22px;border-radius:14px;font-size:14px;font-weight:600;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.25);transition:opacity 0.4s;"></div>
@@ -786,7 +785,7 @@
       <div>
         <div style="color:#fff;font-size:13px;font-weight:700;">Sessão iniciada</div>
         <div style="color:rgba(255,255,255,0.85);font-size:12px;" id="auth-user-email"></div>
-        <div style="color:rgba(255,255,255,0.75);font-size:11px;margin-top:2px;">Dados sincronizados na cloud ☁️</div>
+        <div style="color:rgba(255,255,255,0.75);font-size:11px;margin-top:2px;">Dados sincronizados na cloud</div>
       </div>
       <button id="btn-logout" style="background:rgba(255,255,255,0.2);color:#fff;border:1.5px solid rgba(255,255,255,0.5);border-radius:50px;padding:6px 16px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;">Terminar sessão</button>
     </div>
@@ -810,7 +809,7 @@
           <select id="atleta-profile-select" onchange="mudarPerfil(this.value)" style="flex:1;padding:10px 12px;border-radius:10px;background:#f0f7ff;border:1.5px solid #c0d8ee;color:#1a3a4a;font-size:14px;font-weight:600;cursor:pointer;"></select>
           <button onclick="novoPerfilAtleta()" title="Novo nadador" style="padding:10px 14px;border-radius:10px;background:var(--aqua);color:var(--dark);border:none;font-weight:700;font-size:18px;cursor:pointer;line-height:1;">+</button>
         </div>
-        <button onclick="eliminarPerfilAtleta()" id="atleta-delete-btn" style="margin-top:8px;padding:7px 12px;border-radius:8px;background:transparent;border:1.5px solid #e74c3c;color:#e74c3c;font-size:12px;font-weight:600;cursor:pointer;width:100%;">Eliminar este nadador</button>
+  
       </div>
       <div id="atleta-saved-summary"></div>
       <div id="atleta-comp-selector" style="display:none;margin-top:16px;">
@@ -823,7 +822,7 @@
       </div>
       <button type="button" onclick="mostrarFormulario()" id="atleta-editar-btn" style="display:none;margin-top:14px;padding:10px 18px;border-radius:8px;background:transparent;border:2px solid var(--aqua);color:var(--aqua);font-weight:700;font-size:14px;cursor:pointer;width:100%;">Atualizar dados</button>
       <div id="ver-cartao-btn-wrap" style="display:none;margin-top:8px;">
-        <button onclick="abrirCartaoFPN()" style="background:var(--blue-deep);color:#fff;border:none;border-radius:10px;padding:12px;font-size:15px;font-weight:700;cursor:pointer;text-align:center;width:100%;">🪪 Ver cartão FPN</button>
+        <button onclick="abrirCartaoFPN()" style="background:var(--blue-deep);color:#fff;border:none;border-radius:10px;padding:12px;font-size:15px;font-weight:700;cursor:pointer;text-align:center;width:100%;">Ver cartão FPN</button>
       </div>
     </div>
 
@@ -890,6 +889,9 @@
 
       <button type="button" onclick="guardarAtleta()" style="margin-top:18px;padding:14px;border-radius:8px;background:var(--aqua);color:var(--dark);font-weight:700;font-size:16px;border:none;cursor:pointer;width:100%;">Guardar e ver resultados</button>
       <button type="button" onclick="cancelarFormulario()" style="margin-top:8px;padding:10px;border-radius:8px;background:transparent;border:1px solid #ccc;color:#7ab8d4;font-size:14px;cursor:pointer;width:100%;">Cancelar</button>
+      <div id="atleta-delete-btn" style="display:none;margin-top:16px;border-top:1px solid #f0d0d0;padding-top:14px;">
+        <button type="button" onclick="eliminarPerfilAtleta()" style="padding:10px;border-radius:8px;background:transparent;border:1.5px solid #e74c3c;color:#e74c3c;font-size:13px;font-weight:600;cursor:pointer;width:100%;">Eliminar este nadador</button>
+      </div>
     </div>
 
     <div id="atleta-resultados" style="margin-top:20px;"></div>
@@ -897,12 +899,12 @@
   </div>
 
   <div class="fpn-btn-wrap">
-    <button class="fpn-btn" id="fpn-btn" onclick="toggleFPN()">Calcular Pontos FPN</button>
+    <button class="fpn-btn" id="fpn-btn" onclick="toggleFPN()">Calcular Pontos FINA/FPN</button>
   </div>
 
   <div class="fpn-section" id="fpn-section" style="display:none">
-    <div class="fpn-title">Pontos FPN</div>
-    <div class="fpn-subtitle">Baseado nos Recordes Nacionais Absolutos</div>
+    <div class="fpn-title">Pontos FINA / FPN</div>
+    <div class="fpn-subtitle">Pontos baseados nos Recordes Mundiais e Nacionais</div>
     <div class="grid">
       <div class="field">
         <label>Piscina</label>
@@ -938,10 +940,13 @@
     </div>
     <div class="field">
       <label>O teu tempo</label>
-      <input class="personal-input" type="tel" maxlength="6" placeholder="105000" id="fpn-tempo" oninput="fpnOnTempoInput(event)" style="background:var(--white); border:1.5px solid #d0e4f0; color:var(--text); font-size:22px;">
+      <div style="display:flex;gap:10px;align-items:center;">
+        <input class="personal-input" type="tel" maxlength="6" placeholder="105000" id="fpn-tempo" oninput="fpnOnTempoInput(event)" style="background:#f5faff; border:1.5px solid #d0e4f0; color:#1a3a4a; font-size:15px; padding:12px 16px; border-radius:12px; flex:1 1 0; min-width:0; width:0; height:50px; box-sizing:border-box;">
+        <button onclick="calcularPontosFPN()" style="flex:1 1 0; min-width:0; width:0; height:50px; box-sizing:border-box; background:var(--accent,#1a6fa8); color:#fff; border:none; border-radius:12px; font-size:15px; font-weight:700; cursor:pointer; letter-spacing:0.04em;">CALCULAR</button>
+      </div>
       <div class="fpn-tempo-preview" id="fpn-tempo-preview"></div>
     </div>
-    <div id="fpn-result"></div>
+    <div id="fpn-result" style="margin-top:24px;"></div>
   <div class="footer">Dados de acordo com o regulamento oficial da FPN · atualizado a 09/03/2026</div>
 </div>
 
@@ -1028,6 +1033,12 @@ var recordesNacionais = {
         "data": "31/03/2023",
         "local": "Funchal"
       },
+      "200_L": {
+        "tempo": "1:47,97",
+        "nome": "Nascimento, Miguel Duarte",
+        "data": "06/04/2019",
+        "local": "Coimbra"
+      },
       "400_L": {
         "tempo": "3:50,56",
         "nome": "Lopes, Jose Paulo",
@@ -1058,7 +1069,19 @@ var recordesNacionais = {
         "data": "24/07/2023",
         "local": "Fukuoka (JPN)"
       },
-      "100_B": {
+      "200_C": {
+        "tempo": "1:57,06",
+        "nome": "Santos, Francisco Rogerio",
+        "data": "06/06/2021",
+        "local": "Porto"
+      },
+            "50_B": {
+        "tempo": "27,92",
+        "nome": "Amorim, Alexandre Ferreira",
+        "data": "15/04/2025",
+        "local": "Estocolmo (SWE)"
+      },
+"100_B": {
         "tempo": "1:01,01",
         "nome": "Almeida, Carlos Esteves",
         "data": "28/07/2013",
@@ -1108,6 +1131,24 @@ var recordesNacionais = {
         "data": "30/03/2023",
         "local": "Funchal"
       },
+      "100_L": {
+        "tempo": "55,88",
+        "nome": "Martins, Francisca Soares",
+        "data": "12/07/2024",
+        "local": "Oeiras"
+      },
+      "200_L": {
+        "tempo": "1:57,85",
+        "nome": "Martins, Francisca Soares",
+        "data": "22/07/2025",
+        "local": "Berlim (GER)"
+      },
+      "400_L": {
+        "tempo": "4:07,50",
+        "nome": "Martins, Francisca Soares",
+        "data": "23/07/2025",
+        "local": "Berlim (GER)"
+      },
       "800_L": {
         "tempo": "8:29,33",
         "nome": "Duraes, Diana Margarida",
@@ -1120,7 +1161,25 @@ var recordesNacionais = {
         "data": "09/02/2020",
         "local": "Lisboa"
       },
-      "50_B": {
+            "50_C": {
+        "tempo": "28,24",
+        "nome": "Azevedo, Rafaela Gomes",
+        "data": "23/12/2021",
+        "local": "Oeiras"
+      },
+      "100_C": {
+        "tempo": "1:00,34",
+        "nome": "Rebelo, Camila Rodrigues",
+        "data": "20/07/2025",
+        "local": "Berlim (GER)"
+      },
+      "200_C": {
+        "tempo": "2:08,95",
+        "nome": "Rebelo, Camila Rodrigues",
+        "data": "18/06/2024",
+        "local": "Belgrado (SRB)"
+      },
+"50_B": {
         "tempo": "30,73",
         "nome": "Rodrigues, Ana Pinho",
         "data": "10/06/2023",
@@ -1184,6 +1243,12 @@ var recordesNacionais = {
         "data": "15/12/2024",
         "local": "Tomar"
       },
+      "200_L": {
+        "tempo": "1:43,16",
+        "nome": "Nascimento, Miguel Duarte",
+        "data": "14/12/2018",
+        "local": "Hangzhou (CHN)"
+      },
       "400_L": {
         "tempo": "3:42,57",
         "nome": "Lopes, Jose Paulo",
@@ -1220,7 +1285,13 @@ var recordesNacionais = {
         "data": "16/12/2018",
         "local": "Hangzhou (CHN)"
       },
-      "100_B": {
+            "50_B": {
+        "tempo": "27,01",
+        "nome": "Amorim, Alexandre Ferreira",
+        "data": "14/04/2024",
+        "local": "Felgueiras"
+      },
+"100_B": {
         "tempo": "58,19",
         "nome": "Almeida, Carlos Esteves",
         "data": "22/11/2012",
@@ -1282,6 +1353,18 @@ var recordesNacionais = {
         "data": "20/12/2019",
         "local": "Felgueiras"
       },
+      "200_L": {
+        "tempo": "1:55,91",
+        "nome": "Martins, Francisca Soares",
+        "data": "12/04/2025",
+        "local": "Felgueiras"
+      },
+      "400_L": {
+        "tempo": "4:04,57",
+        "nome": "Martins, Francisca Soares",
+        "data": "10/12/2023",
+        "local": "Otopeni (ROU)"
+      },
       "800_L": {
         "tempo": "8:20,97",
         "nome": "Duraes, Diana Margarida",
@@ -1294,7 +1377,25 @@ var recordesNacionais = {
         "data": "23/11/2019",
         "local": "Felgueiras"
       },
-      "50_B": {
+            "50_C": {
+        "tempo": "27,16",
+        "nome": "Rebelo, Camila Rodrigues",
+        "data": "06/12/2025",
+        "local": "Lublin (POL)"
+      },
+      "100_C": {
+        "tempo": "57,79",
+        "nome": "Rebelo, Camila Rodrigues",
+        "data": "04/12/2025",
+        "local": "Lublin (POL)"
+      },
+      "200_C": {
+        "tempo": "2:03,51",
+        "nome": "Rebelo, Camila Rodrigues",
+        "data": "03/12/2025",
+        "local": "Lublin (POL)"
+      },
+"50_B": {
         "tempo": "29,98",
         "nome": "Rodrigues, Ana Pinho",
         "data": "13/12/2025",
@@ -1335,6 +1436,12 @@ var recordesNacionais = {
         "nome": "Cunha, Mariana Pacheco",
         "data": "13/04/2025",
         "local": "Felgueiras"
+      },
+      "200_E": {
+        "tempo": "2:11,70",
+        "nome": "Rebelo, Camila Rodrigues",
+        "data": "14/12/2024",
+        "local": "Tomar"
       },
       "400_E": {
         "tempo": "4:36,19",
@@ -4877,7 +4984,7 @@ function calcular() {
   html += '<div class="personal-wrap">';
   html += '<div class="personal-label">O teu tempo</div>';
   html += '<div class="personal-input-row">';
-  html += '<input type="tel" id="personal-time" class="personal-input" placeholder="ex: 10543" oninput="calcularDiff()" maxlength="7">';
+  html += '<input type="tel" id="personal-time" class="personal-input" placeholder="ex: 10543" oninput="calcularDiff()" maxlength="7" autocomplete="off">';
   html += '<div id="personal-time-preview" style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:var(--aqua);letter-spacing:2px;min-width:70px;"></div>';
   html += '</div>';
   html += '</div>';
@@ -5015,6 +5122,108 @@ function fpnUpdateDistancias() {
   if (distEl.querySelector('option[value="' + prevD + '"]')) distEl.value = prevD;
 }
 
+
+// ===== RECORDES MUNDIAIS (FINA/WORLD AQUATICS) =====
+var recordesMundiais = {
+  "longa": {
+    "M": {
+      "50_L": {tempo:"20,91", nome:"Cielo, Filho Cesar", data:"18/12/2009", local:"Sao Paulo"},
+      "100_L": {tempo:"46,40", nome:"Pan, Zhanle", data:"31/07/2024", local:"Paris"},
+      "200_L": {tempo:"1:42,00", nome:"Biedermann, Paul", data:"28/07/2009", local:"Rome"},
+      "400_L": {tempo:"3:39,96", nome:"Maertens, Lukas", data:"12/04/2025", local:"Stockholm"},
+      "800_L": {tempo:"7:32,12", nome:"Zhang, Lin", data:"29/07/2009", local:"Rome"},
+      "1500_L": {tempo:"14:30,67", nome:"Finke, Bobby", data:"04/08/2024", local:"Paris"},
+      "50_C": {tempo:"23,55", nome:"Kolesnikov, Kliment", data:"27/07/2023", local:"Kazan"},
+      "100_C": {tempo:"51,60", nome:"Ceccon, Thomas", data:"20/06/2022", local:"Budapest"},
+      "200_C": {tempo:"1:51,92", nome:"Peirsol, Aaron", data:"31/07/2009", local:"Rome"},
+      "50_B": {tempo:"25,95", nome:"Peaty, Adam", data:"25/07/2017", local:"Budapest"},
+      "100_B": {tempo:"56,88", nome:"Peaty, Adam", data:"21/07/2019", local:"Gwangju"},
+      "200_B": {tempo:"2:05,48", nome:"Qin, Haiyang", data:"28/07/2023", local:"Fukuoka"},
+      "50_M": {tempo:"22,27", nome:"Govorov, Andrii", data:"01/07/2018", local:"Rome"},
+      "100_M": {tempo:"49,45", nome:"Dressel, Caeleb", data:"31/07/2021", local:"Tokyo"},
+      "200_M": {tempo:"1:50,34", nome:"Milak, Kristof", data:"21/06/2022", local:"Budapest"},
+      "200_E": {tempo:"1:52,69", nome:"Marchand, Leon", data:"30/07/2025", local:"Singapore"},
+      "400_E": {tempo:"4:02,50", nome:"Marchand, Leon", data:"23/07/2023", local:"Fukuoka"}
+    },
+    "F": {
+      "50_L": {tempo:"23,61", nome:"Sjoestroem, Sarah", data:"29/07/2023", local:"Fukuoka"},
+      "100_L": {tempo:"51,71", nome:"Sjoestroem, Sarah", data:"23/07/2017", local:"Budapest"},
+      "200_L": {tempo:"1:52,23", nome:"Titmus, Ariarne", data:"12/06/2024", local:"Brisbane"},
+      "400_L": {tempo:"3:54,18", nome:"Mcintosh, Summer", data:"07/06/2025", local:"Victoria"},
+      "800_L": {tempo:"8:04,12", nome:"Ledecky, Katie", data:"03/05/2025", local:"Fort Lauderdale"},
+      "1500_L": {tempo:"15:20,48", nome:"Ledecky, Katie", data:"16/05/2018", local:"Indianapolis"},
+      "50_C": {tempo:"26,86", nome:"Mckeown, Kaylee", data:"20/10/2023", local:"Budapest"},
+      "100_C": {tempo:"57,13", nome:"Smith, Regan", data:"18/06/2024", local:"Indianapolis"},
+      "200_C": {tempo:"2:03,14", nome:"Mckeown, Kaylee", data:"10/03/2023", local:"Sydney"},
+      "50_B": {tempo:"29,16", nome:"Meilutyte, Ruta", data:"30/07/2023", local:"Fukuoka"},
+      "100_B": {tempo:"1:04,13", nome:"King, Lilly", data:"25/07/2017", local:"Budapest"},
+      "200_B": {tempo:"2:17,55", nome:"Chikunova, Evgeniia", data:"21/04/2023", local:"Kazan"},
+      "50_M": {tempo:"24,43", nome:"Sjoestroem, Sarah", data:"05/07/2014", local:"Boras"},
+      "100_M": {tempo:"54,60", nome:"Walsh, Gretchen", data:"03/05/2025", local:"Fort Lauderdale"},
+      "200_M": {tempo:"2:01,81", nome:"Liu, Zige", data:"21/10/2009", local:"Jinan"},
+      "200_E": {tempo:"2:05,70", nome:"Mcintosh, Summer", data:"09/06/2025", local:"Victoria"},
+      "400_E": {tempo:"4:23,65", nome:"Mcintosh, Summer", data:"11/06/2025", local:"Victoria"}
+    }
+  },
+  "curta": {
+    "M": {
+      "50_L": {tempo:"19,90", nome:"Crooks, Jordan", data:"14/12/2024", local:"Budapest"},
+      "100_L": {tempo:"44,84", nome:"Chalmers, Kyle", data:"29/10/2021", local:"Kazan"},
+      "200_L": {tempo:"1:38,61", nome:"Hobson, Luke", data:"15/12/2024", local:"Budapest"},
+      "400_L": {tempo:"3:32,25", nome:"Agnel, Yannick", data:"15/11/2012", local:"Angers"},
+      "800_L": {tempo:"7:20,46", nome:"Wiffen, Daniel", data:"10/12/2023", local:"Otopeni"},
+      "1500_L": {tempo:"14:06,88", nome:"Wellbrock, Florian", data:"21/12/2021", local:"Abu Dhabi"},
+      "50_C": {tempo:"22,11", nome:"Kolesnikov, Kliment", data:"23/11/2022", local:"Kazan"},
+      "100_C": {tempo:"48,16", nome:"Kos, Hubert", data:"25/10/2025", local:"Toronto"},
+      "200_C": {tempo:"1:45,12", nome:"Kos, Hubert", data:"23/10/2025", local:"Toronto"},
+      "50_B": {tempo:"24,95", nome:"Sakci, Emre", data:"27/12/2021", local:"Gaziantep"},
+      "100_B": {tempo:"55,28", nome:"Shymanovich, Ilya", data:"26/11/2021", local:"Eindhoven"},
+      "200_B": {tempo:"1:59,52", nome:"Corbeau, Caspar", data:"25/10/2025", local:"Toronto"},
+      "50_M": {tempo:"21,32", nome:"Ponti, Noe", data:"11/12/2024", local:"Budapest"},
+      "100_M": {tempo:"47,68", nome:"Liendo, Josh", data:"23/10/2025", local:"Toronto"},
+      "200_M": {tempo:"1:46,85", nome:"Honda, Tomoru", data:"22/10/2022", local:"Tokyo"},
+      "100_E": {tempo:"49,28", nome:"Dressel, Caeleb", data:"22/11/2020", local:"Budapest"},
+      "200_E": {tempo:"1:48,88", nome:"Marchand, Leon", data:"01/11/2024", local:"Singapore"},
+      "400_E": {tempo:"3:54,81", nome:"Seto, Daiya", data:"20/12/2019", local:"Las Vegas"}
+    },
+    "F": {
+      "50_L": {tempo:"22,83", nome:"Walsh, Gretchen", data:"15/12/2024", local:"Budapest"},
+      "100_L": {tempo:"49,93", nome:"Douglass, Kate", data:"25/10/2025", local:"Toronto"},
+      "200_L": {tempo:"1:49,36", nome:"O'callaghan, Mollie", data:"24/10/2025", local:"Toronto"},
+      "400_L": {tempo:"3:50,25", nome:"Mcintosh, Summer", data:"10/12/2024", local:"Budapest"},
+      "800_L": {tempo:"7:54,00", nome:"Pallister, Lani", data:"25/10/2025", local:"Toronto"},
+      "1500_L": {tempo:"15:08,24", nome:"Ledecky, Katie", data:"29/10/2022", local:"Toronto"},
+      "50_C": {tempo:"25,23", nome:"Smith, Regan", data:"13/12/2024", local:"Budapest"},
+      "100_C": {tempo:"54,02", nome:"Smith, Regan", data:"15/12/2024", local:"Budapest"},
+      "200_C": {tempo:"1:57,33", nome:"Mckeown, Kaylee", data:"25/10/2025", local:"Toronto"},
+      "50_B": {tempo:"28,37", nome:"Meilutyte, Ruta", data:"17/12/2022", local:"Melbourne"},
+      "100_B": {tempo:"1:02,36", nome:"Meilutyte, Ruta", data:"12/10/2013", local:"Moscow"},
+      "200_B": {tempo:"2:12,50", nome:"Douglass, Kate", data:"13/12/2024", local:"Budapest"},
+      "50_M": {tempo:"23,72", nome:"Walsh, Gretchen", data:"11/10/2025", local:"Carmel"},
+      "100_M": {tempo:"52,71", nome:"Walsh, Gretchen", data:"14/12/2024", local:"Budapest"},
+      "200_M": {tempo:"1:59,32", nome:"Mcintosh, Summer", data:"12/12/2024", local:"Budapest"},
+      "100_E": {tempo:"55,11", nome:"Walsh, Gretchen", data:"13/12/2024", local:"Budapest"},
+      "200_E": {tempo:"2:01,63", nome:"Douglass, Kate", data:"10/12/2024", local:"Budapest"},
+      "400_E": {tempo:"4:15,48", nome:"Mcintosh, Summer", data:"14/12/2024", local:"Budapest"}
+    }
+  }
+};
+// ===== FIM RECORDES MUNDIAIS =====
+
+
+function animateCount(el, target, duration) {
+  var start = 0;
+  var startTime = null;
+  if (typeof target !== 'number') { el.textContent = target; return; }
+  function step(ts) {
+    if (!startTime) startTime = ts;
+    var progress = Math.min((ts - startTime) / duration, 1);
+    var ease = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(ease * target);
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
 function calcularPontosFPN() {
   var piscina = document.getElementById('fpn-piscina').value;
   var sexo = document.getElementById('fpn-sexo').value;
@@ -5031,7 +5240,7 @@ function calcularPontosFPN() {
   // Get record
   var key = dist + '_' + estilo;
   var rec = null;
-  try { rec = recordesNacionais[piscina][sexo][key]; } catch(e) {}
+  try { rec = recordesIdade[piscina][sexo]['open'][key]; } catch(e) {}
   if (!rec) {
     resultEl.innerHTML = '<div style="color:#e74c3c;font-size:13px;">Sem recorde nacional para esta prova.</div>';
     return;
@@ -5055,17 +5264,47 @@ function calcularPontosFPN() {
   var T = parseT(tempoInput);
   if (!B || !T) { resultEl.innerHTML = '<div style="color:#e74c3c;font-size:13px;">Tempo inválido.</div>'; return; }
 
-  var pontos = Math.round(1000 * Math.pow(B/T, 3));
+  var pontosFPN = Math.round(1000 * Math.pow(B/T, 3));
 
-  var html = '<div class="fpn-result-box">';
-  html += '<div class="fpn-pontos">' + pontos + '</div>';
-  html += '<div class="fpn-pontos-label">Pontos FPN</div>';
-  html += '<div class="fpn-divider"></div>';
-  html += '<div class="fpn-rn-label">Recorde Nacional: ' + rec.tempo + '</div>';
-  html += '<div class="fpn-rn-nome">' + rec.nome + '</div>';
-  html += '<div class="fpn-rn-info">' + rec.data + ' · ' + rec.local + '</div>';
-  html += '</div>';
-  resultEl.innerHTML = html;
+  // Pontos FINA (recorde mundial)
+  var key2 = dist + '_' + estilo;
+  var recMundial = null;
+  try { recMundial = recordesMundiais[piscina][sexo][key2]; } catch(e) {}
+
+  var htmlOut = '<div style="display:flex;gap:12px;flex-wrap:wrap;">';
+
+  // Quadrado FPN
+  htmlOut += '<div class="fpn-result-box" style="flex:1;min-width:140px;">';
+  htmlOut += '<div class="fpn-pontos" id="fpn-num-fpn">0</div>';
+  htmlOut += '<div class="fpn-pontos-label">Pontos FPN</div>';
+  htmlOut += '<div class="fpn-divider"></div>';
+  htmlOut += '<div class="fpn-rn-label">Recorde Nacional</div>';
+  htmlOut += '<div class="fpn-rn-nome">' + rec.nome + '</div>';
+  htmlOut += '<div class="fpn-rn-info">' + rec.tempo + ' · ' + rec.data + '</div>';
+  htmlOut += '<div class="fpn-rn-info">' + rec.local + '</div>';
+  htmlOut += '</div>';
+
+  // Quadrado FINA
+  if (recMundial) {
+    var BM = parseT(recMundial.tempo);
+    var pontosFINA = BM ? Math.round(1000 * Math.pow(BM/T, 3)) : '—';
+    htmlOut += '<div class="fpn-result-box" style="flex:1;min-width:140px;">';
+    htmlOut += '<div class="fpn-pontos" id="fpn-num-fina">0</div>';
+    htmlOut += '<div class="fpn-pontos-label">Pontos FINA</div>';
+    htmlOut += '<div class="fpn-divider"></div>';
+    htmlOut += '<div class="fpn-rn-label">Recorde Mundial</div>';
+    htmlOut += '<div class="fpn-rn-nome">' + recMundial.nome + '</div>';
+    htmlOut += '<div class="fpn-rn-info">' + recMundial.tempo + ' · ' + recMundial.data + '</div>';
+    htmlOut += '<div class="fpn-rn-info">' + recMundial.local + '</div>';
+    htmlOut += '</div>';
+  }
+
+  htmlOut += '</div>';
+  resultEl.innerHTML = htmlOut;
+  var elFPN = document.getElementById('fpn-num-fpn');
+  if (elFPN) animateCount(elFPN, pontosFPN, 600);
+  var elFINA = document.getElementById('fpn-num-fina');
+  if (elFINA && typeof pontosFINA === 'number') animateCount(elFINA, pontosFINA, 600);
 }
 function fpnOnTempoInput(event) {
   var raw = event.target.value.replace(/\D/g,'');
@@ -5078,7 +5317,7 @@ function fpnOnTempoInput(event) {
   var mm = parseInt(padded.slice(0,-4)) || 0;
   var fmt = mm > 0 ? mm+':'+('0'+ss).slice(-2)+','+('0'+cc).slice(-2) : ss+','+('0'+cc).slice(-2);
   prev.textContent = fmt;
-  calcularPontosFPN();
+  document.getElementById('fpn-result').innerHTML = '';
 }
 
 
@@ -5409,7 +5648,7 @@ function calcular() {
   html += '<div class="personal-wrap">';
   html += '<div class="personal-label">O teu tempo</div>';
   html += '<div class="personal-input-row">';
-  html += '<input type="tel" id="personal-time" class="personal-input" placeholder="ex: 10543" oninput="calcularDiff()" maxlength="7">';
+  html += '<input type="tel" id="personal-time" class="personal-input" placeholder="ex: 10543" oninput="calcularDiff()" maxlength="7" autocomplete="off">';
   html += '<div id="personal-time-preview" style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:var(--aqua);letter-spacing:2px;min-width:70px;"></div>';
   html += '</div>';
   html += '</div>';
@@ -5547,58 +5786,11 @@ function fpnUpdateDistancias() {
   if (distEl.querySelector('option[value="' + prevD + '"]')) distEl.value = prevD;
 }
 
-function calcularPontosFPN() {
-  var piscina = document.getElementById('fpn-piscina').value;
-  var sexo = document.getElementById('fpn-sexo').value;
-  var estilo = document.getElementById('fpn-estilo').value;
-  var dist = document.getElementById('fpn-distancia').value;
-  var tempoInput = document.getElementById('fpn-tempo').value.trim();
-  var resultEl = document.getElementById('fpn-result');
 
-  if (!piscina || !sexo || !estilo || !dist || !tempoInput) {
-    resultEl.innerHTML = '<div style="color:#7ab8d4;font-size:13px;">Preenche todos os campos.</div>';
-    return;
-  }
+// ===== RECORDES MUNDIAIS (FINA/WORLD AQUATICS) =====
+// ===== FIM RECORDES MUNDIAIS =====
 
-  // Get record
-  var key = dist + '_' + estilo;
-  var rec = null;
-  try { rec = recordesNacionais[piscina][sexo][key]; } catch(e) {}
-  if (!rec) {
-    resultEl.innerHTML = '<div style="color:#e74c3c;font-size:13px;">Sem recorde nacional para esta prova.</div>';
-    return;
-  }
 
-  function parseT(s) {
-    s = s.trim().replace(',','.');
-    var m;
-    m = s.match(/^(\d+):(\d{2})\.(\d{2})$/);
-    if (m) return (parseInt(m[1])*60+parseInt(m[2]))*100+parseInt(m[3]);
-    m = s.match(/^(\d+)\.(\d{2})$/);
-    if (m) return parseInt(m[1])*100+parseInt(m[2]);
-    if (/^\d+$/.test(s)) {
-      var n = parseInt(s);
-      return (Math.floor(n/10000)*60+Math.floor(n/100)%100)*100+n%100;
-    }
-    return null;
-  }
-
-  var B = parseT(rec.tempo);
-  var T = parseT(tempoInput);
-  if (!B || !T) { resultEl.innerHTML = '<div style="color:#e74c3c;font-size:13px;">Tempo inválido.</div>'; return; }
-
-  var pontos = Math.round(1000 * Math.pow(B/T, 3));
-
-  var html = '<div class="fpn-result-box">';
-  html += '<div class="fpn-pontos">' + pontos + '</div>';
-  html += '<div class="fpn-pontos-label">Pontos FPN</div>';
-  html += '<div class="fpn-divider"></div>';
-  html += '<div class="fpn-rn-label">Recorde Nacional: ' + rec.tempo + '</div>';
-  html += '<div class="fpn-rn-nome">' + rec.nome + '</div>';
-  html += '<div class="fpn-rn-info">' + rec.data + ' · ' + rec.local + '</div>';
-  html += '</div>';
-  resultEl.innerHTML = html;
-}
 function fpnOnTempoInput(event) {
   var raw = event.target.value.replace(/\D/g,'');
   event.target.value = raw;
@@ -5610,7 +5802,7 @@ function fpnOnTempoInput(event) {
   var mm = parseInt(padded.slice(0,-4)) || 0;
   var fmt = mm > 0 ? mm+':'+('0'+ss).slice(-2)+','+('0'+cc).slice(-2) : ss+','+('0'+cc).slice(-2);
   prev.textContent = fmt;
-  calcularPontosFPN();
+  document.getElementById('fpn-result').innerHTML = '';
 }
 
 
@@ -6097,6 +6289,10 @@ function mostrarFormulario() {
     document.getElementById('cartao-preview-wrap').style.display = 'none';
   }
   renderFormProvas(data);
+  // Mostrar botão eliminar só se houver mais de 1 perfil e estiver a editar
+  var _profiles = getAllProfiles();
+  var _deleteBtn = document.getElementById('atleta-delete-btn');
+  if (_deleteBtn) _deleteBtn.style.display = (Object.keys(_profiles).length > 1 && getActiveProfileId()) ? 'block' : 'none';
 }
 
 function cancelarFormulario() {
@@ -6162,6 +6358,10 @@ function guardarAtleta() {
       window._cartaoFPNMemory[activeId] = cartaoFinal;
     }
     window._cartaoFPNAtivo = cartaoFinal;
+  } else {
+    var c = null;
+    try { c = localStorage.getItem('cartaoFPN_' + activeId); } catch(e) {}
+    window._cartaoFPNAtivo = c || null;
   }
   var data = {id:activeId, nome:nome, escalao:escalao, sexo:sexo, tempos:ts};
   saveProfile(activeId, data);
@@ -6173,6 +6373,10 @@ function guardarAtleta() {
   mostrarPerfilAtivo();
   // Mostrar botão cartão e fazer scroll — usa _cartaoFPNAtivo já definido acima
   setTimeout(function() {
+    var aid2 = getActiveProfileId();
+    var c2 = window._cartaoFPNAtivo;
+    if (!c2) { try { c2 = localStorage.getItem('cartaoFPN_' + aid2); } catch(e) {} }
+    window._cartaoFPNAtivo = c2 || null;
     var bw = document.getElementById('ver-cartao-btn-wrap');
     if (bw) bw.style.display = window._cartaoFPNAtivo ? 'block' : 'none';
     var el = document.getElementById('atleta-comp-selector');
@@ -7112,34 +7316,52 @@ onAuthStateChanged(auth, async (user) => {
 
 <!-- ===== CARTÃO FPN — script global (fora do módulo para acesso via onclick) ===== -->
 <script>
+var _cropperInstance = null;
+
 function previewCartaoFPN(event) {
   var file = event.target.files[0];
   if (!file) return;
   var reader = new FileReader();
   reader.onload = function(e) {
-    var img = new Image();
-    img.onload = function() {
-      var canvas = document.createElement('canvas');
-      // Resolução reduzida para caber no localStorage (~5MB limite)
-      var maxW = 800, maxH = 600;
-      var w = img.width, h = img.height;
-      if (w > maxW || h > maxH) {
-        var ratio = Math.min(maxW/w, maxH/h);
-        w = Math.round(w * ratio);
-        h = Math.round(h * ratio);
-      }
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      // Qualidade 0.70 para garantir que cabe no localStorage
-      var dataUrl = canvas.toDataURL('image/jpeg', 0.70);
-      document.getElementById('cartao-preview-img').src = dataUrl;
-      document.getElementById('cartao-preview-wrap').style.display = 'block';
-      window._cartaoFPNData = dataUrl;
+    var cropImg = document.getElementById('crop-image');
+    cropImg.src = e.target.result;
+    var overlay = document.getElementById('crop-overlay');
+    overlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    if (_cropperInstance) { _cropperInstance.destroy(); _cropperInstance = null; }
+    cropImg.onload = function() {
+      _cropperInstance = new Cropper(cropImg, {
+        viewMode: 1,
+        autoCropArea: 0.85,
+        movable: true,
+        zoomable: true,
+        rotatable: false,
+        scalable: false,
+        responsive: true,
+        background: false
+      });
     };
-    img.src = e.target.result;
   };
   reader.readAsDataURL(file);
 }
+
+function confirmarRecorte() {
+  if (!_cropperInstance) return;
+  var canvas = _cropperInstance.getCroppedCanvas({ maxWidth: 1600, maxHeight: 1100 });
+  var dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+  document.getElementById('cartao-preview-img').src = dataUrl;
+  document.getElementById('cartao-preview-wrap').style.display = 'block';
+  window._cartaoFPNData = dataUrl;
+  cancelarRecorte();
+}
+
+function cancelarRecorte() {
+  if (_cropperInstance) { _cropperInstance.destroy(); _cropperInstance = null; }
+  document.getElementById('crop-overlay').style.display = 'none';
+  document.body.style.overflow = '';
+  document.getElementById('cartao-fpn-input').value = '';
+}
+
 
 function removerCartaoFPN() {
   document.getElementById('cartao-preview-img').src = '';
@@ -7170,6 +7392,21 @@ function fecharCartaoFPN() {
 
 
 
+
+  <!-- Overlay Recorte de Imagem -->
+  <div id="crop-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:10000;flex-direction:column;">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:rgba(0,0,0,0.85);">
+      <span style="color:#fff;font-size:14px;font-weight:600;">Recortar cartão FPN</span>
+      <div style="display:flex;gap:10px;">
+        <button type="button" onclick="cancelarRecorte()" style="background:rgba(255,255,255,0.15);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:14px;cursor:pointer;">Cancelar</button>
+        <button type="button" onclick="confirmarRecorte()" style="background:#00c4cc;color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:14px;font-weight:700;cursor:pointer;">✓ Confirmar</button>
+      </div>
+    </div>
+    <div style="flex:1;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:8px;">
+      <img id="crop-image" style="max-width:100%;max-height:100%;">
+    </div>
+  </div>
+
   <!-- Overlay Cartão FPN fullscreen -->
   <div id="cartao-fpn-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:9999;align-items:center;justify-content:center;">
     <button onclick="fecharCartaoFPN()" style="position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.2);border:none;color:#fff;font-size:26px;width:44px;height:44px;border-radius:50%;cursor:pointer;z-index:10000;display:flex;align-items:center;justify-content:center;">✕</button>
@@ -7178,13 +7415,7 @@ function fecharCartaoFPN() {
 
   <!-- Footer -->
   <div style="text-align:center; padding: 18px 0 10px 0; font-size: 0.78em; color: #888; letter-spacing: 0.01em;">
-    © SwimMin, todos os direitos reservados
+    © Susana Ferrão, todos os direitos reservados
   </div>
-
-  <!-- Beta Banner -->
-  <div style="background-color:#1a1a2e;border-top:2px solid #00b4d8;text-align:center;padding:10px 16px;font-size:13px;color:#cce7ff;position:fixed;bottom:0;left:0;width:100%;z-index:9999;box-sizing:border-box;">
-    SwimMin está em fase beta. Encontraste um problema ou tens uma sugestão? Envia-nos um e-mail para <a href="mailto:swimmin.app@gmail.com" style="color:#00b4d8;font-weight:bold;">swimmin.app@gmail.com</a>.
-  </div>
-  <div style="height:48px;"></div>
 </body>
 </html>
