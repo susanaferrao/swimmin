@@ -1,4 +1,4 @@
-const CACHE = 'swimmin-v37';
+const CACHE = 'swimmin-v40';
 const FILES = ['./swimmin-fpn.html', './manifest.json'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES))); self.skipWaiting(); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))); self.clients.claim(); });

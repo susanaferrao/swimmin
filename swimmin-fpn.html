@@ -673,6 +673,8 @@
 .relay-leg-time { font-family: 'Bebas Neue', sans-serif; color: var(--aqua); font-size: 15px; }
 .relay-empty { font-size: 14px; color: #888; text-align: center; padding: 12px 0; }
 </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 </head>
 <body>
 <div id="auth-toast" style="display:none;position:fixed;top:24px;left:50%;transform:translateX(-50%);z-index:9999;min-width:240px;max-width:90vw;padding:14px 22px;border-radius:14px;font-size:14px;font-weight:600;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.25);transition:opacity 0.4s;"></div>
@@ -810,7 +812,7 @@
           <select id="atleta-profile-select" onchange="mudarPerfil(this.value)" style="flex:1;padding:10px 12px;border-radius:10px;background:#f0f7ff;border:1.5px solid #c0d8ee;color:#1a3a4a;font-size:14px;font-weight:600;cursor:pointer;"></select>
           <button onclick="novoPerfilAtleta()" title="Novo nadador" style="padding:10px 14px;border-radius:10px;background:var(--aqua);color:var(--dark);border:none;font-weight:700;font-size:18px;cursor:pointer;line-height:1;">+</button>
         </div>
-        <button onclick="eliminarPerfilAtleta()" id="atleta-delete-btn" style="margin-top:8px;padding:7px 12px;border-radius:8px;background:transparent;border:1.5px solid #e74c3c;color:#e74c3c;font-size:12px;font-weight:600;cursor:pointer;width:100%;">Eliminar este nadador</button>
+  
       </div>
       <div id="atleta-saved-summary"></div>
       <div id="atleta-comp-selector" style="display:none;margin-top:16px;">
@@ -890,6 +892,9 @@
 
       <button type="button" onclick="guardarAtleta()" style="margin-top:18px;padding:14px;border-radius:8px;background:var(--aqua);color:var(--dark);font-weight:700;font-size:16px;border:none;cursor:pointer;width:100%;">Guardar e ver resultados</button>
       <button type="button" onclick="cancelarFormulario()" style="margin-top:8px;padding:10px;border-radius:8px;background:transparent;border:1px solid #ccc;color:#7ab8d4;font-size:14px;cursor:pointer;width:100%;">Cancelar</button>
+      <div id="atleta-delete-btn" style="display:none;margin-top:16px;border-top:1px solid #f0d0d0;padding-top:14px;">
+        <button type="button" onclick="eliminarPerfilAtleta()" style="padding:10px;border-radius:8px;background:transparent;border:1.5px solid #e74c3c;color:#e74c3c;font-size:13px;font-weight:600;cursor:pointer;width:100%;">Eliminar este nadador</button>
+      </div>
     </div>
 
     <div id="atleta-resultados" style="margin-top:20px;"></div>
@@ -6097,6 +6102,10 @@ function mostrarFormulario() {
     document.getElementById('cartao-preview-wrap').style.display = 'none';
   }
   renderFormProvas(data);
+  // Mostrar botão eliminar só se houver mais de 1 perfil e estiver a editar
+  var _profiles = getAllProfiles();
+  var _deleteBtn = document.getElementById('atleta-delete-btn');
+  if (_deleteBtn) _deleteBtn.style.display = (Object.keys(_profiles).length > 1 && getActiveProfileId()) ? 'block' : 'none';
 }
 
 function cancelarFormulario() {
@@ -7120,34 +7129,52 @@ onAuthStateChanged(auth, async (user) => {
 
 <!-- ===== CARTÃO FPN — script global (fora do módulo para acesso via onclick) ===== -->
 <script>
+var _cropperInstance = null;
+
 function previewCartaoFPN(event) {
   var file = event.target.files[0];
   if (!file) return;
   var reader = new FileReader();
   reader.onload = function(e) {
-    var img = new Image();
-    img.onload = function() {
-      var canvas = document.createElement('canvas');
-      // Resolução reduzida para caber no localStorage (~5MB limite)
-      var maxW = 800, maxH = 600;
-      var w = img.width, h = img.height;
-      if (w > maxW || h > maxH) {
-        var ratio = Math.min(maxW/w, maxH/h);
-        w = Math.round(w * ratio);
-        h = Math.round(h * ratio);
-      }
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      // Qualidade 0.70 para garantir que cabe no localStorage
-      var dataUrl = canvas.toDataURL('image/jpeg', 0.70);
-      document.getElementById('cartao-preview-img').src = dataUrl;
-      document.getElementById('cartao-preview-wrap').style.display = 'block';
-      window._cartaoFPNData = dataUrl;
+    var cropImg = document.getElementById('crop-image');
+    cropImg.src = e.target.result;
+    var overlay = document.getElementById('crop-overlay');
+    overlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    if (_cropperInstance) { _cropperInstance.destroy(); _cropperInstance = null; }
+    cropImg.onload = function() {
+      _cropperInstance = new Cropper(cropImg, {
+        viewMode: 1,
+        autoCropArea: 0.85,
+        movable: true,
+        zoomable: true,
+        rotatable: false,
+        scalable: false,
+        responsive: true,
+        background: false
+      });
     };
-    img.src = e.target.result;
   };
   reader.readAsDataURL(file);
 }
+
+function confirmarRecorte() {
+  if (!_cropperInstance) return;
+  var canvas = _cropperInstance.getCroppedCanvas({ maxWidth: 1600, maxHeight: 1100 });
+  var dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+  document.getElementById('cartao-preview-img').src = dataUrl;
+  document.getElementById('cartao-preview-wrap').style.display = 'block';
+  window._cartaoFPNData = dataUrl;
+  cancelarRecorte();
+}
+
+function cancelarRecorte() {
+  if (_cropperInstance) { _cropperInstance.destroy(); _cropperInstance = null; }
+  document.getElementById('crop-overlay').style.display = 'none';
+  document.body.style.overflow = '';
+  document.getElementById('cartao-fpn-input').value = '';
+}
+
 
 function removerCartaoFPN() {
   document.getElementById('cartao-preview-img').src = '';
@@ -7177,6 +7204,21 @@ function fecharCartaoFPN() {
 </script>
 
 
+
+
+  <!-- Overlay Recorte de Imagem -->
+  <div id="crop-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:10000;flex-direction:column;">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:rgba(0,0,0,0.85);">
+      <span style="color:#fff;font-size:14px;font-weight:600;">Recortar cartão FPN</span>
+      <div style="display:flex;gap:10px;">
+        <button type="button" onclick="cancelarRecorte()" style="background:rgba(255,255,255,0.15);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:14px;cursor:pointer;">Cancelar</button>
+        <button type="button" onclick="confirmarRecorte()" style="background:#00c4cc;color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:14px;font-weight:700;cursor:pointer;">✓ Confirmar</button>
+      </div>
+    </div>
+    <div style="flex:1;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:8px;">
+      <img id="crop-image" style="max-width:100%;max-height:100%;">
+    </div>
+  </div>
 
   <!-- Overlay Cartão FPN fullscreen -->
   <div id="cartao-fpn-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:9999;align-items:center;justify-content:center;">
