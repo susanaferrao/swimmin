@@ -1,4 +1,4 @@
-const CACHE_NAME = 'swimmin-v3';
+const CACHE_NAME = 'swimmin-v4';
 const ASSETS = [
   'https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap'
 ];
@@ -27,7 +27,6 @@ self.addEventListener('activate', function(event) {
 self.addEventListener('fetch', function(event) {
   var url = event.request.url;
 
-  // Firebase, Analytics — nunca interceta
   if (
     url.includes('firestore.googleapis.com') ||
     url.includes('firebase') ||
