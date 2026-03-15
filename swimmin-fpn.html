@@ -7496,7 +7496,7 @@ function fecharCartaoFPN() {
   <div class="crono-color-picker">
     <div style="font-size:15px;font-weight:700;color:#1a3a4a;margin-bottom:4px;">Cor do nadador</div>
     <div style="font-size:12px;color:#8a9ab0;margin-bottom:12px;">Escolhe a cor da touca</div>
-    <div class="crono-color-grid"><div class="crono-color-swatch" style="background:#e74c3c;" data-color="#e74c3c" onclick="cronoSelectColor('#e74c3c')"></div><div class="crono-color-swatch" style="background:#e67e22;" data-color="#e67e22" onclick="cronoSelectColor('#e67e22')"></div><div class="crono-color-swatch" style="background:#f1c40f;" data-color="#f1c40f" onclick="cronoSelectColor('#f1c40f')"></div><div class="crono-color-swatch" style="background:#2ecc71;" data-color="#2ecc71" onclick="cronoSelectColor('#2ecc71')"></div><div class="crono-color-swatch" style="background:#1abc9c;" data-color="#1abc9c" onclick="cronoSelectColor('#1abc9c')"></div><div class="crono-color-swatch" style="background:#3498db;" data-color="#3498db" onclick="cronoSelectColor('#3498db')"></div><div class="crono-color-swatch" style="background:#9b59b6;" data-color="#9b59b6" onclick="cronoSelectColor('#9b59b6')"></div><div class="crono-color-swatch" style="background:#e91e8c;" data-color="#e91e8c" onclick="cronoSelectColor('#e91e8c')"></div><div class="crono-color-swatch" style="background:#00bcd4;" data-color="#00bcd4" onclick="cronoSelectColor('#00bcd4')"></div><div class="crono-color-swatch" style="background:#ff5722;" data-color="#ff5722" onclick="cronoSelectColor('#ff5722')"></div><div class="crono-color-swatch" style="background:#607d8b;" data-color="#607d8b" onclick="cronoSelectColor('#607d8b')"></div><div class="crono-color-swatch" style="background:#795548;" data-color="#795548" onclick="cronoSelectColor('#795548')"></div><div class="crono-color-swatch" style="background:#4caf50;" data-color="#4caf50" onclick="cronoSelectColor('#4caf50')"></div><div class="crono-color-swatch" style="background:#ff9800;" data-color="#ff9800" onclick="cronoSelectColor('#ff9800')"></div><div class="crono-color-swatch" style="background:#673ab7;" data-color="#673ab7" onclick="cronoSelectColor('#673ab7')"></div><div class="crono-color-swatch" style="background:#2196f3;" data-color="#2196f3" onclick="cronoSelectColor('#2196f3')"></div><div class="crono-color-swatch" style="background:#f44336;" data-color="#f44336" onclick="cronoSelectColor('#f44336')"></div><div class="crono-color-swatch" style="background:#009688;" data-color="#009688" onclick="cronoSelectColor('#009688')"></div><div class="crono-color-swatch" style="background:#cddc39;" data-color="#cddc39" onclick="cronoSelectColor('#cddc39')"></div><div class="crono-color-swatch" style="background:#ff4081;" data-color="#ff4081" onclick="cronoSelectColor('#ff4081')"></div><div class="crono-color-swatch" style="background:#ffffff;border-color:#d0d0d0;" data-color="#ffffff" onclick="cronoSelectColor('#ffffff')"></div><div class="crono-color-swatch" style="background:#222222;" data-color="#222222" onclick="cronoSelectColor('#222222')"></div></div>
+    <div class="crono-color-grid" style="grid-template-columns:repeat(4,1fr);"><div class="crono-color-swatch" style="background:#e63946;" data-color="#e63946" onclick="cronoSelectColor('#e63946')"></div><div class="crono-color-swatch" style="background:#f4722b;" data-color="#f4722b" onclick="cronoSelectColor('#f4722b')"></div><div class="crono-color-swatch" style="background:#f7c948;" data-color="#f7c948" onclick="cronoSelectColor('#f7c948')"></div><div class="crono-color-swatch" style="background:#57cc04;" data-color="#57cc04" onclick="cronoSelectColor('#57cc04')"></div><div class="crono-color-swatch" style="background:#00b4d8;" data-color="#00b4d8" onclick="cronoSelectColor('#00b4d8')"></div><div class="crono-color-swatch" style="background:#1a6fdb;" data-color="#1a6fdb" onclick="cronoSelectColor('#1a6fdb')"></div><div class="crono-color-swatch" style="background:#7b2d8b;" data-color="#7b2d8b" onclick="cronoSelectColor('#7b2d8b')"></div><div class="crono-color-swatch" style="background:#e91e8c;" data-color="#e91e8c" onclick="cronoSelectColor('#e91e8c')"></div><div class="crono-color-swatch" style="background:#00c49a;" data-color="#00c49a" onclick="cronoSelectColor('#00c49a')"></div><div class="crono-color-swatch" style="background:#8b4513;" data-color="#8b4513" onclick="cronoSelectColor('#8b4513')"></div><div class="crono-color-swatch" style="background:#ff6b9d;" data-color="#ff6b9d" onclick="cronoSelectColor('#ff6b9d')"></div><div class="crono-color-swatch" style="background:#a8e063;" data-color="#a8e063" onclick="cronoSelectColor('#a8e063')"></div><div class="crono-color-swatch" style="background:#9b59b6;" data-color="#9b59b6" onclick="cronoSelectColor('#9b59b6')"></div><div class="crono-color-swatch" style="background:#888888;" data-color="#888888" onclick="cronoSelectColor('#888888')"></div><div class="crono-color-swatch" style="background:#222222;" data-color="#222222" onclick="cronoSelectColor('#222222')"></div><div class="crono-color-swatch" style="background:#ffffff;border-color:#d0d0d0;" data-color="#ffffff" onclick="cronoSelectColor('#ffffff')"></div></div>
     <button onclick="cronoCloseColorPicker()" style="margin-top:16px;width:100%;padding:10px;border-radius:10px;background:#f0f7ff;border:1.5px solid #d0e4f0;color:#1a3a4a;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">Cancelar</button>
   </div>
 </div>
@@ -7512,11 +7512,10 @@ function fecharCartaoFPN() {
 // ===== ZONA DO TREINADOR (CRONÓMETRO) =====
 
 var CRONO_COLORS = [
-  '#e74c3c','#e67e22','#f1c40f','#2ecc71','#1abc9c',
-  '#3498db','#9b59b6','#e91e8c','#00bcd4','#ff5722',
-  '#607d8b','#795548','#4caf50','#ff9800','#673ab7',
-  '#2196f3','#f44336','#009688','#cddc39','#ff4081',
-  '#ffffff','#222222'
+  '#e63946','#f4722b','#f7c948','#57cc04','#00b4d8',
+  '#1a6fdb','#7b2d8b','#e91e8c','#00c49a','#8b4513',
+  '#ff6b9d','#a8e063','#9b59b6','#888888','#222222',
+  '#ffffff'
 ];
 
 var CRONO_MAX_GROUPS = 6;
@@ -7635,7 +7634,7 @@ function cronoRenderConfig() {
           '<option value="50"' + (cronoConfig.piscina==='50'?' selected':'') + '>50m</option>' +
         '</select></div>' +
       '<div class="crono-field"><label class="crono-label">Distância total (m)</label>' +
-        '<input class="crono-input" type="number" min="50" step="50" placeholder="ex: 400" value="' + (cronoConfig.distancia || '') + '" oninput="cronoCfgDist(this.value)" autocomplete="off"></div>' +
+        '<input class="crono-input" type="number" min="50" step="50" placeholder="ex: 400" value="' + (cronoConfig.distancia || '') + '" onchange="cronoCfgDist(this.value)" onblur="cronoCfgDist(this.value)" autocomplete="off"></div>' +
     '</div>' +
     '<div style="margin-bottom:16px;font-size:11px;color:var(--muted);">Cada toque = ' + infoToque + infoToques + '</div>' +
     // 2º — Divisor
@@ -7731,8 +7730,8 @@ function cronoCfgSave() {
 
 function cronoCfgIniciar() {
   cronoCfgSave();
-  if (!cronoConfig.piscina) { alert('Seleciona o tipo de piscina.'); return; }
-  if (!cronoConfig.distancia) { alert('Seleciona a distância total.'); return; }
+  if (!cronoConfig.piscina) { cronoShowMsg('Seleciona o tipo de piscina.'); return; }
+  if (!cronoConfig.distancia) { cronoShowMsg('Define a distância total.'); return; }
   // Verificar se há pelo menos 1 nadador em algum grupo
   var temNadador = false;
   for (var i = 0; i < cronoConfig.grupos.length; i++) {
@@ -7741,7 +7740,7 @@ function cronoCfgIniciar() {
     }
     if (temNadador) break;
   }
-  if (!temNadador) { alert('Adiciona pelo menos um nadador.'); return; }
+  if (!temNadador) { cronoShowMsg('Adiciona pelo menos um nadador.'); return; }
 
   // Criar sessão
   var distPorToque = cronoConfig.piscina === '25' ? 50 : 100;
@@ -7767,7 +7766,7 @@ function cronoCfgIniciar() {
       cronoSession.grupos.push({ id: gi, nome: gCfg.nome, startTime: null, started: false, nadadores: nadadores });
     }
   }
-  if (cronoSession.grupos.length === 0) { alert('Nenhum grupo tem nadadores.'); return; }
+  if (cronoSession.grupos.length === 0) { cronoShowMsg('Nenhum grupo tem nadadores.'); return; }
   cronoPhase = 'arranque';
   cronoPersistSession();
   cronoRenderArranque();
@@ -7835,6 +7834,37 @@ function cronoVoltarConfig() {
 
 // ===== FASE 3: ATIVO =====
 
+var _cronoTimerInterval = null;
+
+function cronoStartTimer() {
+  if (_cronoTimerInterval) clearInterval(_cronoTimerInterval);
+  // Usar o startTime do primeiro grupo que arrancou
+  var startTime = null;
+  for (var i = 0; i < cronoSession.grupos.length; i++) {
+    if (cronoSession.grupos[i].started && cronoSession.grupos[i].startTime) {
+      if (startTime === null || cronoSession.grupos[i].startTime < startTime) {
+        startTime = cronoSession.grupos[i].startTime;
+      }
+    }
+  }
+  if (!startTime) return;
+  function update() {
+    var el = document.getElementById('crono-timer-display');
+    if (!el) { clearInterval(_cronoTimerInterval); _cronoTimerInterval = null; return; }
+    var elapsed = Date.now() - startTime;
+    var min = Math.floor(elapsed / 60000);
+    var sec = Math.floor((elapsed % 60000) / 1000);
+    var cs = Math.floor((elapsed % 1000) / 10);
+    el.textContent = String(min).padStart(2,'0') + ':' + String(sec).padStart(2,'0') + ',' + String(cs).padStart(2,'0');
+  }
+  update();
+  _cronoTimerInterval = setInterval(update, 10);
+}
+
+function cronoStopTimer() {
+  if (_cronoTimerInterval) { clearInterval(_cronoTimerInterval); _cronoTimerInterval = null; }
+}
+
 function cronoRenderActive() {
   var el = document.getElementById('crono-content');
   if (!el) return;
@@ -7901,14 +7931,19 @@ function cronoRenderActive() {
   el.innerHTML =
     '<div class="crono-action-bar">' +
       '<button class="crono-undo-btn" onclick="cronoUndoLast()">' + undoLabel + '</button>' +
-      '<div class="crono-warning">Não feches o browser durante a tarefa</div>' +
+      '<div style="text-align:center;background:#f5f9fc;border-radius:8px;padding:6px 8px;flex:1.5;">' +
+        '<div style="font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#8a9ab0;margin-bottom:2px;">Tarefa iniciada há</div>' +
+        '<div id="crono-timer-display" style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:var(--blue-deep);letter-spacing:2px;line-height:1;">00:00</div>' +
+      '</div>' +
     '</div>' +
     '<div class="crono-swimmers-grid">' + swimHtml + '</div>' +
     (allDone ?
       '<div style="display:flex;gap:10px;margin-top:8px;">' +
         '<button onclick="cronoShowSummary()" style="flex:1;padding:13px;border-radius:12px;background:linear-gradient(135deg,var(--blue-deep),var(--blue-mid));color:#fff;border:none;font-size:14px;font-weight:700;cursor:pointer;">Ver resumo</button>' +
-        '<button onclick="cronoExportCSV()" style="flex:1;padding:13px;border-radius:12px;background:linear-gradient(135deg,#00a896,#00c4cc);color:#fff;border:none;font-size:14px;font-weight:700;cursor:pointer;">Exportar CSV</button>' +
+        '<button onclick="cronoExportCSV()" style="flex:1;padding:13px;border-radius:12px;background:linear-gradient(135deg,#00a896,#00c4cc);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;">CSV</button>' +
+        '<button onclick="cronoExportPDF()" style="flex:1;padding:13px;border-radius:12px;background:linear-gradient(135deg,#6c3483,#9b59b6);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;">PDF</button>' +
       '</div>' : '');
+  if (!allDone) cronoStartTimer(); else cronoStopTimer();
 }
 
 // Toque no botão do nadador
@@ -8006,6 +8041,19 @@ function cronoUndoLast() {
   });
 }
 
+function cronoShowMsg(msg) {
+  var panel = document.getElementById('crono-undo-panel');
+  var msgEl = document.getElementById('crono-undo-msg');
+  if (!panel || !msgEl) return;
+  msgEl.textContent = msg;
+  // Hide confirm button, show only cancel/ok
+  var btns = panel.querySelectorAll('button');
+  if (btns[0]) btns[0].textContent = 'OK';
+  if (btns[1]) btns[1].style.display = 'none';
+  panel.style.display = 'flex';
+  panel._onConfirm = null;
+}
+
 function cronoShowUndoPanel(msg, onConfirm) {
   var panel = document.getElementById('crono-undo-panel');
   var msgEl = document.getElementById('crono-undo-msg');
@@ -8019,12 +8067,20 @@ function cronoConfirmUndo() {
   var panel = document.getElementById('crono-undo-panel');
   if (!panel) return;
   panel.style.display = 'none';
+  var btns = panel.querySelectorAll('button');
+  if (btns[0]) btns[0].textContent = 'Cancelar';
+  if (btns[1]) btns[1].style.display = '';
   if (panel._onConfirm) panel._onConfirm();
 }
 
 function cronoCancelUndo() {
   var panel = document.getElementById('crono-undo-panel');
-  if (panel) panel.style.display = 'none';
+  if (!panel) return;
+  panel.style.display = 'none';
+  // Reset buttons to normal state
+  var btns = panel.querySelectorAll('button');
+  if (btns[0]) btns[0].textContent = 'Cancelar';
+  if (btns[1]) btns[1].style.display = '';
 }
 
 function cronoShowUndoMsg(msg, ok) {
@@ -8041,6 +8097,7 @@ function cronoShowUndoMsg(msg, ok) {
 // ===== FASE 4: RESUMO =====
 
 function cronoShowSummary() {
+  cronoStopTimer();
   cronoPhase = 'summary';
   // Guardar no histórico
   cronoPersistSession();
@@ -8083,8 +8140,9 @@ function cronoRenderSummary() {
   }
 
   html += '<div style="display:flex;gap:10px;margin-top:16px;">' +
-    '<button onclick="cronoExportCSV()" style="flex:1;padding:13px;border-radius:12px;background:linear-gradient(135deg,#00a896,#00c4cc);color:#fff;border:none;font-size:14px;font-weight:700;cursor:pointer;">Exportar CSV</button>' +
-    '<button onclick="cronoNovaSessionConfirm()" style="flex:1;padding:13px;border-radius:12px;background:linear-gradient(135deg,var(--blue-deep),var(--blue-mid));color:#fff;border:none;font-size:14px;font-weight:700;cursor:pointer;">Nova sessão</button>' +
+    '<button onclick="cronoExportCSV()" style="flex:1;padding:12px 6px;border-radius:12px;background:linear-gradient(135deg,#00a896,#00c4cc);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;">CSV</button>' +
+    '<button onclick="cronoExportPDF()" style="flex:1;padding:12px 6px;border-radius:12px;background:linear-gradient(135deg,#6c3483,#9b59b6);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;">PDF</button>' +
+    '<button onclick="cronoNovaSessionConfirm()" style="flex:1;padding:12px 6px;border-radius:12px;background:linear-gradient(135deg,var(--blue-deep),var(--blue-mid));color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;">Nova sessão</button>' +
   '</div>';
 
   el.innerHTML = html;
@@ -8184,6 +8242,78 @@ function cronoHistoryHtml() {
     '</div>';
   }
   return html;
+}
+
+function cronoExportPDF() {
+  if (!cronoSession) return;
+  var d = new Date(cronoSession.data);
+  var dateStr = d.toLocaleDateString('pt-PT') + ' ' + d.toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'});
+  var distPorToque = parseInt(cronoSession.distPorToque) || 50;
+
+  var rows = '';
+  for (var gi = 0; gi < cronoSession.grupos.length; gi++) {
+    var g = cronoSession.grupos[gi];
+    if (cronoSession.grupos.length > 1) {
+      rows += '<tr><td colspan="' + (4 + cronoSession.totalToques) + '" style="background:#e8f0fa;font-weight:700;padding:8px 12px;font-size:13px;color:#003d6b;">' + g.nome + '</td></tr>';
+    }
+    for (var ni = 0; ni < g.nadadores.length; ni++) {
+      var n = g.nadadores[ni];
+      var splits = '';
+      for (var si = 0; si < cronoSession.totalToques; si++) {
+        splits += '<td style="padding:6px 10px;border-bottom:1px solid #e0edf5;text-align:center;">' + (n.splits[si] ? cronoFmtMs(n.splits[si]) : '—') + '</td>';
+      }
+      var totalMs = n.splits.reduce(function(a,b){return a+b;},0);
+      var distPerc = n.splits.length * distPorToque;
+      var media = distPerc >= 100 ? cronoFmtMs(Math.round((totalMs/distPerc)*100)) : '—';
+      rows += '<tr>' +
+        '<td style="padding:6px 12px;border-bottom:1px solid #e0edf5;">' +
+          '<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:' + n.cor + ';margin-right:6px;vertical-align:middle;"></span>' + n.nome +
+        '</td>' +
+        '<td style="padding:6px 10px;border-bottom:1px solid #e0edf5;text-align:center;">' + (n.finished ? cronoFmtMs(n.totalTime) : '—') + '</td>' +
+        '<td style="padding:6px 10px;border-bottom:1px solid #e0edf5;text-align:center;">' + media + '</td>' +
+        splits +
+      '</tr>';
+    }
+  }
+
+  var splitHeaders = '';
+  for (var i = 0; i < cronoSession.totalToques; i++) {
+    var label = distPorToque < 100 ? (distPorToque * (i+1)) + 'm' : (distPorToque * (i+1)) + 'm';
+    splitHeaders += '<th style="padding:8px 10px;background:#003d6b;color:#fff;text-align:center;font-weight:600;">' + label + '</th>';
+  }
+
+  var html = '<!DOCTYPE html><html lang="pt"><head><meta charset="UTF-8">' +
+    '<title>SwimMin — Sessão de Treino</title>' +
+    '<style>' +
+      'body{font-family:Arial,sans-serif;margin:32px;color:#1a2a3a;}' +
+      'h1{color:#003d6b;font-size:22px;margin-bottom:4px;}' +
+      '.meta{font-size:13px;color:#6b8fa8;margin-bottom:24px;}' +
+      'table{width:100%;border-collapse:collapse;font-size:13px;}' +
+      'th{background:#003d6b;color:#fff;padding:8px 12px;text-align:left;font-weight:600;}' +
+      'tr:hover td{background:#f4f9fd;}' +
+      '@media print{body{margin:16px;}button{display:none!important;}}' +
+    '</style></head><body>' +
+    '<h1>SwimMin — Sessão de Treino</h1>' +
+    '<div class="meta">Data: ' + dateStr + ' &nbsp;|&nbsp; Piscina: ' + cronoSession.piscina + 'm &nbsp;|&nbsp; Distância: ' + cronoSession.distancia + 'm &nbsp;|&nbsp; ' + distPorToque + 'm por toque</div>' +
+    '<table><thead><tr>' +
+      '<th>Nadador</th>' +
+      '<th style="text-align:center;">Total</th>' +
+      '<th style="text-align:center;">Média/100m</th>' +
+      splitHeaders +
+    '</tr></thead><tbody>' + rows + '</tbody></table>' +
+    '<div style="margin-top:32px;text-align:center;">' +
+      '<button onclick="window.print()" style="padding:12px 32px;background:#003d6b;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;">Imprimir / Guardar como PDF</button>' +
+    '</div>' +
+    '<div style="margin-top:24px;font-size:11px;color:#aaa;text-align:center;">SwimMin · swimmin.app@gmail.com</div>' +
+    '</body></html>';
+
+  var win = window.open('', '_blank');
+  if (win) {
+    win.document.write(html);
+    win.document.close();
+  } else {
+    cronoShowMsg('Permite popups no browser para gerar o PDF.');
+  }
 }
 
 function cronoExportFromHistory(idx) {
