@@ -7603,12 +7603,6 @@ function cronoRenderConfig() {
   var g = cronoConfig.grupos[cronoActiveTab];
 
   // Distâncias disponíveis
-  var distOpts = [100,200,400,800,1500,3000];
-  var distHtml = '<option value="">Selecionar</option>';
-  for (var d = 0; d < distOpts.length; d++) {
-    distHtml += '<option value="' + distOpts[d] + '"' + (cronoConfig.distancia == distOpts[d] ? ' selected' : '') + '>' + distOpts[d] + 'm</option>';
-  }
-
   // Tabs dos grupos
   var tabsHtml = '';
   for (var i = 0; i < nGrupos; i++) {
@@ -7640,8 +7634,8 @@ function cronoRenderConfig() {
           '<option value="25"' + (cronoConfig.piscina==='25'?' selected':'') + '>25m</option>' +
           '<option value="50"' + (cronoConfig.piscina==='50'?' selected':'') + '>50m</option>' +
         '</select></div>' +
-      '<div class="crono-field"><label class="crono-label">Distância total</label>' +
-        '<select class="crono-select" onchange="cronoCfgDist(this.value)">' + distHtml + '</select></div>' +
+      '<div class="crono-field"><label class="crono-label">Distância total (m)</label>' +
+        '<input class="crono-input" type="number" min="50" step="50" placeholder="ex: 400" value="' + (cronoConfig.distancia || '') + '" oninput="cronoCfgDist(this.value)" autocomplete="off"></div>' +
     '</div>' +
     '<div style="margin-bottom:16px;font-size:11px;color:var(--muted);">Cada toque = ' + infoToque + infoToques + '</div>' +
     // 2º — Divisor
