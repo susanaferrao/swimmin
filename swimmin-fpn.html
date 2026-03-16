@@ -507,6 +507,26 @@
   }
 
 
+
+/* ===== CRONÓMETROS STANDALONE ===== */
+.sw-grid-1 { display:grid; grid-template-columns:1fr; gap:12px; }
+.sw-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.sw-grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+.sw-grid-4 { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:6px; }
+.sw-card { background:#f0f7ff; border-radius:14px; padding:10px 8px; display:flex; flex-direction:column; align-items:center; }
+.sw-display { font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--blue-deep); letter-spacing:2px; line-height:1; margin:6px 0; text-align:center; }
+.sw-display.sw-4 { font-size:20px; }
+.sw-btns { display:flex; gap:4px; width:100%; margin-bottom:6px; }
+.sw-btn { flex:1; padding:7px 2px; border:none; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:11px; font-weight:700; cursor:pointer; }
+.sw-btn-start { background:linear-gradient(135deg,#00a896,#00c4cc); color:#fff; }
+.sw-btn-stop { background:linear-gradient(135deg,#e74c3c,#c0392b); color:#fff; }
+.sw-btn-split { background:linear-gradient(135deg,var(--blue-deep),var(--blue-mid)); color:#fff; }
+.sw-btn-reset { background:#e0edf5; color:#1a3a4a; }
+.sw-splits { width:100%; max-height:120px; overflow-y:auto; }
+.sw-split-item { display:flex; justify-content:space-between; gap:4px; font-size:11px; padding:3px 4px; border-bottom:1px solid #d0e4f0; color:#1a3a4a; }
+.sw-split-item:first-child { font-weight:700; color:var(--blue-deep); }
+.sw-split-n { color:var(--muted); }
+
 /* ===== ZONA DO TREINADOR (CRONÓMETRO) ===== */
 #crono-section { display:none; margin-top:20px; margin-bottom:24px; }
 .crono-card { background:var(--card); backdrop-filter:blur(20px); border-radius:24px; padding:28px 24px; box-shadow:0 32px 64px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.3); }
@@ -525,7 +545,7 @@
 .crono-swimmer-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
 .crono-swimmer-name { flex:1; background:var(--white); border:1.5px solid #d0e4f0; border-radius:10px; padding:9px 12px; font-size:14px; font-family:'DM Sans',sans-serif; color:var(--text); }
 .crono-swimmer-name:focus { outline:none; border-color:var(--blue-bright); }
-.crono-color-btn { width:36px; height:36px; border-radius:50%; border:2px solid rgba(255,255,255,0.8); cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.2); flex-shrink:0; }
+.crono-color-btn { width:36px; height:36px; border-radius:4px; border:none; background:transparent; cursor:pointer; flex-shrink:0; padding:0; }
 .crono-remove-btn { width:30px; height:30px; border-radius:50%; border:none; background:#fdecea; color:#c0392b; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-weight:700; font-family:'DM Sans',sans-serif; }
 .crono-add-swimmer-btn { width:100%; padding:9px; border-radius:10px; border:1.5px dashed #c0d8ee; background:transparent; color:var(--muted); font-size:13px; font-weight:600; cursor:pointer; margin-top:4px; font-family:'DM Sans',sans-serif; }
 .crono-add-swimmer-btn:hover { border-color:var(--aqua); color:var(--aqua); }
@@ -959,8 +979,12 @@
 <div id="crono-section">
   <div class="crono-card">
     <div class="crono-title">Zona do Treinador</div>
-    <div class="crono-subtitle">Cronómetro de treino com parciais</div>
+    <div style="display:flex;gap:0;margin-bottom:20px;border-radius:12px;overflow:hidden;border:1.5px solid #d0e4f0;">
+      <button id="crono-tab-parciais" onclick="cronoSwitchTab('parciais')" style="flex:1;padding:10px;border:none;background:var(--blue-deep);color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;">Parciais</button>
+      <button id="crono-tab-cronos" onclick="cronoSwitchTab('cronos')" style="flex:1;padding:10px;border:none;background:#f0f7ff;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;">Cronómetros</button>
+    </div>
     <div id="crono-content"></div>
+    <div id="crono-cronos-content" style="display:none;"></div>
   </div>
 </div>
 
@@ -7496,8 +7520,8 @@ function fecharCartaoFPN() {
   <div class="crono-color-picker">
     <div style="font-size:15px;font-weight:700;color:#1a3a4a;margin-bottom:4px;">Cor do nadador</div>
     <div style="font-size:12px;color:#8a9ab0;margin-bottom:12px;">Escolhe a cor da touca</div>
-    <div class="crono-color-grid" style="grid-template-columns:repeat(4,1fr);"><div class="crono-color-swatch" style="background:#e63946;" data-color="#e63946" onclick="cronoSelectColor('#e63946')"></div><div class="crono-color-swatch" style="background:#f4722b;" data-color="#f4722b" onclick="cronoSelectColor('#f4722b')"></div><div class="crono-color-swatch" style="background:#f7c948;" data-color="#f7c948" onclick="cronoSelectColor('#f7c948')"></div><div class="crono-color-swatch" style="background:#57cc04;" data-color="#57cc04" onclick="cronoSelectColor('#57cc04')"></div><div class="crono-color-swatch" style="background:#00b4d8;" data-color="#00b4d8" onclick="cronoSelectColor('#00b4d8')"></div><div class="crono-color-swatch" style="background:#1a6fdb;" data-color="#1a6fdb" onclick="cronoSelectColor('#1a6fdb')"></div><div class="crono-color-swatch" style="background:#7b2d8b;" data-color="#7b2d8b" onclick="cronoSelectColor('#7b2d8b')"></div><div class="crono-color-swatch" style="background:#e91e8c;" data-color="#e91e8c" onclick="cronoSelectColor('#e91e8c')"></div><div class="crono-color-swatch" style="background:#00c49a;" data-color="#00c49a" onclick="cronoSelectColor('#00c49a')"></div><div class="crono-color-swatch" style="background:#8b4513;" data-color="#8b4513" onclick="cronoSelectColor('#8b4513')"></div><div class="crono-color-swatch" style="background:#ff6b9d;" data-color="#ff6b9d" onclick="cronoSelectColor('#ff6b9d')"></div><div class="crono-color-swatch" style="background:#a8e063;" data-color="#a8e063" onclick="cronoSelectColor('#a8e063')"></div><div class="crono-color-swatch" style="background:#9b59b6;" data-color="#9b59b6" onclick="cronoSelectColor('#9b59b6')"></div><div class="crono-color-swatch" style="background:#888888;" data-color="#888888" onclick="cronoSelectColor('#888888')"></div><div class="crono-color-swatch" style="background:#222222;" data-color="#222222" onclick="cronoSelectColor('#222222')"></div><div class="crono-color-swatch" style="background:#ffffff;border-color:#d0d0d0;" data-color="#ffffff" onclick="cronoSelectColor('#ffffff')"></div></div>
-    <button onclick="cronoCloseColorPicker()" style="margin-top:16px;width:100%;padding:10px;border-radius:10px;background:#f0f7ff;border:1.5px solid #d0e4f0;color:#1a3a4a;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">Cancelar</button>
+    <div class="crono-color-grid" style="grid-template-columns:repeat(4,1fr);"><div class="crono-color-swatch" style="background:#e63946;" data-color="#e63946" onclick="cronoSelectColor('#e63946')"></div><div class="crono-color-swatch" style="background:#f4722b;" data-color="#f4722b" onclick="cronoSelectColor('#f4722b')"></div><div class="crono-color-swatch" style="background:#f7c948;" data-color="#f7c948" onclick="cronoSelectColor('#f7c948')"></div><div class="crono-color-swatch" style="background:#57cc04;" data-color="#57cc04" onclick="cronoSelectColor('#57cc04')"></div><div class="crono-color-swatch" style="background:#00b4d8;" data-color="#00b4d8" onclick="cronoSelectColor('#00b4d8')"></div><div class="crono-color-swatch" style="background:#1a6fdb;" data-color="#1a6fdb" onclick="cronoSelectColor('#1a6fdb')"></div><div class="crono-color-swatch" style="background:#7b2d8b;" data-color="#7b2d8b" onclick="cronoSelectColor('#7b2d8b')"></div><div class="crono-color-swatch" style="background:#e91e8c;" data-color="#e91e8c" onclick="cronoSelectColor('#e91e8c')"></div><div class="crono-color-swatch" style="background:#00c49a;" data-color="#00c49a" onclick="cronoSelectColor('#00c49a')"></div><div class="crono-color-swatch" style="background:#8b4513;" data-color="#8b4513" onclick="cronoSelectColor('#8b4513')"></div><div class="crono-color-swatch" style="background:#ff6b9d;" data-color="#ff6b9d" onclick="cronoSelectColor('#ff6b9d')"></div><div class="crono-color-swatch" style="background:#a8e063;" data-color="#a8e063" onclick="cronoSelectColor('#a8e063')"></div><div class="crono-color-swatch" style="background:#9b59b6;" data-color="#9b59b6" onclick="cronoSelectColor('#9b59b6')"></div><div class="crono-color-swatch" style="background:#888888;" data-color="#888888" onclick="cronoSelectColor('#888888')"></div><div class="crono-color-swatch" style="background:#222222;" data-color="#222222" onclick="cronoSelectColor('#222222')"></div><div class="crono-color-swatch" style="background:#ffffff;border:2px solid #d0d0d0;" data-color="#ffffff" onclick="cronoSelectColor('#ffffff')"></div></div></div>
+    <button onclick="cronoCloseColorPicker()" style="margin-top:16px;width:100%;padding:10px;border-radius:10px;background:#f0f7ff;border:1.5px solid #d0e4f0;color:#1a3a4a;font-size:14px;font-weight:600;cursor:pointer;">Cancelar</button>
   </div>
 </div>
   <!-- Footer -->
@@ -7563,6 +7587,27 @@ function toggleCrono() {
   }
 }
 
+var _cronoActiveTab = 'parciais';
+
+function cronoSwitchTab(tab) {
+  _cronoActiveTab = tab;
+  var tPar = document.getElementById('crono-tab-parciais');
+  var tCro = document.getElementById('crono-tab-cronos');
+  var cPar = document.getElementById('crono-content');
+  var cCro = document.getElementById('crono-cronos-content');
+  if (!tPar || !tCro || !cPar || !cCro) return;
+  if (tab === 'parciais') {
+    tPar.style.background = 'var(--blue-deep)'; tPar.style.color = '#fff';
+    tCro.style.background = '#f0f7ff'; tCro.style.color = '#1a3a4a';
+    cPar.style.display = 'block'; cCro.style.display = 'none';
+  } else {
+    tCro.style.background = 'var(--blue-deep)'; tCro.style.color = '#fff';
+    tPar.style.background = '#f0f7ff'; tPar.style.color = '#1a3a4a';
+    cPar.style.display = 'none'; cCro.style.display = 'block';
+    swInit();
+  }
+}
+
 function cronoInit() {
   // Limpar sessões expiradas (>30 dias)
   cronoPurgeOldHistory();
@@ -7570,14 +7615,14 @@ function cronoInit() {
   var saved = null;
   try { saved = JSON.parse(localStorage.getItem(CRONO_SESSION_KEY)); } catch(e) {}
   if (saved && saved.phase && saved.phase !== 'summary') {
-    if (confirm('Existe uma sessão em curso. Retomar?')) {
+    cronoShowUndoPanel('Existe uma sessão de parciais em curso. Retomar?', function() {
       cronoSession = saved.session;
       cronoPhase = saved.phase;
       if (cronoPhase === 'active') { cronoRenderActive(); }
       else if (cronoPhase === 'arranque') { cronoRenderArranque(); }
       else { cronoRenderConfig(); }
-      return;
-    }
+    });
+    return;
   }
   // Carregar config guardada
   var savedCfg = null;
@@ -7658,7 +7703,7 @@ function cronoSwimmerRow(idx, sw) {
   var cor = sw.cor || CRONO_COLORS[idx % CRONO_COLORS.length];
   return '<div class="crono-swimmer-row" id="swrow-' + idx + '">' +
     '<input class="crono-swimmer-name" type="text" placeholder="Nome do nadador" value="' + (sw.nome||'') + '" oninput="cronoSwName(' + idx + ',this.value)" autocomplete="off">' +
-    '<button class="crono-color-btn" style="background:' + cor + ';" onclick="cronoPickColor(' + idx + ')"></button>' +
+    '<button class="crono-color-btn" onclick="cronoPickColor(' + idx + ')">' + cronoCapSvg(cor) + '</button>' +
     '<button class="crono-remove-btn" onclick="cronoRemoveSwimmer(' + idx + ')">×</button>' +
   '</div>';
 }
@@ -8236,6 +8281,7 @@ function cronoHistoryHtml() {
         '<div class="crono-history-date">' + label + '</div>' +
       '</div>' +
       '<div style="display:flex;gap:6px;">' +
+        '<button class="crono-export-btn" style="background:#1a6fdb;" onclick="cronoVerHistoria(' + idx + ')">Ver</button>' +
         '<button class="crono-export-btn" onclick="cronoExportFromHistory(' + idx + ')">CSV</button>' +
         '<button class="crono-export-btn" style="background:#e74c3c;" onclick="cronoDeleteFromHistory(' + idx + ')">Eliminar</button>' +
       '</div>' +
@@ -8316,6 +8362,63 @@ function cronoExportPDF() {
   }
 }
 
+function cronoVerHistoria(idx) {
+  var history = [];
+  try { history = JSON.parse(localStorage.getItem(CRONO_HISTORY_KEY)) || []; } catch(e) {}
+  if (!history[idx]) return;
+  var h = history[idx];
+  var d = new Date(h.data);
+  var label = d.toLocaleDateString('pt-PT') + ' ' + d.toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'});
+  var distPorToque = parseInt(h.session.distPorToque) || 50;
+
+  var html = '<div style="position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:7000;overflow-y:auto;padding:20px;" onclick="if(event.target===this)this.remove();">' +
+    '<div style="background:#fff;border-radius:20px;padding:24px;max-width:500px;margin:0 auto;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">' +
+        '<div>' +
+          '<div style="font-family:sans-serif;font-size:22px;font-weight:700;color:#003d6b;letter-spacing:2px;">Parciais</div>' +
+          '<div style="font-size:12px;color:#6b8fa8;">Piscina ' + h.piscina + 'm · ' + h.distancia + 'm · ' + label + '</div>' +
+        '</div>' +
+        '<button onclick="closeHistView()" style="background:#f0f7ff;border:none;border-radius:50%;width:32px;height:32px;font-size:18px;cursor:pointer;color:#1a3a4a;">×</button>' +
+      '</div>';
+
+  for (var gi = 0; gi < h.session.grupos.length; gi++) {
+    var g = h.session.grupos[gi];
+    if (h.session.grupos.length > 1) {
+      html += '<div style="font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#6b8fa8;margin:12px 0 6px;">' + g.nome + '</div>';
+    }
+    for (var ni = 0; ni < g.nadadores.length; ni++) {
+      var n = g.nadadores[ni];
+      var totalMs = n.splits.reduce(function(a,b){return a+b;}, 0);
+      var distPerc = n.splits.length * distPorToque;
+      var media = distPerc >= 100 ? cronoFmtMs(Math.round((totalMs/distPerc)*100)) : '—';
+      html += '<div style="background:#f4f8fb;border-radius:12px;padding:12px 14px;margin-bottom:8px;">' +
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">' +
+          '<div style="width:10px;height:10px;border-radius:50%;background:' + n.cor + ';flex-shrink:0;"></div>' +
+          '<span style="font-weight:700;font-size:14px;color:#003d6b;">' + n.nome + '</span>' +
+          (n.finished ? '<span style="font-size:12px;color:#6b8fa8;margin-left:auto;">Total: ' + cronoFmtMs(n.totalTime) + ' · Média: ' + media + '</span>' : '<span style="font-size:11px;color:#e67e22;margin-left:auto;">Incompleto</span>') +
+        '</div>';
+      if (n.splits.length > 0) {
+        html += '<div style="font-size:11px;">';
+        for (var si = 0; si < n.splits.length; si++) {
+          html += '<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #e0edf5;">' +
+            '<span style="color:#6b8fa8;">' + (si+1) + '</span>' +
+            '<span>' + cronoFmtMs(n.splits[si]) + '</span>' +
+          '</div>';
+        }
+        html += '</div>';
+      }
+      html += '</div>';
+    }
+  }
+  html += '</div></div>';
+
+  var overlay = document.createElement('div');
+  overlay.innerHTML = html;
+  var el = overlay.firstChild;
+  el.id = 'crono-hist-view';
+  document.body.appendChild(el);
+}
+
 function cronoExportFromHistory(idx) {
   var history = [];
   try { history = JSON.parse(localStorage.getItem(CRONO_HISTORY_KEY)) || []; } catch(e) {}
@@ -8392,6 +8495,12 @@ function cronoPersistSession() {
 }
 
 // ===== COR PICKER =====
+// SVG touca de natação
+function cronoCapSvg(color) {
+  var stroke = color === '#ffffff' ? '#cccccc' : color === '#222222' ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)';
+  return '<svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><path d="M4 28 C4 10 32 10 32 28 L32 30 C32 31.1 31.1 32 30 32 L6 32 C4.9 32 4 31.1 4 30 Z" fill="' + color + '" stroke="' + stroke + '" stroke-width="1"/></svg>';
+}
+
 var _cronoPickingIdx = -1;
 
 function cronoPickColor(idx) {
@@ -8418,6 +8527,458 @@ function cronoSelectColor(cor) {
 function cronoCloseColorPicker() {
   document.getElementById('crono-color-overlay').style.display = 'none';
   _cronoPickingIdx = -1;
+}
+
+
+// ===== CRONÓMETROS STANDALONE =====
+var SW_KEY = 'swimmin_sw_v1';
+var SW_HIST_KEY = 'swimmin_sw_history_v1';
+
+var swState = {
+  nCronos: 1,
+  eventoNome: '',
+  cronos: [] // [{running, startMs, elapsed, splits, interval}]
+};
+
+function swInit() {
+  var saved = null;
+  try { saved = JSON.parse(localStorage.getItem(SW_KEY)); } catch(e) {}
+  if (saved) {
+    swState.nCronos = saved.nCronos || 1;
+    swState.eventoNome = saved.eventoNome || '';
+    swState.cronos = (saved.cronos || []).map(function(c) {
+      return { running: false, startMs: null, elapsed: c.elapsed || 0, splits: c.splits || [], interval: null };
+    });
+  }
+  while (swState.cronos.length < swState.nCronos) {
+    swState.cronos.push({ running: false, startMs: null, elapsed: 0, splits: [], interval: null });
+  }
+  swRender();
+}
+
+function swSave() {
+  var data = {
+    nCronos: swState.nCronos,
+    eventoNome: swState.eventoNome,
+    cronos: swState.cronos.map(function(c) {
+      return { elapsed: c.elapsed, splits: c.splits };
+    })
+  };
+  try { localStorage.setItem(SW_KEY, JSON.stringify(data)); } catch(e) {}
+}
+
+var _swInitialized = false;
+
+function swRender() {
+  var el = document.getElementById('crono-cronos-content');
+  if (!el) return;
+  // Garantir inicialização
+  while (swState.cronos.length < swState.nCronos) {
+    swState.cronos.push({ running: false, startMs: null, elapsed: 0, splits: [], interval: null });
+  }
+
+  var gridClass = 'sw-grid-' + Math.min(swState.nCronos, 4);
+
+  // Config bar
+  var html = '<div style="margin-bottom:14px;">' +
+    '<div style="font-size:11px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Número de cronómetros</div>' +
+    '<div style="display:flex;gap:6px;margin-bottom:12px;">';
+  for (var i = 1; i <= 4; i++) {
+    html += '<button onclick="swSetN(' + i + ')" style="flex:1;padding:8px;border-radius:8px;border:1.5px solid ' + (swState.nCronos===i?'var(--blue-deep)':'#d0e4f0') + ';background:' + (swState.nCronos===i?'var(--blue-deep)':'#f0f7ff') + ';color:' + (swState.nCronos===i?'#fff':'#1a3a4a') + ';font-weight:700;font-size:14px;cursor:pointer;">' + i + '</button>';
+  }
+  html += '</div>';
+
+  // Evento nome
+  html += '<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">' +
+    '<input id="sw-evento-nome" class="crono-input" type="text" placeholder="Nome do evento (opcional)" value="' + (swState.eventoNome||'').replace(/"/g,'&quot;') + '" onchange="swSetNome(this.value)" autocomplete="off" style="flex:1;padding:9px 12px;font-size:14px;">' +
+    '</div>';
+
+  // Arranque simultâneo se > 1
+  if (swState.nCronos > 1) {
+    var allStopped = swState.cronos.slice(0, swState.nCronos).every(function(c){return !c.running;});
+    html += '<div style="display:flex;gap:6px;margin-bottom:14px;">' +
+      (allStopped ? '<button onclick="swStartAll()" style="flex:1;padding:9px;border-radius:10px;border:none;background:linear-gradient(135deg,#00a896,#00c4cc);color:#fff;font-size:13px;font-weight:700;cursor:pointer;">Arrancar todos</button>' : '') +
+      '<button onclick="swSplitAll()" style="flex:1;padding:9px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--blue-deep),var(--blue-mid));color:#fff;font-size:13px;font-weight:700;cursor:pointer;">Split todos</button>' +
+      '<button onclick="swResetAll()" style="flex:1;padding:9px;border-radius:10px;border:none;background:#e0edf5;color:#1a3a4a;font-size:13px;font-weight:700;cursor:pointer;">Reset todos</button>' +
+    '</div>';
+  }
+
+  html += '</div><div class="' + gridClass + '">';
+
+  for (var ci = 0; ci < swState.nCronos; ci++) {
+    var c = swState.cronos[ci];
+    var isFour = swState.nCronos === 4;
+    html += '<div class="sw-card">' +
+      '<div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);">Crono ' + (ci+1) + '</div>' +
+      '<div id="sw-display-' + ci + '" class="sw-display' + (isFour?' sw-4':'') + '">' + swFmt(c.elapsed) + '</div>' +
+      '<div class="sw-btns">' +
+        (c.running ?
+          '<button class="sw-btn sw-btn-stop" onclick="swStop(' + ci + ')">Stop</button>' :
+          '<button class="sw-btn sw-btn-start" onclick="swStart(' + ci + ')">Start</button>') +
+        '<button class="sw-btn sw-btn-split" onclick="swSplit(' + ci + ')">Split</button>' +
+        '<button class="sw-btn sw-btn-reset" onclick="swReset(' + ci + ')">Reset</button>' +
+      '</div>' +
+      '<div class="sw-splits" id="sw-splits-' + ci + '">' + swSplitsHtml(c.splits) + '</div>' +
+    '</div>';
+  }
+
+  html += '</div>';
+
+  // Export buttons if any splits exist
+  var hasSplits = swState.cronos.slice(0, swState.nCronos).some(function(c){return c.splits.length > 0;});
+  if (hasSplits) {
+    html += '<div style="display:flex;gap:8px;margin-top:14px;">' +
+      '<button onclick="swExportCSV()" style="flex:1;padding:11px;border-radius:10px;border:none;background:linear-gradient(135deg,#00a896,#00c4cc);color:#fff;font-size:13px;font-weight:700;cursor:pointer;">CSV</button>' +
+      '<button onclick="swExportPDF()" style="flex:1;padding:11px;border-radius:10px;border:none;background:linear-gradient(135deg,#6c3483,#9b59b6);color:#fff;font-size:13px;font-weight:700;cursor:pointer;">PDF</button>' +
+      '<button onclick="swSaveToHistory()" style="flex:1;padding:11px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--blue-deep),var(--blue-mid));color:#fff;font-size:13px;font-weight:700;cursor:pointer;">Guardar</button>' +
+    '</div>';
+  }
+
+  // History
+  html += swHistoryHtml();
+
+  el.innerHTML = html;
+
+  // Restart running timers after render
+  for (var ri = 0; ri < swState.nCronos; ri++) {
+    if (swState.cronos[ri].running) swTickStart(ri);
+  }
+}
+
+function swSplitsHtml(splits) {
+  if (!splits || splits.length === 0) return '<div style="font-size:11px;color:var(--muted);text-align:center;padding:4px;">—</div>';
+  var html = '';
+  // Pre-compute acumulados
+  var acum = [];
+  var total = 0;
+  for (var i = 0; i < splits.length; i++) { total += splits[i]; acum.push(total); }
+  for (var i = splits.length - 1; i >= 0; i--) {
+    html += '<div class="sw-split-item">' +
+      '<span class="sw-split-n">' + (i+1) + '</span>' +
+      '<span>' + swFmt(splits[i]) + '</span>' +
+      '<span style="color:var(--muted);">' + swFmt(acum[i]) + '</span>' +
+    '</div>';
+  }
+  return html;
+}
+
+function swFmt(ms) {
+  if (!ms) ms = 0;
+  var min = Math.floor(ms / 60000);
+  var sec = Math.floor((ms % 60000) / 1000);
+  var cs = Math.floor((ms % 1000) / 10);
+  return String(min).padStart(2,'0') + ':' + String(sec).padStart(2,'0') + ',' + String(cs).padStart(2,'0');
+}
+
+function swTickStart(ci) {
+  var c = swState.cronos[ci];
+  if (c.interval) clearInterval(c.interval);
+  c.startMs = Date.now() - c.elapsed;
+  c.interval = setInterval(function() {
+    c.elapsed = Date.now() - c.startMs;
+    var el = document.getElementById('sw-display-' + ci);
+    if (el) el.textContent = swFmt(c.elapsed);
+  }, 10);
+}
+
+function swStart(ci) {
+  var c = swState.cronos[ci];
+  if (c.running) return;
+  c.running = true;
+  swTickStart(ci);
+  swRender();
+}
+
+function swStop(ci) {
+  var c = swState.cronos[ci];
+  if (!c.running) return;
+  c.running = false;
+  if (c.interval) { clearInterval(c.interval); c.interval = null; }
+  c.elapsed = Date.now() - c.startMs;
+  swSave();
+  swRender();
+}
+
+function swSplit(ci) {
+  var c = swState.cronos[ci];
+  if (!c.running && c.elapsed === 0) return;
+  var now = c.running ? (Date.now() - c.startMs) : c.elapsed;
+  var lastTotal = c.splits.reduce(function(a,b){return a+b;}, 0);
+  var split = now - lastTotal;
+  c.splits.push(split);
+  // Update splits display without full re-render
+  var el = document.getElementById('sw-splits-' + ci);
+  if (el) el.innerHTML = swSplitsHtml(c.splits);
+  swSave();
+}
+
+function swReset(ci) {
+  var c = swState.cronos[ci];
+  c.running = false;
+  if (c.interval) { clearInterval(c.interval); c.interval = null; }
+  c.elapsed = 0;
+  c.startMs = null;
+  c.splits = [];
+  swSave();
+  swRender();
+}
+
+function swStartAll() {
+  for (var i = 0; i < swState.nCronos; i++) {
+    var c = swState.cronos[i];
+    if (!c.running) { c.running = true; }
+  }
+  // Start all at the same instant
+  var now = Date.now();
+  for (var i = 0; i < swState.nCronos; i++) {
+    var c = swState.cronos[i];
+    if (c.running && !c.startMs) c.startMs = now - c.elapsed;
+  }
+  swRender();
+}
+
+function swSplitAll() {
+  for (var i = 0; i < swState.nCronos; i++) {
+    swSplit(i);
+  }
+}
+
+function swResetAll() {
+  cronoShowUndoPanel('Reset a todos os cronómetros?', function() {
+    for (var i = 0; i < swState.nCronos; i++) swReset(i);
+  });
+}
+
+function swSetN(n) {
+  // Stop any running
+  for (var i = 0; i < swState.cronos.length; i++) {
+    if (swState.cronos[i].interval) { clearInterval(swState.cronos[i].interval); swState.cronos[i].interval = null; }
+  }
+  swState.nCronos = n;
+  while (swState.cronos.length < n) swState.cronos.push({ running: false, startMs: null, elapsed: 0, splits: [], interval: null });
+  swSave();
+  swRender();
+}
+
+function swSetNome(val) {
+  swState.eventoNome = val;
+  swSave();
+}
+
+// ── Export ──
+function swExportCSV() {
+  var rows = [];
+  var nome = swState.eventoNome || 'Sem nome';
+  rows.push(['"SwimMin — Cronómetros"', '"' + nome + '"']);
+  rows.push([]);
+  var maxSplits = 0;
+  for (var i = 0; i < swState.nCronos; i++) {
+    if (swState.cronos[i].splits.length > maxSplits) maxSplits = swState.cronos[i].splits.length;
+  }
+  var header = ['Crono'];
+  for (var s = 0; s < maxSplits; s++) { header.push('Split ' + (s+1)); header.push('Acumulado ' + (s+1)); }
+  rows.push(header);
+  for (var ci = 0; ci < swState.nCronos; ci++) {
+    var row = ['Crono ' + (ci+1)];
+    var acum = 0;
+    for (var si = 0; si < maxSplits; si++) {
+      var sp = swState.cronos[ci].splits[si] || 0;
+      acum += sp;
+      row.push(sp ? swFmt(sp) : '');
+      row.push(sp ? swFmt(acum) : '');
+    }
+    rows.push(row);
+  }
+  var csv = rows.map(function(r){ return r.map(function(c){ return '"' + String(c).replace(/"/g,'""') + '"'; }).join(';'); }).join('\r\n');
+  var blob = new Blob(['﻿' + csv], {type:'text/csv;charset=utf-8;'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = 'swimmin_cronos_' + new Date().toLocaleDateString('pt-PT').replace(/\//g,'-') + '.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function swExportPDF() {
+  var nome = swState.eventoNome || 'Cronómetros';
+  var dateStr = new Date().toLocaleDateString('pt-PT') + ' ' + new Date().toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'});
+  var maxSplits = 0;
+  for (var i = 0; i < swState.nCronos; i++) {
+    if (swState.cronos[i].splits.length > maxSplits) maxSplits = swState.cronos[i].splits.length;
+  }
+  var headers = '<th style="padding:8px 12px;background:#003d6b;color:#fff;">Crono</th>';
+  for (var s = 0; s < maxSplits; s++) {
+    headers += '<th style="padding:8px 10px;background:#003d6b;color:#fff;text-align:center;">Split ' + (s+1) + '</th>';
+    headers += '<th style="padding:8px 10px;background:#1a5a8a;color:#fff;text-align:center;">Acum. ' + (s+1) + '</th>';
+  }
+  var rows = '';
+  for (var ci = 0; ci < swState.nCronos; ci++) {
+    var c = swState.cronos[ci];
+    var cells = '<td style="padding:6px 12px;border-bottom:1px solid #e0edf5;font-weight:700;">Crono ' + (ci+1) + '</td>';
+    var acum = 0;
+    for (var si = 0; si < maxSplits; si++) {
+      var sp = c.splits[si] || 0; acum += sp;
+      cells += '<td style="padding:6px 10px;border-bottom:1px solid #e0edf5;text-align:center;">' + (c.splits[si] ? swFmt(c.splits[si]) : '—') + '</td>';
+      cells += '<td style="padding:6px 10px;border-bottom:1px solid #e0edf5;text-align:center;color:#6b8fa8;">' + (c.splits[si] ? swFmt(acum) : '—') + '</td>';
+    }
+    rows += '<tr>' + cells + '</tr>';
+  }
+  var html = '<!DOCTYPE html><html lang="pt"><head><meta charset="UTF-8"><title>SwimMin — ' + nome + '</title>' +
+    '<style>body{font-family:Arial,sans-serif;margin:32px;color:#1a2a3a;}h1{color:#003d6b;font-size:22px;margin-bottom:4px;}.meta{font-size:13px;color:#6b8fa8;margin-bottom:24px;}table{width:100%;border-collapse:collapse;font-size:13px;}@media print{button{display:none!important;}}</style>' +
+    '</head><body><h1>SwimMin — ' + nome + '</h1><div class="meta">Data: ' + dateStr + '</div>' +
+    '<table><thead><tr>' + headers + '</tr></thead><tbody>' + rows + '</tbody></table>' +
+    '<div style="margin-top:32px;text-align:center;"><button onclick="window.print()" style="padding:12px 32px;background:#003d6b;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;">Imprimir / Guardar como PDF</button></div>' +
+    '</body></html>';
+  var win = window.open('', '_blank');
+  if (win) { win.document.write(html); win.document.close(); }
+  else { cronoShowMsg('Permite popups no browser para gerar o PDF.'); }
+}
+
+function swSaveToHistory() {
+  var hist = [];
+  try { hist = JSON.parse(localStorage.getItem(SW_HIST_KEY)) || []; } catch(e) {}
+  var entry = {
+    id: Date.now(),
+    data: new Date().toISOString(),
+    nome: swState.eventoNome || 'Sem nome',
+    nCronos: swState.nCronos,
+    cronos: swState.cronos.slice(0, swState.nCronos).map(function(c){ return { elapsed: c.elapsed, splits: c.splits }; })
+  };
+  hist = hist.filter(function(h){ return h.id !== entry.id; });
+  hist.unshift(entry);
+  hist = hist.slice(0, 10);
+  try { localStorage.setItem(SW_HIST_KEY, JSON.stringify(hist)); } catch(e) {}
+  cronoShowMsg('Sessão guardada.');
+  swRender();
+}
+
+function swHistoryHtml() {
+  var hist = [];
+  try { hist = JSON.parse(localStorage.getItem(SW_HIST_KEY)) || []; } catch(e) {}
+  // Purge > 30 days
+  var cutoff = Date.now() - 30*24*60*60*1000;
+  hist = hist.filter(function(h){ return new Date(h.data).getTime() > cutoff; });
+  if (hist.length === 0) return '';
+  var html = '<div style="margin-top:20px;border-top:1px solid #e0edf5;padding-top:14px;">' +
+    '<div style="font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Sessões guardadas</div>';
+  for (var i = 0; i < hist.length; i++) {
+    var h = hist[i];
+    var d = new Date(h.data);
+    var label = d.toLocaleDateString('pt-PT') + ' ' + d.toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'});
+    html += '<div class="crono-history-item">' +
+      '<div><div class="crono-history-info">' + (h.nome||'Sem nome') + ' · ' + h.nCronos + ' crono' + (h.nCronos!==1?'s':'') + '</div>' +
+      '<div class="crono-history-date">' + label + '</div></div>' +
+      '<div style="display:flex;gap:6px;">' +
+        '<button class="crono-export-btn" style="background:#1a6fdb;" onclick="swVerHistoria(' + i + ')">Ver</button>' +
+        '<button class="crono-export-btn" onclick="swExportHistCSV(' + i + ')">CSV</button>' +
+        '<button class="crono-export-btn" style="background:#e74c3c;" onclick="swDeleteHist(' + i + ')">Eliminar</button>' +
+      '</div>' +
+    '</div>';
+  }
+  html += '</div>';
+  return html;
+}
+
+function swVerHistoria(idx) {
+  var hist = [];
+  try { hist = JSON.parse(localStorage.getItem(SW_HIST_KEY)) || []; } catch(e) {}
+  if (!hist[idx]) return;
+  var h = hist[idx];
+  var d = new Date(h.data);
+  var label = d.toLocaleDateString('pt-PT') + ' ' + d.toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'});
+
+  var html = '<div style="position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:7000;overflow-y:auto;padding:20px;" onclick="if(event.target===this)this.remove();">' +
+    '<div style="background:#fff;border-radius:20px;padding:24px;max-width:500px;margin:0 auto;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">' +
+        '<div>' +
+          '<div style="font-family:sans-serif;font-size:22px;font-weight:700;color:#003d6b;letter-spacing:2px;">' + (h.nome||'Sem nome') + '</div>' +
+          '<div style="font-size:12px;color:#6b8fa8;">' + h.nCronos + ' cronómetro' + (h.nCronos!==1?'s':'') + ' · ' + label + '</div>' +
+        '</div>' +
+        '<button onclick="closeSwView()" style="background:#f0f7ff;border:none;border-radius:50%;width:32px;height:32px;font-size:18px;cursor:pointer;color:#1a3a4a;">×</button>' +
+      '</div>';
+
+  for (var ci = 0; ci < h.cronos.length; ci++) {
+    var c = h.cronos[ci];
+    var acum = 0;
+    html += '<div style="background:#f4f8fb;border-radius:12px;padding:12px 14px;margin-bottom:8px;">' +
+      '<div style="font-weight:700;font-size:14px;color:#003d6b;margin-bottom:8px;">Crono ' + (ci+1) + '</div>';
+    if (c.splits.length > 0) {
+      html += '<div style="font-size:11px;">' +
+        '<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #c0d8ee;font-weight:700;color:#6b8fa8;">' +
+          '<span>#</span><span>Parcial</span><span>Acumulado</span>' +
+        '</div>';
+      for (var si = 0; si < c.splits.length; si++) {
+        acum += c.splits[si];
+        html += '<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #e0edf5;">' +
+          '<span style="color:#6b8fa8;">' + (si+1) + '</span>' +
+          '<span>' + swFmt(c.splits[si]) + '</span>' +
+          '<span style="color:#6b8fa8;">' + swFmt(acum) + '</span>' +
+        '</div>';
+      }
+      html += '</div>';
+    } else {
+      html += '<div style="font-size:12px;color:#6b8fa8;">Sem splits</div>';
+    }
+    html += '</div>';
+  }
+  html += '</div></div>';
+
+  var overlay = document.createElement('div');
+  overlay.innerHTML = html;
+  var el2 = overlay.firstChild;
+  el2.id = 'sw-hist-view';
+  document.body.appendChild(el2);
+}
+
+function swExportHistCSV(idx) {
+  var hist = [];
+  try { hist = JSON.parse(localStorage.getItem(SW_HIST_KEY)) || []; } catch(e) {}
+  if (!hist[idx]) return;
+  var h = hist[idx];
+  var maxSplits = 0;
+  for (var i = 0; i < h.cronos.length; i++) if (h.cronos[i].splits.length > maxSplits) maxSplits = h.cronos[i].splits.length;
+  var rows = [['"SwimMin — Cronómetros"', '"' + (h.nome||'') + '"'], []];
+  var header = ['Crono'];
+  for (var s = 0; s < maxSplits; s++) { header.push('Split ' + (s+1)); header.push('Acumulado ' + (s+1)); }
+  rows.push(header);
+  for (var ci = 0; ci < h.cronos.length; ci++) {
+    var row = ['Crono ' + (ci+1)];
+    var acum = 0;
+    for (var si = 0; si < maxSplits; si++) {
+      var sp = h.cronos[ci].splits[si] || 0; acum += sp;
+      row.push(sp ? swFmt(sp) : '');
+      row.push(sp ? swFmt(acum) : '');
+    }
+    rows.push(row);
+  }
+  var csv = rows.map(function(r){ return r.map(function(c){ return '"' + String(c).replace(/"/g,'""') + '"'; }).join(';'); }).join('\r\n');
+  var blob = new Blob(['﻿' + csv], {type:'text/csv;charset=utf-8;'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a'); a.href = url; a.download = 'swimmin_cronos.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function swDeleteHist(idx) {
+  var hist = [];
+  try { hist = JSON.parse(localStorage.getItem(SW_HIST_KEY)) || []; } catch(e) {}
+  if (!hist[idx]) return;
+  cronoShowUndoPanel('Eliminar "' + (hist[idx].nome||'Sem nome') + '"?', function() {
+    hist.splice(idx, 1);
+    try { localStorage.setItem(SW_HIST_KEY, JSON.stringify(hist)); } catch(e) {}
+    swRender();
+  });
+}
+
+// ===== FIM CRONÓMETROS STANDALONE =====
+
+function closeHistView() {
+  var el = document.getElementById('crono-hist-view');
+  if (el) el.remove();
+}
+
+function closeSwView() {
+  var el = document.getElementById('sw-hist-view');
+  if (el) el.remove();
 }
 
 // ===== FIM ZONA DO TREINADOR =====
