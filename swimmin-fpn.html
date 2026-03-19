@@ -506,12 +506,86 @@
     min-height: 34px;
   }
 
+
+
+/* ===== CRONÓMETROS STANDALONE ===== */
+.sw-grid-1 { display:grid; grid-template-columns:1fr; gap:12px; }
+.sw-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.sw-grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+.sw-grid-4 { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:6px; }
+.sw-card { background:#f0f7ff; border-radius:14px; padding:10px 8px; display:flex; flex-direction:column; align-items:center; }
+.sw-display { font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--blue-deep); letter-spacing:2px; line-height:1; margin:6px 0; text-align:center; }
+.sw-display.sw-4 { font-size:20px; }
+.sw-btns { display:flex; gap:4px; width:100%; margin-bottom:6px; }
+.sw-btn { flex:1; padding:7px 2px; border:none; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:11px; font-weight:700; cursor:pointer; }
+.sw-btn-start { background:linear-gradient(135deg,#00a896,#00c4cc); color:#fff; }
+.sw-btn-stop { background:linear-gradient(135deg,#e74c3c,#c0392b); color:#fff; }
+.sw-btn-split { background:linear-gradient(135deg,var(--blue-deep),var(--blue-mid)); color:#fff; }
+.sw-btn-reset { background:#e0edf5; color:#1a3a4a; }
+.sw-splits { width:100%; max-height:120px; overflow-y:auto; }
+.sw-split-item { display:flex; justify-content:space-between; gap:4px; font-size:11px; padding:3px 4px; border-bottom:1px solid #d0e4f0; color:#1a3a4a; }
+.sw-split-item:first-child { font-weight:700; color:var(--blue-deep); }
+.sw-split-n { color:var(--muted); }
+
+/* ===== ZONA DO TREINADOR (CRONÓMETRO) ===== */
+#crono-section { display:none; margin-top:20px; margin-bottom:24px; }
+.crono-card { background:var(--card); backdrop-filter:blur(20px); border-radius:24px; padding:28px 24px; box-shadow:0 32px 64px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.3); }
+.crono-title { font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--blue-deep); letter-spacing:2px; margin-bottom:4px; }
+.crono-subtitle { font-size:11px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; margin-bottom:20px; }
+.crono-tabs { display:flex; gap:6px; margin-bottom:16px; flex-wrap:wrap; }
+.crono-tab { padding:7px 14px; border-radius:20px; border:1.5px solid #c0d8ee; background:#f0f7ff; color:#1a3a4a; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s; font-family:'DM Sans',sans-serif; }
+.crono-tab.active { background:var(--blue-deep); color:#fff; border-color:var(--blue-deep); }
+.crono-tab.has-swimmers { border-color:var(--aqua); }
+.crono-field { display:flex; flex-direction:column; gap:5px; margin-bottom:14px; }
+.crono-label { font-size:11px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); }
+.crono-select { appearance:none; background:var(--white); border:1.5px solid #d0e4f0; border-radius:12px; padding:11px 40px 11px 14px; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:500; color:var(--text); cursor:pointer; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%230090e0' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center; width:100%; }
+.crono-select:focus { outline:none; border-color:var(--blue-bright); }
+.crono-input { background:var(--white); border:1.5px solid #d0e4f0; border-radius:12px; padding:11px 14px; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:500; color:var(--text); width:100%; }
+.crono-input:focus { outline:none; border-color:var(--blue-bright); }
+.crono-swimmer-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+.crono-swimmer-name { flex:1; background:var(--white); border:1.5px solid #d0e4f0; border-radius:10px; padding:9px 12px; font-size:14px; font-family:'DM Sans',sans-serif; color:var(--text); }
+.crono-swimmer-name:focus { outline:none; border-color:var(--blue-bright); }
+.crono-color-btn { width:36px; height:36px; border-radius:4px; border:none; background:transparent; cursor:pointer; flex-shrink:0; padding:0; }
+.crono-remove-btn { width:30px; height:30px; border-radius:50%; border:none; background:#fdecea; color:#c0392b; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-weight:700; font-family:'DM Sans',sans-serif; }
+.crono-add-swimmer-btn { width:100%; padding:9px; border-radius:10px; border:1.5px dashed #c0d8ee; background:transparent; color:var(--muted); font-size:13px; font-weight:600; cursor:pointer; margin-top:4px; font-family:'DM Sans',sans-serif; }
+.crono-add-swimmer-btn:hover { border-color:var(--aqua); color:var(--aqua); }
+.crono-start-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
+.crono-start-btn { padding:16px 10px; border-radius:14px; border:none; background:linear-gradient(135deg,var(--blue-deep),var(--blue-mid)); color:#fff; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:700; cursor:pointer; text-align:center; transition:all 0.2s; box-shadow:0 4px 14px rgba(0,63,107,0.25); }
+.crono-start-btn:hover { transform:translateY(-1px); }
+.crono-start-btn.started { background:linear-gradient(135deg,#00a896,#00c4cc); }
+.crono-swimmers-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:16px; }
+.crono-swimmer-btn { border:none; border-radius:14px; padding:14px 6px 10px; font-family:'DM Sans',sans-serif; cursor:pointer; transition:all 0.15s; position:relative; user-select:none; -webkit-user-select:none; touch-action:manipulation; min-height:90px; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; box-shadow:0 3px 10px rgba(0,0,0,0.15); width:100%; }
+.crono-swimmer-btn:active { transform:scale(0.96); }
+.crono-swimmer-btn.finished { background:#b0b8c1 !important; opacity:0.75; }
+.crono-swimmer-btn.waiting { opacity:0.4; pointer-events:none; }
+.crono-btn-name { font-size:13px; font-weight:700; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,0.3); text-align:center; line-height:1.2; margin-bottom:5px; }
+.crono-btn-info { font-size:10px; color:rgba(255,255,255,0.88); text-align:center; line-height:1.6; }
+.crono-btn-finish-label { font-size:10px; font-weight:700; color:rgba(255,255,255,0.95); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:2px; }
+.crono-action-bar { display:flex; gap:8px; align-items:center; margin-bottom:14px; }
+.crono-undo-btn { flex:1; padding:10px; border-radius:10px; border:1.5px solid #c0d8ee; background:#f0f7ff; color:#1a3a4a; font-size:12px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; }
+.crono-warning { font-size:11px; color:#8a9ab0; text-align:center; padding:6px 8px; background:#f5f9fc; border-radius:8px; flex:1.5; line-height:1.4; }
+.crono-summary-swimmer { background:#f4f8fb; border-radius:14px; padding:14px 16px; margin-bottom:10px; }
+.crono-summary-name { font-size:15px; font-weight:700; color:var(--blue-deep); margin-bottom:6px; display:flex; align-items:center; gap:8px; }
+.crono-summary-dot { width:12px; height:12px; border-radius:50%; flex-shrink:0; }
+.crono-summary-stats { font-size:13px; color:#1a3a4a; margin-bottom:6px; }
+.crono-summary-splits { font-size:12px; color:var(--muted); display:none; margin-top:6px; line-height:1.8; }
+.crono-detail-btn { font-size:12px; color:var(--blue-bright); background:none; border:none; cursor:pointer; padding:0; font-weight:600; font-family:'DM Sans',sans-serif; }
+.crono-history-item { background:#f4f8fb; border-radius:12px; padding:12px 14px; margin-bottom:8px; display:flex; align-items:center; justify-content:space-between; }
+.crono-history-info { font-size:13px; color:#1a3a4a; font-weight:600; }
+.crono-history-date { font-size:11px; color:var(--muted); margin-top:2px; }
+.crono-export-btn { padding:8px 14px; border-radius:8px; border:none; background:var(--blue-deep); color:#fff; font-size:12px; font-weight:700; cursor:pointer; font-family:'DM Sans',sans-serif; }
+.crono-color-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:5000; display:flex; align-items:center; justify-content:center; }
+.crono-color-picker { background:#fff; border-radius:20px; padding:24px; width:290px; box-shadow:0 20px 60px rgba(0,0,0,0.4); }
+.crono-color-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-top:14px; }
+.crono-color-swatch { width:44px; height:44px; border-radius:50%; cursor:pointer; border:3px solid transparent; transition:all 0.15s; box-shadow:0 2px 6px rgba(0,0,0,0.2); }
+.crono-color-swatch:hover, .crono-color-swatch.selected { border-color:var(--blue-deep); transform:scale(1.12); }
+
   /* Footer */
   .footer {
     text-align: center;
     margin-top: 20px;
     font-size: 12px;
-    color: rgba(184,223,245,0.5);
+    color: rgba(90,150,200,0.85);
     letter-spacing: 0.5px;
   }
 
@@ -519,11 +593,8 @@
 /* ===== TREINADOR ===== */
 .coach-wrap { margin-top: 28px; text-align: center; }
 .coach-btn {
-  background: linear-gradient(135deg, #e07b00, #ff9f1c) !important;
-  box-shadow: 0 4px 20px rgba(255,159,28,0.30) !important;
   width: 100%;
 }
-.coach-btn:hover { background: linear-gradient(135deg, #ff9f1c, #e07b00) !important; }
 
 #coach-section {
   display: none; margin-top: 20px; margin-bottom: 24px;
@@ -673,6 +744,8 @@
 .relay-leg-time { font-family: 'Bebas Neue', sans-serif; color: var(--aqua); font-size: 15px; }
 .relay-empty { font-size: 14px; color: #888; text-align: center; padding: 12px 0; }
 </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 </head>
 <body>
 <div id="auth-toast" style="display:none;position:fixed;top:24px;left:50%;transform:translateX(-50%);z-index:9999;min-width:240px;max-width:90vw;padding:14px 22px;border-radius:14px;font-size:14px;font-weight:600;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.25);transition:opacity 0.4s;"></div>
@@ -696,7 +769,6 @@
       Campeonato Nacional de Juvenis
     </a>
   </div>
-
 
   <div class="card">
     <div class="grid">
@@ -796,7 +868,7 @@
       <div>
         <div style="color:#fff;font-size:13px;font-weight:700;">Sessão iniciada</div>
         <div style="color:rgba(255,255,255,0.85);font-size:12px;" id="auth-user-email"></div>
-        <div style="color:rgba(255,255,255,0.75);font-size:11px;margin-top:2px;">Dados sincronizados na cloud ☁️</div>
+        <div style="color:rgba(255,255,255,0.75);font-size:11px;margin-top:2px;">Dados sincronizados na cloud</div>
       </div>
       <button id="btn-logout" style="background:rgba(255,255,255,0.2);color:#fff;border:1.5px solid rgba(255,255,255,0.5);border-radius:50px;padding:6px 16px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;">Terminar sessão</button>
     </div>
@@ -820,7 +892,7 @@
           <select id="atleta-profile-select" onchange="mudarPerfil(this.value)" style="flex:1;padding:10px 12px;border-radius:10px;background:#f0f7ff;border:1.5px solid #c0d8ee;color:#1a3a4a;font-size:14px;font-weight:600;cursor:pointer;"></select>
           <button onclick="novoPerfilAtleta()" title="Novo nadador" style="padding:10px 14px;border-radius:10px;background:var(--aqua);color:var(--dark);border:none;font-weight:700;font-size:18px;cursor:pointer;line-height:1;">+</button>
         </div>
-        <button onclick="eliminarPerfilAtleta()" id="atleta-delete-btn" style="margin-top:8px;padding:7px 12px;border-radius:8px;background:transparent;border:1.5px solid #e74c3c;color:#e74c3c;font-size:12px;font-weight:600;cursor:pointer;width:100%;">Eliminar este nadador</button>
+  
       </div>
       <div id="atleta-saved-summary"></div>
       <div id="atleta-comp-selector" style="display:none;margin-top:16px;">
@@ -833,7 +905,7 @@
       </div>
       <button type="button" onclick="mostrarFormulario()" id="atleta-editar-btn" style="display:none;margin-top:14px;padding:10px 18px;border-radius:8px;background:transparent;border:2px solid var(--aqua);color:var(--aqua);font-weight:700;font-size:14px;cursor:pointer;width:100%;">Atualizar dados</button>
       <div id="ver-cartao-btn-wrap" style="display:none;margin-top:8px;">
-        <button onclick="abrirCartaoFPN()" style="background:var(--blue-deep);color:#fff;border:none;border-radius:10px;padding:12px;font-size:15px;font-weight:700;cursor:pointer;text-align:center;width:100%;">🪪 Ver cartão FPN</button>
+        <button onclick="abrirCartaoFPN()" style="background:var(--blue-deep);color:#fff;border:none;border-radius:10px;padding:12px;font-size:15px;font-weight:700;cursor:pointer;text-align:center;width:100%;">Ver cartão FPN</button>
       </div>
     </div>
 
@@ -900,19 +972,38 @@
 
       <button type="button" onclick="guardarAtleta()" style="margin-top:18px;padding:14px;border-radius:8px;background:var(--aqua);color:var(--dark);font-weight:700;font-size:16px;border:none;cursor:pointer;width:100%;">Guardar e ver resultados</button>
       <button type="button" onclick="cancelarFormulario()" style="margin-top:8px;padding:10px;border-radius:8px;background:transparent;border:1px solid #ccc;color:#7ab8d4;font-size:14px;cursor:pointer;width:100%;">Cancelar</button>
+      <div id="atleta-delete-btn" style="display:none;margin-top:16px;border-top:1px solid #f0d0d0;padding-top:14px;">
+        <button type="button" onclick="eliminarPerfilAtleta()" style="padding:10px;border-radius:8px;background:transparent;border:1.5px solid #e74c3c;color:#e74c3c;font-size:13px;font-weight:600;cursor:pointer;width:100%;">Eliminar este nadador</button>
+      </div>
     </div>
 
     <div id="atleta-resultados" style="margin-top:20px;"></div>
     <div class="footer">Dados guardados na nuvem</div>
   </div>
 
+
+<div class="fpn-btn-wrap">
+  <button class="fpn-btn" id="crono-btn" onclick="toggleCrono()">Zona do Treinador</button>
+</div>
+<div id="crono-section">
+  <div class="crono-card">
+    <div class="crono-title">Zona do Treinador</div>
+    <div style="display:flex;gap:0;margin-bottom:20px;border-radius:12px;overflow:hidden;border:1.5px solid #d0e4f0;">
+      <button id="crono-tab-parciais" onclick="cronoSwitchTab('parciais')" style="flex:1;padding:10px;border:none;background:var(--blue-deep);color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;">Parciais</button>
+      <button id="crono-tab-cronos" onclick="cronoSwitchTab('cronos')" style="flex:1;padding:10px;border:none;background:#f0f7ff;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;">Cronómetros</button>
+    </div>
+    <div id="crono-content"></div>
+    <div id="crono-cronos-content" style="display:none;"></div>
+  </div>
+</div>
+
   <div class="fpn-btn-wrap">
-    <button class="fpn-btn" id="fpn-btn" onclick="toggleFPN()">Calcular Pontos FPN</button>
+    <button class="fpn-btn" id="fpn-btn" onclick="toggleFPN()">Calcular Pontos FINA/FPN</button>
   </div>
 
   <div class="fpn-section" id="fpn-section" style="display:none">
-    <div class="fpn-title">Pontos FPN</div>
-    <div class="fpn-subtitle">Baseado nos Recordes Nacionais Absolutos</div>
+    <div class="fpn-title">Pontos FINA / FPN</div>
+    <div class="fpn-subtitle">Pontos baseados nos Recordes Mundiais e Nacionais</div>
     <div class="grid">
       <div class="field">
         <label>Piscina</label>
@@ -948,10 +1039,13 @@
     </div>
     <div class="field">
       <label>O teu tempo</label>
-      <input class="personal-input" type="tel" maxlength="6" placeholder="105000" id="fpn-tempo" oninput="fpnOnTempoInput(event)" style="background:var(--white); border:1.5px solid #d0e4f0; color:var(--text); font-size:22px;">
+      <div style="display:flex;gap:10px;align-items:center;">
+        <input class="personal-input" type="tel" maxlength="6" placeholder="105000" id="fpn-tempo" oninput="fpnOnTempoInput(event)" style="background:#f5faff; border:1.5px solid #d0e4f0; color:#1a3a4a; font-size:15px; padding:12px 16px; border-radius:12px; flex:1 1 0; min-width:0; width:0; height:50px; box-sizing:border-box;">
+        <button onclick="calcularPontosFPN()" style="flex:1 1 0; min-width:0; width:0; height:50px; box-sizing:border-box; background:var(--accent,#1a6fa8); color:#fff; border:none; border-radius:12px; font-size:15px; font-weight:700; cursor:pointer; letter-spacing:0.04em;">CALCULAR</button>
+      </div>
       <div class="fpn-tempo-preview" id="fpn-tempo-preview"></div>
     </div>
-    <div id="fpn-result"></div>
+    <div id="fpn-result" style="margin-top:24px;"></div>
   <div class="footer">Dados de acordo com o regulamento oficial da FPN · atualizado a 09/03/2026</div>
 </div>
 
@@ -1038,6 +1132,12 @@ var recordesNacionais = {
         "data": "31/03/2023",
         "local": "Funchal"
       },
+      "200_L": {
+        "tempo": "1:47,97",
+        "nome": "Nascimento, Miguel Duarte",
+        "data": "06/04/2019",
+        "local": "Coimbra"
+      },
       "400_L": {
         "tempo": "3:50,56",
         "nome": "Lopes, Jose Paulo",
@@ -1068,7 +1168,19 @@ var recordesNacionais = {
         "data": "24/07/2023",
         "local": "Fukuoka (JPN)"
       },
-      "100_B": {
+      "200_C": {
+        "tempo": "1:57,06",
+        "nome": "Santos, Francisco Rogerio",
+        "data": "06/06/2021",
+        "local": "Porto"
+      },
+            "50_B": {
+        "tempo": "27,92",
+        "nome": "Amorim, Alexandre Ferreira",
+        "data": "15/04/2025",
+        "local": "Estocolmo (SWE)"
+      },
+"100_B": {
         "tempo": "1:01,01",
         "nome": "Almeida, Carlos Esteves",
         "data": "28/07/2013",
@@ -1118,6 +1230,24 @@ var recordesNacionais = {
         "data": "30/03/2023",
         "local": "Funchal"
       },
+      "100_L": {
+        "tempo": "55,88",
+        "nome": "Martins, Francisca Soares",
+        "data": "12/07/2024",
+        "local": "Oeiras"
+      },
+      "200_L": {
+        "tempo": "1:57,85",
+        "nome": "Martins, Francisca Soares",
+        "data": "22/07/2025",
+        "local": "Berlim (GER)"
+      },
+      "400_L": {
+        "tempo": "4:07,50",
+        "nome": "Martins, Francisca Soares",
+        "data": "23/07/2025",
+        "local": "Berlim (GER)"
+      },
       "800_L": {
         "tempo": "8:29,33",
         "nome": "Duraes, Diana Margarida",
@@ -1130,7 +1260,25 @@ var recordesNacionais = {
         "data": "09/02/2020",
         "local": "Lisboa"
       },
-      "50_B": {
+            "50_C": {
+        "tempo": "28,24",
+        "nome": "Azevedo, Rafaela Gomes",
+        "data": "23/12/2021",
+        "local": "Oeiras"
+      },
+      "100_C": {
+        "tempo": "1:00,34",
+        "nome": "Rebelo, Camila Rodrigues",
+        "data": "20/07/2025",
+        "local": "Berlim (GER)"
+      },
+      "200_C": {
+        "tempo": "2:08,95",
+        "nome": "Rebelo, Camila Rodrigues",
+        "data": "18/06/2024",
+        "local": "Belgrado (SRB)"
+      },
+"50_B": {
         "tempo": "30,73",
         "nome": "Rodrigues, Ana Pinho",
         "data": "10/06/2023",
@@ -1194,6 +1342,12 @@ var recordesNacionais = {
         "data": "15/12/2024",
         "local": "Tomar"
       },
+      "200_L": {
+        "tempo": "1:43,16",
+        "nome": "Nascimento, Miguel Duarte",
+        "data": "14/12/2018",
+        "local": "Hangzhou (CHN)"
+      },
       "400_L": {
         "tempo": "3:42,57",
         "nome": "Lopes, Jose Paulo",
@@ -1230,7 +1384,13 @@ var recordesNacionais = {
         "data": "16/12/2018",
         "local": "Hangzhou (CHN)"
       },
-      "100_B": {
+            "50_B": {
+        "tempo": "27,01",
+        "nome": "Amorim, Alexandre Ferreira",
+        "data": "14/04/2024",
+        "local": "Felgueiras"
+      },
+"100_B": {
         "tempo": "58,19",
         "nome": "Almeida, Carlos Esteves",
         "data": "22/11/2012",
@@ -1292,6 +1452,18 @@ var recordesNacionais = {
         "data": "20/12/2019",
         "local": "Felgueiras"
       },
+      "200_L": {
+        "tempo": "1:55,91",
+        "nome": "Martins, Francisca Soares",
+        "data": "12/04/2025",
+        "local": "Felgueiras"
+      },
+      "400_L": {
+        "tempo": "4:04,57",
+        "nome": "Martins, Francisca Soares",
+        "data": "10/12/2023",
+        "local": "Otopeni (ROU)"
+      },
       "800_L": {
         "tempo": "8:20,97",
         "nome": "Duraes, Diana Margarida",
@@ -1304,7 +1476,25 @@ var recordesNacionais = {
         "data": "23/11/2019",
         "local": "Felgueiras"
       },
-      "50_B": {
+            "50_C": {
+        "tempo": "27,16",
+        "nome": "Rebelo, Camila Rodrigues",
+        "data": "06/12/2025",
+        "local": "Lublin (POL)"
+      },
+      "100_C": {
+        "tempo": "57,79",
+        "nome": "Rebelo, Camila Rodrigues",
+        "data": "04/12/2025",
+        "local": "Lublin (POL)"
+      },
+      "200_C": {
+        "tempo": "2:03,51",
+        "nome": "Rebelo, Camila Rodrigues",
+        "data": "03/12/2025",
+        "local": "Lublin (POL)"
+      },
+"50_B": {
         "tempo": "29,98",
         "nome": "Rodrigues, Ana Pinho",
         "data": "13/12/2025",
@@ -1345,6 +1535,12 @@ var recordesNacionais = {
         "nome": "Cunha, Mariana Pacheco",
         "data": "13/04/2025",
         "local": "Felgueiras"
+      },
+      "200_E": {
+        "tempo": "2:11,70",
+        "nome": "Rebelo, Camila Rodrigues",
+        "data": "14/12/2024",
+        "local": "Tomar"
       },
       "400_E": {
         "tempo": "4:36,19",
@@ -4887,7 +5083,7 @@ function calcular() {
   html += '<div class="personal-wrap">';
   html += '<div class="personal-label">O teu tempo</div>';
   html += '<div class="personal-input-row">';
-  html += '<input type="tel" id="personal-time" class="personal-input" placeholder="ex: 10543" oninput="calcularDiff()" maxlength="7">';
+  html += '<input type="tel" id="personal-time" class="personal-input" placeholder="ex: 10543" oninput="calcularDiff()" maxlength="7" autocomplete="off">';
   html += '<div id="personal-time-preview" style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:var(--aqua);letter-spacing:2px;min-width:70px;"></div>';
   html += '</div>';
   html += '</div>';
@@ -5025,6 +5221,108 @@ function fpnUpdateDistancias() {
   if (distEl.querySelector('option[value="' + prevD + '"]')) distEl.value = prevD;
 }
 
+
+// ===== RECORDES MUNDIAIS (FINA/WORLD AQUATICS) =====
+var recordesMundiais = {
+  "longa": {
+    "M": {
+      "50_L": {tempo:"20,91", nome:"Cielo, Filho Cesar", data:"18/12/2009", local:"Sao Paulo"},
+      "100_L": {tempo:"46,40", nome:"Pan, Zhanle", data:"31/07/2024", local:"Paris"},
+      "200_L": {tempo:"1:42,00", nome:"Biedermann, Paul", data:"28/07/2009", local:"Rome"},
+      "400_L": {tempo:"3:39,96", nome:"Maertens, Lukas", data:"12/04/2025", local:"Stockholm"},
+      "800_L": {tempo:"7:32,12", nome:"Zhang, Lin", data:"29/07/2009", local:"Rome"},
+      "1500_L": {tempo:"14:30,67", nome:"Finke, Bobby", data:"04/08/2024", local:"Paris"},
+      "50_C": {tempo:"23,55", nome:"Kolesnikov, Kliment", data:"27/07/2023", local:"Kazan"},
+      "100_C": {tempo:"51,60", nome:"Ceccon, Thomas", data:"20/06/2022", local:"Budapest"},
+      "200_C": {tempo:"1:51,92", nome:"Peirsol, Aaron", data:"31/07/2009", local:"Rome"},
+      "50_B": {tempo:"25,95", nome:"Peaty, Adam", data:"25/07/2017", local:"Budapest"},
+      "100_B": {tempo:"56,88", nome:"Peaty, Adam", data:"21/07/2019", local:"Gwangju"},
+      "200_B": {tempo:"2:05,48", nome:"Qin, Haiyang", data:"28/07/2023", local:"Fukuoka"},
+      "50_M": {tempo:"22,27", nome:"Govorov, Andrii", data:"01/07/2018", local:"Rome"},
+      "100_M": {tempo:"49,45", nome:"Dressel, Caeleb", data:"31/07/2021", local:"Tokyo"},
+      "200_M": {tempo:"1:50,34", nome:"Milak, Kristof", data:"21/06/2022", local:"Budapest"},
+      "200_E": {tempo:"1:52,69", nome:"Marchand, Leon", data:"30/07/2025", local:"Singapore"},
+      "400_E": {tempo:"4:02,50", nome:"Marchand, Leon", data:"23/07/2023", local:"Fukuoka"}
+    },
+    "F": {
+      "50_L": {tempo:"23,61", nome:"Sjoestroem, Sarah", data:"29/07/2023", local:"Fukuoka"},
+      "100_L": {tempo:"51,71", nome:"Sjoestroem, Sarah", data:"23/07/2017", local:"Budapest"},
+      "200_L": {tempo:"1:52,23", nome:"Titmus, Ariarne", data:"12/06/2024", local:"Brisbane"},
+      "400_L": {tempo:"3:54,18", nome:"Mcintosh, Summer", data:"07/06/2025", local:"Victoria"},
+      "800_L": {tempo:"8:04,12", nome:"Ledecky, Katie", data:"03/05/2025", local:"Fort Lauderdale"},
+      "1500_L": {tempo:"15:20,48", nome:"Ledecky, Katie", data:"16/05/2018", local:"Indianapolis"},
+      "50_C": {tempo:"26,86", nome:"Mckeown, Kaylee", data:"20/10/2023", local:"Budapest"},
+      "100_C": {tempo:"57,13", nome:"Smith, Regan", data:"18/06/2024", local:"Indianapolis"},
+      "200_C": {tempo:"2:03,14", nome:"Mckeown, Kaylee", data:"10/03/2023", local:"Sydney"},
+      "50_B": {tempo:"29,16", nome:"Meilutyte, Ruta", data:"30/07/2023", local:"Fukuoka"},
+      "100_B": {tempo:"1:04,13", nome:"King, Lilly", data:"25/07/2017", local:"Budapest"},
+      "200_B": {tempo:"2:17,55", nome:"Chikunova, Evgeniia", data:"21/04/2023", local:"Kazan"},
+      "50_M": {tempo:"24,43", nome:"Sjoestroem, Sarah", data:"05/07/2014", local:"Boras"},
+      "100_M": {tempo:"54,60", nome:"Walsh, Gretchen", data:"03/05/2025", local:"Fort Lauderdale"},
+      "200_M": {tempo:"2:01,81", nome:"Liu, Zige", data:"21/10/2009", local:"Jinan"},
+      "200_E": {tempo:"2:05,70", nome:"Mcintosh, Summer", data:"09/06/2025", local:"Victoria"},
+      "400_E": {tempo:"4:23,65", nome:"Mcintosh, Summer", data:"11/06/2025", local:"Victoria"}
+    }
+  },
+  "curta": {
+    "M": {
+      "50_L": {tempo:"19,90", nome:"Crooks, Jordan", data:"14/12/2024", local:"Budapest"},
+      "100_L": {tempo:"44,84", nome:"Chalmers, Kyle", data:"29/10/2021", local:"Kazan"},
+      "200_L": {tempo:"1:38,61", nome:"Hobson, Luke", data:"15/12/2024", local:"Budapest"},
+      "400_L": {tempo:"3:32,25", nome:"Agnel, Yannick", data:"15/11/2012", local:"Angers"},
+      "800_L": {tempo:"7:20,46", nome:"Wiffen, Daniel", data:"10/12/2023", local:"Otopeni"},
+      "1500_L": {tempo:"14:06,88", nome:"Wellbrock, Florian", data:"21/12/2021", local:"Abu Dhabi"},
+      "50_C": {tempo:"22,11", nome:"Kolesnikov, Kliment", data:"23/11/2022", local:"Kazan"},
+      "100_C": {tempo:"48,16", nome:"Kos, Hubert", data:"25/10/2025", local:"Toronto"},
+      "200_C": {tempo:"1:45,12", nome:"Kos, Hubert", data:"23/10/2025", local:"Toronto"},
+      "50_B": {tempo:"24,95", nome:"Sakci, Emre", data:"27/12/2021", local:"Gaziantep"},
+      "100_B": {tempo:"55,28", nome:"Shymanovich, Ilya", data:"26/11/2021", local:"Eindhoven"},
+      "200_B": {tempo:"1:59,52", nome:"Corbeau, Caspar", data:"25/10/2025", local:"Toronto"},
+      "50_M": {tempo:"21,32", nome:"Ponti, Noe", data:"11/12/2024", local:"Budapest"},
+      "100_M": {tempo:"47,68", nome:"Liendo, Josh", data:"23/10/2025", local:"Toronto"},
+      "200_M": {tempo:"1:46,85", nome:"Honda, Tomoru", data:"22/10/2022", local:"Tokyo"},
+      "100_E": {tempo:"49,28", nome:"Dressel, Caeleb", data:"22/11/2020", local:"Budapest"},
+      "200_E": {tempo:"1:48,88", nome:"Marchand, Leon", data:"01/11/2024", local:"Singapore"},
+      "400_E": {tempo:"3:54,81", nome:"Seto, Daiya", data:"20/12/2019", local:"Las Vegas"}
+    },
+    "F": {
+      "50_L": {tempo:"22,83", nome:"Walsh, Gretchen", data:"15/12/2024", local:"Budapest"},
+      "100_L": {tempo:"49,93", nome:"Douglass, Kate", data:"25/10/2025", local:"Toronto"},
+      "200_L": {tempo:"1:49,36", nome:"O'callaghan, Mollie", data:"24/10/2025", local:"Toronto"},
+      "400_L": {tempo:"3:50,25", nome:"Mcintosh, Summer", data:"10/12/2024", local:"Budapest"},
+      "800_L": {tempo:"7:54,00", nome:"Pallister, Lani", data:"25/10/2025", local:"Toronto"},
+      "1500_L": {tempo:"15:08,24", nome:"Ledecky, Katie", data:"29/10/2022", local:"Toronto"},
+      "50_C": {tempo:"25,23", nome:"Smith, Regan", data:"13/12/2024", local:"Budapest"},
+      "100_C": {tempo:"54,02", nome:"Smith, Regan", data:"15/12/2024", local:"Budapest"},
+      "200_C": {tempo:"1:57,33", nome:"Mckeown, Kaylee", data:"25/10/2025", local:"Toronto"},
+      "50_B": {tempo:"28,37", nome:"Meilutyte, Ruta", data:"17/12/2022", local:"Melbourne"},
+      "100_B": {tempo:"1:02,36", nome:"Meilutyte, Ruta", data:"12/10/2013", local:"Moscow"},
+      "200_B": {tempo:"2:12,50", nome:"Douglass, Kate", data:"13/12/2024", local:"Budapest"},
+      "50_M": {tempo:"23,72", nome:"Walsh, Gretchen", data:"11/10/2025", local:"Carmel"},
+      "100_M": {tempo:"52,71", nome:"Walsh, Gretchen", data:"14/12/2024", local:"Budapest"},
+      "200_M": {tempo:"1:59,32", nome:"Mcintosh, Summer", data:"12/12/2024", local:"Budapest"},
+      "100_E": {tempo:"55,11", nome:"Walsh, Gretchen", data:"13/12/2024", local:"Budapest"},
+      "200_E": {tempo:"2:01,63", nome:"Douglass, Kate", data:"10/12/2024", local:"Budapest"},
+      "400_E": {tempo:"4:15,48", nome:"Mcintosh, Summer", data:"14/12/2024", local:"Budapest"}
+    }
+  }
+};
+// ===== FIM RECORDES MUNDIAIS =====
+
+
+function animateCount(el, target, duration) {
+  var start = 0;
+  var startTime = null;
+  if (typeof target !== 'number') { el.textContent = target; return; }
+  function step(ts) {
+    if (!startTime) startTime = ts;
+    var progress = Math.min((ts - startTime) / duration, 1);
+    var ease = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(ease * target);
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
 function calcularPontosFPN() {
   var piscina = document.getElementById('fpn-piscina').value;
   var sexo = document.getElementById('fpn-sexo').value;
@@ -5041,7 +5339,7 @@ function calcularPontosFPN() {
   // Get record
   var key = dist + '_' + estilo;
   var rec = null;
-  try { rec = recordesNacionais[piscina][sexo][key]; } catch(e) {}
+  try { rec = recordesIdade[piscina][sexo]['open'][key]; } catch(e) {}
   if (!rec) {
     resultEl.innerHTML = '<div style="color:#e74c3c;font-size:13px;">Sem recorde nacional para esta prova.</div>';
     return;
@@ -5065,17 +5363,47 @@ function calcularPontosFPN() {
   var T = parseT(tempoInput);
   if (!B || !T) { resultEl.innerHTML = '<div style="color:#e74c3c;font-size:13px;">Tempo inválido.</div>'; return; }
 
-  var pontos = Math.round(1000 * Math.pow(B/T, 3));
+  var pontosFPN = Math.round(1000 * Math.pow(B/T, 3));
 
-  var html = '<div class="fpn-result-box">';
-  html += '<div class="fpn-pontos">' + pontos + '</div>';
-  html += '<div class="fpn-pontos-label">Pontos FPN</div>';
-  html += '<div class="fpn-divider"></div>';
-  html += '<div class="fpn-rn-label">Recorde Nacional: ' + rec.tempo + '</div>';
-  html += '<div class="fpn-rn-nome">' + rec.nome + '</div>';
-  html += '<div class="fpn-rn-info">' + rec.data + ' · ' + rec.local + '</div>';
-  html += '</div>';
-  resultEl.innerHTML = html;
+  // Pontos FINA (recorde mundial)
+  var key2 = dist + '_' + estilo;
+  var recMundial = null;
+  try { recMundial = recordesMundiais[piscina][sexo][key2]; } catch(e) {}
+
+  var htmlOut = '<div style="display:flex;gap:12px;flex-wrap:wrap;">';
+
+  // Quadrado FPN
+  htmlOut += '<div class="fpn-result-box" style="flex:1;min-width:140px;">';
+  htmlOut += '<div class="fpn-pontos" id="fpn-num-fpn">0</div>';
+  htmlOut += '<div class="fpn-pontos-label">Pontos FPN</div>';
+  htmlOut += '<div class="fpn-divider"></div>';
+  htmlOut += '<div class="fpn-rn-label">Recorde Nacional</div>';
+  htmlOut += '<div class="fpn-rn-nome">' + rec.nome + '</div>';
+  htmlOut += '<div class="fpn-rn-info">' + rec.tempo + ' · ' + rec.data + '</div>';
+  htmlOut += '<div class="fpn-rn-info">' + rec.local + '</div>';
+  htmlOut += '</div>';
+
+  // Quadrado FINA
+  if (recMundial) {
+    var BM = parseT(recMundial.tempo);
+    var pontosFINA = BM ? Math.round(1000 * Math.pow(BM/T, 3)) : '—';
+    htmlOut += '<div class="fpn-result-box" style="flex:1;min-width:140px;">';
+    htmlOut += '<div class="fpn-pontos" id="fpn-num-fina">0</div>';
+    htmlOut += '<div class="fpn-pontos-label">Pontos FINA</div>';
+    htmlOut += '<div class="fpn-divider"></div>';
+    htmlOut += '<div class="fpn-rn-label">Recorde Mundial</div>';
+    htmlOut += '<div class="fpn-rn-nome">' + recMundial.nome + '</div>';
+    htmlOut += '<div class="fpn-rn-info">' + recMundial.tempo + ' · ' + recMundial.data + '</div>';
+    htmlOut += '<div class="fpn-rn-info">' + recMundial.local + '</div>';
+    htmlOut += '</div>';
+  }
+
+  htmlOut += '</div>';
+  resultEl.innerHTML = htmlOut;
+  var elFPN = document.getElementById('fpn-num-fpn');
+  if (elFPN) animateCount(elFPN, pontosFPN, 600);
+  var elFINA = document.getElementById('fpn-num-fina');
+  if (elFINA && typeof pontosFINA === 'number') animateCount(elFINA, pontosFINA, 600);
 }
 function fpnOnTempoInput(event) {
   var raw = event.target.value.replace(/\D/g,'');
@@ -5088,7 +5416,7 @@ function fpnOnTempoInput(event) {
   var mm = parseInt(padded.slice(0,-4)) || 0;
   var fmt = mm > 0 ? mm+':'+('0'+ss).slice(-2)+','+('0'+cc).slice(-2) : ss+','+('0'+cc).slice(-2);
   prev.textContent = fmt;
-  calcularPontosFPN();
+  document.getElementById('fpn-result').innerHTML = '';
 }
 
 
@@ -5419,7 +5747,7 @@ function calcular() {
   html += '<div class="personal-wrap">';
   html += '<div class="personal-label">O teu tempo</div>';
   html += '<div class="personal-input-row">';
-  html += '<input type="tel" id="personal-time" class="personal-input" placeholder="ex: 10543" oninput="calcularDiff()" maxlength="7">';
+  html += '<input type="tel" id="personal-time" class="personal-input" placeholder="ex: 10543" oninput="calcularDiff()" maxlength="7" autocomplete="off">';
   html += '<div id="personal-time-preview" style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:var(--aqua);letter-spacing:2px;min-width:70px;"></div>';
   html += '</div>';
   html += '</div>';
@@ -5557,58 +5885,11 @@ function fpnUpdateDistancias() {
   if (distEl.querySelector('option[value="' + prevD + '"]')) distEl.value = prevD;
 }
 
-function calcularPontosFPN() {
-  var piscina = document.getElementById('fpn-piscina').value;
-  var sexo = document.getElementById('fpn-sexo').value;
-  var estilo = document.getElementById('fpn-estilo').value;
-  var dist = document.getElementById('fpn-distancia').value;
-  var tempoInput = document.getElementById('fpn-tempo').value.trim();
-  var resultEl = document.getElementById('fpn-result');
 
-  if (!piscina || !sexo || !estilo || !dist || !tempoInput) {
-    resultEl.innerHTML = '<div style="color:#7ab8d4;font-size:13px;">Preenche todos os campos.</div>';
-    return;
-  }
+// ===== RECORDES MUNDIAIS (FINA/WORLD AQUATICS) =====
+// ===== FIM RECORDES MUNDIAIS =====
 
-  // Get record
-  var key = dist + '_' + estilo;
-  var rec = null;
-  try { rec = recordesNacionais[piscina][sexo][key]; } catch(e) {}
-  if (!rec) {
-    resultEl.innerHTML = '<div style="color:#e74c3c;font-size:13px;">Sem recorde nacional para esta prova.</div>';
-    return;
-  }
 
-  function parseT(s) {
-    s = s.trim().replace(',','.');
-    var m;
-    m = s.match(/^(\d+):(\d{2})\.(\d{2})$/);
-    if (m) return (parseInt(m[1])*60+parseInt(m[2]))*100+parseInt(m[3]);
-    m = s.match(/^(\d+)\.(\d{2})$/);
-    if (m) return parseInt(m[1])*100+parseInt(m[2]);
-    if (/^\d+$/.test(s)) {
-      var n = parseInt(s);
-      return (Math.floor(n/10000)*60+Math.floor(n/100)%100)*100+n%100;
-    }
-    return null;
-  }
-
-  var B = parseT(rec.tempo);
-  var T = parseT(tempoInput);
-  if (!B || !T) { resultEl.innerHTML = '<div style="color:#e74c3c;font-size:13px;">Tempo inválido.</div>'; return; }
-
-  var pontos = Math.round(1000 * Math.pow(B/T, 3));
-
-  var html = '<div class="fpn-result-box">';
-  html += '<div class="fpn-pontos">' + pontos + '</div>';
-  html += '<div class="fpn-pontos-label">Pontos FPN</div>';
-  html += '<div class="fpn-divider"></div>';
-  html += '<div class="fpn-rn-label">Recorde Nacional: ' + rec.tempo + '</div>';
-  html += '<div class="fpn-rn-nome">' + rec.nome + '</div>';
-  html += '<div class="fpn-rn-info">' + rec.data + ' · ' + rec.local + '</div>';
-  html += '</div>';
-  resultEl.innerHTML = html;
-}
 function fpnOnTempoInput(event) {
   var raw = event.target.value.replace(/\D/g,'');
   event.target.value = raw;
@@ -5620,7 +5901,7 @@ function fpnOnTempoInput(event) {
   var mm = parseInt(padded.slice(0,-4)) || 0;
   var fmt = mm > 0 ? mm+':'+('0'+ss).slice(-2)+','+('0'+cc).slice(-2) : ss+','+('0'+cc).slice(-2);
   prev.textContent = fmt;
-  calcularPontosFPN();
+  document.getElementById('fpn-result').innerHTML = '';
 }
 
 
@@ -6107,6 +6388,10 @@ function mostrarFormulario() {
     document.getElementById('cartao-preview-wrap').style.display = 'none';
   }
   renderFormProvas(data);
+  // Mostrar botão eliminar só se houver mais de 1 perfil e estiver a editar
+  var _profiles = getAllProfiles();
+  var _deleteBtn = document.getElementById('atleta-delete-btn');
+  if (_deleteBtn) _deleteBtn.style.display = (Object.keys(_profiles).length > 1 && getActiveProfileId()) ? 'block' : 'none';
 }
 
 function cancelarFormulario() {
@@ -6172,6 +6457,10 @@ function guardarAtleta() {
       window._cartaoFPNMemory[activeId] = cartaoFinal;
     }
     window._cartaoFPNAtivo = cartaoFinal;
+  } else {
+    var c = null;
+    try { c = localStorage.getItem('cartaoFPN_' + activeId); } catch(e) {}
+    window._cartaoFPNAtivo = c || null;
   }
   var data = {id:activeId, nome:nome, escalao:escalao, sexo:sexo, tempos:ts};
   saveProfile(activeId, data);
@@ -6183,6 +6472,10 @@ function guardarAtleta() {
   mostrarPerfilAtivo();
   // Mostrar botão cartão e fazer scroll — usa _cartaoFPNAtivo já definido acima
   setTimeout(function() {
+    var aid2 = getActiveProfileId();
+    var c2 = window._cartaoFPNAtivo;
+    if (!c2) { try { c2 = localStorage.getItem('cartaoFPN_' + aid2); } catch(e) {} }
+    window._cartaoFPNAtivo = c2 || null;
     var bw = document.getElementById('ver-cartao-btn-wrap');
     if (bw) bw.style.display = window._cartaoFPNAtivo ? 'block' : 'none';
     var el = document.getElementById('atleta-comp-selector');
@@ -7122,34 +7415,52 @@ onAuthStateChanged(auth, async (user) => {
 
 <!-- ===== CARTÃO FPN — script global (fora do módulo para acesso via onclick) ===== -->
 <script>
+var _cropperInstance = null;
+
 function previewCartaoFPN(event) {
   var file = event.target.files[0];
   if (!file) return;
   var reader = new FileReader();
   reader.onload = function(e) {
-    var img = new Image();
-    img.onload = function() {
-      var canvas = document.createElement('canvas');
-      // Resolução reduzida para caber no localStorage (~5MB limite)
-      var maxW = 800, maxH = 600;
-      var w = img.width, h = img.height;
-      if (w > maxW || h > maxH) {
-        var ratio = Math.min(maxW/w, maxH/h);
-        w = Math.round(w * ratio);
-        h = Math.round(h * ratio);
-      }
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      // Qualidade 0.70 para garantir que cabe no localStorage
-      var dataUrl = canvas.toDataURL('image/jpeg', 0.70);
-      document.getElementById('cartao-preview-img').src = dataUrl;
-      document.getElementById('cartao-preview-wrap').style.display = 'block';
-      window._cartaoFPNData = dataUrl;
+    var cropImg = document.getElementById('crop-image');
+    cropImg.src = e.target.result;
+    var overlay = document.getElementById('crop-overlay');
+    overlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    if (_cropperInstance) { _cropperInstance.destroy(); _cropperInstance = null; }
+    cropImg.onload = function() {
+      _cropperInstance = new Cropper(cropImg, {
+        viewMode: 1,
+        autoCropArea: 0.85,
+        movable: true,
+        zoomable: true,
+        rotatable: false,
+        scalable: false,
+        responsive: true,
+        background: false
+      });
     };
-    img.src = e.target.result;
   };
   reader.readAsDataURL(file);
 }
+
+function confirmarRecorte() {
+  if (!_cropperInstance) return;
+  var canvas = _cropperInstance.getCroppedCanvas({ maxWidth: 1600, maxHeight: 1100 });
+  var dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+  document.getElementById('cartao-preview-img').src = dataUrl;
+  document.getElementById('cartao-preview-wrap').style.display = 'block';
+  window._cartaoFPNData = dataUrl;
+  cancelarRecorte();
+}
+
+function cancelarRecorte() {
+  if (_cropperInstance) { _cropperInstance.destroy(); _cropperInstance = null; }
+  document.getElementById('crop-overlay').style.display = 'none';
+  document.body.style.overflow = '';
+  document.getElementById('cartao-fpn-input').value = '';
+}
+
 
 function removerCartaoFPN() {
   document.getElementById('cartao-preview-img').src = '';
@@ -7180,15 +7491,1507 @@ function fecharCartaoFPN() {
 
 
 
+
+  <!-- Overlay Recorte de Imagem -->
+  <div id="crop-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:10000;flex-direction:column;">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:rgba(0,0,0,0.85);">
+      <span style="color:#fff;font-size:14px;font-weight:600;">Recortar cartão FPN</span>
+      <div style="display:flex;gap:10px;">
+        <button type="button" onclick="cancelarRecorte()" style="background:rgba(255,255,255,0.15);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:14px;cursor:pointer;">Cancelar</button>
+        <button type="button" onclick="confirmarRecorte()" style="background:#00c4cc;color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:14px;font-weight:700;cursor:pointer;">✓ Confirmar</button>
+      </div>
+    </div>
+    <div style="flex:1;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:8px;">
+      <img id="crop-image" style="max-width:100%;max-height:100%;">
+    </div>
+  </div>
+
   <!-- Overlay Cartão FPN fullscreen -->
   <div id="cartao-fpn-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:9999;align-items:center;justify-content:center;">
     <button onclick="fecharCartaoFPN()" style="position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.2);border:none;color:#fff;font-size:26px;width:44px;height:44px;border-radius:50%;cursor:pointer;z-index:10000;display:flex;align-items:center;justify-content:center;">✕</button>
     <img id="cartao-fpn-fullscreen" src="" alt="Cartão FPN" style="max-width:100%;max-height:100%;object-fit:contain;">
   </div>
 
-  <!-- Footer -->
-  <div style="text-align:center; padding: 18px 0 10px 0; font-size: 0.78em; color: #888; letter-spacing: 0.01em;">
-    © Susana Ferrão, todos os direitos reservados
+
+
+<!-- Zona Treinador: Undo Panel -->
+<div id="crono-undo-panel" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:6000;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:18px;padding:24px;width:280px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.4);">
+    <div id="crono-undo-msg" style="font-size:15px;font-weight:600;color:#1a3a4a;margin-bottom:18px;line-height:1.4;"></div>
+    <div style="display:flex;gap:10px;">
+      <button onclick="cronoCancelUndo()" style="flex:1;padding:11px;border-radius:10px;border:1.5px solid #d0e4f0;background:#f0f7ff;color:#1a3a4a;font-size:14px;font-weight:600;cursor:pointer;">Cancelar</button>
+      <button onclick="cronoConfirmUndo()" style="flex:1;padding:11px;border-radius:10px;border:none;background:#e74c3c;color:#fff;font-size:14px;font-weight:700;cursor:pointer;">Confirmar</button>
+    </div>
   </div>
+</div>
+<!-- Zona Treinador: Color Picker -->
+<div id="crono-color-overlay" class="crono-color-overlay" style="display:none;" onclick="if(event.target===this)cronoCloseColorPicker()">
+  <div class="crono-color-picker">
+    <div style="font-size:15px;font-weight:700;color:#1a3a4a;margin-bottom:4px;">Cor do nadador</div>
+    <div style="font-size:12px;color:#8a9ab0;margin-bottom:12px;">Escolhe a cor da touca</div>
+    <div class="crono-color-grid" style="grid-template-columns:repeat(4,1fr);"><div class="crono-color-swatch" style="background:#e63946;" data-color="#e63946" onclick="cronoSelectColor('#e63946')"></div><div class="crono-color-swatch" style="background:#f4722b;" data-color="#f4722b" onclick="cronoSelectColor('#f4722b')"></div><div class="crono-color-swatch" style="background:#f7c948;" data-color="#f7c948" onclick="cronoSelectColor('#f7c948')"></div><div class="crono-color-swatch" style="background:#57cc04;" data-color="#57cc04" onclick="cronoSelectColor('#57cc04')"></div><div class="crono-color-swatch" style="background:#00b4d8;" data-color="#00b4d8" onclick="cronoSelectColor('#00b4d8')"></div><div class="crono-color-swatch" style="background:#1a6fdb;" data-color="#1a6fdb" onclick="cronoSelectColor('#1a6fdb')"></div><div class="crono-color-swatch" style="background:#7b2d8b;" data-color="#7b2d8b" onclick="cronoSelectColor('#7b2d8b')"></div><div class="crono-color-swatch" style="background:#e91e8c;" data-color="#e91e8c" onclick="cronoSelectColor('#e91e8c')"></div><div class="crono-color-swatch" style="background:#00c49a;" data-color="#00c49a" onclick="cronoSelectColor('#00c49a')"></div><div class="crono-color-swatch" style="background:#8b4513;" data-color="#8b4513" onclick="cronoSelectColor('#8b4513')"></div><div class="crono-color-swatch" style="background:#ff6b9d;" data-color="#ff6b9d" onclick="cronoSelectColor('#ff6b9d')"></div><div class="crono-color-swatch" style="background:#a8e063;" data-color="#a8e063" onclick="cronoSelectColor('#a8e063')"></div><div class="crono-color-swatch" style="background:#9b59b6;" data-color="#9b59b6" onclick="cronoSelectColor('#9b59b6')"></div><div class="crono-color-swatch" style="background:#888888;" data-color="#888888" onclick="cronoSelectColor('#888888')"></div><div class="crono-color-swatch" style="background:#222222;" data-color="#222222" onclick="cronoSelectColor('#222222')"></div><div class="crono-color-swatch" style="background:#ffffff;border:2px solid #d0d0d0;" data-color="#ffffff" onclick="cronoSelectColor('#ffffff')"></div></div></div>
+    <button onclick="cronoCloseColorPicker()" style="margin-top:16px;width:100%;padding:10px;border-radius:10px;background:#f0f7ff;border:1.5px solid #d0e4f0;color:#1a3a4a;font-size:14px;font-weight:600;cursor:pointer;">Cancelar</button>
+  </div>
+</div>
+  <!-- Footer -->
+  <div style="text-align:center; padding: 18px 0 6px 0; font-size: 0.78em; color: #888; letter-spacing: 0.01em;">
+    © SwimMin, todos os direitos reservados
+  </div>
+  <div style="text-align:center; padding: 0 20px 18px 20px; font-size: 0.78em; color: #888; letter-spacing: 0.01em;">
+    SwimMin está em fase beta. Encontraste um problema ou tens uma sugestão? Envia-nos um e-mail para <a href="mailto:swimmin.app@gmail.com" style="color:#00c4cc;text-decoration:none;">swimmin.app@gmail.com</a>.
+  </div>
+
+<script>
+// ===== ZONA DO TREINADOR (CRONÓMETRO) =====
+
+var CRONO_COLORS = [
+  '#e63946','#f4722b','#f7c948','#57cc04','#00b4d8',
+  '#1a6fdb','#7b2d8b','#e91e8c','#00c49a','#8b4513',
+  '#ff6b9d','#a8e063','#9b59b6','#888888','#222222',
+  '#ffffff'
+];
+
+var CRONO_MAX_GROUPS = 6;
+var CRONO_MAX_SWIMMERS = 10;
+var CRONO_HISTORY_KEY = 'swimmin_crono_history_v1';
+var CRONO_SESSION_KEY = 'swimmin_crono_session_v1';
+
+// State
+var cronoConfig = {
+  piscina: '',
+  distancia: 0,
+  grupos: [] // [{nome, nadadores:[{nome,cor}]}]
+};
+
+var cronoSession = null;
+/*
+cronoSession = {
+  id, data, piscina, distancia, distPorToque,
+  grupos: [{
+    id, nome, startTime, started,
+    nadadores: [{
+      id, nome, cor, splits:[], finished, startTime
+    }]
+  }]
+}
+*/
+
+var cronoActiveTab = 0; // index do grupo na config
+var cronoPhase = 'config'; // 'config' | 'arranque' | 'active' | 'summary'
+var cronoLastTouch = null; // {grupoIdx, nadadorIdx} para undo global
+var cronoLongPressTimer = null;
+
+function toggleCrono() {
+  var s = document.getElementById('crono-section');
+  var btn = document.getElementById('crono-btn');
+  if (!s || !btn) return;
+  if (s.style.display === 'none' || s.style.display === '') {
+    s.style.display = 'block';
+    btn.textContent = 'Fechar Zona do Treinador';
+    s.scrollIntoView({behavior:'smooth', block:'start'});
+    cronoInit();
+  } else {
+    s.style.display = 'none';
+    btn.textContent = 'Zona do Treinador';
+  }
+}
+
+var _cronoActiveTab = 'parciais';
+
+function cronoSwitchTab(tab) {
+  _cronoActiveTab = tab;
+  var tPar = document.getElementById('crono-tab-parciais');
+  var tCro = document.getElementById('crono-tab-cronos');
+  var cPar = document.getElementById('crono-content');
+  var cCro = document.getElementById('crono-cronos-content');
+  if (!tPar || !tCro || !cPar || !cCro) return;
+  if (tab === 'parciais') {
+    tPar.style.background = 'var(--blue-deep)'; tPar.style.color = '#fff';
+    tCro.style.background = '#f0f7ff'; tCro.style.color = '#1a3a4a';
+    cPar.style.display = 'block'; cCro.style.display = 'none';
+  } else {
+    tCro.style.background = 'var(--blue-deep)'; tCro.style.color = '#fff';
+    tPar.style.background = '#f0f7ff'; tPar.style.color = '#1a3a4a';
+    cPar.style.display = 'none'; cCro.style.display = 'block';
+    swInit();
+  }
+}
+
+function cronoInit() {
+  // Limpar sessões expiradas (>30 dias)
+  cronoPurgeOldHistory();
+  // Tentar recuperar sessão em curso do localStorage
+  var saved = null;
+  try { saved = JSON.parse(localStorage.getItem(CRONO_SESSION_KEY)); } catch(e) {}
+  if (saved && saved.phase && saved.phase !== 'summary') {
+    cronoShowUndoPanel('Existe uma sessão de parciais em curso. Retomar?', function() {
+      cronoSession = saved.session;
+      cronoPhase = saved.phase;
+      if (cronoPhase === 'active') { cronoRenderActive(); }
+      else if (cronoPhase === 'arranque') { cronoRenderArranque(); }
+      else { cronoRenderConfig(); }
+    });
+    return;
+  }
+  // Carregar config guardada
+  var savedCfg = null;
+  try { savedCfg = JSON.parse(localStorage.getItem('swimmin_crono_config_v1')); } catch(e) {}
+  if (savedCfg) cronoConfig = savedCfg;
+  // Garantir pelo menos 1 grupo
+  if (!cronoConfig.grupos || cronoConfig.grupos.length === 0) {
+    cronoConfig.grupos = [{ nome: 'Grupo 1', nadadores: [] }];
+  }
+  cronoPhase = 'config';
+  cronoActiveTab = 0;
+  cronoRenderConfig();
+}
+
+// ===== FASE 1: CONFIGURAÇÃO =====
+
+function cronoRenderConfig() {
+  var el = document.getElementById('crono-content');
+  if (!el) return;
+
+  var nGrupos = cronoConfig.grupos.length;
+  var g = cronoConfig.grupos[cronoActiveTab];
+
+  // Distâncias disponíveis
+  // Tabs dos grupos
+  var tabsHtml = '';
+  for (var i = 0; i < nGrupos; i++) {
+    var hasSw = cronoConfig.grupos[i].nadadores.filter(function(n){ return n.nome.trim(); }).length > 0;
+    tabsHtml += '<button class="crono-tab' + (i === cronoActiveTab ? ' active' : '') + (hasSw ? ' has-swimmers' : '') + '" onclick="cronoCfgTab(' + i + ')">' + cronoConfig.grupos[i].nome + '</button>';
+  }
+  if (nGrupos < CRONO_MAX_GROUPS) {
+    tabsHtml += '<button class="crono-tab" onclick="cronoAddGroup()" style="border-style:dashed;">+ Grupo</button>';
+  }
+
+  // Nadadores do grupo ativo
+  var swHtml = '';
+  for (var j = 0; j < g.nadadores.length; j++) {
+    swHtml += cronoSwimmerRow(j, g.nadadores[j]);
+  }
+  if (g.nadadores.length < CRONO_MAX_SWIMMERS) {
+    swHtml += '<button class="crono-add-swimmer-btn" onclick="cronoAddSwimmer()">+ Adicionar nadador</button>';
+  }
+
+  var infoToque = cronoConfig.piscina === '25' ? '50m' : cronoConfig.piscina === '50' ? '100m' : '—';
+  var infoToques = (cronoConfig.piscina && cronoConfig.distancia) ? ' · ' + cronoNToques() + ' toques por nadador' : '';
+
+  el.innerHTML =
+    // 1º — Piscina e distância
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:6px;">' +
+      '<div class="crono-field"><label class="crono-label">Piscina</label>' +
+        '<select class="crono-select" onchange="cronoCfgPiscina(this.value)">' +
+          '<option value="">Selecionar</option>' +
+          '<option value="25"' + (cronoConfig.piscina==='25'?' selected':'') + '>25m</option>' +
+          '<option value="50"' + (cronoConfig.piscina==='50'?' selected':'') + '>50m</option>' +
+        '</select></div>' +
+      '<div class="crono-field"><label class="crono-label">Distância total (m)</label>' +
+        '<input class="crono-input" type="number" min="50" step="50" placeholder="ex: 400" value="' + (cronoConfig.distancia || '') + '" onchange="cronoCfgDist(this.value)" onblur="cronoCfgDist(this.value)" autocomplete="off"></div>' +
+    '</div>' +
+    '<div style="margin-bottom:16px;font-size:11px;color:var(--muted);">Cada toque = ' + infoToque + infoToques + '</div>' +
+    // 2º — Divisor
+    '<div style="border-top:1px solid #e0edf5;margin-bottom:16px;"></div>' +
+    // 3º — Tabs dos grupos
+    '<div class="crono-tabs">' + tabsHtml + '</div>' +
+    (nGrupos > 1 ? '<button onclick="cronoRemoveGroup()" style="font-size:11px;color:#c0392b;background:none;border:none;cursor:pointer;margin-bottom:10px;padding:0;">Remover ' + g.nome + '</button>' : '') +
+    '<div class="crono-field"><label class="crono-label">Nadadores — ' + g.nome + '</label>' +
+      '<div id="crono-swimmers-list">' + swHtml + '</div></div>' +
+    '<button onclick="cronoCfgIniciar()" style="margin-top:18px;width:100%;padding:14px;border-radius:12px;background:linear-gradient(135deg,var(--blue-deep),var(--blue-mid));color:#fff;border:none;font-size:15px;font-weight:700;cursor:pointer;">Começar</button>' +
+    '<div style="margin-top:24px;border-top:1px solid #e0edf5;padding-top:16px;">' + cronoHistoryHtml() + '</div>';
+}
+
+function cronoNToques() {
+  if (!cronoConfig.piscina || !cronoConfig.distancia) return '?';
+  var distPorToque = cronoConfig.piscina === '25' ? 50 : 100;
+  return cronoConfig.distancia / distPorToque;
+}
+
+function cronoSwimmerRow(idx, sw) {
+  var cor = sw.cor || CRONO_COLORS[idx % CRONO_COLORS.length];
+  return '<div class="crono-swimmer-row" id="swrow-' + idx + '">' +
+    '<input class="crono-swimmer-name" type="text" placeholder="Nome do nadador" value="' + (sw.nome||'') + '" oninput="cronoSwName(' + idx + ',this.value)" autocomplete="off">' +
+    '<button class="crono-color-btn" onclick="cronoPickColor(' + idx + ')">' + cronoCapSvg(cor) + '</button>' +
+    '<button class="crono-remove-btn" onclick="cronoRemoveSwimmer(' + idx + ')">×</button>' +
+  '</div>';
+}
+
+function cronoCfgTab(i) {
+  cronoCfgSave();
+  cronoActiveTab = i;
+  cronoRenderConfig();
+}
+
+function cronoAddGroup() {
+  cronoCfgSave();
+  var n = cronoConfig.grupos.length + 1;
+  cronoConfig.grupos.push({ nome: 'Grupo ' + n, nadadores: [] });
+  cronoActiveTab = cronoConfig.grupos.length - 1;
+  cronoRenderConfig();
+}
+
+function cronoRemoveGroup() {
+  if (cronoConfig.grupos.length <= 1) return;
+  var nome = cronoConfig.grupos[cronoActiveTab].nome;
+  cronoShowUndoPanel('Remover ' + nome + '?', function() {
+    cronoConfig.grupos.splice(cronoActiveTab, 1);
+    for (var i = 0; i < cronoConfig.grupos.length; i++) {
+      cronoConfig.grupos[i].nome = 'Grupo ' + (i+1);
+    }
+    cronoActiveTab = Math.min(cronoActiveTab, cronoConfig.grupos.length - 1);
+    cronoRenderConfig();
+  });
+}
+
+function cronoAddSwimmer() {
+  var g = cronoConfig.grupos[cronoActiveTab];
+  if (g.nadadores.length >= CRONO_MAX_SWIMMERS) return;
+  g.nadadores.push({ nome: '', cor: CRONO_COLORS[g.nadadores.length % CRONO_COLORS.length] });
+  cronoRenderConfig();
+}
+
+function cronoRemoveSwimmer(idx) {
+  cronoConfig.grupos[cronoActiveTab].nadadores.splice(idx, 1);
+  cronoRenderConfig();
+}
+
+function cronoSwName(idx, val) {
+  cronoConfig.grupos[cronoActiveTab].nadadores[idx].nome = val;
+}
+
+function cronoCfgPiscina(val) {
+  cronoConfig.piscina = val;
+  cronoCfgSave();
+  cronoRenderConfig();
+}
+
+function cronoCfgDist(val) {
+  cronoConfig.distancia = parseInt(val) || 0;
+  cronoCfgSave();
+  cronoRenderConfig();
+}
+
+function cronoCfgSave() {
+  // Sincronizar nomes do DOM antes de guardar
+  var g = cronoConfig.grupos[cronoActiveTab];
+  var inputs = document.querySelectorAll('.crono-swimmer-name');
+  for (var i = 0; i < inputs.length && i < g.nadadores.length; i++) {
+    g.nadadores[i].nome = inputs[i].value;
+  }
+  try { localStorage.setItem('swimmin_crono_config_v1', JSON.stringify(cronoConfig)); } catch(e) {}
+}
+
+function cronoCfgIniciar() {
+  cronoCfgSave();
+  if (!cronoConfig.piscina) { cronoShowMsg('Seleciona o tipo de piscina.'); return; }
+  if (!cronoConfig.distancia) { cronoShowMsg('Define a distância total.'); return; }
+  // Verificar se há pelo menos 1 nadador em algum grupo
+  var temNadador = false;
+  for (var i = 0; i < cronoConfig.grupos.length; i++) {
+    for (var j = 0; j < cronoConfig.grupos[i].nadadores.length; j++) {
+      if (cronoConfig.grupos[i].nadadores[j].nome.trim()) { temNadador = true; break; }
+    }
+    if (temNadador) break;
+  }
+  if (!temNadador) { cronoShowMsg('Adiciona pelo menos um nadador.'); return; }
+
+  // Criar sessão
+  var distPorToque = cronoConfig.piscina === '25' ? 50 : 100;
+  var totalToques = cronoConfig.distancia / distPorToque;
+  cronoSession = {
+    id: Date.now(),
+    data: new Date().toISOString(),
+    piscina: cronoConfig.piscina,
+    distancia: cronoConfig.distancia,
+    distPorToque: distPorToque,
+    totalToques: totalToques,
+    grupos: []
+  };
+  for (var gi = 0; gi < cronoConfig.grupos.length; gi++) {
+    var gCfg = cronoConfig.grupos[gi];
+    var nadadores = [];
+    for (var ni = 0; ni < gCfg.nadadores.length; ni++) {
+      var n = gCfg.nadadores[ni];
+      if (!n.nome.trim()) continue;
+      nadadores.push({ id: gi+'_'+ni, nome: n.nome.trim(), cor: n.cor, splits: [], finished: false, startTime: null });
+    }
+    if (nadadores.length > 0) {
+      cronoSession.grupos.push({ id: gi, nome: gCfg.nome, startTime: null, started: false, nadadores: nadadores });
+    }
+  }
+  if (cronoSession.grupos.length === 0) { cronoShowMsg('Nenhum grupo tem nadadores.'); return; }
+  cronoPhase = 'arranque';
+  cronoPersistSession();
+  cronoRenderArranque();
+}
+
+// ===== FASE 2: ARRANQUE =====
+
+function cronoRenderArranque() {
+  var el = document.getElementById('crono-content');
+  if (!el) return;
+
+  var btns = '';
+  for (var i = 0; i < cronoSession.grupos.length; i++) {
+    var g = cronoSession.grupos[i];
+    var started = g.started;
+    btns += '<button class="crono-start-btn' + (started ? ' started' : '') + '" onclick="cronoStartGroup(' + i + ')">' +
+      (started ? '✓ ' + g.nome + ' a nadar' : 'Começar ' + g.nome) +
+      '<div style="font-size:11px;font-weight:400;margin-top:3px;opacity:0.8;">' + g.nadadores.length + ' nadador' + (g.nadadores.length!==1?'es':'') + '</div>' +
+    '</button>';
+  }
+
+  var allStarted = cronoSession.grupos.every(function(g){ return g.started; });
+
+  el.innerHTML =
+    '<div style="margin-bottom:16px;">' +
+      '<div style="font-size:13px;font-weight:600;color:var(--blue-deep);margin-bottom:4px;">Sessão pronta</div>' +
+      '<div style="font-size:12px;color:var(--muted);">Piscina ' + cronoSession.piscina + 'm · ' + cronoSession.distancia + 'm · ' + cronoSession.distPorToque + 'm por toque</div>' +
+    '</div>' +
+    '<div class="crono-start-grid">' + btns + '</div>' +
+    (allStarted ? '<button onclick="cronoGoActive()" style="width:100%;padding:14px;border-radius:12px;background:linear-gradient(135deg,#00a896,#00c4cc);color:#fff;border:none;font-size:15px;font-weight:700;cursor:pointer;margin-top:4px;">Ver nadadores</button>' : '') +
+    '<button onclick="cronoVoltarConfig()" style="margin-top:10px;width:100%;padding:10px;border-radius:10px;background:transparent;border:1px solid #ccc;color:var(--muted);font-size:13px;cursor:pointer;">Voltar à configuração</button>';
+}
+
+function cronoStartGroup(gi) {
+  var g = cronoSession.grupos[gi];
+  if (g.started) return;
+  var now = Date.now();
+  g.started = true;
+  g.startTime = now;
+  for (var ni = 0; ni < g.nadadores.length; ni++) {
+    g.nadadores[ni].startTime = now;
+  }
+  cronoPersistSession();
+  cronoRenderArranque();
+  // Ir automaticamente para active se todos arrancaram
+  var allStarted = cronoSession.grupos.every(function(grp){ return grp.started; });
+  if (allStarted) {
+    setTimeout(function(){ cronoGoActive(); }, 600);
+  }
+}
+
+function cronoGoActive() {
+  cronoPhase = 'active';
+  cronoPersistSession();
+  cronoRenderActive();
+}
+
+function cronoVoltarConfig() {
+  if (!confirm('Voltar à configuração? O progresso atual perde-se.')) return;
+  cronoSession = null;
+  cronoPhase = 'config';
+  try { localStorage.removeItem(CRONO_SESSION_KEY); } catch(e) {}
+  cronoRenderConfig();
+}
+
+// ===== FASE 3: ATIVO =====
+
+var _cronoTimerInterval = null;
+
+function cronoStartTimer() {
+  if (_cronoTimerInterval) clearInterval(_cronoTimerInterval);
+  // Usar o startTime do primeiro grupo que arrancou
+  var startTime = null;
+  for (var i = 0; i < cronoSession.grupos.length; i++) {
+    if (cronoSession.grupos[i].started && cronoSession.grupos[i].startTime) {
+      if (startTime === null || cronoSession.grupos[i].startTime < startTime) {
+        startTime = cronoSession.grupos[i].startTime;
+      }
+    }
+  }
+  if (!startTime) return;
+  function update() {
+    var el = document.getElementById('crono-timer-display');
+    if (!el) { clearInterval(_cronoTimerInterval); _cronoTimerInterval = null; return; }
+    var elapsed = Date.now() - startTime;
+    var min = Math.floor(elapsed / 60000);
+    var sec = Math.floor((elapsed % 60000) / 1000);
+    var cs = Math.floor((elapsed % 1000) / 10);
+    el.textContent = String(min).padStart(2,'0') + ':' + String(sec).padStart(2,'0') + ',' + String(cs).padStart(2,'0');
+  }
+  update();
+  _cronoTimerInterval = setInterval(update, 10);
+}
+
+function cronoStopTimer() {
+  if (_cronoTimerInterval) { clearInterval(_cronoTimerInterval); _cronoTimerInterval = null; }
+}
+
+function cronoRenderActive() {
+  var el = document.getElementById('crono-content');
+  if (!el) return;
+
+  var allDone = true;
+  var swimHtml = '';
+
+  for (var gi = 0; gi < cronoSession.grupos.length; gi++) {
+    var g = cronoSession.grupos[gi];
+    if (!g.started) continue;
+
+    for (var ni = 0; ni < g.nadadores.length; ni++) {
+      var n = g.nadadores[ni];
+      if (!n.finished) allDone = false;
+
+      var toques = n.splits.length;
+      var totalToques = cronoSession.totalToques;
+      var isLast = (toques === totalToques - 1) && !n.finished;
+      var distPerc = toques * cronoSession.distPorToque;
+      var mediaStr = cronoCalcMedia(n);
+      // Parcial aos 100m:
+      // piscina 25m (50m/toque): mostrar nos toques pares = soma dos 2 ultimos toques
+      // piscina 50m (100m/toque): mostrar sempre = ultimo toque
+      var lastSplit = '—';
+      if (toques > 0) {
+        // Parcial = sempre o tempo do ultimo toque
+        lastSplit = cronoFmtMs(n.splits[toques-1]);
+      }
+
+      var btnClass = 'crono-swimmer-btn' + (n.finished ? ' finished' : (!g.started ? ' waiting' : ''));
+      var btnStyle = 'background:' + (n.finished ? '#b0b8c1' : n.cor) + ';';
+
+      var innerHtml = '';
+      if (n.finished) {
+        innerHtml = '<div class="crono-btn-name">' + n.nome + '</div>' +
+          '<div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.9);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Terminado</div>' +
+          '<div class="crono-btn-info"><strong>' + cronoFmtTotal(n) + '</strong><br>Média 100: ' + mediaStr + '</div>';
+      } else if (isLast) {
+        innerHtml = '<div class="crono-btn-finish-label">Terminar</div>' +
+          '<div class="crono-btn-name">' + n.nome + '</div>' +
+          '<div class="crono-btn-info"><strong>' + distPerc + 'm</strong><br>Média 100: ' + mediaStr + '<br>' + parcialLabel + lastSplit + '</div>';
+      } else {
+        var parcialLabel = (parseInt(cronoSession.distPorToque) < 100) ? 'Parcial 50m: ' : 'Parcial: ';
+        innerHtml = '<div class="crono-btn-name">' + n.nome + '</div>' +
+          '<div class="crono-btn-info"><strong>' + distPerc + 'm</strong><br>Média 100: ' + mediaStr + '<br>' + parcialLabel + lastSplit + '</div>';
+      }
+
+      swimHtml += '<div class="' + btnClass + '" style="' + btnStyle + '" ' +
+        'data-gi="' + gi + '" data-ni="' + ni + '" ' +
+        'ontouchstart="cronoLongStart(event,' + gi + ',' + ni + ')" ' +
+        'ontouchend="cronoLongEnd(event,' + gi + ',' + ni + ')" ' +
+        'ontouchcancel="cronoLongCancel()" ' +
+        'onmousedown="cronoLongStart(event,' + gi + ',' + ni + ')" ' +
+        'onmouseup="cronoLongEnd(event,' + gi + ',' + ni + ')" ' +
+        'onmouseleave="cronoLongCancel()">' +
+        innerHtml + '</div>';
+    }
+  }
+
+  var undoLabel = cronoLastTouch ?
+    ('Anular toque — ' + cronoSession.grupos[cronoLastTouch.gi].nadadores[cronoLastTouch.ni].nome) :
+    'Anular último toque';
+
+  el.innerHTML =
+    '<div class="crono-action-bar">' +
+      '<button class="crono-undo-btn" onclick="cronoUndoLast()">' + undoLabel + '</button>' +
+      '<div style="text-align:center;background:#f5f9fc;border-radius:8px;padding:6px 8px;flex:1.5;">' +
+        '<div style="font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#8a9ab0;margin-bottom:2px;">Tarefa iniciada há</div>' +
+        '<div id="crono-timer-display" style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:var(--blue-deep);letter-spacing:2px;line-height:1;">00:00</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="crono-swimmers-grid">' + swimHtml + '</div>' +
+    (allDone ?
+      '<div style="display:flex;gap:10px;margin-top:8px;">' +
+        '<button onclick="cronoShowSummary()" style="flex:1;padding:13px;border-radius:12px;background:linear-gradient(135deg,var(--blue-deep),var(--blue-mid));color:#fff;border:none;font-size:14px;font-weight:700;cursor:pointer;">Ver resumo</button>' +
+        '<button onclick="cronoExportCSV()" style="flex:1;padding:13px;border-radius:12px;background:linear-gradient(135deg,#00a896,#00c4cc);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;">CSV</button>' +
+        '<button onclick="cronoExportPDF()" style="flex:1;padding:13px;border-radius:12px;background:linear-gradient(135deg,#6c3483,#9b59b6);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;">PDF</button>' +
+      '</div>' : '');
+  if (!allDone) cronoStartTimer(); else cronoStopTimer();
+}
+
+// Toque no botão do nadador
+function cronoTouchSwimmer(gi, ni) {
+  var g = cronoSession.grupos[gi];
+  var n = g.nadadores[ni];
+  if (n.finished || !g.started) return;
+
+  var now = Date.now();
+  var elapsed = now - n.startTime;
+  // O split é o tempo desde o último toque (ou início)
+  var lastTime = n.splits.length > 0 ?
+    (n.startTime + n.splits.reduce(function(a,b){return a+b;},0)) :
+    n.startTime;
+  var split = now - lastTime;
+
+  n.splits.push(split);
+  cronoLastTouch = { gi: gi, ni: ni };
+
+  if (n.splits.length >= cronoSession.totalToques) {
+    n.finished = true;
+    n.totalTime = elapsed;
+  }
+
+  cronoPersistSession();
+  cronoRenderActive();
+}
+
+// Long press detection
+var _cronoLongFired = false;
+var _cronoIsTouchDevice = false;
+
+function cronoLongStart(e, gi, ni) {
+  // Se for evento touch, marcar como dispositivo touch e ignorar mouse
+  if (e.type === 'touchstart') { _cronoIsTouchDevice = true; }
+  if (e.type === 'mousedown' && _cronoIsTouchDevice) return;
+  if (e.type === 'touchstart') e.preventDefault();
+  cronoLongCancel();
+  _cronoLongFired = false;
+  cronoLongPressTimer = setTimeout(function() {
+    cronoLongPressTimer = null;
+    _cronoLongFired = true;
+    cronoShowUndoSwimmer(gi, ni);
+  }, 700);
+}
+
+function cronoLongEnd(e, gi, ni) {
+  if (e.type === 'mouseup' && _cronoIsTouchDevice) return;
+  if (e.type === 'touchend') e.preventDefault();
+  if (cronoLongPressTimer) {
+    clearTimeout(cronoLongPressTimer);
+    cronoLongPressTimer = null;
+    if (!_cronoLongFired) {
+      cronoTouchSwimmer(gi, ni);
+    }
+  }
+  _cronoLongFired = false;
+}
+
+function cronoLongCancel() {
+  if (cronoLongPressTimer) {
+    clearTimeout(cronoLongPressTimer);
+    cronoLongPressTimer = null;
+  }
+  _cronoLongFired = false;
+}
+
+// Mostrar painel de confirmação inline para anular
+function cronoShowUndoSwimmer(gi, ni) {
+  var n = cronoSession.grupos[gi].nadadores[ni];
+  if (n.splits.length === 0) { cronoShowUndoMsg('Não há toques para anular para ' + n.nome + '.', false); return; }
+  cronoShowUndoPanel('Anular último toque de ' + n.nome + '?', function() {
+    n.splits.pop();
+    n.finished = false;
+    n.totalTime = null;
+    if (cronoLastTouch && cronoLastTouch.gi === gi && cronoLastTouch.ni === ni) cronoLastTouch = null;
+    cronoPersistSession();
+    cronoRenderActive();
+  });
+}
+
+function cronoUndoSwimmer(gi, ni) { cronoShowUndoSwimmer(gi, ni); }
+
+function cronoUndoLast() {
+  if (!cronoLastTouch) { cronoShowUndoMsg('Não há toques recentes para anular.', false); return; }
+  var gi = cronoLastTouch.gi, ni = cronoLastTouch.ni;
+  var n = cronoSession.grupos[gi].nadadores[ni];
+  cronoShowUndoPanel('Anular último toque de ' + n.nome + '?', function() {
+    n.splits.pop();
+    n.finished = false;
+    n.totalTime = null;
+    cronoLastTouch = null;
+    cronoPersistSession();
+    cronoRenderActive();
+  });
+}
+
+function cronoShowMsg(msg) {
+  var panel = document.getElementById('crono-undo-panel');
+  var msgEl = document.getElementById('crono-undo-msg');
+  if (!panel || !msgEl) return;
+  msgEl.textContent = msg;
+  // Hide confirm button, show only cancel/ok
+  var btns = panel.querySelectorAll('button');
+  if (btns[0]) btns[0].textContent = 'OK';
+  if (btns[1]) btns[1].style.display = 'none';
+  panel.style.display = 'flex';
+  panel._onConfirm = null;
+}
+
+function cronoShowUndoPanel(msg, onConfirm) {
+  var panel = document.getElementById('crono-undo-panel');
+  var msgEl = document.getElementById('crono-undo-msg');
+  if (!panel || !msgEl) return;
+  msgEl.textContent = msg;
+  panel.style.display = 'flex';
+  panel._onConfirm = onConfirm;
+}
+
+function cronoConfirmUndo() {
+  var panel = document.getElementById('crono-undo-panel');
+  if (!panel) return;
+  panel.style.display = 'none';
+  var btns = panel.querySelectorAll('button');
+  if (btns[0]) btns[0].textContent = 'Cancelar';
+  if (btns[1]) btns[1].style.display = '';
+  if (panel._onConfirm) panel._onConfirm();
+}
+
+function cronoCancelUndo() {
+  var panel = document.getElementById('crono-undo-panel');
+  if (!panel) return;
+  panel.style.display = 'none';
+  // Reset buttons to normal state
+  var btns = panel.querySelectorAll('button');
+  if (btns[0]) btns[0].textContent = 'Cancelar';
+  if (btns[1]) btns[1].style.display = '';
+}
+
+function cronoShowUndoMsg(msg, ok) {
+  var panel = document.getElementById('crono-undo-panel');
+  var msgEl = document.getElementById('crono-undo-msg');
+  if (!panel || !msgEl) return;
+  msgEl.textContent = msg;
+  // Mostrar só a mensagem sem botão confirmar
+  panel.dataset.msgonly = '1';
+  panel.style.display = 'flex';
+  setTimeout(function(){ panel.style.display = 'none'; panel.dataset.msgonly = ''; }, 2000);
+}
+
+// ===== FASE 4: RESUMO =====
+
+function cronoShowSummary() {
+  cronoStopTimer();
+  cronoPhase = 'summary';
+  // Guardar no histórico
+  cronoPersistSession();
+  cronoSaveToHistory();
+  try { localStorage.removeItem(CRONO_SESSION_KEY); } catch(e) {}
+  cronoRenderSummary();
+}
+
+function cronoRenderSummary() {
+  var el = document.getElementById('crono-content');
+  if (!el) return;
+
+  var html = '<div style="font-size:13px;font-weight:600;color:var(--blue-deep);margin-bottom:4px;">Resumo da sessão</div>' +
+    '<div style="font-size:12px;color:var(--muted);margin-bottom:16px;">Piscina ' + cronoSession.piscina + 'm · ' + cronoSession.distancia + 'm</div>';
+
+  for (var gi = 0; gi < cronoSession.grupos.length; gi++) {
+    var g = cronoSession.grupos[gi];
+    if (cronoSession.grupos.length > 1) {
+      html += '<div style="font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin:12px 0 6px;">' + g.nome + '</div>';
+    }
+    for (var ni = 0; ni < g.nadadores.length; ni++) {
+      var n = g.nadadores[ni];
+      var media = cronoCalcMedia(n);
+      var total = cronoFmtTotal(n);
+      var splitsHtml = '';
+      for (var si = 0; si < n.splits.length; si++) {
+        splitsHtml += '<span style="margin-right:10px;">' + (si+1) + '. ' + cronoFmtMs(n.splits[si]) + '</span>';
+      }
+      var uid = 'sum_' + gi + '_' + ni;
+      html += '<div class="crono-summary-swimmer">' +
+        '<div class="crono-summary-name">' +
+          '<div class="crono-summary-dot" style="background:' + n.cor + ';"></div>' +
+          n.nome + (n.finished ? '' : ' <span style="font-size:11px;color:var(--muted);font-weight:400;">(incompleto)</span>') +
+        '</div>' +
+        '<div class="crono-summary-stats">Total: <strong>' + total + '</strong> · Média/100m: <strong>' + media + '</strong></div>' +
+        '<button class="crono-detail-btn" onclick="cronoToggleSplits(\'' + uid + '\')">Ver parciais</button>' +
+        '<div class="crono-summary-splits" id="' + uid + '">' + splitsHtml + '</div>' +
+      '</div>';
+    }
+  }
+
+  html += '<div style="display:flex;gap:10px;margin-top:16px;">' +
+    '<button onclick="cronoExportCSV()" style="flex:1;padding:12px 6px;border-radius:12px;background:linear-gradient(135deg,#00a896,#00c4cc);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;">CSV</button>' +
+    '<button onclick="cronoExportPDF()" style="flex:1;padding:12px 6px;border-radius:12px;background:linear-gradient(135deg,#6c3483,#9b59b6);color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;">PDF</button>' +
+    '<button onclick="cronoNovaSessionConfirm()" style="flex:1;padding:12px 6px;border-radius:12px;background:linear-gradient(135deg,var(--blue-deep),var(--blue-mid));color:#fff;border:none;font-size:13px;font-weight:700;cursor:pointer;">Nova sessão</button>' +
+  '</div>';
+
+  el.innerHTML = html;
+}
+
+function cronoToggleSplits(uid) {
+  var el = document.getElementById(uid);
+  if (!el) return;
+  el.style.display = el.style.display === 'block' ? 'none' : 'block';
+}
+
+function cronoNovaSessionConfirm() {
+  cronoShowUndoPanel('Iniciar nova sessão? Os dados ficam guardados no histórico.', function() {
+    cronoSession = null;
+    cronoPhase = 'config';
+    cronoRenderConfig();
+  });
+}
+
+// ===== EXPORTAÇÃO CSV =====
+
+function cronoExportCSV() {
+  if (!cronoSession) return;
+  var rows = [];
+  rows.push(['Sessão SwimMin', new Date(cronoSession.data).toLocaleString('pt-PT')]);
+  rows.push(['Piscina', cronoSession.piscina + 'm', 'Distância', cronoSession.distancia + 'm']);
+  rows.push([]);
+  rows.push(['Grupo', 'Nadador', 'Tempo Total', 'Média/100m'].concat(
+    Array.from({length: cronoSession.totalToques}, function(_,i){ return 'Parcial ' + (i+1); })
+  ));
+
+  for (var gi = 0; gi < cronoSession.grupos.length; gi++) {
+    var g = cronoSession.grupos[gi];
+    for (var ni = 0; ni < g.nadadores.length; ni++) {
+      var n = g.nadadores[ni];
+      var row = [g.nome, n.nome, cronoFmtTotal(n), cronoCalcMedia(n)];
+      for (var si = 0; si < n.splits.length; si++) {
+        row.push(cronoFmtMs(n.splits[si]));
+      }
+      rows.push(row);
+    }
+  }
+
+  var csv = rows.map(function(r){ return r.map(function(c){ return '"' + String(c).replace(/"/g,'""') + '"'; }).join(';'); }).join('\r\n');
+  var blob = new Blob(['\uFEFF' + csv], {type:'text/csv;charset=utf-8;'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'swimmin_treino_' + new Date(cronoSession.data).toLocaleDateString('pt-PT').replace(/\//g,'-') + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// ===== HISTÓRICO =====
+
+function cronoSaveToHistory() {
+  if (!cronoSession) return;
+  var history = [];
+  try { history = JSON.parse(localStorage.getItem(CRONO_HISTORY_KEY)) || []; } catch(e) {}
+  // Remover duplicado se existir
+  history = history.filter(function(h){ return h.id !== cronoSession.id; });
+  history.unshift({ id: cronoSession.id, data: cronoSession.data, piscina: cronoSession.piscina, distancia: cronoSession.distancia, session: cronoSession });
+  // Manter apenas 10
+  history = history.slice(0, 10);
+  try { localStorage.setItem(CRONO_HISTORY_KEY, JSON.stringify(history)); } catch(e) {}
+}
+
+function cronoPurgeOldHistory() {
+  var history = [];
+  try { history = JSON.parse(localStorage.getItem(CRONO_HISTORY_KEY)) || []; } catch(e) {}
+  var cutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;
+  history = history.filter(function(h){ return new Date(h.data).getTime() > cutoff; });
+  try { localStorage.setItem(CRONO_HISTORY_KEY, JSON.stringify(history)); } catch(e) {}
+}
+
+function cronoHistoryHtml() {
+  var history = [];
+  try { history = JSON.parse(localStorage.getItem(CRONO_HISTORY_KEY)) || []; } catch(e) {}
+  if (history.length === 0) return '';
+  var html = '<div style="font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Sessões anteriores</div>';
+  for (var i = 0; i < history.length; i++) {
+    var h = history[i];
+    var d = new Date(h.data);
+    var label = d.toLocaleDateString('pt-PT') + ' ' + d.toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'});
+    var idx = i;
+    html += '<div class="crono-history-item">' +
+      '<div>' +
+        '<div class="crono-history-info">Piscina ' + h.piscina + 'm · ' + h.distancia + 'm</div>' +
+        '<div class="crono-history-date">' + label + '</div>' +
+      '</div>' +
+      '<div style="display:flex;gap:6px;">' +
+        '<button class="crono-export-btn" style="background:#1a6fdb;" onclick="cronoVerHistoria(' + idx + ')">Ver</button>' +
+        '<button class="crono-export-btn" onclick="cronoExportFromHistory(' + idx + ')">CSV</button>' +
+        '<button class="crono-export-btn" style="background:#e74c3c;" onclick="cronoDeleteFromHistory(' + idx + ')">Eliminar</button>' +
+      '</div>' +
+    '</div>';
+  }
+  return html;
+}
+
+function cronoExportPDF() {
+  if (!cronoSession) return;
+  var d = new Date(cronoSession.data);
+  var dateStr = d.toLocaleDateString('pt-PT') + ' ' + d.toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'});
+  var distPorToque = parseInt(cronoSession.distPorToque) || 50;
+
+  var rows = '';
+  for (var gi = 0; gi < cronoSession.grupos.length; gi++) {
+    var g = cronoSession.grupos[gi];
+    if (cronoSession.grupos.length > 1) {
+      rows += '<tr><td colspan="' + (4 + cronoSession.totalToques) + '" style="background:#e8f0fa;font-weight:700;padding:8px 12px;font-size:13px;color:#003d6b;">' + g.nome + '</td></tr>';
+    }
+    for (var ni = 0; ni < g.nadadores.length; ni++) {
+      var n = g.nadadores[ni];
+      var splits = '';
+      for (var si = 0; si < cronoSession.totalToques; si++) {
+        splits += '<td style="padding:6px 10px;border-bottom:1px solid #e0edf5;text-align:center;">' + (n.splits[si] ? cronoFmtMs(n.splits[si]) : '—') + '</td>';
+      }
+      var totalMs = n.splits.reduce(function(a,b){return a+b;},0);
+      var distPerc = n.splits.length * distPorToque;
+      var media = distPerc >= 100 ? cronoFmtMs(Math.round((totalMs/distPerc)*100)) : '—';
+      rows += '<tr>' +
+        '<td style="padding:6px 12px;border-bottom:1px solid #e0edf5;">' +
+          '<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:' + n.cor + ';margin-right:6px;vertical-align:middle;"></span>' + n.nome +
+        '</td>' +
+        '<td style="padding:6px 10px;border-bottom:1px solid #e0edf5;text-align:center;">' + (n.finished ? cronoFmtMs(n.totalTime) : '—') + '</td>' +
+        '<td style="padding:6px 10px;border-bottom:1px solid #e0edf5;text-align:center;">' + media + '</td>' +
+        splits +
+      '</tr>';
+    }
+  }
+
+  var splitHeaders = '';
+  for (var i = 0; i < cronoSession.totalToques; i++) {
+    var label = distPorToque < 100 ? (distPorToque * (i+1)) + 'm' : (distPorToque * (i+1)) + 'm';
+    splitHeaders += '<th style="padding:8px 10px;background:#003d6b;color:#fff;text-align:center;font-weight:600;">' + label + '</th>';
+  }
+
+  var html = '<!DOCTYPE html><html lang="pt"><head><meta charset="UTF-8">' +
+    '<title>SwimMin — Sessão de Treino</title>' +
+    '<style>' +
+      'body{font-family:Arial,sans-serif;margin:32px;color:#1a2a3a;}' +
+      'h1{color:#003d6b;font-size:22px;margin-bottom:4px;}' +
+      '.meta{font-size:13px;color:#6b8fa8;margin-bottom:24px;}' +
+      'table{width:100%;border-collapse:collapse;font-size:13px;}' +
+      'th{background:#003d6b;color:#fff;padding:8px 12px;text-align:left;font-weight:600;}' +
+      'tr:hover td{background:#f4f9fd;}' +
+      '@media print{body{margin:16px;}button{display:none!important;}}' +
+    '</style></head><body>' +
+    '<h1>SwimMin — Sessão de Treino</h1>' +
+    '<div class="meta">Data: ' + dateStr + ' &nbsp;|&nbsp; Piscina: ' + cronoSession.piscina + 'm &nbsp;|&nbsp; Distância: ' + cronoSession.distancia + 'm &nbsp;|&nbsp; ' + distPorToque + 'm por toque</div>' +
+    '<table><thead><tr>' +
+      '<th>Nadador</th>' +
+      '<th style="text-align:center;">Total</th>' +
+      '<th style="text-align:center;">Média/100m</th>' +
+      splitHeaders +
+    '</tr></thead><tbody>' + rows + '</tbody></table>' +
+    '<div style="margin-top:32px;text-align:center;">' +
+      '<button onclick="window.print()" style="padding:12px 32px;background:#003d6b;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;">Imprimir / Guardar como PDF</button>' +
+    '</div>' +
+    '<div style="margin-top:24px;font-size:11px;color:#aaa;text-align:center;">SwimMin · swimmin.app@gmail.com</div>' +
+    '</body></html>';
+
+  var win = window.open('', '_blank');
+  if (win) {
+    win.document.write(html);
+    win.document.close();
+  } else {
+    cronoShowMsg('Permite popups no browser para gerar o PDF.');
+  }
+}
+
+function cronoVerHistoria(idx) {
+  var history = [];
+  try { history = JSON.parse(localStorage.getItem(CRONO_HISTORY_KEY)) || []; } catch(e) {}
+  if (!history[idx]) return;
+  var h = history[idx];
+  var d = new Date(h.data);
+  var label = d.toLocaleDateString('pt-PT') + ' ' + d.toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'});
+  var distPorToque = parseInt(h.session.distPorToque) || 50;
+
+  var html = '<div style="position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:7000;overflow-y:auto;padding:20px;" onclick="if(event.target===this)this.remove();">' +
+    '<div style="background:#fff;border-radius:20px;padding:24px;max-width:500px;margin:0 auto;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">' +
+        '<div>' +
+          '<div style="font-family:sans-serif;font-size:22px;font-weight:700;color:#003d6b;letter-spacing:2px;">Parciais</div>' +
+          '<div style="font-size:12px;color:#6b8fa8;">Piscina ' + h.piscina + 'm · ' + h.distancia + 'm · ' + label + '</div>' +
+        '</div>' +
+        '<button onclick="closeHistView()" style="background:#f0f7ff;border:none;border-radius:50%;width:32px;height:32px;font-size:18px;cursor:pointer;color:#1a3a4a;">×</button>' +
+      '</div>';
+
+  for (var gi = 0; gi < h.session.grupos.length; gi++) {
+    var g = h.session.grupos[gi];
+    if (h.session.grupos.length > 1) {
+      html += '<div style="font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#6b8fa8;margin:12px 0 6px;">' + g.nome + '</div>';
+    }
+    for (var ni = 0; ni < g.nadadores.length; ni++) {
+      var n = g.nadadores[ni];
+      var totalMs = n.splits.reduce(function(a,b){return a+b;}, 0);
+      var distPerc = n.splits.length * distPorToque;
+      var media = distPerc >= 100 ? cronoFmtMs(Math.round((totalMs/distPerc)*100)) : '—';
+      html += '<div style="background:#f4f8fb;border-radius:12px;padding:12px 14px;margin-bottom:8px;">' +
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">' +
+          '<div style="width:10px;height:10px;border-radius:50%;background:' + n.cor + ';flex-shrink:0;"></div>' +
+          '<span style="font-weight:700;font-size:14px;color:#003d6b;">' + n.nome + '</span>' +
+          (n.finished ? '<span style="font-size:12px;color:#6b8fa8;margin-left:auto;">Total: ' + cronoFmtMs(n.totalTime) + ' · Média: ' + media + '</span>' : '<span style="font-size:11px;color:#e67e22;margin-left:auto;">Incompleto</span>') +
+        '</div>';
+      if (n.splits.length > 0) {
+        html += '<div style="font-size:11px;">';
+        for (var si = 0; si < n.splits.length; si++) {
+          html += '<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #e0edf5;">' +
+            '<span style="color:#6b8fa8;">' + (si+1) + '</span>' +
+            '<span>' + cronoFmtMs(n.splits[si]) + '</span>' +
+          '</div>';
+        }
+        html += '</div>';
+      }
+      html += '</div>';
+    }
+  }
+  html += '</div></div>';
+
+  var overlay = document.createElement('div');
+  overlay.innerHTML = html;
+  var el = overlay.firstChild;
+  el.id = 'crono-hist-view';
+  document.body.appendChild(el);
+}
+
+function cronoExportFromHistory(idx) {
+  var history = [];
+  try { history = JSON.parse(localStorage.getItem(CRONO_HISTORY_KEY)) || []; } catch(e) {}
+  if (!history[idx]) return;
+  cronoSession = history[idx].session;
+  cronoExportCSV();
+  cronoSession = null;
+}
+
+function cronoDeleteFromHistory(idx) {
+  var history = [];
+  try { history = JSON.parse(localStorage.getItem(CRONO_HISTORY_KEY)) || []; } catch(e) {}
+  if (!history[idx]) return;
+  var h = history[idx];
+  var d = new Date(h.data);
+  var label = d.toLocaleDateString('pt-PT') + ' ' + d.toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'});
+  cronoShowUndoPanel('Eliminar sessão de ' + label + '?', function() {
+    history.splice(idx, 1);
+    try { localStorage.setItem(CRONO_HISTORY_KEY, JSON.stringify(history)); } catch(e) {}
+    cronoRenderConfig();
+  });
+}
+
+// ===== UTILITÁRIOS =====
+
+function cronoFmtMs(ms) {
+  if (!ms && ms !== 0) return '—';
+  var totalSec = Math.floor(ms / 1000);
+  var centesimos = Math.floor((ms % 1000) / 10);
+  var min = Math.floor(totalSec / 60);
+  var sec = totalSec % 60;
+  if (min > 0) {
+    return min + ':' + String(sec).padStart(2,'0') + ',' + String(centesimos).padStart(2,'0');
+  }
+  return sec + ',' + String(centesimos).padStart(2,'0');
+}
+
+function cronoFmtTotal(n) {
+  if (!n.finished || !n.totalTime) {
+    if (n.splits.length === 0) return '—';
+    var partialMs = n.splits.reduce(function(a,b){return a+b;},0);
+    return cronoFmtMs(partialMs) + '*';
+  }
+  return cronoFmtMs(n.totalTime);
+}
+
+function cronoCalcMedia(n) {
+  if (n.splits.length === 0 || !cronoSession) return '—';
+  var dpt = parseInt(cronoSession.distPorToque) || 50;
+  var toques = n.splits.length;
+  if (dpt < 100) {
+    // Piscina 25m: media so atualiza nos toques pares
+    if (toques === 1) return '—'; // 1o toque: nada
+    // Calcular com o ultimo numero par de toques
+    var toquesParaCalculo = toques % 2 === 0 ? toques : toques - 1;
+    var distPerc = toquesParaCalculo * dpt;
+    var tempoMs = 0;
+    for (var i = 0; i < toquesParaCalculo; i++) tempoMs += n.splits[i];
+    var mediaPer100 = (tempoMs / distPerc) * 100;
+    return cronoFmtMs(Math.round(mediaPer100));
+  } else {
+    // Piscina 50m: sempre o ultimo toque
+    var distPerc2 = toques * dpt;
+    var tempoMs2 = n.splits.reduce(function(a,b){return a+b;},0);
+    var mediaPer100b = (tempoMs2 / distPerc2) * 100;
+    return cronoFmtMs(Math.round(mediaPer100b));
+  }
+}
+
+function cronoPersistSession() {
+  try {
+    localStorage.setItem(CRONO_SESSION_KEY, JSON.stringify({ phase: cronoPhase, session: cronoSession }));
+  } catch(e) {}
+}
+
+// ===== COR PICKER =====
+// SVG touca de natação
+function cronoCapSvg(color) {
+  var stroke = color === '#ffffff' ? '#cccccc' : color === '#222222' ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)';
+  return '<svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><path d="M4 28 C4 10 32 10 32 28 L32 30 C32 31.1 31.1 32 30 32 L6 32 C4.9 32 4 31.1 4 30 Z" fill="' + color + '" stroke="' + stroke + '" stroke-width="1"/></svg>';
+}
+
+var _cronoPickingIdx = -1;
+
+function cronoPickColor(idx) {
+  _cronoPickingIdx = idx;
+  var overlay = document.getElementById('crono-color-overlay');
+  if (!overlay) return;
+  var currentCor = cronoConfig.grupos[cronoActiveTab].nadadores[idx].cor || '#3498db';
+  var swatches = overlay.querySelectorAll('.crono-color-swatch');
+  swatches.forEach(function(s) {
+    s.classList.toggle('selected', s.dataset.color === currentCor);
+  });
+  overlay.style.display = 'flex';
+}
+
+function cronoSelectColor(cor) {
+  if (_cronoPickingIdx < 0) return;
+  cronoCfgSave();
+  cronoConfig.grupos[cronoActiveTab].nadadores[_cronoPickingIdx].cor = cor;
+  document.getElementById('crono-color-overlay').style.display = 'none';
+  _cronoPickingIdx = -1;
+  cronoRenderConfig();
+}
+
+function cronoCloseColorPicker() {
+  document.getElementById('crono-color-overlay').style.display = 'none';
+  _cronoPickingIdx = -1;
+}
+
+
+// ===== CRONÓMETROS STANDALONE =====
+var SW_KEY = 'swimmin_sw_v1';
+var SW_HIST_KEY = 'swimmin_sw_history_v1';
+
+var swState = {
+  nCronos: 1,
+  eventoNome: '',
+  cronos: [] // [{running, startMs, elapsed, splits, interval}]
+};
+
+function swInit() {
+  var saved = null;
+  try { saved = JSON.parse(localStorage.getItem(SW_KEY)); } catch(e) {}
+  if (saved) {
+    swState.nCronos = saved.nCronos || 1;
+    swState.eventoNome = saved.eventoNome || '';
+    swState.cronos = (saved.cronos || []).map(function(c) {
+      return { running: false, startMs: null, elapsed: c.elapsed || 0, splits: c.splits || [], interval: null };
+    });
+  }
+  while (swState.cronos.length < swState.nCronos) {
+    swState.cronos.push({ running: false, startMs: null, elapsed: 0, splits: [], interval: null });
+  }
+  swRender();
+}
+
+function swSave() {
+  var data = {
+    nCronos: swState.nCronos,
+    eventoNome: swState.eventoNome,
+    cronos: swState.cronos.map(function(c) {
+      return { elapsed: c.elapsed, splits: c.splits };
+    })
+  };
+  try { localStorage.setItem(SW_KEY, JSON.stringify(data)); } catch(e) {}
+}
+
+var _swInitialized = false;
+
+function swRender() {
+  var el = document.getElementById('crono-cronos-content');
+  if (!el) return;
+  // Garantir inicialização
+  while (swState.cronos.length < swState.nCronos) {
+    swState.cronos.push({ running: false, startMs: null, elapsed: 0, splits: [], interval: null });
+  }
+
+  var gridClass = 'sw-grid-' + Math.min(swState.nCronos, 4);
+
+  // Config bar
+  var html = '<div style="margin-bottom:14px;">' +
+    '<div style="font-size:11px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Número de cronómetros</div>' +
+    '<div style="display:flex;gap:6px;margin-bottom:12px;">';
+  for (var i = 1; i <= 4; i++) {
+    html += '<button onclick="swSetN(' + i + ')" style="flex:1;padding:8px;border-radius:8px;border:1.5px solid ' + (swState.nCronos===i?'var(--blue-deep)':'#d0e4f0') + ';background:' + (swState.nCronos===i?'var(--blue-deep)':'#f0f7ff') + ';color:' + (swState.nCronos===i?'#fff':'#1a3a4a') + ';font-weight:700;font-size:14px;cursor:pointer;">' + i + '</button>';
+  }
+  html += '</div>';
+
+  // Evento nome
+  html += '<div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">' +
+    '<input id="sw-evento-nome" class="crono-input" type="text" placeholder="Nome do evento (opcional)" value="' + (swState.eventoNome||'').replace(/"/g,'&quot;') + '" onchange="swSetNome(this.value)" autocomplete="off" style="flex:1;padding:9px 12px;font-size:14px;">' +
+    '</div>';
+
+  // Arranque simultâneo se > 1
+  if (swState.nCronos > 1) {
+    var allStopped = swState.cronos.slice(0, swState.nCronos).every(function(c){return !c.running;});
+    html += '<div style="display:flex;gap:6px;margin-bottom:14px;">' +
+      (allStopped ? '<button onclick="swStartAll()" style="flex:1;padding:9px;border-radius:10px;border:none;background:linear-gradient(135deg,#00a896,#00c4cc);color:#fff;font-size:13px;font-weight:700;cursor:pointer;">Arrancar todos</button>' : '') +
+      '<button onclick="swSplitAll()" style="flex:1;padding:9px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--blue-deep),var(--blue-mid));color:#fff;font-size:13px;font-weight:700;cursor:pointer;">Split todos</button>' +
+      '<button onclick="swResetAll()" style="flex:1;padding:9px;border-radius:10px;border:none;background:#e0edf5;color:#1a3a4a;font-size:13px;font-weight:700;cursor:pointer;">Reset todos</button>' +
+    '</div>';
+  }
+
+  html += '</div><div class="' + gridClass + '">';
+
+  for (var ci = 0; ci < swState.nCronos; ci++) {
+    var c = swState.cronos[ci];
+    var isFour = swState.nCronos === 4;
+    html += '<div class="sw-card">' +
+      '<div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);">Crono ' + (ci+1) + '</div>' +
+      '<div id="sw-display-' + ci + '" class="sw-display' + (isFour?' sw-4':'') + '">' + swFmt(c.elapsed) + '</div>' +
+      '<div class="sw-btns">' +
+        (c.running ?
+          '<button class="sw-btn sw-btn-stop" onclick="swStop(' + ci + ')">Stop</button>' :
+          '<button class="sw-btn sw-btn-start" onclick="swStart(' + ci + ')">Start</button>') +
+        '<button class="sw-btn sw-btn-split" onclick="swSplit(' + ci + ')">Split</button>' +
+        '<button class="sw-btn sw-btn-reset" onclick="swReset(' + ci + ')">Reset</button>' +
+      '</div>' +
+      '<div class="sw-splits" id="sw-splits-' + ci + '">' + swSplitsHtml(c.splits) + '</div>' +
+    '</div>';
+  }
+
+  html += '</div>';
+
+  // Export buttons if any splits exist
+  var hasSplits = swState.cronos.slice(0, swState.nCronos).some(function(c){return c.splits.length > 0;});
+  if (hasSplits) {
+    html += '<div style="display:flex;gap:8px;margin-top:14px;">' +
+      '<button onclick="swExportCSV()" style="flex:1;padding:11px;border-radius:10px;border:none;background:linear-gradient(135deg,#00a896,#00c4cc);color:#fff;font-size:13px;font-weight:700;cursor:pointer;">CSV</button>' +
+      '<button onclick="swExportPDF()" style="flex:1;padding:11px;border-radius:10px;border:none;background:linear-gradient(135deg,#6c3483,#9b59b6);color:#fff;font-size:13px;font-weight:700;cursor:pointer;">PDF</button>' +
+      '<button onclick="swSaveToHistory()" style="flex:1;padding:11px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--blue-deep),var(--blue-mid));color:#fff;font-size:13px;font-weight:700;cursor:pointer;">Guardar</button>' +
+    '</div>';
+  }
+
+  // History
+  html += swHistoryHtml();
+
+  el.innerHTML = html;
+
+  // Restart running timers after render
+  for (var ri = 0; ri < swState.nCronos; ri++) {
+    if (swState.cronos[ri].running) swTickStart(ri);
+  }
+}
+
+function swSplitsHtml(splits) {
+  if (!splits || splits.length === 0) return '<div style="font-size:11px;color:var(--muted);text-align:center;padding:4px;">—</div>';
+  var html = '';
+  // Pre-compute acumulados
+  var acum = [];
+  var total = 0;
+  for (var i = 0; i < splits.length; i++) { total += splits[i]; acum.push(total); }
+  for (var i = splits.length - 1; i >= 0; i--) {
+    html += '<div class="sw-split-item">' +
+      '<span class="sw-split-n">' + (i+1) + '</span>' +
+      '<span>' + swFmt(splits[i]) + '</span>' +
+      '<span style="color:var(--muted);">' + swFmt(acum[i]) + '</span>' +
+    '</div>';
+  }
+  return html;
+}
+
+function swFmt(ms) {
+  if (!ms) ms = 0;
+  var min = Math.floor(ms / 60000);
+  var sec = Math.floor((ms % 60000) / 1000);
+  var cs = Math.floor((ms % 1000) / 10);
+  return String(min).padStart(2,'0') + ':' + String(sec).padStart(2,'0') + ',' + String(cs).padStart(2,'0');
+}
+
+function swTickStart(ci) {
+  var c = swState.cronos[ci];
+  if (c.interval) clearInterval(c.interval);
+  c.startMs = Date.now() - c.elapsed;
+  c.interval = setInterval(function() {
+    c.elapsed = Date.now() - c.startMs;
+    var el = document.getElementById('sw-display-' + ci);
+    if (el) el.textContent = swFmt(c.elapsed);
+  }, 10);
+}
+
+function swStart(ci) {
+  var c = swState.cronos[ci];
+  if (c.running) return;
+  c.running = true;
+  swTickStart(ci);
+  swRender();
+}
+
+function swStop(ci) {
+  var c = swState.cronos[ci];
+  if (!c.running) return;
+  c.running = false;
+  if (c.interval) { clearInterval(c.interval); c.interval = null; }
+  c.elapsed = Date.now() - c.startMs;
+  swSave();
+  swRender();
+}
+
+function swSplit(ci) {
+  var c = swState.cronos[ci];
+  if (!c.running && c.elapsed === 0) return;
+  var now = c.running ? (Date.now() - c.startMs) : c.elapsed;
+  var lastTotal = c.splits.reduce(function(a,b){return a+b;}, 0);
+  var split = now - lastTotal;
+  c.splits.push(split);
+  // Update splits display without full re-render
+  var el = document.getElementById('sw-splits-' + ci);
+  if (el) el.innerHTML = swSplitsHtml(c.splits);
+  swSave();
+}
+
+function swReset(ci) {
+  var c = swState.cronos[ci];
+  c.running = false;
+  if (c.interval) { clearInterval(c.interval); c.interval = null; }
+  c.elapsed = 0;
+  c.startMs = null;
+  c.splits = [];
+  swSave();
+  swRender();
+}
+
+function swStartAll() {
+  for (var i = 0; i < swState.nCronos; i++) {
+    var c = swState.cronos[i];
+    if (!c.running) { c.running = true; }
+  }
+  // Start all at the same instant
+  var now = Date.now();
+  for (var i = 0; i < swState.nCronos; i++) {
+    var c = swState.cronos[i];
+    if (c.running && !c.startMs) c.startMs = now - c.elapsed;
+  }
+  swRender();
+}
+
+function swSplitAll() {
+  for (var i = 0; i < swState.nCronos; i++) {
+    swSplit(i);
+  }
+}
+
+function swResetAll() {
+  cronoShowUndoPanel('Reset a todos os cronómetros?', function() {
+    for (var i = 0; i < swState.nCronos; i++) swReset(i);
+  });
+}
+
+function swSetN(n) {
+  // Stop any running
+  for (var i = 0; i < swState.cronos.length; i++) {
+    if (swState.cronos[i].interval) { clearInterval(swState.cronos[i].interval); swState.cronos[i].interval = null; }
+  }
+  swState.nCronos = n;
+  while (swState.cronos.length < n) swState.cronos.push({ running: false, startMs: null, elapsed: 0, splits: [], interval: null });
+  swSave();
+  swRender();
+}
+
+function swSetNome(val) {
+  swState.eventoNome = val;
+  swSave();
+}
+
+// ── Export ──
+function swExportCSV() {
+  var rows = [];
+  var nome = swState.eventoNome || 'Sem nome';
+  rows.push(['"SwimMin — Cronómetros"', '"' + nome + '"']);
+  rows.push([]);
+  var maxSplits = 0;
+  for (var i = 0; i < swState.nCronos; i++) {
+    if (swState.cronos[i].splits.length > maxSplits) maxSplits = swState.cronos[i].splits.length;
+  }
+  var header = ['Crono'];
+  for (var s = 0; s < maxSplits; s++) { header.push('Split ' + (s+1)); header.push('Acumulado ' + (s+1)); }
+  rows.push(header);
+  for (var ci = 0; ci < swState.nCronos; ci++) {
+    var row = ['Crono ' + (ci+1)];
+    var acum = 0;
+    for (var si = 0; si < maxSplits; si++) {
+      var sp = swState.cronos[ci].splits[si] || 0;
+      acum += sp;
+      row.push(sp ? swFmt(sp) : '');
+      row.push(sp ? swFmt(acum) : '');
+    }
+    rows.push(row);
+  }
+  var csv = rows.map(function(r){ return r.map(function(c){ return '"' + String(c).replace(/"/g,'""') + '"'; }).join(';'); }).join('\r\n');
+  var blob = new Blob(['﻿' + csv], {type:'text/csv;charset=utf-8;'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = 'swimmin_cronos_' + new Date().toLocaleDateString('pt-PT').replace(/\//g,'-') + '.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function swExportPDF() {
+  var nome = swState.eventoNome || 'Cronómetros';
+  var dateStr = new Date().toLocaleDateString('pt-PT') + ' ' + new Date().toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'});
+  var maxSplits = 0;
+  for (var i = 0; i < swState.nCronos; i++) {
+    if (swState.cronos[i].splits.length > maxSplits) maxSplits = swState.cronos[i].splits.length;
+  }
+  var headers = '<th style="padding:8px 12px;background:#003d6b;color:#fff;">Crono</th>';
+  for (var s = 0; s < maxSplits; s++) {
+    headers += '<th style="padding:8px 10px;background:#003d6b;color:#fff;text-align:center;">Split ' + (s+1) + '</th>';
+    headers += '<th style="padding:8px 10px;background:#1a5a8a;color:#fff;text-align:center;">Acum. ' + (s+1) + '</th>';
+  }
+  var rows = '';
+  for (var ci = 0; ci < swState.nCronos; ci++) {
+    var c = swState.cronos[ci];
+    var cells = '<td style="padding:6px 12px;border-bottom:1px solid #e0edf5;font-weight:700;">Crono ' + (ci+1) + '</td>';
+    var acum = 0;
+    for (var si = 0; si < maxSplits; si++) {
+      var sp = c.splits[si] || 0; acum += sp;
+      cells += '<td style="padding:6px 10px;border-bottom:1px solid #e0edf5;text-align:center;">' + (c.splits[si] ? swFmt(c.splits[si]) : '—') + '</td>';
+      cells += '<td style="padding:6px 10px;border-bottom:1px solid #e0edf5;text-align:center;color:#6b8fa8;">' + (c.splits[si] ? swFmt(acum) : '—') + '</td>';
+    }
+    rows += '<tr>' + cells + '</tr>';
+  }
+  var html = '<!DOCTYPE html><html lang="pt"><head><meta charset="UTF-8"><title>SwimMin — ' + nome + '</title>' +
+    '<style>body{font-family:Arial,sans-serif;margin:32px;color:#1a2a3a;}h1{color:#003d6b;font-size:22px;margin-bottom:4px;}.meta{font-size:13px;color:#6b8fa8;margin-bottom:24px;}table{width:100%;border-collapse:collapse;font-size:13px;}@media print{button{display:none!important;}}</style>' +
+    '</head><body><h1>SwimMin — ' + nome + '</h1><div class="meta">Data: ' + dateStr + '</div>' +
+    '<table><thead><tr>' + headers + '</tr></thead><tbody>' + rows + '</tbody></table>' +
+    '<div style="margin-top:32px;text-align:center;"><button onclick="window.print()" style="padding:12px 32px;background:#003d6b;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;">Imprimir / Guardar como PDF</button></div>' +
+    '</body></html>';
+  var win = window.open('', '_blank');
+  if (win) { win.document.write(html); win.document.close(); }
+  else { cronoShowMsg('Permite popups no browser para gerar o PDF.'); }
+}
+
+function swSaveToHistory() {
+  var hist = [];
+  try { hist = JSON.parse(localStorage.getItem(SW_HIST_KEY)) || []; } catch(e) {}
+  var entry = {
+    id: Date.now(),
+    data: new Date().toISOString(),
+    nome: swState.eventoNome || 'Sem nome',
+    nCronos: swState.nCronos,
+    cronos: swState.cronos.slice(0, swState.nCronos).map(function(c){ return { elapsed: c.elapsed, splits: c.splits }; })
+  };
+  hist = hist.filter(function(h){ return h.id !== entry.id; });
+  hist.unshift(entry);
+  hist = hist.slice(0, 10);
+  try { localStorage.setItem(SW_HIST_KEY, JSON.stringify(hist)); } catch(e) {}
+  cronoShowMsg('Sessão guardada.');
+  swRender();
+}
+
+function swHistoryHtml() {
+  var hist = [];
+  try { hist = JSON.parse(localStorage.getItem(SW_HIST_KEY)) || []; } catch(e) {}
+  // Purge > 30 days
+  var cutoff = Date.now() - 30*24*60*60*1000;
+  hist = hist.filter(function(h){ return new Date(h.data).getTime() > cutoff; });
+  if (hist.length === 0) return '';
+  var html = '<div style="margin-top:20px;border-top:1px solid #e0edf5;padding-top:14px;">' +
+    '<div style="font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Sessões guardadas</div>';
+  for (var i = 0; i < hist.length; i++) {
+    var h = hist[i];
+    var d = new Date(h.data);
+    var label = d.toLocaleDateString('pt-PT') + ' ' + d.toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'});
+    html += '<div class="crono-history-item">' +
+      '<div><div class="crono-history-info">' + (h.nome||'Sem nome') + ' · ' + h.nCronos + ' crono' + (h.nCronos!==1?'s':'') + '</div>' +
+      '<div class="crono-history-date">' + label + '</div></div>' +
+      '<div style="display:flex;gap:6px;">' +
+        '<button class="crono-export-btn" style="background:#1a6fdb;" onclick="swVerHistoria(' + i + ')">Ver</button>' +
+        '<button class="crono-export-btn" onclick="swExportHistCSV(' + i + ')">CSV</button>' +
+        '<button class="crono-export-btn" style="background:#e74c3c;" onclick="swDeleteHist(' + i + ')">Eliminar</button>' +
+      '</div>' +
+    '</div>';
+  }
+  html += '</div>';
+  return html;
+}
+
+function swVerHistoria(idx) {
+  var hist = [];
+  try { hist = JSON.parse(localStorage.getItem(SW_HIST_KEY)) || []; } catch(e) {}
+  if (!hist[idx]) return;
+  var h = hist[idx];
+  var d = new Date(h.data);
+  var label = d.toLocaleDateString('pt-PT') + ' ' + d.toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'});
+
+  var html = '<div style="position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:7000;overflow-y:auto;padding:20px;" onclick="if(event.target===this)this.remove();">' +
+    '<div style="background:#fff;border-radius:20px;padding:24px;max-width:500px;margin:0 auto;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">' +
+        '<div>' +
+          '<div style="font-family:sans-serif;font-size:22px;font-weight:700;color:#003d6b;letter-spacing:2px;">' + (h.nome||'Sem nome') + '</div>' +
+          '<div style="font-size:12px;color:#6b8fa8;">' + h.nCronos + ' cronómetro' + (h.nCronos!==1?'s':'') + ' · ' + label + '</div>' +
+        '</div>' +
+        '<button onclick="closeSwView()" style="background:#f0f7ff;border:none;border-radius:50%;width:32px;height:32px;font-size:18px;cursor:pointer;color:#1a3a4a;">×</button>' +
+      '</div>';
+
+  for (var ci = 0; ci < h.cronos.length; ci++) {
+    var c = h.cronos[ci];
+    var acum = 0;
+    html += '<div style="background:#f4f8fb;border-radius:12px;padding:12px 14px;margin-bottom:8px;">' +
+      '<div style="font-weight:700;font-size:14px;color:#003d6b;margin-bottom:8px;">Crono ' + (ci+1) + '</div>';
+    if (c.splits.length > 0) {
+      html += '<div style="font-size:11px;">' +
+        '<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #c0d8ee;font-weight:700;color:#6b8fa8;">' +
+          '<span>#</span><span>Parcial</span><span>Acumulado</span>' +
+        '</div>';
+      for (var si = 0; si < c.splits.length; si++) {
+        acum += c.splits[si];
+        html += '<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #e0edf5;">' +
+          '<span style="color:#6b8fa8;">' + (si+1) + '</span>' +
+          '<span>' + swFmt(c.splits[si]) + '</span>' +
+          '<span style="color:#6b8fa8;">' + swFmt(acum) + '</span>' +
+        '</div>';
+      }
+      html += '</div>';
+    } else {
+      html += '<div style="font-size:12px;color:#6b8fa8;">Sem splits</div>';
+    }
+    html += '</div>';
+  }
+  html += '</div></div>';
+
+  var overlay = document.createElement('div');
+  overlay.innerHTML = html;
+  var el2 = overlay.firstChild;
+  el2.id = 'sw-hist-view';
+  document.body.appendChild(el2);
+}
+
+function swExportHistCSV(idx) {
+  var hist = [];
+  try { hist = JSON.parse(localStorage.getItem(SW_HIST_KEY)) || []; } catch(e) {}
+  if (!hist[idx]) return;
+  var h = hist[idx];
+  var maxSplits = 0;
+  for (var i = 0; i < h.cronos.length; i++) if (h.cronos[i].splits.length > maxSplits) maxSplits = h.cronos[i].splits.length;
+  var rows = [['"SwimMin — Cronómetros"', '"' + (h.nome||'') + '"'], []];
+  var header = ['Crono'];
+  for (var s = 0; s < maxSplits; s++) { header.push('Split ' + (s+1)); header.push('Acumulado ' + (s+1)); }
+  rows.push(header);
+  for (var ci = 0; ci < h.cronos.length; ci++) {
+    var row = ['Crono ' + (ci+1)];
+    var acum = 0;
+    for (var si = 0; si < maxSplits; si++) {
+      var sp = h.cronos[ci].splits[si] || 0; acum += sp;
+      row.push(sp ? swFmt(sp) : '');
+      row.push(sp ? swFmt(acum) : '');
+    }
+    rows.push(row);
+  }
+  var csv = rows.map(function(r){ return r.map(function(c){ return '"' + String(c).replace(/"/g,'""') + '"'; }).join(';'); }).join('\r\n');
+  var blob = new Blob(['﻿' + csv], {type:'text/csv;charset=utf-8;'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a'); a.href = url; a.download = 'swimmin_cronos.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function swDeleteHist(idx) {
+  var hist = [];
+  try { hist = JSON.parse(localStorage.getItem(SW_HIST_KEY)) || []; } catch(e) {}
+  if (!hist[idx]) return;
+  cronoShowUndoPanel('Eliminar "' + (hist[idx].nome||'Sem nome') + '"?', function() {
+    hist.splice(idx, 1);
+    try { localStorage.setItem(SW_HIST_KEY, JSON.stringify(hist)); } catch(e) {}
+    swRender();
+  });
+}
+
+// ===== FIM CRONÓMETROS STANDALONE =====
+
+function closeHistView() {
+  var el = document.getElementById('crono-hist-view');
+  if (el) el.remove();
+}
+
+function closeSwView() {
+  var el = document.getElementById('sw-hist-view');
+  if (el) el.remove();
+}
+
+// ===== FIM ZONA DO TREINADOR =====
+
+</script>
 </body>
 </html>
