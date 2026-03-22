@@ -514,11 +514,11 @@
 .sw-grid-3 { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
 .sw-grid-3 > :last-child:nth-child(odd) { grid-column: 1 / -1; width: calc(50% - 4px); justify-self: center; }
 .sw-grid-4 { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-.sw-card { background:#f0f7ff; border-radius:14px; padding:10px 8px; display:flex; flex-direction:column; align-items:center; }
+.sw-card { background:#f0f7ff; border-radius:16px; padding:14px 10px; display:flex; flex-direction:column; align-items:center; }
 .sw-display { font-family:'Bebas Neue',sans-serif; font-size:28px; color:var(--blue-deep); letter-spacing:2px; line-height:1; margin:6px 0; text-align:center; }
 .sw-display.sw-4 { font-size:20px; }
 .sw-btns { display:flex; gap:4px; width:100%; margin-bottom:6px; }
-.sw-btn { flex:1; padding:7px 2px; border:none; border-radius:8px; font-family:'DM Sans',sans-serif; font-size:11px; font-weight:700; cursor:pointer; }
+.sw-btn { flex:1; padding:0; min-height:64px; height:64px; border:none; border-radius:12px; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:700; cursor:pointer; line-height:1.2; display:flex; align-items:center; justify-content:center; text-align:center; }
 .sw-btn-start { background:linear-gradient(135deg,#00a896,#00c4cc); color:#fff; }
 .sw-btn-stop { background:linear-gradient(135deg,#e74c3c,#c0392b); color:#fff; }
 .sw-btn-split { background:linear-gradient(135deg,var(--blue-deep),var(--blue-mid)); color:#fff; }
@@ -551,7 +551,7 @@
 .crono-add-swimmer-btn { width:100%; padding:9px; border-radius:10px; border:1.5px dashed #c0d8ee; background:transparent; color:var(--muted); font-size:13px; font-weight:600; cursor:pointer; margin-top:4px; font-family:'DM Sans',sans-serif; }
 .crono-add-swimmer-btn:hover { border-color:var(--aqua); color:var(--aqua); }
 .crono-start-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
-.crono-start-btn { padding:16px 10px; border-radius:14px; border:none; background:linear-gradient(135deg,var(--blue-deep),var(--blue-mid)); color:#fff; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:700; cursor:pointer; text-align:center; transition:all 0.2s; box-shadow:0 4px 14px rgba(0,63,107,0.25); }
+.crono-start-btn { padding:0; min-height:72px; height:72px; border-radius:16px; display:flex; align-items:center; justify-content:center; flex-direction:column; border:none; background:linear-gradient(135deg,var(--blue-deep),var(--blue-mid)); color:#fff; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:700; cursor:pointer; text-align:center; transition:all 0.2s; box-shadow:0 4px 14px rgba(0,63,107,0.25); }
 .crono-start-btn:hover { transform:translateY(-1px); }
 .crono-start-btn.started { background:linear-gradient(135deg,#00a896,#00c4cc); }
 .crono-swimmers-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:16px; }
@@ -563,7 +563,7 @@
 .crono-btn-info { font-size:10px; color:rgba(255,255,255,0.88); text-align:center; line-height:1.6; }
 .crono-btn-finish-label { font-size:10px; font-weight:700; color:rgba(255,255,255,0.95); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:2px; }
 .crono-action-bar { display:flex; gap:8px; align-items:center; margin-bottom:14px; }
-.crono-undo-btn { flex:1; padding:10px; border-radius:10px; border:1.5px solid #c0d8ee; background:#f0f7ff; color:#1a3a4a; font-size:12px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; }
+.crono-undo-btn { flex:1; padding:0; min-height:64px; height:64px; display:flex; align-items:center; justify-content:center; border-radius:10px; border:1.5px solid #c0d8ee; background:#f0f7ff; color:#1a3a4a; font-size:12px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; }
 .crono-warning { font-size:11px; color:#8a9ab0; text-align:center; padding:6px 8px; background:#f5f9fc; border-radius:8px; flex:1.5; line-height:1.4; }
 .crono-summary-swimmer { background:#f4f8fb; border-radius:14px; padding:14px 16px; margin-bottom:10px; }
 .crono-summary-name { font-size:15px; font-weight:700; color:var(--blue-deep); margin-bottom:6px; display:flex; align-items:center; gap:8px; }
@@ -749,6 +749,29 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 </head>
 <body>
+<div id="auth-badge" style="display:none;position:fixed;top:14px;right:14px;z-index:9000;">
+  <button onclick="toggleAuthBadge()" style="background:#00c98d;border:none;border-radius:50%;width:38px;height:38px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,201,141,0.5);padding:0;" title="Sessão iniciada">
+    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+  </button>
+  <div id="auth-badge-menu" style="display:none;position:absolute;top:46px;right:0;background:#fff;border-radius:14px;padding:16px;min-width:210px;box-shadow:0 8px 28px rgba(0,0,0,0.15);border:1px solid #e0edf5;">
+    <div style="font-size:10px;font-weight:700;color:#6b8fa8;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">Sessão ativa</div>
+    <div id="auth-user-email" style="font-size:13px;color:#003d6b;font-weight:600;margin-bottom:12px;word-break:break-all;"></div>
+    <button id="btn-logout" style="width:100%;padding:9px;border-radius:9px;border:1.5px solid #e0edf5;background:#f4f8fb;color:#1a3a4a;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Terminar sessão</button>
+  </div>
+</div>
+<script>
+function toggleAuthBadge() {
+  var m = document.getElementById("auth-badge-menu");
+  if (m) m.style.display = m.style.display === "block" ? "none" : "block";
+}
+document.addEventListener("click", function(e) {
+  var b = document.getElementById("auth-badge");
+  if (b && !b.contains(e.target)) {
+    var m = document.getElementById("auth-badge-menu");
+    if (m) m.style.display = "none";
+  }
+});
+</script>
 <div id="auth-toast" style="display:none;position:fixed;top:24px;left:50%;transform:translateX(-50%);z-index:9999;min-width:240px;max-width:90vw;padding:14px 22px;border-radius:14px;font-size:14px;font-weight:600;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.25);transition:opacity 0.4s;"></div>
 
 
@@ -869,14 +892,6 @@
 
   <!-- Estado: autenticado -->
   <div id="auth-logged-in" style="display:none;">
-    <div style="background:linear-gradient(135deg,#00c98d,#00a86b);border-radius:12px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
-      <div>
-        <div style="color:#fff;font-size:13px;font-weight:700;">Sessão iniciada</div>
-        <div style="color:rgba(255,255,255,0.85);font-size:12px;" id="auth-user-email"></div>
-        <div style="color:rgba(255,255,255,0.75);font-size:11px;margin-top:2px;">Dados sincronizados na cloud</div>
-      </div>
-      <button id="btn-logout" style="background:rgba(255,255,255,0.2);color:#fff;border:1.5px solid rgba(255,255,255,0.5);border-radius:50px;padding:6px 16px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;">Terminar sessão</button>
-    </div>
   </div>
 
 </div>
@@ -1001,6 +1016,62 @@
     <div id="crono-cronos-content" style="display:none;"></div>
   </div>
 </div>
+
+  <div class="fpn-btn-wrap">
+    <button class="fpn-btn" id="conv-btn" type="button" onclick="toggleConv()">Conversor 25m / 50m</button>
+  </div>
+  <div id="conv-section" class="fpn-section" style="display:none;margin-top:20px;">
+    <div class="fpn-title">Conversor de Tempos</div>
+    <div class="fpn-subtitle">Sistema Colorado Timing &middot; 25m / 50m</div>
+    <div class="grid">
+      <div class="field">
+        <label>Estilo</label>
+        <select id="conv-estilo" onchange="convUpdateDist()">
+          <option value="">Selecionar</option>
+          <option value="L">Livres</option>
+          <option value="C">Costas</option>
+          <option value="B">Bru&ccedil;os</option>
+          <option value="M">Mariposa</option>
+          <option value="E">Estilos</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Dist&acirc;ncia</label>
+        <select id="conv-distancia" onchange="convOnDistChange()">
+          <option value="">Selecionar</option>
+        </select>
+      </div>
+    </div>
+    <div id="conv-aviso-dist" style="display:none;background:#fff8e1;border-left:3px solid #f0a500;border-radius:8px;padding:10px 14px;margin-top:4px;font-size:12px;color:#7a5a00;line-height:1.5;"></div>
+    <div style="display:flex;align-items:flex-end;gap:10px;margin-top:12px;">
+      <div style="flex:1;display:flex;flex-direction:column;gap:6px;">
+        <div id="conv-label-esq" style="font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);text-align:center;">Piscina Longa 50m</div>
+        <input class="personal-input" type="tel" maxlength="6" placeholder="105000" id="conv-input-esq"
+          oninput="convPreviewEsq(this)"
+          style="background:#f5faff;border:1.5px solid #d0e4f0;color:#1a3a4a;font-size:15px;padding:12px 14px;border-radius:12px;width:100%;box-sizing:border-box;text-align:center;">
+        <div id="conv-preview-esq" style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--muted);letter-spacing:2px;text-align:center;min-height:28px;"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;padding-bottom:36px;">
+        <button type="button" id="conv-seta-btn" onclick="convInverter()"
+          style="width:48px;height:48px;border-radius:50%;border:2px solid var(--aqua);background:#fff;color:var(--aqua);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform 0.3s;flex-shrink:0;">
+          &#8644;
+        </button>
+        <div id="conv-direcao" style="font-size:10px;font-weight:700;color:var(--aqua);letter-spacing:1px;text-align:center;">50m &rarr; 25m</div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:6px;">
+        <div id="conv-label-dir" style="font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);text-align:center;">Piscina Curta 25m</div>
+        <div style="background:linear-gradient(135deg,var(--blue-deep),var(--blue-mid));border-radius:12px;padding:12px 14px;text-align:center;min-height:50px;display:flex;align-items:center;justify-content:center;">
+          <span id="conv-resultado" style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:#fff;letter-spacing:2px;">--</span>
+        </div>
+      </div>
+    </div>
+    <button type="button" onclick="convCalcular()"
+      style="width:100%;margin-top:16px;height:50px;background:var(--blue-deep);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:0.04em;">
+      CONVERTER
+    </button>
+    <div id="conv-aviso" style="margin-top:10px;"></div>
+    <div class="footer" style="margin-top:12px;">Algoritmo Colorado Timing &mdash; estimativa</div>
+  </div>
 
   <div class="fpn-btn-wrap">
     <button class="fpn-btn" id="fpn-btn" onclick="toggleFPN()">Calcular Pontos FINA/FPN</button>
@@ -2015,6 +2086,20 @@ var recordesEstafetas = {
           "data": "27/02/2026",
           "local": "Póvoa de Varzim",
           "nadadores": "Diogo Spratley Graca · Matilde Brandao Carvalho · Cloe Canadas Nogueira · Santiago Rocha Guimaraes"
+        },
+        "100_L": {
+          "tempo": "4:01,85",
+          "clube": "Condeixa Aqua Clube",
+          "data": "20-23/03/2026",
+          "local": "Coimbra",
+          "nadadores": "Leonor Nunes Cardeal · Maria Neto Simoes · Camila Duarte Marcelo · Maria Ines Rodrigues"
+        },
+        "100_E": {
+          "tempo": "4:33,03",
+          "clube": "Condeixa Aqua Clube",
+          "data": "20-23/03/2026",
+          "local": "Coimbra",
+          "nadadores": "Leonor Nunes Cardeal · Maria Neto Simoes · Camila Duarte Marcelo · Maria Ines Rodrigues"
         }
       },
       "15-16": {
@@ -4310,8 +4395,8 @@ var recordesIdade = {
         "400_E": {tempo:"4:25,23", nome:"Vital, Joao Alexandre", data:"29/08/2015", local:"Singapore (SGP)"}
       },
       "16": {
-        "50_L": {tempo:"23,53", nome:"Alecrim, Rodolfo Junior", data:"22/02/2026", local:"Coimbra"},
-        "100_L": {tempo:"52,10", nome:"Venancio, Tiago Andre", data:"28/07/2003", local:"Paris (FRA)"},
+        "50_L": {tempo:"23,27", nome:"Alecrim, Rodolfo Junior", data:"20-23/03/2026", local:"Coimbra"},
+        "100_L": {tempo:"51,91", nome:"Alecrim, Rodolfo Junior", data:"20-23/03/2026", local:"Coimbra"},
         "200_L": {tempo:"1:54,18", nome:"Santa, Gustavo Manuel", data:"24/07/2009", local:"Tampere (FIN)"},
         "400_L": {tempo:"3:59,38", nome:"Santa, Gustavo Manuel", data:"21/07/2009", local:"Tampere (FIN)"},
         "800_L": {tempo:"8:23,54", nome:"Santa, Gustavo Manuel", data:"23/07/2009", local:"Tampere (FIN)"},
@@ -4319,7 +4404,7 @@ var recordesIdade = {
         "50_C": {tempo:"26,22", nome:"Oliveira, Miguel Reis", data:"21/08/2025", local:"Otopeni (ROU)"},
         "100_C": {tempo:"57,00", nome:"Oliveira, Miguel Reis", data:"24/07/2025", local:"Coimbra"},
         "200_C": {tempo:"2:06,59", nome:"Vital, Joao Alexandre", data:"28/06/2014", local:"Netanya (ISR)"},
-        "50_B": {tempo:"29,75", nome:"tempo limite", data:"", local:""},
+        "50_B": {tempo:"29,72", nome:"Almeida, David Xavier", data:"20-23/03/2026", local:"Coimbra"},
         "100_B": {tempo:"1:03,71", nome:"Mimoso, Rafael Miguel", data:"28/07/2023", local:"Maribor (SLO)"},
         "200_B": {tempo:"2:15,98", nome:"Mimoso, Rafael Miguel", data:"24/07/2023", local:"Maribor (SLO)"},
         "50_M": {tempo:"25,35", nome:"Ferreira, Duarte Santos", data:"12/07/2024", local:"Oeiras"},
@@ -5231,7 +5316,7 @@ function fpnUpdateDistancias() {
 var recordesMundiais = {
   "longa": {
     "M": {
-      "50_L": {tempo:"20,91", nome:"Cielo, Filho Cesar", data:"18/12/2009", local:"Sao Paulo"},
+      "50_L": {tempo:"20,88", nome:"McEvoy, Cameron", data:"20/03/2026", local:"Shenzhen"},
       "100_L": {tempo:"46,40", nome:"Pan, Zhanle", data:"31/07/2024", local:"Paris"},
       "200_L": {tempo:"1:42,00", nome:"Biedermann, Paul", data:"28/07/2009", local:"Rome"},
       "400_L": {tempo:"3:39,96", nome:"Maertens, Lukas", data:"12/04/2025", local:"Stockholm"},
@@ -6843,6 +6928,11 @@ function instalarApp() {
             <option value="4x200L-F">4x200m Livres — Feminino</option>
           </select>
         </div>
+        <label id="relay-conv-label" style="display:flex;align-items:center;gap:8px;margin:12px 0 4px 0;cursor:pointer;font-size:13px;color:#1a3a4a;font-weight:600;user-select:none;">
+          <input type="checkbox" id="relay-use-conv" onchange="calcRelay()" style="width:16px;height:16px;accent-color:#00c98d;cursor:pointer;">
+          Utilizar conversão de tempos
+          <span style="font-size:11px;font-weight:400;color:#6b8fa8;">(Sistema Colorado Timing)</span>
+        </label>
         <div id="relay-results"></div>
       </div>
     </div>
@@ -7072,6 +7162,7 @@ function calcRelay() {
   var escalaoSel = document.getElementById('relay-escalao').value;
   var typeSel    = document.getElementById('relay-type').value;
   var poolSel    = document.getElementById('relay-pool').value;
+  var useConv    = document.getElementById('relay-use-conv') ? document.getElementById('relay-use-conv').checked : false;
   var resEl      = document.getElementById('relay-results');
   if (!escalaoSel || !typeSel || !poolSel) { resEl.innerHTML = ''; return; }
 
@@ -7093,8 +7184,8 @@ function calcRelay() {
   if (!isEstilos) {
     var key = dist + 'L';
     if (gender === 'X') {
-      var bM = getBestN(males, key, poolSel, 2);
-      var bF = getBestN(females, key, poolSel, 2);
+      var bM = getBestN(males, key, poolSel, 2, useConv);
+      var bF = getBestN(females, key, poolSel, 2, useConv);
       if (bM.length < 2 || bF.length < 2) {
         resEl.innerHTML = '<div class="relay-empty">Atletas insuficientes para esta estafeta.</div>';
         return;
@@ -7109,17 +7200,17 @@ function calcRelay() {
         resEl.innerHTML = '<div class="relay-empty">Atletas insuficientes para esta estafeta.</div>';
         return;
       }
-      results = getTopCombos(pool, key, poolSel, 3);
+      results = getTopCombos(pool, key, poolSel, 3, useConv);
     }
   } else {
     if (gender === 'X') {
-      results = getBestEstilosMisto(males, females, dist, poolSel, 3);
+      results = getBestEstilosMisto(males, females, dist, poolSel, 3, useConv);
     } else {
       if (!pool || pool.length < 4) {
         resEl.innerHTML = '<div class="relay-empty">Atletas insuficientes para esta estafeta.</div>';
         return;
       }
-      results = getBestEstilos(pool, dist, poolSel, 3);
+      results = getBestEstilos(pool, dist, poolSel, 3, useConv);
     }
   }
 
@@ -7129,6 +7220,7 @@ function calcRelay() {
   }
 
   var out = '';
+  var hasConverted = false;
   for (var ri = 0; ri < results.length; ri++) {
     var r = results[ri];
     var isBest = ri === 0;
@@ -7138,32 +7230,67 @@ function calcRelay() {
     out += '<div class="relay-legs">';
     for (var li = 0; li < r.legs.length; li++) {
       var leg = r.legs[li];
+      var convTag = leg.converted ? '<span style="color:#e07b00;font-weight:700;font-size:13px;" title="Tempo convertido de piscina de ' + leg.fromPool + ' (Sistema Colorado Timing)"> *</span>' : '';
       out += '<div class="relay-leg">'
-        + '<span class="relay-leg-name">' + (li+1) + '. ' + leg.nome + '</span>'
+        + '<span class="relay-leg-name">' + (li+1) + '. ' + leg.nome + convTag + '</span>'
         + '<span class="relay-leg-style">' + leg.estilo + '</span>'
         + '<span class="relay-leg-time">' + coachFormatTime(leg.time) + '</span>'
         + '</div>';
+      if (leg.converted) {
+        out += '<div style="font-size:10.5px;color:#e07b00;font-style:italic;padding:1px 0 4px 18px;">* Tempo convertido de piscina de ' + leg.fromPool + ' — Sistema Colorado Timing</div>';
+        hasConverted = true;
+      }
     }
     out += '</div></div>';
   }
   resEl.innerHTML = out;
 }
 
-function getBestN(pool, key, poolKey, n) {
+
+// ── Relay conversion helper ──
+// _D and coachParseTime/convParse/convFmt already defined above
+function getRelayBestTime(athlete, key, poolKey, useConv) {
+  // key e.g. "100L", poolKey "25" or "50"
+  var tOrig = coachParseTime(athlete.tempos && athlete.tempos[poolKey] ? athlete.tempos[poolKey][key] : null);
+  if (!useConv) return tOrig !== null ? { t: tOrig, converted: false, fromPool: null } : null;
+
+  var otherPool = poolKey === '25' ? '50' : '25';
+  var tOther = coachParseTime(athlete.tempos && athlete.tempos[otherPool] ? athlete.tempos[otherPool][key] : null);
+
+  // Convert tOther to target pool
+  var tOtherConv = null;
+  if (tOther !== null) {
+    var delta = _D[key];
+    if (delta !== undefined) {
+      tOtherConv = otherPool === '50' ? tOther - delta : tOther + delta;
+    }
+  }
+
+  // Pick best
+  if (tOrig !== null && tOtherConv !== null) {
+    if (tOtherConv < tOrig) return { t: tOtherConv, converted: true, fromPool: otherPool + 'm' };
+    return { t: tOrig, converted: false, fromPool: null };
+  }
+  if (tOrig !== null) return { t: tOrig, converted: false, fromPool: null };
+  if (tOtherConv !== null) return { t: tOtherConv, converted: true, fromPool: otherPool + 'm' };
+  return null;
+}
+
+function getBestN(pool, key, poolKey, n, useConv) {
   var res = [];
   for (var i=0;i<pool.length;i++) {
-    var t = coachParseTime(pool[i].tempos && pool[i].tempos[poolKey] ? pool[i].tempos[poolKey][key] : null);
-    if (t !== null) res.push({ nome: pool[i].nome, t: t });
+    var r = getRelayBestTime(pool[i], key, poolKey, useConv);
+    if (r !== null) res.push({ nome: pool[i].nome, t: r.t, converted: r.converted, fromPool: r.fromPool });
   }
   res.sort(function(a,b) { return a.t-b.t; });
   return res.slice(0, n);
 }
 
-function getTopCombos(pool, key, poolKey, topN) {
+function getTopCombos(pool, key, poolKey, topN, useConv) {
   var elig = [];
   for (var i=0;i<pool.length;i++) {
-    var t = coachParseTime(pool[i].tempos && pool[i].tempos[poolKey] ? pool[i].tempos[poolKey][key] : null);
-    if (t !== null) elig.push({ nome: pool[i].nome, t: t });
+    var r = getRelayBestTime(pool[i], key, poolKey, useConv);
+    if (r !== null) elig.push({ nome: pool[i].nome, t: r.t, converted: r.converted, fromPool: r.fromPool });
   }
   elig.sort(function(a,b) { return a.t-b.t; });
   if (elig.length < 4) return [];
@@ -7174,13 +7301,13 @@ function getTopCombos(pool, key, poolKey, topN) {
       for (var c=b+1;c<cands.length-1;c++)
         for (var d=c+1;d<cands.length;d++) {
           var tot = cands[a].t+cands[b].t+cands[c].t+cands[d].t;
-          combos.push({ total: tot, legs: [cands[a],cands[b],cands[c],cands[d]].map(function(x) { return { nome:x.nome, estilo:'Livres', time:x.t }; }) });
+          combos.push({ total: tot, legs: [cands[a],cands[b],cands[c],cands[d]].map(function(x) { return { nome:x.nome, estilo:'Livres', time:x.t, converted:x.converted, fromPool:x.fromPool }; }) });
         }
   combos.sort(function(a,b) { return a.total-b.total; });
   return combos.slice(0, topN);
 }
 
-function getBestEstilos(pool, dist, poolKey, topN) {
+function getBestEstilos(pool, dist, poolKey, topN, useConv) {
   var legs = ['C','B','M','L'];
   var legLabel = {C:'Costas',B:'Brucos',M:'Mariposa',L:'Livres'};
   var elig = {};
@@ -7189,8 +7316,8 @@ function getBestEstilos(pool, dist, poolKey, topN) {
     var key = dist+leg;
     elig[leg] = [];
     for (var i=0;i<pool.length;i++) {
-      var t = coachParseTime(pool[i].tempos && pool[i].tempos[poolKey] ? pool[i].tempos[poolKey][key] : null);
-      if (t !== null) elig[leg].push({ nome: pool[i].nome, t: t });
+      var r = getRelayBestTime(pool[i], key, poolKey, useConv);
+      if (r !== null) elig[leg].push({ nome: pool[i].nome, t: r.t, converted: r.converted, fromPool: r.fromPool });
     }
     elig[leg].sort(function(a,b) { return a.t-b.t; });
   }
@@ -7201,7 +7328,7 @@ function getBestEstilos(pool, dist, poolKey, topN) {
     var cands = elig[leg].filter(function(x) { return used.indexOf(x.nome) < 0; }).slice(0,4);
     for (var i=0;i<cands.length;i++) {
       used.push(cands[i].nome);
-      current.push({ nome:cands[i].nome, estilo:legLabel[leg], time:cands[i].t });
+      current.push({ nome:cands[i].nome, estilo:legLabel[leg], time:cands[i].t, converted:cands[i].converted, fromPool:cands[i].fromPool });
       recurse(legIdx+1, used, current, total+cands[i].t);
       current.pop(); used.pop();
     }
@@ -7211,7 +7338,7 @@ function getBestEstilos(pool, dist, poolKey, topN) {
   return results.slice(0, topN);
 }
 
-function getBestEstilosMisto(males, females, dist, poolKey, topN) {
+function getBestEstilosMisto(males, females, dist, poolKey, topN, useConv) {
   var legs = ['C','B','M','L'];
   var legLabel = {C:'Costas',B:'Brucos',M:'Mariposa',L:'Livres'};
   var maleLegsOptions = [[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]];
@@ -7225,8 +7352,8 @@ function getBestEstilosMisto(males, females, dist, poolKey, topN) {
       var srcPool = mLegs.indexOf(li) >= 0 ? males : females;
       elig[li] = [];
       for (var pi=0;pi<srcPool.length;pi++) {
-        var t = coachParseTime(srcPool[pi].tempos && srcPool[pi].tempos[poolKey] ? srcPool[pi].tempos[poolKey][key] : null);
-        if (t !== null) elig[li].push({ nome: srcPool[pi].nome, t: t });
+        var r = getRelayBestTime(srcPool[pi], key, poolKey, useConv);
+        if (r !== null) elig[li].push({ nome: srcPool[pi].nome, t: r.t, converted: r.converted, fromPool: r.fromPool });
       }
       elig[li].sort(function(a,b) { return a.t-b.t; });
     }
@@ -7242,7 +7369,7 @@ function getBestEstilosMisto(males, females, dist, poolKey, topN) {
         var cands = elig[legIdx].filter(function(x) { return used.indexOf(x.nome) < 0; }).slice(0,3);
         for (var i=0;i<cands.length;i++) {
           used.push(cands[i].nome);
-          current.push({ nome:cands[i].nome, estilo:legLabel[legs[legIdx]], time:cands[i].t });
+          current.push({ nome:cands[i].nome, estilo:legLabel[legs[legIdx]], time:cands[i].t, converted:cands[i].converted, fromPool:cands[i].fromPool });
           recurseM(legIdx+1, usedM, usedF, current, total+cands[i].t);
           current.pop(); used.pop();
         }
@@ -7372,11 +7499,14 @@ onAuthStateChanged(auth, async (user) => {
   const loggedOut = document.getElementById('auth-logged-out');
   const loggedIn = document.getElementById('auth-logged-in');
   const userEmail = document.getElementById('auth-user-email');
+  const authSection = document.getElementById('auth-section');
+  const authBadge = document.getElementById('auth-badge');
   if (loggedOut && loggedIn) {
     loggedOut.style.display = user ? 'none' : 'block';
-    loggedIn.style.display = user ? 'block' : 'none';
-
+    loggedIn.style.display = 'none';
   }
+  if (authSection) authSection.style.display = user ? 'none' : 'block';
+  if (authBadge) authBadge.style.display = user ? 'flex' : 'none';
   if (userEmail) userEmail.textContent = user ? user.email : '';
   if (user) {
     const section = document.getElementById('auth-section');
@@ -9003,6 +9133,111 @@ function closeSwView() {
 
 // ===== FIM ZONA DO TREINADOR =====
 
+</script>
+<script>
+var _convDirecao = '50to25';
+
+function toggleConv() {
+  var s=document.getElementById('conv-section'),b=document.getElementById('conv-btn');
+  if(!s||!b)return;
+  var open=s.style.display==='block';
+  s.style.display=open?'none':'block';
+  b.textContent=open?'Conversor 25m / 50m':'Fechar Conversor';
+  if(!open)s.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+var _CD={
+  L:['50','100','200','400','800','1500'],
+  C:['50','100','200'],B:['50','100','200'],M:['50','100','200'],E:['200','400']
+};
+
+// Diferenca fixa em centesimas (LCM - SCM). Calibrado contra SwimSwam.
+var _D={
+  '50L': 81,
+  '100L': 161,
+  '200L': 321,
+  '400L': 641,
+  '50C': 61,
+  '100C': 121,
+  '200C': 241,
+  '50B': 100,
+  '100B': 200,
+  '200B': 400,
+  '50M': 70,
+  '100M': 140,
+  '200M': 281,
+  '200E': 321,
+  '400E': 641,
+  '800L': 922,
+  '1500L': 2376
+};
+
+var _AVISO={'800L':1,'1500L':1};
+
+function convUpdateDist(){
+  var e=document.getElementById('conv-estilo').value;
+  var s=document.getElementById('conv-distancia');
+  s.innerHTML='<option value="">Selecionar</option>';
+  (_CD[e]||[]).forEach(function(d){s.innerHTML+='<option value="'+d+'">'+d+'m</option>';});
+  document.getElementById('conv-resultado').textContent='--';
+  document.getElementById('conv-aviso').innerHTML='';
+  document.getElementById('conv-aviso-dist').style.display='none';
+}
+
+function convOnDistChange(){
+  var e=document.getElementById('conv-estilo').value;
+  var dist=document.getElementById('conv-distancia').value;
+  var avd=document.getElementById('conv-aviso-dist');
+  document.getElementById('conv-resultado').textContent='--';
+  if(_AVISO[dist+e]){avd.style.display='block';avd.textContent='Para '+dist+'m o resultado é uma aproximação.';}
+  else{avd.style.display='none';}
+}
+
+function convInverter(){
+  _convDirecao=_convDirecao==='50to25'?'25to50':'50to25';
+  var b=document.getElementById('conv-seta-btn');
+  b.style.transform='rotate(180deg)';
+  setTimeout(function(){b.style.transform='rotate(0deg)';},300);
+  document.getElementById('conv-label-esq').textContent=_convDirecao==='50to25'?'Piscina Longa 50m':'Piscina Curta 25m';
+  document.getElementById('conv-label-dir').textContent=_convDirecao==='50to25'?'Piscina Curta 25m':'Piscina Longa 50m';
+  document.getElementById('conv-direcao').innerHTML=_convDirecao==='50to25'?'50m → 25m':'25m → 50m';
+  document.getElementById('conv-resultado').textContent='--';
+  document.getElementById('conv-input-esq').value='';
+  document.getElementById('conv-preview-esq').textContent='';
+  document.getElementById('conv-aviso').innerHTML='';
+}
+
+function convPreviewEsq(el){
+  var v=el.value.replace(/[^0-9]/g,'');el.value=v;
+  var p=document.getElementById('conv-preview-esq');
+  if(v.length<2){p.textContent='';return;}
+  var x=v.padStart(6,'0'),mm=parseInt(x.slice(0,2),10);
+  p.textContent=(mm>0?mm+':':'')+x.slice(2,4)+'.'+x.slice(4,6);
+}
+
+function convParse(v){
+  v=String(v||'').replace(/[^0-9]/g,'').padStart(6,'0');
+  return (parseInt(v.slice(0,2),10)||0)*6000+parseInt(v.slice(2,4),10)*100+parseInt(v.slice(4,6),10);
+}
+
+function convFmt(cs){
+  var m=Math.floor(cs/6000),s=Math.floor((cs%6000)/100),c=cs%100;
+  return (m>0?m+':':'')+String(s).padStart(2,'0')+'.'+String(c).padStart(2,'0');
+}
+
+function convCalcular(){
+  var e=document.getElementById('conv-estilo').value;
+  var dist=document.getElementById('conv-distancia').value;
+  var t=document.getElementById('conv-input-esq').value;
+  var aviso=document.getElementById('conv-aviso'),res=document.getElementById('conv-resultado');
+  if(!e||!dist||!t){aviso.innerHTML='<div class="result-unavailable">Preenche estilo, distância e tempo.</div>';res.textContent='--';return;}
+  var d=_D[dist+e];
+  if(d===undefined){aviso.innerHTML='<div class="result-unavailable">Prova não suportada.</div>';res.textContent='--';return;}
+  var cs=convParse(t);
+  var outCs=_convDirecao==='50to25'?cs-d:cs+d;
+  res.textContent=convFmt(outCs);
+  aviso.innerHTML='';
+}
 </script>
 </body>
 </html>
