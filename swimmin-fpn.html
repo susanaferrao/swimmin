@@ -1129,6 +1129,10 @@ document.addEventListener("click", function(e) {
     <button class="fpn-btn" id="idades-btn" onclick="toggleIdades()">Recordes Nacionais</button>
   </div>
 
+  <div class="fpn-btn-wrap">
+    <button class="fpn-btn" id="mundiais-btn" onclick="toggleMundiais()">Recordes do Mundo</button>
+  </div>
+
   <div class="fpn-section" id="idades-section" style="display:none">
     <div class="fpn-title">Recordes Nacionais</div>
     <div class="fpn-subtitle">Por Idade · Piscina longa (50m) e curta (25m)</div>
@@ -1181,6 +1185,50 @@ document.addEventListener("click", function(e) {
     </div>
     <div id="id-result"></div>
     <div class="footer">Dados FPN · atualizado a 04/03/2026 (50m) e 25/02/2026 (25m)</div>
+  </div>
+
+  <div class="fpn-section" id="mundiais-section" style="display:none">
+    <div class="fpn-title">Recordes do Mundo</div>
+    <div class="fpn-subtitle">Piscina longa (50m) e curta (25m)</div>
+    <div class="grid">
+      <div class="field">
+        <label>Piscina</label>
+        <select id="wr-piscina" onchange="wrUpdate()">
+          <option value="">Selecionar</option>
+          <option value="longa">50m · Piscina Longa</option>
+          <option value="curta">25m · Piscina Curta</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Sexo</label>
+        <select id="wr-sexo" onchange="wrUpdate()">
+          <option value="">Selecionar</option>
+          <option value="M">Masculino</option>
+          <option value="F">Feminino</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="field">
+        <label>Estilo</label>
+        <select id="wr-estilo" onchange="wrUpdateDist()">
+          <option value="">Selecionar</option>
+          <option value="L">Livres</option>
+          <option value="C">Costas</option>
+          <option value="B">Brucos</option>
+          <option value="M">Mariposa</option>
+          <option value="E">Estilos</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Distância</label>
+        <select id="wr-distancia" onchange="wrMostrar()">
+          <option value="">Selecionar</option>
+        </select>
+      </div>
+    </div>
+    <div id="wr-result"></div>
+    <div class="footer">Dados FINA/World Aquatics · atualizado a 22/03/2026</div>
   </div>
 
 
@@ -5257,6 +5305,67 @@ function toggleFPN() {
   }
 }
 
+
+function toggleMundiais() {
+  var section = document.getElementById('mundiais-section');
+  var btn = document.getElementById('mundiais-btn');
+  if (section.style.display === 'none') {
+    section.style.display = 'block';
+    section.scrollIntoView({behavior:'smooth', block:'start'});
+    btn.textContent = 'Fechar Recordes do Mundo';
+  } else {
+    section.style.display = 'none';
+    btn.textContent = 'Recordes do Mundo';
+  }
+}
+
+var WR_PROVAS_LONGA = {L:['50','100','200','400','800','1500'],C:['50','100','200'],B:['50','100','200'],M:['50','100','200'],E:['200','400']};
+var WR_PROVAS_CURTA = {L:['50','100','200','400','800','1500'],C:['50','100','200'],B:['50','100','200'],M:['50','100','200'],E:['100','200','400']};
+
+function wrUpdate() { wrUpdateDist(); }
+
+function wrUpdateDist() {
+  var piscina = document.getElementById('wr-piscina').value;
+  var estilo = document.getElementById('wr-estilo').value;
+  var distEl = document.getElementById('wr-distancia');
+  var prevD = distEl.value;
+  distEl.innerHTML = '<option value="">Selecionar</option>';
+  if (!piscina || !estilo) return;
+  var provas = piscina === 'longa' ? WR_PROVAS_LONGA[estilo] : WR_PROVAS_CURTA[estilo];
+  if (!provas) return;
+  for (var i = 0; i < provas.length; i++) {
+    var opt = document.createElement('option');
+    opt.value = provas[i];
+    opt.textContent = provas[i] + 'm';
+    distEl.appendChild(opt);
+  }
+  if (distEl.querySelector('option[value="' + prevD + '"]')) distEl.value = prevD;
+  wrMostrar();
+}
+
+function wrMostrar() {
+  var piscina = document.getElementById('wr-piscina').value;
+  var sexo = document.getElementById('wr-sexo').value;
+  var estilo = document.getElementById('wr-estilo').value;
+  var dist = document.getElementById('wr-distancia').value;
+  var resultEl = document.getElementById('wr-result');
+  if (!piscina || !sexo || !estilo || !dist) { resultEl.innerHTML = ''; return; }
+  var key = dist + '_' + estilo;
+  var rec = null;
+  try { rec = recordesMundiais[piscina][sexo][key]; } catch(e) {}
+  if (!rec) {
+    resultEl.innerHTML = '<div class="fpn-result-box" style="margin-top:12px;"><div class="fpn-pontos-label" style="font-size:16px;color:var(--aqua);">Sem registo</div></div>';
+    return;
+  }
+  var html = '<div class="fpn-result-box" style="margin-top:12px;">';
+  html += '<div class="fpn-pontos">' + rec.tempo + '</div>';
+  html += '<div class="fpn-divider"></div>';
+  html += '<div class="fpn-rn-nome">' + rec.nome + '</div>';
+  html += '<div class="fpn-rn-info">' + rec.data + ' · ' + rec.local + '</div>';
+  html += '</div>';
+  resultEl.innerHTML = html;
+}
+
 function toggleIdades() {
   var section = document.getElementById('idades-section');
   var btn = document.getElementById('idades-btn');
@@ -7220,14 +7329,15 @@ function calcRelay() {
   }
 
   var out = '';
-  var hasConverted = false;
+  var rankLabels = ['MELHOR OPÇÃO', '2ª MELHOR OPÇÃO', '3ª MELHOR OPÇÃO'];
   for (var ri = 0; ri < results.length; ri++) {
     var r = results[ri];
     var isBest = ri === 0;
     out += '<div class="relay-result-item' + (isBest ? ' best' : '') + '">';
-    out += '<div class="relay-rank">' + (isBest ? 'MELHOR OPCAO' : (ri === 1 ? '2ª MELHOR OPCAO' : '3ª MELHOR OPCAO')) + ' · Tempo estimado</div>';
+    out += '<div class="relay-rank">' + (rankLabels[ri] || ((ri+1) + 'ª MELHOR OPÇÃO')) + ' · Tempo estimado</div>';
     out += '<div class="relay-total">' + coachFormatTime(r.total) + '</div>';
     out += '<div class="relay-legs">';
+    var convPools = [];
     for (var li = 0; li < r.legs.length; li++) {
       var leg = r.legs[li];
       var convTag = leg.converted ? '<span style="color:#e07b00;font-weight:700;font-size:13px;" title="Tempo convertido de piscina de ' + leg.fromPool + ' (Sistema Colorado Timing)"> *</span>' : '';
@@ -7236,10 +7346,10 @@ function calcRelay() {
         + '<span class="relay-leg-style">' + leg.estilo + '</span>'
         + '<span class="relay-leg-time">' + coachFormatTime(leg.time) + '</span>'
         + '</div>';
-      if (leg.converted) {
-        out += '<div style="font-size:10.5px;color:#e07b00;font-style:italic;padding:1px 0 4px 18px;">* Tempo convertido de piscina de ' + leg.fromPool + ' — Sistema Colorado Timing</div>';
-        hasConverted = true;
-      }
+      if (leg.converted && convPools.indexOf(leg.fromPool) < 0) convPools.push(leg.fromPool);
+    }
+    if (convPools.length > 0) {
+      out += '<div style="font-size:10.5px;color:#e07b00;font-style:italic;padding:4px 0 2px 4px;">* Tempo(s) convertido(s) de piscina de ' + convPools.join(' / ') + ' — Sistema Colorado Timing</div>';
     }
     out += '</div></div>';
   }
