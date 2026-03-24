@@ -744,6 +744,641 @@
 }
 .relay-leg-time { font-family: 'Bebas Neue', sans-serif; color: var(--aqua); font-size: 15px; }
 .relay-empty { font-size: 14px; color: #888; text-align: center; padding: 12px 0; }
+
+/* ============================================
+   SWIMMIN — LIQUID GLASS (Apple iOS 26 style)
+   Fundo neutro + componentes como vidro
+   Cor apenas em acentos pontuais
+   ============================================ */
+
+:root {
+  --lg-bg:          #f2f5f4;
+  --lg-text:        #1a2e3a;
+  --lg-muted:       #6a8fa0;
+  --lg-accent:      #34A0A4;
+  --lg-accent-deep: #1E6091;
+  --lg-emerald:     #76C893;
+  --lg-lime:        #D9ED92;
+  --glass-fill:     rgba(255,255,255,0.58);
+  --glass-border:   rgba(255,255,255,0.82);
+  --glass-spec:     inset 0 1.5px 0 rgba(255,255,255,0.96),
+                    inset 0 -1px 0 rgba(255,255,255,0.28),
+                    inset 1px 0 0 rgba(255,255,255,0.55),
+                    inset -1px 0 0 rgba(255,255,255,0.28);
+  --glass-shadow:   0 8px 28px rgba(0,0,0,0.07), 0 2px 6px rgba(0,0,0,0.04);
+}
+
+/* FUNDO NEUTRO */
+body {
+  background: var(--lg-bg) !important;
+  color: var(--lg-text) !important;
+}
+body::before {
+  content: '' !important;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  background:
+    radial-gradient(ellipse 60% 40% at 15% 20%, rgba(118,200,147,0.10) 0%, transparent 100%),
+    radial-gradient(ellipse 55% 45% at 85% 80%, rgba(52,160,164,0.09) 0%, transparent 100%),
+    var(--lg-bg) !important;
+  animation: none !important;
+}
+body::after { display: none !important; }
+
+/* HEADER */
+.header {
+  background: var(--glass-fill) !important;
+  backdrop-filter: blur(40px) saturate(160%) brightness(1.04) !important;
+  -webkit-backdrop-filter: blur(40px) saturate(160%) brightness(1.04) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 28px !important;
+  padding: 52px 32px 44px !important;
+  margin-bottom: 20px !important;
+  box-shadow: var(--glass-spec), var(--glass-shadow) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+.header::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important; left: 10% !important;
+  width: 80% !important; height: 1.5px !important;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0) 5%, rgba(255,255,255,1) 40%, rgba(255,255,255,1) 60%, rgba(255,255,255,0) 95%, transparent 100%) !important;
+  pointer-events: auto !important;
+  z-index: 3 !important;
+}
+.header::after { display:none !important; }
+.logo { font-size: 80px !important; letter-spacing: 5px !important; color: var(--lg-text) !important; text-shadow: none !important; }
+.logo span { color: var(--lg-accent) !important; }
+.subtitle { color: var(--lg-muted) !important; font-size: 12px !important; letter-spacing: 2.5px !important; }
+
+/* CARDS */
+.card, .fpn-section, .crono-card, .coach-card {
+  background: var(--glass-fill) !important;
+  backdrop-filter: blur(32px) saturate(160%) brightness(1.03) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(160%) brightness(1.03) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 28px !important;
+  padding: 36px 28px !important;
+  margin-bottom: 16px !important;
+  box-shadow: var(--glass-spec), var(--glass-shadow) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+.card::before, .fpn-section::before, .crono-card::before, .coach-card::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important; left: 10% !important;
+  width: 80% !important; height: 1.5px !important;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0) 5%, rgba(255,255,255,1) 40%, rgba(255,255,255,1) 60%, rgba(255,255,255,0) 95%, transparent) !important;
+  pointer-events: auto !important;
+  z-index: 3 !important;
+}
+.card::after, .fpn-section::after, .crono-card::after, .coach-card::after { display: none !important; }
+
+/* LABELS */
+label, .field > label, .crono-label {
+  text-transform: none !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  letter-spacing: 0.2px !important;
+  color: var(--lg-muted) !important;
+}
+
+/* SELECTS */
+select, .crono-select {
+  background: rgba(255,255,255,0.68) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 14px !important;
+  color: var(--lg-text) !important;
+  height: 50px !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.95), 0 2px 6px rgba(0,0,0,0.04) !important;
+  transition: border-color 0.2s, box-shadow 0.2s !important;
+}
+select:focus, .crono-select:focus {
+  border-color: rgba(52,160,164,0.6) !important;
+  box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.95), 0 0 0 4px rgba(52,160,164,0.12) !important;
+  outline: none !important;
+}
+select option { background: #fff !important; color: var(--lg-text) !important; }
+select:disabled { opacity: 0.4 !important; }
+
+/* INPUTS */
+input.personal-input, .crono-input, .crono-swimmer-name, .coach-team-input,
+#atleta-nome, #atleta-escalao, #atleta-sexo, #auth-email, #auth-password {
+  background: rgba(255,255,255,0.68) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 14px !important;
+  color: var(--lg-text) !important;
+  box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.95), 0 2px 6px rgba(0,0,0,0.04) !important;
+}
+input.personal-input:focus, .crono-input:focus, #auth-email:focus, #auth-password:focus {
+  border-color: rgba(52,160,164,0.6) !important;
+  background: rgba(255,255,255,0.85) !important;
+  box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.95), 0 0 0 4px rgba(52,160,164,0.12) !important;
+  outline: none !important;
+}
+input::placeholder { color: rgba(106,143,160,0.55) !important; }
+
+/* BOTÕES .fpn-btn — sem efeito de volume, igual aos laranjas */
+.fpn-btn {
+  background: linear-gradient(135deg, #34A0A4, #1A759F) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+  border-radius: 14px !important;
+  color: #fff !important;
+  height: 54px !important;
+  font-weight: 700 !important;
+  font-size: 15px !important;
+  letter-spacing: 0.4px !important;
+  text-shadow: none !important;
+  box-shadow: 0 4px 18px rgba(52,160,164,0.28) !important;
+  transition: transform 0.18s, box-shadow 0.18s !important;
+  width: 100% !important;
+}
+.fpn-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 24px rgba(52,160,164,0.38) !important;
+}
+.fpn-btn:active { transform: scale(0.98) !important; }
+
+/* DIVIDER */
+.divider { height: 1px !important; border: none !important; background: rgba(255,255,255,0.85) !important; margin: 24px 0 !important; }
+
+/* RESULT BOX */
+.result-box {
+  background: rgba(30,96,145,0.78) !important;
+  backdrop-filter: blur(28px) saturate(170%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(170%) !important;
+  border: 1px solid rgba(255,255,255,0.28) !important;
+  border-radius: 22px !important;
+  box-shadow: 0 8px 28px rgba(30,96,145,0.18) !important;
+  animation: none !important;
+}
+.result-box::before { display: none !important; }
+.result-box::after  { display: none !important; }
+.result-time { font-size: 72px !important; color: #fff !important; text-shadow: none !important; }
+.result-time.big { font-size: 80px !important; }
+.result-label, .result-desc { color: rgba(255,255,255,0.75) !important; }
+
+/* FPN RESULT BOX */
+.fpn-result-box {
+  background: rgba(30,96,145,0.78) !important;
+  backdrop-filter: blur(28px) saturate(170%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(170%) !important;
+  border: 1px solid rgba(255,255,255,0.28) !important;
+  border-radius: 22px !important;
+  box-shadow: 0 8px 28px rgba(30,96,145,0.18) !important;
+  animation: none !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+.fpn-result-box::before { display: none !important; }
+.fpn-result-box::after { display: none !important; }
+/* Pontos: branco puro em vez de lime — mais limpo sobre fundo azul */
+.fpn-pontos { color: #ffffff !important; font-size: 88px !important; text-shadow: none !important; }
+.fpn-pontos-label { color: rgba(255,255,255,0.55) !important; letter-spacing: 2px !important; }
+/* Recorde info: teal suave em vez de verde lima */
+.fpn-rn-label { color: rgba(255,255,255,0.60) !important; font-size: 12px !important; }
+.fpn-rn-nome  { color: #52B69A !important; font-weight: 600 !important; }
+.fpn-rn-info  { color: rgba(255,255,255,0.50) !important; font-size: 12px !important; }
+/* Divider dentro do box */
+.fpn-divider  { border-top: 1px solid rgba(255,255,255,0.14) !important; margin: 12px 0 !important; }
+
+/* RESULT EMPTY */
+.result-empty {
+  background: rgba(255,255,255,0.42) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1.5px dashed rgba(52,160,164,0.32) !important;
+  border-radius: 18px !important;
+  color: var(--lg-muted) !important;
+}
+
+/* TÍTULOS */
+.fpn-title, .crono-title { color: var(--lg-text) !important; font-size: 28px !important; letter-spacing: 2px !important; }
+.fpn-subtitle, .crono-subtitle { color: var(--lg-muted) !important; }
+
+/* DIFF */
+.diff-result.passa { background: rgba(118,200,147,0.16) !important; border: 1px solid rgba(118,200,147,0.42) !important; }
+.diff-result.falta { background: rgba(220,80,80,0.08) !important; border: 1px solid rgba(220,80,80,0.22) !important; }
+.diff-result.passa .diff-time { color: var(--lg-accent) !important; }
+.diff-result.falta .diff-time  { color: #d94f4f !important; }
+.diff-result.passa .diff-msg   { color: var(--lg-accent) !important; }
+.diff-result.falta .diff-msg   { color: #d94f4f !important; }
+
+/* PROGRESS BAR */
+.progress-bar-bg { background: rgba(255,255,255,0.55) !important; }
+.progress-bar-fill { background: linear-gradient(90deg, var(--lg-emerald), var(--lg-accent)) !important; }
+
+/* TABS */
+.crono-tab {
+  background: rgba(255,255,255,0.48) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid var(--glass-border) !important;
+  color: var(--lg-muted) !important;
+  border-radius: 12px !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.9) !important;
+}
+.crono-tab.active {
+  background: rgba(52,160,164,0.80) !important;
+  border-color: rgba(255,255,255,0.48) !important;
+  color: #fff !important;
+  box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.55), 0 4px 12px rgba(52,160,164,0.22) !important;
+}
+
+/* START/STOP */
+.crono-start-btn {
+  background: rgba(30,96,145,0.78) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255,255,255,0.38) !important;
+  border-radius: 18px !important;
+  height: 68px !important;
+  color: #fff !important;
+  box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.48), 0 4px 14px rgba(30,96,145,0.18) !important;
+  transition: transform 0.15s !important;
+}
+.crono-start-btn:hover { transform: translateY(-2px) !important; }
+.crono-start-btn.started { background: rgba(52,160,164,0.80) !important; }
+
+/* SWIMMER BTNS */
+.crono-swimmer-btn {
+  border-radius: 20px !important;
+  min-height: 96px !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), 0 4px 14px rgba(0,0,0,0.10) !important;
+  transition: transform 0.15s !important;
+}
+.crono-swimmer-btn:active { transform: scale(0.95) !important; }
+
+/* SW CARDS */
+.sw-card {
+  background: rgba(255,255,255,0.58) !important;
+  backdrop-filter: blur(24px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(150%) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 22px !important;
+  box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.96), var(--glass-shadow) !important;
+}
+.sw-display { color: var(--lg-text) !important; }
+.sw-btn-start { background: rgba(52,160,164,0.82) !important; border: 1px solid rgba(255,255,255,0.42) !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.5) !important; }
+.sw-btn-stop  { background: rgba(210,55,55,0.78) !important;  border: 1px solid rgba(255,255,255,0.32) !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.4) !important; }
+.sw-btn-split { background: rgba(30,96,145,0.78) !important;  border: 1px solid rgba(255,255,255,0.32) !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.4) !important; }
+.sw-btn-reset { background: rgba(255,255,255,0.65) !important; border: 1px solid var(--glass-border) !important; color: var(--lg-text) !important; box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.96) !important; }
+
+/* ATHLETE ITEMS */
+.athlete-item {
+  background: rgba(255,255,255,0.58) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 16px !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), var(--glass-shadow) !important;
+}
+.athlete-item-name { color: var(--lg-text) !important; font-weight: 700 !important; }
+.athlete-item-meta { color: var(--lg-muted) !important; }
+.btn-add-athlete {
+  background: rgba(255,255,255,0.48) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1.5px dashed rgba(52,160,164,0.38) !important;
+  color: var(--lg-accent) !important;
+  border-radius: 14px !important;
+  height: 48px !important;
+  font-weight: 700 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.9) !important;
+}
+.btn-edit { background: rgba(255,255,255,0.68) !important; color: var(--lg-accent-deep) !important; border-radius: 8px !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.95) !important; }
+.btn-del  { background: rgba(253,234,234,0.82) !important; color: #c0392b !important; border-radius: 8px !important; }
+
+/* ADD ATHLETE FORM */
+.add-athlete-form {
+  background: rgba(255,255,255,0.52) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 18px !important;
+}
+.form-row .field input, .form-row .field select, .time-field input {
+  background: rgba(255,255,255,0.75) !important;
+  border: 1px solid var(--glass-border) !important;
+  color: var(--lg-text) !important;
+  border-radius: 10px !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.95) !important;
+}
+.btn-save-athlete   { background: rgba(52,160,164,0.85) !important; color: #fff !important; border-radius: 12px !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.45) !important; }
+.btn-cancel-athlete { background: rgba(255,255,255,0.60) !important; color: var(--lg-text) !important; border-radius: 12px !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.95) !important; }
+.btn-del-form       { background: rgba(253,234,234,0.82) !important; color: #c0392b !important; border-radius: 12px !important; }
+
+/* RELAY */
+.relay-result-item {
+  background: rgba(255,255,255,0.48) !important;
+  backdrop-filter: blur(14px) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 18px !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.9) !important;
+}
+.relay-result-item.best { background: rgba(82,182,154,0.16) !important; border-color: rgba(82,182,154,0.48) !important; }
+.relay-total { color: var(--lg-text) !important; }
+.relay-result-item.best .relay-total { color: var(--lg-accent) !important; }
+.relay-result-item.best .relay-rank  { color: var(--lg-accent) !important; }
+
+/* CRONO SUMMARY */
+.crono-summary-swimmer { background: rgba(255,255,255,0.52) !important; backdrop-filter: blur(14px) !important; border: 1px solid var(--glass-border) !important; border-radius: 16px !important; }
+.crono-history-item    { background: rgba(255,255,255,0.52) !important; backdrop-filter: blur(12px) !important; border: 1px solid var(--glass-border) !important; border-radius: 14px !important; }
+.crono-export-btn { background: rgba(30,96,145,0.80) !important; border: 1px solid rgba(255,255,255,0.35) !important; color: #fff !important; border-radius: 10px !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.38) !important; }
+.crono-undo-btn   { background: rgba(255,255,255,0.52) !important; backdrop-filter: blur(12px) !important; border: 1px solid var(--glass-border) !important; color: var(--lg-muted) !important; border-radius: 12px !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.9) !important; }
+.crono-warning    { background: rgba(255,255,255,0.42) !important; color: var(--lg-muted) !important; border-radius: 10px !important; }
+
+/* COLOR PICKER */
+.crono-color-picker { background: rgba(255,255,255,0.88) !important; backdrop-filter: blur(40px) !important; -webkit-backdrop-filter: blur(40px) !important; border: 1px solid var(--glass-border) !important; border-radius: 22px !important; box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.96), 0 20px 60px rgba(0,0,0,0.12) !important; }
+
+/* INSTALAR */
+#btn-instalar { background: rgba(52,160,164,0.82) !important; backdrop-filter: blur(16px) !important; border: 1px solid rgba(255,255,255,0.48) !important; border-radius: 14px !important; color: #fff !important; font-weight: 700 !important; box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.52), 0 4px 12px rgba(52,160,164,0.18) !important; }
+
+/* AUTH */
+#auth-badge button { background: rgba(52,160,164,0.82) !important; backdrop-filter: blur(16px) !important; border: 1px solid rgba(255,255,255,0.48) !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.52) !important; }
+#auth-badge-menu { background: rgba(255,255,255,0.88) !important; backdrop-filter: blur(32px) !important; -webkit-backdrop-filter: blur(32px) !important; border: 1px solid var(--glass-border) !important; border-radius: 16px !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.96), 0 8px 28px rgba(0,0,0,0.10) !important; }
+
+/* RESULT UNAVAILABLE */
+.result-unavailable { background: rgba(255,248,220,0.72) !important; backdrop-filter: blur(12px) !important; border: 1px solid rgba(240,192,80,0.42) !important; border-radius: 16px !important; }
+
+/* PERSONAL INPUT */
+.personal-wrap .personal-input { background: rgba(255,255,255,0.72) !important; border: 1px solid rgba(255,255,255,0.86) !important; color: var(--lg-text) !important; border-radius: 12px !important; box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.95) !important; }
+
+/* FOOTER */
+.footer { color: rgba(106,143,160,0.65) !important; font-size: 11px !important; }
+
+/* COACH */
+.coach-card h2 { color: var(--lg-text) !important; }
+.coach-card .subtitle { color: var(--lg-muted) !important; }
+.coach-team-wrap label { color: var(--lg-muted) !important; }
+
+
+/* BOTÕES MENU — sem volume, igual estilo aos laranjas */
+.fpn-btn {
+  background: linear-gradient(135deg, #34A0A4, #1A759F) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+  border-radius: 10px !important;
+  color: #fff !important;
+  height: auto !important;
+  padding: 10px 22px !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  letter-spacing: 1px !important;
+  text-transform: uppercase !important;
+  text-shadow: none !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18) !important;
+  transition: transform 0.18s, box-shadow 0.18s !important;
+  width: 100% !important;
+}
+.fpn-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.22) !important;
+}
+.fpn-btn:active { transform: scale(0.98) !important; }
+
+
+/* UNIFORMIZAR INPUT TEMPO PESSOAL com estilo dos botões */
+.personal-input {
+  background: rgba(255,255,255,0.68) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255,255,255,0.82) !important;
+  border-radius: 10px !important;
+  color: var(--lg-text) !important;
+  padding: 10px 22px !important;
+  font-weight: 500 !important;
+  font-size: 13px !important;
+  letter-spacing: 0.4px !important;
+  box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.95), 0 2px 6px rgba(0,0,0,0.04) !important;
+  width: 160px !important;
+  height: 44px !important;
+}
+.personal-input:focus {
+  border-color: rgba(52,160,164,0.6) !important;
+  background: rgba(255,255,255,0.85) !important;
+  box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.95), 0 0 0 4px rgba(52,160,164,0.12) !important;
+  outline: none !important;
+}
+.personal-label {
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  letter-spacing: 0.4px !important;
+  color: var(--lg-muted) !important;
+}
+
+
+/* FORÇAR INPUT "O teu tempo" — sobrepor inline style */
+#fpn-tempo {
+  background: rgba(255,255,255,0.68) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255,255,255,0.82) !important;
+  border-radius: 10px !important;
+  color: #1a2e3a !important;
+  padding: 10px 22px !important;
+  font-weight: 500 !important;
+  font-size: 13px !important;
+  letter-spacing: 0.4px !important;
+  width: 160px !important;
+  height: 44px !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+}
+#fpn-tempo:focus {
+  border-color: rgba(52,160,164,0.6) !important;
+  background: rgba(255,255,255,0.85) !important;
+  box-shadow: 0 4px 12px rgba(52,160,164,0.16) !important;
+  outline: none !important;
+}
+
+
+/* GARANTIR QUE OS BOTÕES DE TOGGLE FUNCIONAM */
+.fpn-btn-wrap button {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  z-index: 10 !important;
+  position: relative !important;
+}
+#atleta-btn, #crono-btn, #conv-btn {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
+
+/* =====================================================
+   LIQUID GLASS — INTERIOR DO RESULT-BOX & FPN-RESULT-BOX
+   Cobre todos os elementos internos com estilo coerente
+   ===================================================== */
+
+/* Linha separadora dentro dos result boxes */
+.result-box .result-dates,
+.fpn-result-box .fpn-divider {
+  border-top-color: rgba(255,255,255,0.18) !important;
+}
+.result-dates-title,
+.result-box .result-dates-title {
+  color: rgba(255,255,255,0.55) !important;
+  font-size: 10px !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+}
+.result-dates-item,
+.result-box .result-dates-item {
+  color: rgba(255,255,255,0.85) !important;
+  font-size: 13px !important;
+}
+
+/* "O teu tempo" label e preview inline */
+.personal-label {
+  color: rgba(255,255,255,0.55) !important;
+  font-size: 10px !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+}
+/* Preview do tempo pessoal (span ao lado do input) — sobrepor inline style */
+#personal-time-preview {
+  color: rgba(255,255,255,0.90) !important;
+  font-family: 'Bebas Neue', sans-serif !important;
+  font-size: 22px !important;
+  letter-spacing: 2px !important;
+  min-width: 70px !important;
+}
+
+/* diff passa */
+.diff-result.passa {
+  background: rgba(118,200,147,0.18) !important;
+  border: 1px solid rgba(118,200,147,0.40) !important;
+  border-radius: 12px !important;
+}
+.diff-result.passa .diff-time { color: #76C893 !important; }
+.diff-result.passa .diff-msg  { color: rgba(118,200,147,0.9) !important; }
+
+/* diff falta */
+.diff-result.falta {
+  background: rgba(220,80,80,0.12) !important;
+  border: 1px solid rgba(220,80,80,0.30) !important;
+  border-radius: 12px !important;
+}
+.diff-result.falta .diff-time { color: #ff8080 !important; }
+.diff-result.falta .diff-msg  { color: rgba(255,140,140,0.85) !important; }
+
+/* progress bar */
+.progress-pct { color: rgba(255,255,255,0.55) !important; font-size: 11px !important; }
+.progress-bar-bg { background: rgba(255,255,255,0.15) !important; }
+.progress-bar-fill { background: linear-gradient(90deg, #76C893, #34A0A4) !important; }
+
+/* FPN result box interior */
+.fpn-rn-label { color: rgba(255,255,255,0.75) !important; }
+.fpn-rn-nome  { color: #76C893 !important; }
+.fpn-rn-info  { color: rgba(255,255,255,0.55) !important; }
+
+/* Conversor interno */
+#conv-resultado {
+  color: #fff !important;
+  font-family: 'Bebas Neue', sans-serif !important;
+  font-size: 28px !important;
+  letter-spacing: 2px !important;
+}
+#conv-preview-esq,
+#conv-preview-dir {
+  color: rgba(52,160,164,0.9) !important;
+  font-family: 'Bebas Neue', sans-serif !important;
+  font-size: 22px !important;
+  letter-spacing: 2px !important;
+}
+#conv-aviso-dist {
+  color: rgba(52,160,164,0.85) !important;
+  font-size: 12px !important;
+}
+#conv-aviso .result-unavailable {
+  background: rgba(255,248,220,0.72) !important;
+  color: #856404 !important;
+}
+/* Seta conversor */
+#conv-seta-btn {
+  background: rgba(255,255,255,0.55) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255,255,255,0.82) !important;
+  border-radius: 50% !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), 0 2px 6px rgba(0,0,0,0.08) !important;
+  color: var(--lg-accent) !important;
+  transition: transform 0.3s !important;
+}
+
+/* Labels dentro do conversor */
+#conv-label-esq, #conv-label-dir {
+  color: var(--lg-muted) !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+}
+#conv-direcao {
+  font-weight: 700 !important;
+  color: var(--lg-accent) !important;
+  font-size: 13px !important;
+}
+
+/* Crono summary name dot */
+.crono-summary-name { color: var(--lg-text) !important; }
+.crono-summary-stats { color: var(--lg-text) !important; }
+.crono-summary-splits { color: var(--lg-muted) !important; }
+.crono-detail-btn { color: var(--lg-accent) !important; }
+
+/* Histórico overlay (modal ver sessão) */
+#sw-hist-view > div,
+#crono-hist-view > div {
+  background: rgba(255,255,255,0.88) !important;
+  backdrop-filter: blur(40px) !important;
+  -webkit-backdrop-filter: blur(40px) !important;
+  border: 1px solid rgba(255,255,255,0.9) !important;
+  border-radius: 22px !important;
+  box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.96), 0 20px 60px rgba(0,0,0,0.14) !important;
+}
+
+/* Auth badge user email */
+#auth-user-email { color: var(--lg-accent-deep) !important; }
+
+/* Botão instalar — já coberto mas reforço do ícone de seta */
+#btn-instalar {
+  background: rgba(52,160,164,0.82) !important;
+  color: #fff !important;
+}
+
+
+
+/* Relay calcs */
+.relay-calc h3 { color: var(--lg-text) !important; }
+.relay-leg-name { color: var(--lg-text) !important; }
+.relay-leg-style { background: rgba(255,255,255,0.55) !important; color: var(--lg-muted) !important; }
+.relay-leg-time { color: var(--lg-accent) !important; }
+.relay-empty { color: var(--lg-muted) !important; }
+.btn-calc-relay {
+  background: rgba(52,160,164,0.85) !important;
+  border: 1px solid rgba(255,255,255,0.42) !important;
+  border-radius: 14px !important;
+  box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.45), 0 4px 14px rgba(52,160,164,0.22) !important;
+  color: #fff !important;
+}
+
+/* Crono add swimmer btn */
+.crono-add-swimmer-btn {
+  background: rgba(255,255,255,0.35) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1.5px dashed rgba(52,160,164,0.40) !important;
+  color: var(--lg-accent) !important;
+  border-radius: 12px !important;
+}
+
 </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
@@ -787,11 +1422,7 @@ document.addEventListener("click", function(e) {
 
 
   <!-- Botões Campeonatos -->
-  <div style="display:flex;flex-direction:column;gap:10px;margin:0 0 14px 0;">
-    <a href="https://live.swimrankings.net/49047/" target="_blank" rel="noopener noreferrer"
-       style="display:block;background:linear-gradient(135deg,#ff8c00,#e65c00);color:#fff;font-family:'DM Sans',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;text-decoration:none;padding:10px 22px;border-radius:10px;box-shadow:0 4px 16px rgba(230,92,0,0.35);cursor:pointer;text-align:center;">
-      Campeonato Nacional de Juvenis
-    </a>
+  <div style="margin:0 0 14px 0;">
     <a href="https://live.swimrankings.net/49106/" target="_blank" rel="noopener noreferrer"
        style="display:block;background:linear-gradient(135deg,#ff8c00,#e65c00);color:#fff;font-family:'DM Sans',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;text-decoration:none;padding:10px 22px;border-radius:10px;box-shadow:0 4px 16px rgba(230,92,0,0.35);cursor:pointer;text-align:center;">
       Campeonato Nacional de JUN, Sub21 e ABS<br>OPEN de Portugal / ASTRALPOOL
@@ -984,11 +1615,7 @@ document.addEventListener("click", function(e) {
           <strong>1:17,09</strong> → escreve <strong>11709</strong>
         </div>
       </div>
-      <div style="font-size:13px;font-weight:700;color:var(--aqua);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Piscina Curta (25m)</div>
-      <div id="form-curta"></div>
-
-      <div style="font-size:13px;font-weight:700;color:var(--aqua);text-transform:uppercase;letter-spacing:.05em;margin-top:18px;margin-bottom:10px;">Piscina Longa (50m)</div>
-      <div id="form-longa"></div>
+      <div id="form-tempos-grid"></div>
 
       <button type="button" onclick="guardarAtleta()" style="margin-top:18px;padding:14px;border-radius:8px;background:var(--aqua);color:var(--dark);font-weight:700;font-size:16px;border:none;cursor:pointer;width:100%;">Guardar e ver resultados</button>
       <button type="button" onclick="cancelarFormulario()" style="margin-top:8px;padding:10px;border-radius:8px;background:transparent;border:1px solid #ccc;color:#7ab8d4;font-size:14px;cursor:pointer;width:100%;">Cancelar</button>
@@ -1043,30 +1670,31 @@ document.addEventListener("click", function(e) {
       </div>
     </div>
     <div id="conv-aviso-dist" style="display:none;background:#fff8e1;border-left:3px solid #f0a500;border-radius:8px;padding:10px 14px;margin-top:4px;font-size:12px;color:#7a5a00;line-height:1.5;"></div>
-    <div style="display:flex;align-items:flex-end;gap:10px;margin-top:12px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-top:12px;">
       <div style="flex:1;display:flex;flex-direction:column;gap:6px;">
-        <div id="conv-label-esq" style="font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);text-align:center;">Piscina Longa 50m</div>
+        <div id="conv-label-esq" style="font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#6a8fa0;text-align:center;">Piscina Longa 50m</div>
         <input class="personal-input" type="tel" maxlength="6" placeholder="105000" id="conv-input-esq"
           oninput="convPreviewEsq(this)"
-          style="background:#f5faff;border:1.5px solid #d0e4f0;color:#1a3a4a;font-size:15px;padding:12px 14px;border-radius:12px;width:100%;box-sizing:border-box;text-align:center;">
-        <div id="conv-preview-esq" style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--muted);letter-spacing:2px;text-align:center;min-height:28px;"></div>
+          style="font-size:15px;padding:12px 14px;width:100%;box-sizing:border-box;text-align:center;height:50px;">
+        <div id="conv-preview-esq" style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:#34A0A4;letter-spacing:2px;text-align:center;min-height:26px;"></div>
       </div>
-      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;padding-bottom:36px;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;">
         <button type="button" id="conv-seta-btn" onclick="convInverter()"
-          style="width:48px;height:48px;border-radius:50%;border:2px solid var(--aqua);background:#fff;color:var(--aqua);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform 0.3s;flex-shrink:0;">
+          style="width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,0.82);background:rgba(255,255,255,0.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:#34A0A4;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform 0.3s;box-shadow:inset 0 1px 0 rgba(255,255,255,0.95);">
           &#8644;
         </button>
-        <div id="conv-direcao" style="font-size:10px;font-weight:700;color:var(--aqua);letter-spacing:1px;text-align:center;">50m &rarr; 25m</div>
+        <div id="conv-direcao" style="font-size:9px;font-weight:700;color:#34A0A4;letter-spacing:1px;text-align:center;">50m → 25m</div>
       </div>
       <div style="flex:1;display:flex;flex-direction:column;gap:6px;">
-        <div id="conv-label-dir" style="font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);text-align:center;">Piscina Curta 25m</div>
-        <div style="background:linear-gradient(135deg,var(--blue-deep),var(--blue-mid));border-radius:12px;padding:12px 14px;text-align:center;min-height:50px;display:flex;align-items:center;justify-content:center;">
+        <div id="conv-label-dir" style="font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#6a8fa0;text-align:center;">Piscina Curta 25m</div>
+        <div style="background:rgba(30,96,145,0.78);backdrop-filter:blur(28px) saturate(170%);-webkit-backdrop-filter:blur(28px) saturate(170%);border:1px solid rgba(255,255,255,0.32);border-radius:14px;height:50px;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 1.5px 0 rgba(255,255,255,0.45);">
           <span id="conv-resultado" style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:#fff;letter-spacing:2px;">--</span>
         </div>
+        <div style="min-height:26px;"></div>
       </div>
     </div>
     <button type="button" onclick="convCalcular()"
-      style="width:100%;margin-top:16px;height:50px;background:var(--blue-deep);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:0.04em;">
+      style="width:100%;margin-top:16px;height:50px;background:linear-gradient(135deg,#34A0A4,#1A759F);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:0.04em;box-shadow:0 4px 18px rgba(52,160,164,0.28);">
       CONVERTER
     </button>
     <div id="conv-aviso" style="margin-top:10px;"></div>
@@ -1129,10 +1757,6 @@ document.addEventListener("click", function(e) {
     <button class="fpn-btn" id="idades-btn" onclick="toggleIdades()">Recordes Nacionais</button>
   </div>
 
-  <div class="fpn-btn-wrap">
-    <button class="fpn-btn" id="mundiais-btn" onclick="toggleMundiais()">Recordes do Mundo</button>
-  </div>
-
   <div class="fpn-section" id="idades-section" style="display:none">
     <div class="fpn-title">Recordes Nacionais</div>
     <div class="fpn-subtitle">Por Idade · Piscina longa (50m) e curta (25m)</div>
@@ -1185,6 +1809,10 @@ document.addEventListener("click", function(e) {
     </div>
     <div id="id-result"></div>
     <div class="footer">Dados FPN · atualizado a 04/03/2026 (50m) e 25/02/2026 (25m)</div>
+  </div>
+
+  <div class="fpn-btn-wrap">
+    <button class="fpn-btn" id="mundiais-btn" onclick="toggleMundiais()">Recordes do Mundo</button>
   </div>
 
   <div class="fpn-section" id="mundiais-section" style="display:none">
@@ -5222,7 +5850,7 @@ function calcular() {
   html += '<div class="personal-label">O teu tempo</div>';
   html += '<div class="personal-input-row">';
   html += '<input type="tel" id="personal-time" class="personal-input" placeholder="ex: 10543" oninput="calcularDiff()" maxlength="7" autocomplete="off">';
-  html += '<div id="personal-time-preview" style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:var(--aqua);letter-spacing:2px;min-width:70px;"></div>';
+  html += '<div id="personal-time-preview" style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:rgba(255,255,255,0.90);letter-spacing:2px;min-width:70px;"></div>';
   html += '</div>';
   html += '</div>';
   html += '<div id="diff-result"></div>';
@@ -5283,7 +5911,7 @@ function calcularDiff() {
       + '<div class="diff-msg">Ainda precisas de baixar este tempo</div>'
       + '</div>'
       + '<div class="progress-wrap">'
-      + '<div class="progress-bar-bg"><div class="progress-bar-fill" style="width:' + Math.min(pct,100) + '%;background:' + (pct>=90?'var(--aqua)':'rgba(0,196,204,0.5)') + ';"></div></div>'
+      + '<div class="progress-bar-bg"><div class="progress-bar-fill" style="width:' + Math.min(pct,100) + '%;background:' + (pct>=90?'#34A0A4':'rgba(52,160,164,0.55)') + ';"></div></div>'
       + '<div class="progress-pct">' + pct + '% do objetivo</div>'
       + '</div>';
   }
@@ -5947,7 +6575,7 @@ function calcular() {
   html += '<div class="personal-label">O teu tempo</div>';
   html += '<div class="personal-input-row">';
   html += '<input type="tel" id="personal-time" class="personal-input" placeholder="ex: 10543" oninput="calcularDiff()" maxlength="7" autocomplete="off">';
-  html += '<div id="personal-time-preview" style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:var(--aqua);letter-spacing:2px;min-width:70px;"></div>';
+  html += '<div id="personal-time-preview" style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:rgba(255,255,255,0.90);letter-spacing:2px;min-width:70px;"></div>';
   html += '</div>';
   html += '</div>';
   html += '<div id="diff-result"></div>';
@@ -6008,7 +6636,7 @@ function calcularDiff() {
       + '<div class="diff-msg">Ainda precisas de baixar este tempo</div>'
       + '</div>'
       + '<div class="progress-wrap">'
-      + '<div class="progress-bar-bg"><div class="progress-bar-fill" style="width:' + Math.min(pct,100) + '%;background:' + (pct>=90?'var(--aqua)':'rgba(0,196,204,0.5)') + ';"></div></div>'
+      + '<div class="progress-bar-bg"><div class="progress-bar-fill" style="width:' + Math.min(pct,100) + '%;background:' + (pct>=90?'#34A0A4':'rgba(52,160,164,0.55)') + ';"></div></div>'
       + '<div class="progress-pct">' + pct + '% do objetivo</div>'
       + '</div>';
   }
@@ -6027,19 +6655,6 @@ function toggleFPN() {
   } else {
     section.style.display = 'none';
     btn.textContent = 'Calcular Pontos FPN';
-  }
-}
-
-function toggleIdades() {
-  var section = document.getElementById('idades-section');
-  var btn = document.getElementById('idades-btn');
-  if (section.style.display === 'none') {
-    section.style.display = 'block';
-    section.scrollIntoView({behavior:'smooth', block:'start'});
-    btn.textContent = 'Fechar Recordes Nacionais';
-  } else {
-    section.style.display = 'none';
-    btn.textContent = 'Recordes Nacionais';
   }
 }
 
@@ -6604,26 +7219,65 @@ function cancelarFormulario() {
 
 function renderFormProvas(data) {
   var tg = (data && data.tempos) ? data.tempos : {};
-  var htmlC = '';
-  for (var i = 0; i < PROVAS_INDIVIDUAIS_CURTA.length; i++) {
-    var p = PROVAS_INDIVIDUAIS_CURTA[i];
-    var val = tg['curta'] && tg['curta'][p.key] ? formatAtletaMs(tg['curta'][p.key]) : '';
-    htmlC += '<div style="display:flex;align-items:center;border-bottom:1px solid #e0eef5;padding:12px 0;gap:10px;">';
-    htmlC += '<div style="flex:1;font-size:14px;color:var(--blue-deep);font-weight:500;">' + p.label + '</div>';
-    htmlC += '<input type="tel" inputmode="numeric" id="fc-' + p.key + '" value="' + val + '" placeholder="--" style="width:90px;background:#f5faff;border:1.5px solid #d0e4f0;color:#1a3a4a;font-size:15px;padding:7px 10px;border-radius:6px;text-align:center;">';
-    htmlC += '</div>';
+
+  // All provas: key, label, hasCurta, hasLonga
+  var PROVAS = [
+    {key:'50_L',   label:'50m Livres',     c:true, l:true},
+    {key:'100_L',  label:'100m Livres',    c:true, l:true},
+    {key:'200_L',  label:'200m Livres',    c:true, l:true},
+    {key:'400_L',  label:'400m Livres',    c:true, l:true},
+    {key:'800_L',  label:'800m Livres',    c:true, l:true},
+    {key:'1500_L', label:'1500m Livres',   c:true, l:true},
+    {key:'50_C',   label:'50m Costas',     c:true, l:true},
+    {key:'100_C',  label:'100m Costas',    c:true, l:true},
+    {key:'200_C',  label:'200m Costas',    c:true, l:true},
+    {key:'50_B',   label:'50m Bruços',     c:true, l:true},
+    {key:'100_B',  label:'100m Bruços',    c:true, l:true},
+    {key:'200_B',  label:'200m Bruços',    c:true, l:true},
+    {key:'50_M',   label:'50m Mariposa',   c:true, l:true},
+    {key:'100_M',  label:'100m Mariposa',  c:true, l:true},
+    {key:'200_M',  label:'200m Mariposa',  c:true, l:true},
+    {key:'100_E',  label:'100m Estilos',   c:true, l:false},
+    {key:'200_E',  label:'200m Estilos',   c:true, l:true},
+    {key:'400_E',  label:'400m Estilos',   c:true, l:true}
+  ];
+
+  var inputStyle = 'width:100%;box-sizing:border-box;font-size:14px;padding:7px 6px;border-radius:8px;text-align:center;border:none;background:transparent;color:var(--lg-text,#1a2e3a);font-family:inherit;';
+  var cellStyle = 'border-radius:10px;background:rgba(255,255,255,0.62);border:1px solid rgba(255,255,255,0.85);box-shadow:inset 0 1px 0 rgba(255,255,255,0.95);padding:2px 4px;';
+  var cellDisabled = 'border-radius:10px;background:rgba(200,210,220,0.18);border:1px solid rgba(200,210,220,0.3);padding:2px 4px;';
+
+  var html = '<div style="display:grid;grid-template-columns:1fr 80px 80px;gap:6px;">';
+  // Header
+  html += '<div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#6a8fa0;padding:4px 2px;"></div>';
+  html += '<div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#6a8fa0;text-align:center;padding:4px 2px;">25m</div>';
+  html += '<div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#6a8fa0;text-align:center;padding:4px 2px;">50m</div>';
+
+  for (var i = 0; i < PROVAS.length; i++) {
+    var p = PROVAS[i];
+    var valC = tg['curta'] && tg['curta'][p.key] ? formatAtletaMs(tg['curta'][p.key]) : '';
+    var valL = tg['longa'] && tg['longa'][p.key] ? formatAtletaMs(tg['longa'][p.key]) : '';
+    var rowBg = (i % 2 === 0) ? 'rgba(255,255,255,0.12)' : 'transparent';
+
+    html += '<div style="font-size:13px;font-weight:500;color:var(--lg-text,#1a2e3a);display:flex;align-items:center;padding:4px 2px;background:' + rowBg + ';border-radius:6px;">' + p.label + '</div>';
+
+    // 25m cell
+    html += '<div style="' + cellStyle + 'background:' + (p.c ? 'rgba(255,255,255,0.62)' : 'rgba(200,210,220,0.18)') + ';border:1px solid ' + (p.c ? 'rgba(255,255,255,0.85)' : 'rgba(200,210,220,0.3)') + ';">';
+    if (p.c) {
+      html += '<input type="tel" inputmode="numeric" id="fc-' + p.key + '" value="' + valC + '" placeholder="--" style="' + inputStyle + '">';
+    }
+    html += '</div>';
+
+    // 50m cell
+    html += '<div style="' + (p.l ? cellStyle : cellDisabled) + '">';
+    if (p.l) {
+      html += '<input type="tel" inputmode="numeric" id="fl-' + p.key + '" value="' + valL + '" placeholder="--" style="' + inputStyle + '">';
+    } else {
+      html += '<div style="text-align:center;color:rgba(100,130,150,0.4);font-size:18px;line-height:34px;">—</div>';
+    }
+    html += '</div>';
   }
-  document.getElementById('form-curta').innerHTML = htmlC;
-  var htmlL = '';
-  for (var i = 0; i < PROVAS_INDIVIDUAIS_LONGA.length; i++) {
-    var p = PROVAS_INDIVIDUAIS_LONGA[i];
-    var val = tg['longa'] && tg['longa'][p.key] ? formatAtletaMs(tg['longa'][p.key]) : '';
-    htmlL += '<div style="display:flex;align-items:center;border-bottom:1px solid #e0eef5;padding:12px 0;gap:10px;">';
-    htmlL += '<div style="flex:1;font-size:14px;color:var(--blue-deep);font-weight:500;">' + p.label + '</div>';
-    htmlL += '<input type="tel" inputmode="numeric" id="fl-' + p.key + '" value="' + val + '" placeholder="--" style="width:90px;background:#f5faff;border:1.5px solid #d0e4f0;color:#1a3a4a;font-size:15px;padding:7px 10px;border-radius:6px;text-align:center;">';
-    htmlL += '</div>';
-  }
-  document.getElementById('form-longa').innerHTML = htmlL;
+  html += '</div>';
+  document.getElementById('form-tempos-grid').innerHTML = html;
 }
 
 function guardarAtleta() {
@@ -7789,10 +8443,10 @@ function fecharCartaoFPN() {
     © SwimMin, todos os direitos reservados
   </div>
   <div style="text-align:center; padding: 0 20px 18px 20px; font-size: 0.78em; color: #888; letter-spacing: 0.01em;">
-    SwimMin está em fase beta. Encontraste um problema ou tens uma sugestão? Envia-nos um e-mail para <a href="mailto:swimmin.app@gmail.com" style="color:#00c4cc;text-decoration:none;">swimmin.app@gmail.com</a>.
+    SwimMin está em fase beta. Encontraste um problema ou tens uma sugestão? Envia-nos um e-mail para <a href="/cdn-cgi/l/email-protection#f281859b9f9f9b9cdc938282b2959f939b9edc919d9f" style="color:#00c4cc;text-decoration:none;"><span class="__cf_email__" data-cfemail="f784809e9a9a9e99d9968787b7909a969e9bd994989a">[email&#160;protected]</span></a>.
   </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ===== ZONA DO TREINADOR (CRONÓMETRO) =====
 
 var CRONO_COLORS = [
