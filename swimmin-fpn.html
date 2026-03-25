@@ -966,6 +966,43 @@ html.light-mode .cal-del-btn {
   margin: 20px 0 8px;
 }
 html.light-mode .cal-section-label { color: var(--muted); }
+
+/* Calendário — modo escuro */
+html:not(.light-mode) .cal-section {
+  background: rgba(0,25,50,0.75);
+  box-shadow: 0 32px 64px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+html:not(.light-mode) .cal-title { color: #fff; }
+html:not(.light-mode) .cal-subtitle { color: var(--blue-light); }
+html:not(.light-mode) .cal-card-empty {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(0,196,204,0.3);
+  color: var(--blue-light);
+}
+html:not(.light-mode) .cal-card-empty:hover {
+  background: rgba(0,196,204,0.08);
+  border-color: var(--aqua);
+  color: var(--aqua);
+}
+html:not(.light-mode) .cal-more-btn {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(184,223,245,0.2);
+  color: var(--blue-light);
+}
+html:not(.light-mode) .cal-more-btn:hover {
+  background: rgba(255,255,255,0.10);
+  border-color: var(--aqua);
+  color: #fff;
+}
+html:not(.light-mode) .cal-popup {
+  background: rgba(0,25,50,0.95);
+  box-shadow: 0 -8px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+html:not(.light-mode) .cal-popup-close {
+  background: rgba(255,255,255,0.08);
+  color: var(--blue-light);
+}
+html:not(.light-mode) .cal-popup-name { color: #fff; }
 /* Modal de edição / sugestões */
 .cal-edit-overlay {
   display: none;
@@ -2409,9 +2446,15 @@ document.addEventListener("click", function(e) {
   <div class="cal-popup">
     <button class="cal-popup-close" onclick="calClosePopup()">✕</button>
     <div class="cal-popup-days" id="cal-popup-days">--</div>
-    <div class="cal-popup-days-label">dias para a próxima prova</div>
+    <div class="cal-popup-days-label">dias para a prova</div>
     <div class="cal-popup-name" id="cal-popup-name"></div>
     <div class="cal-popup-info" id="cal-popup-info"></div>
+    <div id="cal-popup-link-wrap" style="display:none; margin-top:12px; text-align:center;">
+      <a id="cal-popup-link" href="#" target="_blank" rel="noopener noreferrer"
+         style="display:inline-flex; align-items:center; gap:6px; padding:9px 18px; border-radius:10px; background:linear-gradient(135deg,var(--aqua),var(--blue-bright)); color:#fff; font-size:13px; font-weight:600; text-decoration:none; letter-spacing:0.3px;">
+        Ver regulamento
+      </a>
+    </div>
   </div>
 </div>
 
@@ -8609,6 +8652,14 @@ function calShowEventPopup(id) {
   var info = calFormatRange(e.dataIni, e.dataFim);
   if (e.local) info += '\n' + e.local;
   document.getElementById('cal-popup-info').textContent = info;
+  var linkWrap = document.getElementById('cal-popup-link-wrap');
+  var linkEl = document.getElementById('cal-popup-link');
+  if (e.regulamento) {
+    linkEl.href = e.regulamento;
+    linkWrap.style.display = 'block';
+  } else {
+    linkWrap.style.display = 'none';
+  }
   document.getElementById('cal-popup-overlay').classList.add('open');
 }
 
