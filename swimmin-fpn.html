@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt" class="light-mode">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SwimMin FPN</title>
-<meta name="theme-color" content="#003d6b">
+<meta name="theme-color" content="#f2f5f4">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="SwimMin">
@@ -696,7 +696,7 @@
 .btn-add-athlete:hover { background: #d0eaf5; }
 
 /* Relay calculator */
-.relay-calc { border-top: 1.5px solid #e0e8f0; padding-top: 18px; }
+.relay-calc { padding-top: 18px; }
 .relay-calc h3 {
   font-family: 'Bebas Neue', sans-serif; font-size: 20px;
   color: #0a2a4a; letter-spacing: 2px; margin: 0 0 14px 0;
@@ -752,13 +752,13 @@
    ============================================ */
 
 :root {
-  --dp-bg:        #030d14;
-  --dp-surface:   rgba(255,255,255,0.055);
-  --dp-surface2:  rgba(255,255,255,0.09);
-  --dp-border:    rgba(0,220,255,0.18);
-  --dp-border2:   rgba(255,255,255,0.10);
+  --dp-bg:        #0d1f3c;
+  --dp-surface:   rgba(255,255,255,0.07);
+  --dp-surface2:  rgba(255,255,255,0.11);
+  --dp-border:    rgba(0,220,255,0.22);
+  --dp-border2:   rgba(255,255,255,0.12);
   --dp-text:      #e8f4ff;
-  --dp-muted:     rgba(180,215,240,0.55);
+  --dp-muted:     rgba(180,215,240,0.65);
   --dp-accent:    #00d4ff;
   --dp-accent2:   #0098c8;
   --dp-green:     #00e5a0;
@@ -777,32 +777,20 @@ body::before {
   inset: 0 !important;
   z-index: 0 !important;
   background:
-    radial-gradient(ellipse 70% 50% at 50% -10%, rgba(0,130,180,0.22) 0%, transparent 70%),
-    radial-gradient(ellipse 40% 30% at 80% 110%, rgba(0,80,140,0.18) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 10% 90%, rgba(0,60,100,0.14) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 50% at 50% -10%, rgba(0,170,220,0.32) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 30% at 80% 110%, rgba(0,110,180,0.26) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 10% 90%, rgba(0,90,150,0.22) 0%, transparent 60%),
     var(--dp-bg) !important;
   animation: none !important;
 }
-/* Linhas de raia de piscina */
+/* Linhas de raia — tratadas pelo #pool-bg */
 body::after {
-  content: '' !important;
-  display: block !important;
-  position: fixed !important;
-  inset: 0 !important;
-  z-index: 0 !important;
-  background-image: repeating-linear-gradient(
-    90deg,
-    transparent 0px,
-    transparent calc(100% / 8 - 1px),
-    rgba(0,180,220,0.04) calc(100% / 8 - 1px),
-    rgba(0,180,220,0.04) calc(100% / 8)
-  ) !important;
-  animation: none !important;
+  display: none !important;
 }
 
 /* === HEADER === */
 .header {
-  background: rgba(0,20,40,0.55) !important;
+  background: rgba(14,36,68,0.60) !important;
   backdrop-filter: blur(32px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(32px) saturate(180%) !important;
   border: 1px solid var(--dp-border) !important;
@@ -837,7 +825,7 @@ body::after {
 
 /* === CARDS === */
 .card, .fpn-section, .crono-card, .coach-card {
-  background: rgba(5,20,38,0.72) !important;
+  background: rgba(16,34,64,0.78) !important;
   backdrop-filter: blur(32px) saturate(160%) !important;
   -webkit-backdrop-filter: blur(32px) saturate(160%) !important;
   border: 1px solid var(--dp-border) !important;
@@ -874,7 +862,7 @@ label, .field > label, .crono-label {
 
 /* === SELECTS === */
 select, .crono-select {
-  background: rgba(0,30,55,0.75) !important;
+  background: rgba(18,42,76,0.75) !important;
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
   border: 1px solid var(--dp-border) !important;
@@ -906,7 +894,7 @@ input.personal-input, .crono-input, .crono-swimmer-name, .coach-team-input,
 #atleta-nome, #atleta-escalao, #atleta-sexo, #auth-email, #auth-password,
 .form-row .field input, .form-row .field select, .time-field input,
 .relay-selects select, #conv-input-esq {
-  background: rgba(0,30,55,0.75) !important;
+  background: rgba(18,42,76,0.75) !important;
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
   border: 1px solid var(--dp-border) !important;
@@ -922,7 +910,7 @@ input.personal-input:focus, .crono-input:focus, #auth-email:focus, #auth-passwor
 .crono-swimmer-name:focus, .coach-team-input:focus, #conv-input-esq:focus,
 .form-row .field input:focus, .form-row .field select:focus, .time-field input:focus {
   border-color: var(--dp-accent) !important;
-  background: rgba(0,40,70,0.85) !important;
+  background: rgba(20,48,86,0.85) !important;
   box-shadow: inset 0 1px 0 rgba(0,212,255,0.20), 0 0 0 3px rgba(0,212,255,0.15) !important;
   outline: none !important;
 }
@@ -939,7 +927,7 @@ input.personal-input:focus, .crono-input:focus, #auth-email:focus, #auth-passwor
 
 /* === RESULT BOX === */
 .result-box {
-  background: rgba(0,30,55,0.85) !important;
+  background: rgba(18,42,76,0.82) !important;
   backdrop-filter: blur(28px) !important;
   -webkit-backdrop-filter: blur(28px) !important;
   border: 1px solid var(--dp-border) !important;
@@ -955,7 +943,7 @@ input.personal-input:focus, .crono-input:focus, #auth-email:focus, #auth-passwor
 
 /* === FPN RESULT BOX === */
 .fpn-result-box {
-  background: rgba(0,30,55,0.85) !important;
+  background: rgba(18,42,76,0.82) !important;
   backdrop-filter: blur(28px) !important;
   -webkit-backdrop-filter: blur(28px) !important;
   border: 1px solid var(--dp-border) !important;
@@ -973,7 +961,7 @@ input.personal-input:focus, .crono-input:focus, #auth-email:focus, #auth-passwor
 
 /* === RESULT EMPTY === */
 .result-empty {
-  background: rgba(0,20,40,0.5) !important;
+  background: rgba(14,34,64,0.50) !important;
   backdrop-filter: blur(12px) !important;
   border: 1.5px dashed rgba(0,212,255,0.20) !important;
   border-radius: 18px !important;
@@ -1028,7 +1016,7 @@ input.personal-input:focus, .crono-input:focus, #auth-email:focus, #auth-passwor
 
 /* === TABS === */
 .crono-tab {
-  background: rgba(0,30,55,0.60) !important;
+  background: rgba(18,42,76,0.60) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
   border: 1px solid var(--dp-border) !important;
@@ -1060,7 +1048,7 @@ input.personal-input:focus, .crono-input:focus, #auth-email:focus, #auth-passwor
 
 /* === SW CARDS (cronómetros) === */
 .sw-card {
-  background: rgba(0,20,40,0.72) !important;
+  background: rgba(14,34,64,0.72) !important;
   backdrop-filter: blur(24px) !important;
   -webkit-backdrop-filter: blur(24px) !important;
   border: 1px solid var(--dp-border) !important;
@@ -1071,7 +1059,7 @@ input.personal-input:focus, .crono-input:focus, #auth-email:focus, #auth-passwor
 .sw-btn-start { background: rgba(0,229,160,0.80) !important; border: 1px solid rgba(0,229,160,0.50) !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.2) !important; }
 .sw-btn-stop  { background: rgba(255,77,109,0.80) !important; border: 1px solid rgba(255,77,109,0.40) !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.15) !important; }
 .sw-btn-split { background: rgba(0,212,255,0.22) !important; border: 1px solid rgba(0,212,255,0.40) !important; color: var(--dp-accent) !important; box-shadow: inset 0 1px 0 rgba(0,212,255,0.20) !important; }
-.sw-btn-reset { background: rgba(0,30,55,0.70) !important; border: 1px solid var(--dp-border) !important; color: var(--dp-muted) !important; }
+.sw-btn-reset { background: rgba(18,42,76,0.70) !important; border: 1px solid var(--dp-border) !important; color: var(--dp-muted) !important; }
 .sw-split-item { border-bottom-color: rgba(0,212,255,0.10) !important; color: var(--dp-text) !important; }
 
 /* === ATHLETE ITEMS === */
@@ -1098,25 +1086,25 @@ input.personal-input:focus, .crono-input:focus, #auth-email:focus, #auth-passwor
 
 /* === ADD ATHLETE FORM === */
 .add-athlete-form {
-  background: rgba(0,15,32,0.55) !important;
+  background: rgba(14,32,62,0.55) !important;
   backdrop-filter: blur(16px) !important;
   border: 1px solid var(--dp-border) !important;
   border-radius: 18px !important;
 }
 .form-row .field input, .form-row .field select, .time-field input {
-  background: rgba(0,30,55,0.75) !important;
+  background: rgba(18,42,76,0.75) !important;
   border: 1px solid var(--dp-border) !important;
   color: var(--dp-text) !important;
   border-radius: 10px !important;
   box-shadow: inset 0 1px 0 rgba(0,212,255,0.10) !important;
 }
 .btn-save-athlete   { background: rgba(0,212,255,0.20) !important; color: var(--dp-accent) !important; border: 1px solid rgba(0,212,255,0.40) !important; border-radius: 12px !important; }
-.btn-cancel-athlete { background: rgba(0,30,55,0.60) !important; color: var(--dp-muted) !important; border-radius: 12px !important; border: 1px solid var(--dp-border) !important; }
+.btn-cancel-athlete { background: rgba(18,42,76,0.60) !important; color: var(--dp-muted) !important; border-radius: 12px !important; border: 1px solid var(--dp-border) !important; }
 .btn-del-form       { background: rgba(255,77,109,0.12) !important; color: var(--dp-red) !important; border-radius: 12px !important; }
 
 /* === RELAY === */
 .relay-selects select {
-  background: rgba(0,30,55,0.75) !important;
+  background: rgba(18,42,76,0.75) !important;
   border: 1px solid var(--dp-border) !important;
   color: var(--dp-text) !important;
   box-shadow: inset 0 1px 0 rgba(0,212,255,0.10) !important;
@@ -1181,7 +1169,7 @@ input.personal-input:focus, .crono-input:focus, #auth-email:focus, #auth-passwor
 
 /* === PERSONAL INPUT (dentro do result box) === */
 .personal-input {
-  background: rgba(0,30,55,0.75) !important;
+  background: rgba(18,42,76,0.75) !important;
   border: 1px solid var(--dp-border) !important;
   border-radius: 12px !important;
   color: var(--dp-text) !important;
@@ -1193,7 +1181,7 @@ input.personal-input:focus, .crono-input:focus, #auth-email:focus, #auth-passwor
 }
 .personal-input:focus {
   border-color: var(--dp-accent) !important;
-  background: rgba(0,40,70,0.85) !important;
+  background: rgba(20,48,86,0.85) !important;
   box-shadow: inset 0 1px 0 rgba(0,212,255,0.20), 0 0 0 3px rgba(0,212,255,0.15) !important;
   outline: none !important;
 }
@@ -1203,7 +1191,7 @@ input.personal-input:focus, .crono-input:focus, #auth-email:focus, #auth-passwor
 
 /* === FPN TEMPO INPUT === */
 #fpn-tempo {
-  background: rgba(0,30,55,0.75) !important;
+  background: rgba(18,42,76,0.75) !important;
   border: 1px solid var(--dp-border) !important;
   border-radius: 12px !important;
   color: var(--dp-text) !important;
@@ -1215,7 +1203,7 @@ input.personal-input:focus, .crono-input:focus, #auth-email:focus, #auth-passwor
 }
 #fpn-tempo:focus {
   border-color: var(--dp-accent) !important;
-  background: rgba(0,40,70,0.85) !important;
+  background: rgba(20,48,86,0.85) !important;
   box-shadow: inset 0 1px 0 rgba(0,212,255,0.20), 0 0 0 3px rgba(0,212,255,0.15) !important;
   outline: none !important;
 }
@@ -1237,7 +1225,7 @@ input.personal-input:focus, .crono-input:focus, #auth-email:focus, #auth-passwor
 #conv-direcao { color: var(--dp-accent) !important; }
 #conv-seta-btn {
   border: 1px solid rgba(0,212,255,0.35) !important;
-  background: rgba(0,30,55,0.80) !important;
+  background: rgba(18,42,76,0.78) !important;
   box-shadow: inset 0 1px 0 rgba(0,212,255,0.18), 0 2px 8px rgba(0,0,0,0.3) !important;
 }
 
@@ -1723,8 +1711,10 @@ html.light-mode #sw-hist-view > div, html.light-mode #crono-hist-view > div {
 </div>
 <script>
 (function() {
-  var saved = localStorage.getItem('swimmin-theme') || 'dark';
-  if (saved === 'light') {
+  var saved = localStorage.getItem('swimmin-theme') || 'light';
+  if (saved === 'dark') {
+    document.documentElement.classList.remove('light-mode');
+  } else {
     document.documentElement.classList.add('light-mode');
   }
   updateThemeBtn(saved);
@@ -2067,7 +2057,7 @@ document.addEventListener("click", function(e) {
       </div>
       <div class="field">
         <label id="conv-label-dir">Resultado 25m</label>
-        <div id="conv-resultado-wrap" style="width:100%;box-sizing:border-box;background:rgba(0,30,55,0.75);border:1px solid rgba(0,220,255,0.18);border-radius:12px;height:50px;display:flex;align-items:center;justify-content:center;">
+        <div id="conv-resultado-wrap" style="width:100%;box-sizing:border-box;background:rgba(18,42,76,0.75);border:1px solid rgba(0,220,255,0.22);border-radius:12px;height:50px;display:flex;align-items:center;justify-content:center;">
           <span id="conv-resultado" style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:#fff;letter-spacing:2px;">--</span>
         </div>
       </div>
@@ -7621,7 +7611,7 @@ function renderFormProvas(data) {
   var isDark = !document.documentElement.classList.contains('light-mode');
   var textColor  = isDark ? '#e8f4ff' : '#1a2e3a';
   var labelColor = isDark ? 'rgba(0,212,255,0.55)' : '#6a8fa0';
-  var cellBg     = isDark ? 'rgba(0,30,55,0.75)'   : 'rgba(255,255,255,0.92)';
+  var cellBg     = isDark ? 'rgba(18,42,76,0.75)'   : 'rgba(255,255,255,0.92)';
   var cellBorder = isDark ? 'rgba(0,212,255,0.22)'  : 'rgba(52,160,164,0.30)';
   var cellShadow = isDark ? 'inset 0 1px 0 rgba(0,212,255,0.12),0 2px 6px rgba(0,0,0,0.3)' : 'inset 0 1.5px 0 rgba(255,255,255,1),0 2px 6px rgba(0,0,0,0.08)';
   var cellDisBg  = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(200,210,220,0.18)';
@@ -9033,7 +9023,7 @@ function cronoRenderConfig() {
     '<div class="crono-field"><label class="crono-label">Nadadores — ' + g.nome + '</label>' +
       '<div id="crono-swimmers-list">' + swHtml + '</div></div>' +
     '<button onclick="cronoCfgIniciar()" style="margin-top:18px;width:100%;padding:14px;border-radius:12px;background:linear-gradient(135deg,var(--blue-deep),var(--blue-mid));color:#fff;border:none;font-size:15px;font-weight:700;cursor:pointer;">Começar</button>' +
-    '<div style="margin-top:24px;border-top:1px solid #e0edf5;padding-top:16px;">' + cronoHistoryHtml() + '</div>';
+    '<div style="margin-top:24px;padding-top:16px;">' + cronoHistoryHtml() + '</div>';
 }
 
 function cronoNToques() {
@@ -10453,6 +10443,90 @@ function convCalcular(){
   res.textContent=convFmt(outCs);
   aviso.innerHTML='';
 }
+</script>
+
+<!-- Pool lane background -->
+<div id="pool-bg" aria-hidden="true">
+  <div id="pool-lanes">
+    <span data-lane="1"></span><span data-lane="2"></span><span data-lane="3"></span><span data-lane="4"></span><span data-lane="5"></span><span data-lane="6"></span><span data-lane="7"></span><span data-lane="8"></span>
+  </div>
+</div>
+<style>
+#pool-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0px,
+    transparent calc(100% / 8 - 1px),
+    var(--pool-lane-color) calc(100% / 8 - 1px),
+    var(--pool-lane-color) calc(100% / 8)
+  );
+}
+#pool-lanes {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: flex-end;
+}
+#pool-lanes span {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+#pool-lanes svg {
+  width: 65%;
+  max-width: 68px;
+  min-width: 26px;
+  height: auto;
+  display: block;
+}
+:root {
+  --pool-lane-color:   rgba(0,180,220,0.13);
+  --pool-block-fill:   #0e2a4a;
+  --pool-block-stroke: #1a5c8a;
+  --pool-num-color:    #2a8fc4;
+}
+html.light-mode {
+  --pool-lane-color:   rgba(52,160,164,0.13);
+  --pool-block-fill:   #ddeef4;
+  --pool-block-stroke: #a8cdd8;
+  --pool-num-color:    #5a9db0;
+}
+</style>
+<script>
+(function() {
+  document.querySelectorAll('#pool-lanes span[data-lane]').forEach(function(span) {
+    var n = span.getAttribute('data-lane');
+    var f = 'var(--pool-block-fill)';
+    var s = 'var(--pool-block-stroke)';
+    var c = 'var(--pool-num-color)';
+    span.innerHTML =
+      '<svg viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg">' +
+        /* handles FIRST — behind everything */
+        '<path d="M22,28 Q10,28 10,37 Q10,46 22,46"' +
+          ' fill="none" stroke="' + s + '" stroke-width="2.5" stroke-linecap="round"/>' +
+        '<path d="M38,28 Q50,28 50,37 Q50,46 38,46"' +
+          ' fill="none" stroke="' + s + '" stroke-width="2.5" stroke-linecap="round"/>' +
+        /* column */
+        '<rect x="19" y="30" width="22" height="32" rx="1"' +
+          ' fill="' + f + '" stroke="' + s + '" stroke-width="1"/>' +
+        /* platform top */
+        '<rect x="4" y="16" width="52" height="15" rx="2"' +
+          ' fill="' + f + '" stroke="' + s + '" stroke-width="1"/>' +
+        /* number — directly on column, no background rect */
+        '<text x="30" y="51"' +
+          ' font-family="Bebas Neue, sans-serif" font-size="21"' +
+          ' text-anchor="middle" dominant-baseline="auto"' +
+          ' fill="' + c + '">' + n + '</text>' +
+      '</svg>';
+  });
+})();
 </script>
 </body>
 </html>
