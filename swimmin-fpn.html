@@ -10448,7 +10448,7 @@ function convCalcular(){
 <!-- Pool lane background -->
 <div id="pool-bg" aria-hidden="true">
   <div id="pool-lanes">
-    <span data-lane="1"></span><span data-lane="2"></span><span data-lane="3"></span><span data-lane="4"></span><span data-lane="5"></span><span data-lane="6"></span><span data-lane="7"></span><span data-lane="8"></span>
+    <span data-lane="0"></span><span data-lane="1"></span><span data-lane="2"></span><span data-lane="3"></span><span data-lane="4"></span><span data-lane="5"></span><span data-lane="6"></span><span data-lane="7"></span><span data-lane="8"></span><span data-lane="9"></span>
   </div>
 </div>
 <style>
@@ -10461,9 +10461,9 @@ function convCalcular(){
   background-image: repeating-linear-gradient(
     90deg,
     transparent 0px,
-    transparent calc(100% / 8 - 1px),
-    var(--pool-lane-color) calc(100% / 8 - 1px),
-    var(--pool-lane-color) calc(100% / 8)
+    transparent calc(100% / 10 - 1px),
+    var(--pool-lane-color) calc(100% / 10 - 1px),
+    var(--pool-lane-color) calc(100% / 10)
   );
 }
 #pool-lanes {
