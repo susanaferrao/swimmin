@@ -746,12 +746,565 @@
 .relay-empty { font-size: 14px; color: #888; text-align: center; padding: 12px 0; }
 
 /* ============================================
-   SWIMMIN — LIQUID GLASS (Apple iOS 26 style)
-   Fundo neutro + componentes como vidro
-   Cor apenas em acentos pontuais
+   SWIMMIN — DARK POOL · Tema Desportivo
+   Piscina olímpica ao anoitecer
+   Dark glass · Ciano elétrico · Velocidade
    ============================================ */
 
 :root {
+  --dp-bg:        #030d14;
+  --dp-surface:   rgba(255,255,255,0.055);
+  --dp-surface2:  rgba(255,255,255,0.09);
+  --dp-border:    rgba(0,220,255,0.18);
+  --dp-border2:   rgba(255,255,255,0.10);
+  --dp-text:      #e8f4ff;
+  --dp-muted:     rgba(180,215,240,0.55);
+  --dp-accent:    #00d4ff;
+  --dp-accent2:   #0098c8;
+  --dp-green:     #00e5a0;
+  --dp-red:       #ff4d6d;
+  --dp-glow:      0 0 24px rgba(0,212,255,0.25);
+}
+
+/* === FUNDO: piscina a fundo === */
+body {
+  background: var(--dp-bg) !important;
+  color: var(--dp-text) !important;
+}
+body::before {
+  content: '' !important;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% -10%, rgba(0,130,180,0.22) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 30% at 80% 110%, rgba(0,80,140,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 10% 90%, rgba(0,60,100,0.14) 0%, transparent 60%),
+    var(--dp-bg) !important;
+  animation: none !important;
+}
+/* Linhas de raia de piscina */
+body::after {
+  content: '' !important;
+  display: block !important;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0px,
+    transparent calc(100% / 8 - 1px),
+    rgba(0,180,220,0.04) calc(100% / 8 - 1px),
+    rgba(0,180,220,0.04) calc(100% / 8)
+  ) !important;
+  animation: none !important;
+}
+
+/* === HEADER === */
+.header {
+  background: rgba(0,20,40,0.55) !important;
+  backdrop-filter: blur(32px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(180%) !important;
+  border: 1px solid var(--dp-border) !important;
+  border-radius: 24px !important;
+  padding: 44px 32px 36px !important;
+  margin-bottom: 20px !important;
+  box-shadow:
+    0 0 0 1px rgba(0,212,255,0.08),
+    inset 0 1px 0 rgba(0,212,255,0.20),
+    0 24px 48px rgba(0,0,0,0.5) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+.header::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important; left: 15% !important;
+  width: 70% !important; height: 1px !important;
+  background: linear-gradient(90deg, transparent, rgba(0,212,255,0.6) 40%, rgba(0,212,255,0.6) 60%, transparent) !important;
+  z-index: 3 !important;
+  pointer-events: none !important;
+}
+.header::after { display: none !important; }
+.logo {
+  font-size: 84px !important;
+  letter-spacing: 6px !important;
+  color: var(--dp-text) !important;
+  text-shadow: 0 0 40px rgba(0,212,255,0.35) !important;
+}
+.logo span { color: var(--dp-accent) !important; text-shadow: 0 0 30px rgba(0,212,255,0.7) !important; }
+.subtitle { color: var(--dp-muted) !important; font-size: 11px !important; letter-spacing: 3px !important; }
+
+/* === CARDS === */
+.card, .fpn-section, .crono-card, .coach-card {
+  background: rgba(5,20,38,0.72) !important;
+  backdrop-filter: blur(32px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(160%) !important;
+  border: 1px solid var(--dp-border) !important;
+  border-radius: 24px !important;
+  padding: 32px 28px !important;
+  margin-bottom: 16px !important;
+  box-shadow:
+    inset 0 1px 0 rgba(0,212,255,0.15),
+    0 24px 48px rgba(0,0,0,0.45),
+    0 0 0 1px rgba(0,212,255,0.06) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+.card::before, .fpn-section::before, .crono-card::before, .coach-card::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important; left: 15% !important;
+  width: 70% !important; height: 1px !important;
+  background: linear-gradient(90deg, transparent, rgba(0,212,255,0.4) 40%, rgba(0,212,255,0.4) 60%, transparent) !important;
+  pointer-events: none !important;
+  z-index: 3 !important;
+}
+.card::after, .fpn-section::after, .crono-card::after, .coach-card::after { display: none !important; }
+
+/* === LABELS === */
+label, .field > label, .crono-label {
+  font-weight: 700 !important;
+  font-size: 10px !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  color: var(--dp-accent) !important;
+  opacity: 0.75 !important;
+}
+
+/* === SELECTS === */
+select, .crono-select {
+  background: rgba(0,30,55,0.75) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid var(--dp-border) !important;
+  border-radius: 12px !important;
+  color: var(--dp-text) !important;
+  height: 50px !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  box-shadow: inset 0 1px 0 rgba(0,212,255,0.12), 0 2px 8px rgba(0,0,0,0.3) !important;
+  transition: border-color 0.2s, box-shadow 0.2s !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2300d4ff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 14px center !important;
+}
+select:hover, .crono-select:hover {
+  border-color: rgba(0,212,255,0.45) !important;
+  box-shadow: inset 0 1px 0 rgba(0,212,255,0.15), 0 0 0 3px rgba(0,212,255,0.08) !important;
+}
+select:focus, .crono-select:focus {
+  border-color: var(--dp-accent) !important;
+  box-shadow: inset 0 1px 0 rgba(0,212,255,0.20), 0 0 0 3px rgba(0,212,255,0.15) !important;
+  outline: none !important;
+}
+select option { background: #071a2e !important; color: var(--dp-text) !important; }
+select:disabled { opacity: 0.25 !important; }
+
+/* === INPUTS === */
+input.personal-input, .crono-input, .crono-swimmer-name, .coach-team-input,
+#atleta-nome, #atleta-escalao, #atleta-sexo, #auth-email, #auth-password,
+.form-row .field input, .form-row .field select, .time-field input,
+.relay-selects select, #conv-input-esq {
+  background: rgba(0,30,55,0.75) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid var(--dp-border) !important;
+  border-radius: 12px !important;
+  color: var(--dp-text) !important;
+  box-shadow: inset 0 1px 0 rgba(0,212,255,0.12), 0 2px 8px rgba(0,0,0,0.3) !important;
+  transition: border-color 0.2s, box-shadow 0.2s !important;
+}
+input::placeholder, .crono-swimmer-name::placeholder, .coach-team-input::placeholder {
+  color: rgba(0,180,220,0.30) !important;
+}
+input.personal-input:focus, .crono-input:focus, #auth-email:focus, #auth-password:focus,
+.crono-swimmer-name:focus, .coach-team-input:focus, #conv-input-esq:focus,
+.form-row .field input:focus, .form-row .field select:focus, .time-field input:focus {
+  border-color: var(--dp-accent) !important;
+  background: rgba(0,40,70,0.85) !important;
+  box-shadow: inset 0 1px 0 rgba(0,212,255,0.20), 0 0 0 3px rgba(0,212,255,0.15) !important;
+  outline: none !important;
+}
+
+/* === CONV INPUT override === */
+#conv-input-esq {
+  width: 100% !important;
+  height: 50px !important;
+  padding: 0 10px !important;
+  font-size: 16px !important;
+  text-align: center !important;
+  box-sizing: border-box !important;
+}
+
+/* === RESULT BOX === */
+.result-box {
+  background: rgba(0,30,55,0.85) !important;
+  backdrop-filter: blur(28px) !important;
+  -webkit-backdrop-filter: blur(28px) !important;
+  border: 1px solid var(--dp-border) !important;
+  border-radius: 20px !important;
+  box-shadow: inset 0 1px 0 rgba(0,212,255,0.2), 0 8px 32px rgba(0,0,0,0.4) !important;
+  animation: popIn 0.35s cubic-bezier(0.34,1.56,0.64,1) !important;
+}
+.result-box::before, .result-box::after { display: none !important; }
+.result-time { font-size: 72px !important; color: var(--dp-accent) !important; text-shadow: 0 0 30px rgba(0,212,255,0.5) !important; }
+.result-time.big { font-size: 80px !important; }
+.result-label { color: var(--dp-muted) !important; }
+.result-desc { color: var(--dp-muted) !important; }
+
+/* === FPN RESULT BOX === */
+.fpn-result-box {
+  background: rgba(0,30,55,0.85) !important;
+  backdrop-filter: blur(28px) !important;
+  -webkit-backdrop-filter: blur(28px) !important;
+  border: 1px solid var(--dp-border) !important;
+  border-radius: 20px !important;
+  box-shadow: inset 0 1px 0 rgba(0,212,255,0.2), 0 8px 32px rgba(0,0,0,0.4) !important;
+  animation: none !important;
+}
+.fpn-result-box::before, .fpn-result-box::after { display: none !important; }
+.fpn-pontos { color: var(--dp-accent) !important; font-size: 88px !important; text-shadow: 0 0 30px rgba(0,212,255,0.6) !important; }
+.fpn-pontos-label { color: var(--dp-muted) !important; letter-spacing: 2px !important; }
+.fpn-rn-label { color: var(--dp-muted) !important; font-size: 12px !important; }
+.fpn-rn-nome  { color: var(--dp-green) !important; font-weight: 600 !important; }
+.fpn-rn-info  { color: var(--dp-muted) !important; font-size: 12px !important; }
+.fpn-divider  { border-top: 1px solid rgba(0,212,255,0.12) !important; margin: 12px 0 !important; }
+
+/* === RESULT EMPTY === */
+.result-empty {
+  background: rgba(0,20,40,0.5) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1.5px dashed rgba(0,212,255,0.20) !important;
+  border-radius: 18px !important;
+  color: var(--dp-muted) !important;
+}
+
+/* === TÍTULOS === */
+.fpn-title, .crono-title { color: var(--dp-text) !important; font-size: 28px !important; letter-spacing: 3px !important; }
+.fpn-subtitle, .crono-subtitle { color: var(--dp-muted) !important; font-size: 11px !important; letter-spacing: 1.5px !important; }
+
+/* === BOTÃO PRINCIPAL === */
+.fpn-btn {
+  background: linear-gradient(135deg, rgba(0,212,255,0.18), rgba(0,100,180,0.22)) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(0,212,255,0.35) !important;
+  border-radius: 14px !important;
+  color: var(--dp-accent) !important;
+  height: 54px !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  text-shadow: none !important;
+  box-shadow: inset 0 1px 0 rgba(0,212,255,0.25), 0 4px 18px rgba(0,0,0,0.3) !important;
+  transition: all 0.2s !important;
+  width: 100% !important;
+}
+.fpn-btn:hover {
+  background: linear-gradient(135deg, rgba(0,212,255,0.28), rgba(0,130,200,0.32)) !important;
+  border-color: rgba(0,212,255,0.6) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: inset 0 1px 0 rgba(0,212,255,0.35), 0 8px 24px rgba(0,0,0,0.35), var(--dp-glow) !important;
+}
+.fpn-btn:active { transform: scale(0.98) !important; }
+
+/* === DIVIDER === */
+.divider { height: 1px !important; border: none !important; background: rgba(0,212,255,0.10) !important; margin: 24px 0 !important; }
+
+/* === DIFF === */
+.diff-result.passa { background: rgba(0,229,160,0.10) !important; border: 1px solid rgba(0,229,160,0.30) !important; }
+.diff-result.falta { background: rgba(255,77,109,0.10) !important; border: 1px solid rgba(255,77,109,0.25) !important; }
+.diff-result.passa .diff-time { color: var(--dp-green) !important; text-shadow: 0 0 12px rgba(0,229,160,0.4) !important; }
+.diff-result.falta .diff-time  { color: var(--dp-red) !important; }
+.diff-result.passa .diff-msg   { color: rgba(0,229,160,0.80) !important; }
+.diff-result.falta .diff-msg   { color: rgba(255,77,109,0.80) !important; }
+
+/* === PROGRESS === */
+.progress-bar-bg { background: rgba(0,212,255,0.10) !important; }
+.progress-bar-fill { background: linear-gradient(90deg, var(--dp-green), var(--dp-accent)) !important; }
+.progress-pct { color: var(--dp-muted) !important; }
+
+/* === TABS === */
+.crono-tab {
+  background: rgba(0,30,55,0.60) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid var(--dp-border) !important;
+  color: var(--dp-muted) !important;
+  border-radius: 12px !important;
+  box-shadow: inset 0 1px 0 rgba(0,212,255,0.10) !important;
+}
+.crono-tab.active {
+  background: rgba(0,212,255,0.18) !important;
+  border-color: rgba(0,212,255,0.50) !important;
+  color: var(--dp-accent) !important;
+  box-shadow: inset 0 1px 0 rgba(0,212,255,0.30), 0 4px 12px rgba(0,212,255,0.12) !important;
+}
+
+/* === START/STOP === */
+.crono-start-btn {
+  background: rgba(0,30,60,0.80) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid var(--dp-border) !important;
+  border-radius: 16px !important;
+  height: 68px !important;
+  color: var(--dp-text) !important;
+  box-shadow: inset 0 1px 0 rgba(0,212,255,0.18), 0 4px 14px rgba(0,0,0,0.35) !important;
+  transition: transform 0.15s !important;
+}
+.crono-start-btn:hover { transform: translateY(-2px) !important; }
+.crono-start-btn.started { background: rgba(0,229,160,0.18) !important; border-color: rgba(0,229,160,0.40) !important; color: var(--dp-green) !important; }
+
+/* === SW CARDS (cronómetros) === */
+.sw-card {
+  background: rgba(0,20,40,0.72) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border: 1px solid var(--dp-border) !important;
+  border-radius: 20px !important;
+  box-shadow: inset 0 1px 0 rgba(0,212,255,0.12), 0 4px 16px rgba(0,0,0,0.35) !important;
+}
+.sw-display { color: var(--dp-accent) !important; text-shadow: 0 0 16px rgba(0,212,255,0.4) !important; }
+.sw-btn-start { background: rgba(0,229,160,0.80) !important; border: 1px solid rgba(0,229,160,0.50) !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.2) !important; }
+.sw-btn-stop  { background: rgba(255,77,109,0.80) !important; border: 1px solid rgba(255,77,109,0.40) !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.15) !important; }
+.sw-btn-split { background: rgba(0,212,255,0.22) !important; border: 1px solid rgba(0,212,255,0.40) !important; color: var(--dp-accent) !important; box-shadow: inset 0 1px 0 rgba(0,212,255,0.20) !important; }
+.sw-btn-reset { background: rgba(0,30,55,0.70) !important; border: 1px solid var(--dp-border) !important; color: var(--dp-muted) !important; }
+.sw-split-item { border-bottom-color: rgba(0,212,255,0.10) !important; color: var(--dp-text) !important; }
+
+/* === ATHLETE ITEMS === */
+.athlete-item {
+  background: rgba(0,20,42,0.65) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid var(--dp-border) !important;
+  border-radius: 14px !important;
+  box-shadow: inset 0 1px 0 rgba(0,212,255,0.10) !important;
+}
+.athlete-item-name { color: var(--dp-text) !important; font-weight: 700 !important; }
+.athlete-item-meta { color: var(--dp-muted) !important; }
+.btn-add-athlete {
+  background: rgba(0,212,255,0.08) !important;
+  border: 1.5px dashed rgba(0,212,255,0.28) !important;
+  color: var(--dp-accent) !important;
+  border-radius: 14px !important;
+  height: 48px !important;
+  font-weight: 700 !important;
+}
+.btn-edit { background: rgba(0,212,255,0.10) !important; color: var(--dp-accent) !important; border-radius: 8px !important; }
+.btn-del  { background: rgba(255,77,109,0.12) !important; color: var(--dp-red) !important; border-radius: 8px !important; }
+
+/* === ADD ATHLETE FORM === */
+.add-athlete-form {
+  background: rgba(0,15,32,0.55) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid var(--dp-border) !important;
+  border-radius: 18px !important;
+}
+.form-row .field input, .form-row .field select, .time-field input {
+  background: rgba(0,30,55,0.75) !important;
+  border: 1px solid var(--dp-border) !important;
+  color: var(--dp-text) !important;
+  border-radius: 10px !important;
+  box-shadow: inset 0 1px 0 rgba(0,212,255,0.10) !important;
+}
+.btn-save-athlete   { background: rgba(0,212,255,0.20) !important; color: var(--dp-accent) !important; border: 1px solid rgba(0,212,255,0.40) !important; border-radius: 12px !important; }
+.btn-cancel-athlete { background: rgba(0,30,55,0.60) !important; color: var(--dp-muted) !important; border-radius: 12px !important; border: 1px solid var(--dp-border) !important; }
+.btn-del-form       { background: rgba(255,77,109,0.12) !important; color: var(--dp-red) !important; border-radius: 12px !important; }
+
+/* === RELAY === */
+.relay-selects select {
+  background: rgba(0,30,55,0.75) !important;
+  border: 1px solid var(--dp-border) !important;
+  color: var(--dp-text) !important;
+  box-shadow: inset 0 1px 0 rgba(0,212,255,0.10) !important;
+  border-radius: 12px !important;
+}
+.relay-result-item {
+  background: rgba(0,20,42,0.65) !important;
+  backdrop-filter: blur(14px) !important;
+  border: 1px solid var(--dp-border) !important;
+  border-radius: 16px !important;
+  box-shadow: inset 0 1px 0 rgba(0,212,255,0.08) !important;
+}
+.relay-calc h3 { color: var(--dp-accent) !important; }
+.relay-result-item.best { background: rgba(0,229,160,0.08) !important; border-color: rgba(0,229,160,0.35) !important; }
+.relay-rank { color: var(--dp-muted) !important; }
+.relay-total { color: var(--dp-text) !important; }
+.relay-result-item.best .relay-total { color: var(--dp-accent) !important; text-shadow: 0 0 16px rgba(0,212,255,0.4) !important; }
+.relay-result-item.best .relay-rank  { color: var(--dp-accent) !important; }
+.relay-leg-name { color: var(--dp-text) !important; }
+.relay-leg-style { background: rgba(0,212,255,0.08) !important; color: var(--dp-muted) !important; }
+.relay-leg-time { color: var(--dp-accent) !important; }
+.relay-empty { color: var(--dp-muted) !important; }
+.btn-calc-relay {
+  background: rgba(0,212,255,0.18) !important;
+  border: 1px solid rgba(0,212,255,0.40) !important;
+  border-radius: 14px !important;
+  box-shadow: inset 0 1px 0 rgba(0,212,255,0.25) !important;
+  color: var(--dp-accent) !important;
+}
+
+/* === CRONO SUMMARY === */
+.crono-summary-swimmer { background: rgba(0,20,42,0.65) !important; backdrop-filter: blur(14px) !important; border: 1px solid var(--dp-border) !important; border-radius: 16px !important; }
+.crono-summary-name    { color: var(--dp-text) !important; }
+.crono-summary-stats   { color: var(--dp-text) !important; }
+.crono-summary-splits  { color: var(--dp-muted) !important; }
+.crono-detail-btn      { color: var(--dp-accent) !important; }
+.crono-history-item    { background: rgba(0,20,42,0.65) !important; backdrop-filter: blur(12px) !important; border: 1px solid var(--dp-border) !important; border-radius: 14px !important; }
+.crono-history-info    { color: var(--dp-text) !important; }
+.crono-history-date    { color: var(--dp-muted) !important; }
+.crono-export-btn { background: rgba(0,212,255,0.18) !important; border: 1px solid rgba(0,212,255,0.35) !important; color: var(--dp-accent) !important; border-radius: 10px !important; }
+.crono-undo-btn   { background: rgba(0,20,42,0.65) !important; border: 1px solid var(--dp-border) !important; color: var(--dp-muted) !important; border-radius: 12px !important; }
+.crono-warning    { background: rgba(0,20,42,0.50) !important; color: var(--dp-muted) !important; border-radius: 10px !important; }
+.crono-add-swimmer-btn {
+  background: rgba(0,212,255,0.06) !important;
+  border: 1.5px dashed rgba(0,212,255,0.28) !important;
+  color: var(--dp-accent) !important;
+  border-radius: 12px !important;
+}
+
+/* === COLOR PICKER === */
+.crono-color-picker { background: rgba(5,18,36,0.96) !important; backdrop-filter: blur(40px) !important; border: 1px solid var(--dp-border) !important; border-radius: 22px !important; box-shadow: inset 0 1px 0 rgba(0,212,255,0.20), 0 20px 60px rgba(0,0,0,0.6) !important; }
+
+/* === INSTALAR / AUTH === */
+#btn-instalar { background: rgba(0,212,255,0.18) !important; border: 1px solid rgba(0,212,255,0.40) !important; border-radius: 14px !important; color: var(--dp-accent) !important; font-weight: 700 !important; }
+#auth-badge button { background: rgba(0,229,160,0.85) !important; border: 1px solid rgba(0,229,160,0.50) !important; }
+#auth-badge-menu { background: rgba(5,18,36,0.96) !important; backdrop-filter: blur(32px) !important; border: 1px solid var(--dp-border) !important; border-radius: 16px !important; box-shadow: 0 8px 28px rgba(0,0,0,0.5) !important; }
+#auth-user-email { color: var(--dp-accent) !important; }
+
+/* === RESULT UNAVAILABLE === */
+.result-unavailable { background: rgba(255,200,0,0.08) !important; backdrop-filter: blur(12px) !important; border: 1px solid rgba(255,200,0,0.25) !important; border-radius: 16px !important; color: rgba(255,220,80,0.9) !important; }
+.fpn-unavailable { background: rgba(255,200,0,0.08) !important; border-color: rgba(255,200,0,0.25) !important; color: rgba(255,220,80,0.9) !important; }
+
+/* === PERSONAL INPUT (dentro do result box) === */
+.personal-input {
+  background: rgba(0,30,55,0.75) !important;
+  border: 1px solid var(--dp-border) !important;
+  border-radius: 12px !important;
+  color: var(--dp-text) !important;
+  box-shadow: inset 0 1px 0 rgba(0,212,255,0.12) !important;
+  width: 160px !important;
+  height: 44px !important;
+  padding: 10px 14px !important;
+  font-size: 14px !important;
+}
+.personal-input:focus {
+  border-color: var(--dp-accent) !important;
+  background: rgba(0,40,70,0.85) !important;
+  box-shadow: inset 0 1px 0 rgba(0,212,255,0.20), 0 0 0 3px rgba(0,212,255,0.15) !important;
+  outline: none !important;
+}
+.personal-wrap .personal-input { width: 100% !important; }
+.personal-label { color: var(--dp-muted) !important; font-size: 10px !important; letter-spacing: 1.5px !important; text-transform: uppercase !important; }
+#personal-time-preview { color: var(--dp-accent) !important; text-shadow: 0 0 12px rgba(0,212,255,0.5) !important; }
+
+/* === FPN TEMPO INPUT === */
+#fpn-tempo {
+  background: rgba(0,30,55,0.75) !important;
+  border: 1px solid var(--dp-border) !important;
+  border-radius: 12px !important;
+  color: var(--dp-text) !important;
+  box-shadow: inset 0 1px 0 rgba(0,212,255,0.12) !important;
+  padding: 10px 14px !important;
+  font-size: 15px !important;
+  height: 50px !important;
+  width: 160px !important;
+}
+#fpn-tempo:focus {
+  border-color: var(--dp-accent) !important;
+  background: rgba(0,40,70,0.85) !important;
+  box-shadow: inset 0 1px 0 rgba(0,212,255,0.20), 0 0 0 3px rgba(0,212,255,0.15) !important;
+  outline: none !important;
+}
+.fpn-tempo-preview { color: var(--dp-accent) !important; }
+
+/* === CONVERSOR === */
+#conv-input-esq {
+  width: 100% !important;
+  height: 50px !important;
+  padding: 0 10px !important;
+  font-size: 16px !important;
+  text-align: center !important;
+  box-sizing: border-box !important;
+}
+#conv-preview-esq, #conv-preview-dir { color: var(--dp-accent) !important; text-shadow: 0 0 10px rgba(0,212,255,0.4) !important; }
+#conv-resultado { color: var(--dp-accent) !important; text-shadow: 0 0 20px rgba(0,212,255,0.6) !important; }
+#conv-aviso-dist { color: rgba(255,220,80,0.85) !important; font-size: 12px !important; }
+#conv-label-esq, #conv-label-dir { color: var(--dp-accent) !important; opacity: 0.7 !important; }
+#conv-direcao { color: var(--dp-accent) !important; }
+#conv-seta-btn {
+  border: 1px solid rgba(0,212,255,0.35) !important;
+  background: rgba(0,30,55,0.80) !important;
+  box-shadow: inset 0 1px 0 rgba(0,212,255,0.18), 0 2px 8px rgba(0,0,0,0.3) !important;
+}
+
+/* === DATAS NOS RESULTADOS === */
+.result-dates-title { color: var(--dp-muted) !important; }
+.result-dates-item  { color: rgba(200,230,255,0.85) !important; }
+
+/* === FOOTER === */
+.footer { color: var(--dp-muted) !important; font-size: 11px !important; }
+
+/* === COACH === */
+.coach-card h2 { color: var(--dp-text) !important; }
+.coach-card .subtitle { color: var(--dp-muted) !important; }
+.coach-team-wrap label { color: var(--dp-accent) !important; opacity: 0.75 !important; }
+
+/* === HISTÓRICO MODAL === */
+#sw-hist-view > div, #crono-hist-view > div {
+  background: rgba(5,18,36,0.96) !important;
+  backdrop-filter: blur(40px) !important;
+  border: 1px solid var(--dp-border) !important;
+  border-radius: 22px !important;
+  box-shadow: inset 0 1px 0 rgba(0,212,255,0.18), 0 20px 60px rgba(0,0,0,0.6) !important;
+  color: var(--dp-text) !important;
+}
+
+/* === SWIMMER BTNS === */
+.crono-swimmer-btn {
+  border-radius: 20px !important;
+  min-height: 96px !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), 0 4px 14px rgba(0,0,0,0.30) !important;
+  transition: transform 0.15s !important;
+}
+.crono-swimmer-btn:active { transform: scale(0.95) !important; }
+
+/* ============================================
+   TEMA: BOTÃO TOGGLE CLARO/ESCURO
+   ============================================ */
+#theme-toggle-btn {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 50px;
+  padding: 7px 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(200,230,255,0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  letter-spacing: 0.3px;
+}
+#theme-toggle-btn:hover {
+  background: rgba(255,255,255,0.18);
+}
+#theme-toggle-btn svg {
+  transition: transform 0.4s ease;
+}
+
+/* ============================================
+   SWIMMIN — LIQUID GLASS (Apple iOS 26 style)
+   Modo Claro — ativado com html.light-mode
+   ============================================ */
+html.light-mode {
   --lg-bg:          #f2f5f4;
   --lg-text:        #1a2e3a;
   --lg-muted:       #6a8fa0;
@@ -767,13 +1320,22 @@
                     inset -1px 0 0 rgba(255,255,255,0.28);
   --glass-shadow:   0 8px 28px rgba(0,0,0,0.07), 0 2px 6px rgba(0,0,0,0.04);
 }
-
-/* FUNDO NEUTRO */
-body {
+html.light-mode #theme-toggle-btn {
+  background: rgba(52,160,164,0.10);
+  border-color: rgba(52,160,164,0.30);
+  color: var(--lg-accent-deep);
+}
+html.light-mode #theme-toggle-btn:hover {
+  background: rgba(52,160,164,0.18);
+}
+/* Placeholder visivel no modo escuro para inputs da grelha de tempos */
+#form-tempos-grid input::placeholder { color: rgba(0,212,255,0.40); }
+html.light-mode #form-tempos-grid input::placeholder { color: rgba(52,160,164,0.45); }
+html.light-mode body {
   background: var(--lg-bg) !important;
   color: var(--lg-text) !important;
 }
-body::before {
+html.light-mode body::before {
   content: '' !important;
   position: fixed !important;
   inset: 0 !important;
@@ -784,10 +1346,8 @@ body::before {
     var(--lg-bg) !important;
   animation: none !important;
 }
-body::after { display: none !important; }
-
-/* HEADER */
-.header {
+html.light-mode body::after { display: none !important; }
+html.light-mode .header {
   background: var(--glass-fill) !important;
   backdrop-filter: blur(40px) saturate(160%) brightness(1.04) !important;
   -webkit-backdrop-filter: blur(40px) saturate(160%) brightness(1.04) !important;
@@ -799,22 +1359,20 @@ body::after { display: none !important; }
   position: relative !important;
   overflow: hidden !important;
 }
-.header::before {
+html.light-mode .header::before {
   content: '' !important;
   position: absolute !important;
   top: 0 !important; left: 10% !important;
   width: 80% !important; height: 1.5px !important;
   background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0) 5%, rgba(255,255,255,1) 40%, rgba(255,255,255,1) 60%, rgba(255,255,255,0) 95%, transparent 100%) !important;
-  pointer-events: auto !important;
+  pointer-events: none !important;
   z-index: 3 !important;
 }
-.header::after { display:none !important; }
-.logo { font-size: 80px !important; letter-spacing: 5px !important; color: var(--lg-text) !important; text-shadow: none !important; }
-.logo span { color: var(--lg-accent) !important; }
-.subtitle { color: var(--lg-muted) !important; font-size: 12px !important; letter-spacing: 2.5px !important; }
-
-/* CARDS */
-.card, .fpn-section, .crono-card, .coach-card {
+html.light-mode .header::after { display: none !important; }
+html.light-mode .logo { font-size: 80px !important; letter-spacing: 5px !important; color: var(--lg-text) !important; text-shadow: none !important; }
+html.light-mode .logo span { color: var(--lg-accent) !important; }
+html.light-mode .subtitle { color: var(--lg-muted) !important; font-size: 12px !important; letter-spacing: 2.5px !important; }
+html.light-mode .card, html.light-mode .fpn-section, html.light-mode .crono-card, html.light-mode .coach-card {
   background: var(--glass-fill) !important;
   backdrop-filter: blur(32px) saturate(160%) brightness(1.03) !important;
   -webkit-backdrop-filter: blur(32px) saturate(160%) brightness(1.03) !important;
@@ -826,28 +1384,24 @@ body::after { display: none !important; }
   position: relative !important;
   overflow: hidden !important;
 }
-.card::before, .fpn-section::before, .crono-card::before, .coach-card::before {
+html.light-mode .card::before, html.light-mode .fpn-section::before, html.light-mode .crono-card::before, html.light-mode .coach-card::before {
   content: '' !important;
   position: absolute !important;
   top: 0 !important; left: 10% !important;
   width: 80% !important; height: 1.5px !important;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0) 5%, rgba(255,255,255,1) 40%, rgba(255,255,255,1) 60%, rgba(255,255,255,0) 95%, transparent) !important;
-  pointer-events: auto !important;
+  pointer-events: none !important;
   z-index: 3 !important;
 }
-.card::after, .fpn-section::after, .crono-card::after, .coach-card::after { display: none !important; }
-
-/* LABELS */
-label, .field > label, .crono-label {
+html.light-mode .card::after, html.light-mode .fpn-section::after, html.light-mode .crono-card::after, html.light-mode .coach-card::after { display: none !important; }
+html.light-mode label, html.light-mode .field > label, html.light-mode .crono-label {
   text-transform: none !important;
   font-weight: 700 !important;
   font-size: 12px !important;
   letter-spacing: 0.3px !important;
   color: var(--lg-accent-deep) !important;
 }
-
-/* SELECTS */
-select, .crono-select {
+html.light-mode select, html.light-mode .crono-select {
   background: rgba(255,255,255,0.90) !important;
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
@@ -857,303 +1411,46 @@ select, .crono-select {
   height: 50px !important;
   font-size: 15px !important;
   font-weight: 500 !important;
-  box-shadow:
-    inset 0 1.5px 0 rgba(255,255,255,1),
-    inset 0 -1px 0 rgba(0,0,0,0.04),
-    0 2px 8px rgba(0,0,0,0.09) !important;
-  transition: border-color 0.2s, box-shadow 0.2s !important;
+  box-shadow: inset 0 1.5px 0 rgba(255,255,255,1), inset 0 -1px 0 rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.09) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2334A0A4' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 14px center !important;
 }
-select:hover, .crono-select:hover {
+html.light-mode select:hover, html.light-mode .crono-select:hover {
   border-color: rgba(52,160,164,0.55) !important;
-  box-shadow:
-    inset 0 1.5px 0 rgba(255,255,255,1),
-    0 2px 10px rgba(52,160,164,0.13) !important;
+  box-shadow: inset 0 1.5px 0 rgba(255,255,255,1), 0 2px 10px rgba(52,160,164,0.13) !important;
 }
-select:focus, .crono-select:focus {
+html.light-mode select:focus, html.light-mode .crono-select:focus {
   border-color: rgba(52,160,164,0.75) !important;
-  box-shadow:
-    inset 0 1.5px 0 rgba(255,255,255,1),
-    0 0 0 4px rgba(52,160,164,0.16) !important;
+  box-shadow: inset 0 1.5px 0 rgba(255,255,255,1), 0 0 0 4px rgba(52,160,164,0.16) !important;
   outline: none !important;
 }
-select option { background: #fff !important; color: var(--lg-text) !important; }
-select:disabled { opacity: 0.4 !important; }
-
-/* INPUTS */
-input.personal-input, .crono-input, .crono-swimmer-name, .coach-team-input,
-#atleta-nome, #atleta-escalao, #atleta-sexo, #auth-email, #auth-password,
-.form-row .field input, .form-row .field select, .time-field input,
-.relay-selects select, .coach-team-input {
+html.light-mode select option { background: #fff !important; color: var(--lg-text) !important; }
+html.light-mode select:disabled { opacity: 0.4 !important; }
+html.light-mode input.personal-input, html.light-mode .crono-input, html.light-mode .crono-swimmer-name, html.light-mode .coach-team-input,
+html.light-mode #atleta-nome, html.light-mode #atleta-escalao, html.light-mode #atleta-sexo, html.light-mode #auth-email, html.light-mode #auth-password,
+html.light-mode .form-row .field input, html.light-mode .form-row .field select, html.light-mode .time-field input,
+html.light-mode .relay-selects select {
   background: rgba(255,255,255,0.90) !important;
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
   border: 1.5px solid rgba(52,160,164,0.30) !important;
   border-radius: 14px !important;
   color: var(--lg-text) !important;
-  box-shadow:
-    inset 0 1.5px 0 rgba(255,255,255,1),
-    inset 0 -1px 0 rgba(0,0,0,0.04),
-    0 2px 8px rgba(0,0,0,0.09) !important;
-  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s !important;
+  box-shadow: inset 0 1.5px 0 rgba(255,255,255,1), inset 0 -1px 0 rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.09) !important;
 }
-input.personal-input:focus, .crono-input:focus, #auth-email:focus, #auth-password:focus,
-.crono-swimmer-name:focus, .coach-team-input:focus,
-.form-row .field input:focus, .form-row .field select:focus, .time-field input:focus {
+html.light-mode input.personal-input:focus, html.light-mode .crono-input:focus, html.light-mode #auth-email:focus, html.light-mode #auth-password:focus,
+html.light-mode .crono-swimmer-name:focus, html.light-mode .coach-team-input:focus,
+html.light-mode .form-row .field input:focus, html.light-mode .form-row .field select:focus, html.light-mode .time-field input:focus {
   border-color: rgba(52,160,164,0.75) !important;
   background: rgba(255,255,255,0.98) !important;
-  box-shadow:
-    inset 0 1.5px 0 rgba(255,255,255,1),
-    0 0 0 4px rgba(52,160,164,0.16) !important;
+  box-shadow: inset 0 1.5px 0 rgba(255,255,255,1), 0 0 0 4px rgba(52,160,164,0.16) !important;
   outline: none !important;
 }
-input::placeholder, .crono-swimmer-name::placeholder, .coach-team-input::placeholder {
+html.light-mode input::placeholder, html.light-mode .crono-swimmer-name::placeholder, html.light-mode .coach-team-input::placeholder {
   color: rgba(106,143,160,0.65) !important;
 }
-
-/* BOTÕES .fpn-btn — sem efeito de volume, igual aos laranjas */
-.fpn-btn {
-  background: linear-gradient(135deg, #34A0A4, #1A759F) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-  border: none !important;
-  border-radius: 14px !important;
-  color: #fff !important;
-  height: 54px !important;
-  font-weight: 700 !important;
-  font-size: 15px !important;
-  letter-spacing: 0.4px !important;
-  text-shadow: none !important;
-  box-shadow: 0 4px 18px rgba(52,160,164,0.28) !important;
-  transition: transform 0.18s, box-shadow 0.18s !important;
-  width: 100% !important;
-}
-.fpn-btn:hover {
-  transform: translateY(-2px) !important;
-  box-shadow: 0 8px 24px rgba(52,160,164,0.38) !important;
-}
-.fpn-btn:active { transform: scale(0.98) !important; }
-
-/* DIVIDER */
-.divider { height: 1px !important; border: none !important; background: rgba(255,255,255,0.85) !important; margin: 24px 0 !important; }
-
-/* RESULT BOX */
-.result-box {
-  background: rgba(30,96,145,0.78) !important;
-  backdrop-filter: blur(28px) saturate(170%) !important;
-  -webkit-backdrop-filter: blur(28px) saturate(170%) !important;
-  border: 1px solid rgba(255,255,255,0.28) !important;
-  border-radius: 22px !important;
-  box-shadow: 0 8px 28px rgba(30,96,145,0.18) !important;
-  animation: none !important;
-}
-.result-box::before { display: none !important; }
-.result-box::after  { display: none !important; }
-.result-time { font-size: 72px !important; color: #fff !important; text-shadow: none !important; }
-.result-time.big { font-size: 80px !important; }
-.result-label, .result-desc { color: rgba(255,255,255,0.75) !important; }
-
-/* FPN RESULT BOX */
-.fpn-result-box {
-  background: rgba(30,96,145,0.78) !important;
-  backdrop-filter: blur(28px) saturate(170%) !important;
-  -webkit-backdrop-filter: blur(28px) saturate(170%) !important;
-  border: 1px solid rgba(255,255,255,0.28) !important;
-  border-radius: 22px !important;
-  box-shadow: 0 8px 28px rgba(30,96,145,0.18) !important;
-  animation: none !important;
-  position: relative !important;
-  overflow: hidden !important;
-}
-.fpn-result-box::before { display: none !important; }
-.fpn-result-box::after { display: none !important; }
-/* Pontos: branco puro em vez de lime — mais limpo sobre fundo azul */
-.fpn-pontos { color: #ffffff !important; font-size: 88px !important; text-shadow: none !important; }
-.fpn-pontos-label { color: rgba(255,255,255,0.55) !important; letter-spacing: 2px !important; }
-/* Recorde info: teal suave em vez de verde lima */
-.fpn-rn-label { color: rgba(255,255,255,0.60) !important; font-size: 12px !important; }
-.fpn-rn-nome  { color: #52B69A !important; font-weight: 600 !important; }
-.fpn-rn-info  { color: rgba(255,255,255,0.50) !important; font-size: 12px !important; }
-/* Divider dentro do box */
-.fpn-divider  { border-top: 1px solid rgba(255,255,255,0.14) !important; margin: 12px 0 !important; }
-
-/* RESULT EMPTY */
-.result-empty {
-  background: rgba(255,255,255,0.42) !important;
-  backdrop-filter: blur(12px) !important;
-  border: 1.5px dashed rgba(52,160,164,0.32) !important;
-  border-radius: 18px !important;
-  color: var(--lg-muted) !important;
-}
-
-/* TÍTULOS */
-.fpn-title, .crono-title { color: var(--lg-text) !important; font-size: 28px !important; letter-spacing: 2px !important; }
-.fpn-subtitle, .crono-subtitle { color: var(--lg-muted) !important; }
-
-/* DIFF */
-.diff-result.passa { background: rgba(118,200,147,0.16) !important; border: 1px solid rgba(118,200,147,0.42) !important; }
-.diff-result.falta { background: rgba(220,80,80,0.08) !important; border: 1px solid rgba(220,80,80,0.22) !important; }
-.diff-result.passa .diff-time { color: var(--lg-accent) !important; }
-.diff-result.falta .diff-time  { color: #d94f4f !important; }
-.diff-result.passa .diff-msg   { color: var(--lg-accent) !important; }
-.diff-result.falta .diff-msg   { color: #d94f4f !important; }
-
-/* PROGRESS BAR */
-.progress-bar-bg { background: rgba(255,255,255,0.55) !important; }
-.progress-bar-fill { background: linear-gradient(90deg, var(--lg-emerald), var(--lg-accent)) !important; }
-
-/* TABS */
-.crono-tab {
-  background: rgba(255,255,255,0.48) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
-  border: 1px solid var(--glass-border) !important;
-  color: var(--lg-muted) !important;
-  border-radius: 12px !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.9) !important;
-}
-.crono-tab.active {
-  background: rgba(52,160,164,0.80) !important;
-  border-color: rgba(255,255,255,0.48) !important;
-  color: #fff !important;
-  box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.55), 0 4px 12px rgba(52,160,164,0.22) !important;
-}
-
-/* START/STOP */
-.crono-start-btn {
-  background: rgba(30,96,145,0.78) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  border: 1px solid rgba(255,255,255,0.38) !important;
-  border-radius: 18px !important;
-  height: 68px !important;
-  color: #fff !important;
-  box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.48), 0 4px 14px rgba(30,96,145,0.18) !important;
-  transition: transform 0.15s !important;
-}
-.crono-start-btn:hover { transform: translateY(-2px) !important; }
-.crono-start-btn.started { background: rgba(52,160,164,0.80) !important; }
-
-/* SWIMMER BTNS */
-.crono-swimmer-btn {
-  border-radius: 20px !important;
-  min-height: 96px !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), 0 4px 14px rgba(0,0,0,0.10) !important;
-  transition: transform 0.15s !important;
-}
-.crono-swimmer-btn:active { transform: scale(0.95) !important; }
-
-/* SW CARDS */
-.sw-card {
-  background: rgba(255,255,255,0.58) !important;
-  backdrop-filter: blur(24px) saturate(150%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(150%) !important;
-  border: 1px solid var(--glass-border) !important;
-  border-radius: 22px !important;
-  box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.96), var(--glass-shadow) !important;
-}
-.sw-display { color: var(--lg-text) !important; }
-.sw-btn-start { background: rgba(52,160,164,0.82) !important; border: 1px solid rgba(255,255,255,0.42) !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.5) !important; }
-.sw-btn-stop  { background: rgba(210,55,55,0.78) !important;  border: 1px solid rgba(255,255,255,0.32) !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.4) !important; }
-.sw-btn-split { background: rgba(30,96,145,0.78) !important;  border: 1px solid rgba(255,255,255,0.32) !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.4) !important; }
-.sw-btn-reset { background: rgba(255,255,255,0.65) !important; border: 1px solid var(--glass-border) !important; color: var(--lg-text) !important; box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.96) !important; }
-
-/* ATHLETE ITEMS */
-.athlete-item {
-  background: rgba(255,255,255,0.58) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  border: 1px solid var(--glass-border) !important;
-  border-radius: 16px !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), var(--glass-shadow) !important;
-}
-.athlete-item-name { color: var(--lg-text) !important; font-weight: 700 !important; }
-.athlete-item-meta { color: var(--lg-muted) !important; }
-.btn-add-athlete {
-  background: rgba(255,255,255,0.48) !important;
-  backdrop-filter: blur(12px) !important;
-  border: 1.5px dashed rgba(52,160,164,0.38) !important;
-  color: var(--lg-accent) !important;
-  border-radius: 14px !important;
-  height: 48px !important;
-  font-weight: 700 !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.9) !important;
-}
-.btn-edit { background: rgba(255,255,255,0.68) !important; color: var(--lg-accent-deep) !important; border-radius: 8px !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.95) !important; }
-.btn-del  { background: rgba(253,234,234,0.82) !important; color: #c0392b !important; border-radius: 8px !important; }
-
-/* ADD ATHLETE FORM */
-.add-athlete-form {
-  background: rgba(240,248,252,0.75) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  border: 1.5px solid rgba(52,160,164,0.20) !important;
-  border-radius: 18px !important;
-}
-.form-row .field input, .form-row .field select, .time-field input {
-  background: rgba(255,255,255,0.92) !important;
-  border: 1.5px solid rgba(52,160,164,0.28) !important;
-  color: var(--lg-text) !important;
-  border-radius: 10px !important;
-  box-shadow: inset 0 1.5px 0 rgba(255,255,255,1), 0 2px 6px rgba(0,0,0,0.07) !important;
-}
-.btn-save-athlete   { background: rgba(52,160,164,0.85) !important; color: #fff !important; border-radius: 12px !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.45) !important; }
-.btn-cancel-athlete { background: rgba(255,255,255,0.60) !important; color: var(--lg-text) !important; border-radius: 12px !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.95) !important; }
-.btn-del-form       { background: rgba(253,234,234,0.82) !important; color: #c0392b !important; border-radius: 12px !important; }
-
-/* RELAY */
-.relay-selects select {
-  background: rgba(255,255,255,0.90) !important;
-  border: 1.5px solid rgba(52,160,164,0.28) !important;
-  color: var(--lg-text) !important;
-  box-shadow: inset 0 1.5px 0 rgba(255,255,255,1), 0 2px 6px rgba(0,0,0,0.07) !important;
-  border-radius: 12px !important;
-}
-.relay-result-item {
-  background: rgba(255,255,255,0.48) !important;
-  backdrop-filter: blur(14px) !important;
-  border: 1px solid var(--glass-border) !important;
-  border-radius: 18px !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.9) !important;
-}
-.relay-result-item.best { background: rgba(82,182,154,0.16) !important; border-color: rgba(82,182,154,0.48) !important; }
-.relay-total { color: var(--lg-text) !important; }
-.relay-result-item.best .relay-total { color: var(--lg-accent) !important; }
-.relay-result-item.best .relay-rank  { color: var(--lg-accent) !important; }
-
-/* CRONO SUMMARY */
-.crono-summary-swimmer { background: rgba(255,255,255,0.52) !important; backdrop-filter: blur(14px) !important; border: 1px solid var(--glass-border) !important; border-radius: 16px !important; }
-.crono-history-item    { background: rgba(255,255,255,0.52) !important; backdrop-filter: blur(12px) !important; border: 1px solid var(--glass-border) !important; border-radius: 14px !important; }
-.crono-export-btn { background: rgba(30,96,145,0.80) !important; border: 1px solid rgba(255,255,255,0.35) !important; color: #fff !important; border-radius: 10px !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.38) !important; }
-.crono-undo-btn   { background: rgba(255,255,255,0.52) !important; backdrop-filter: blur(12px) !important; border: 1px solid var(--glass-border) !important; color: var(--lg-muted) !important; border-radius: 12px !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.9) !important; }
-.crono-warning    { background: rgba(255,255,255,0.42) !important; color: var(--lg-muted) !important; border-radius: 10px !important; }
-
-/* COLOR PICKER */
-.crono-color-picker { background: rgba(255,255,255,0.88) !important; backdrop-filter: blur(40px) !important; -webkit-backdrop-filter: blur(40px) !important; border: 1px solid var(--glass-border) !important; border-radius: 22px !important; box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.96), 0 20px 60px rgba(0,0,0,0.12) !important; }
-
-/* INSTALAR */
-#btn-instalar { background: rgba(52,160,164,0.82) !important; backdrop-filter: blur(16px) !important; border: 1px solid rgba(255,255,255,0.48) !important; border-radius: 14px !important; color: #fff !important; font-weight: 700 !important; box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.52), 0 4px 12px rgba(52,160,164,0.18) !important; }
-
-/* AUTH */
-#auth-badge button { background: rgba(52,160,164,0.82) !important; backdrop-filter: blur(16px) !important; border: 1px solid rgba(255,255,255,0.48) !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.52) !important; }
-#auth-badge-menu { background: rgba(255,255,255,0.88) !important; backdrop-filter: blur(32px) !important; -webkit-backdrop-filter: blur(32px) !important; border: 1px solid var(--glass-border) !important; border-radius: 16px !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.96), 0 8px 28px rgba(0,0,0,0.10) !important; }
-
-/* RESULT UNAVAILABLE */
-.result-unavailable { background: rgba(255,248,220,0.72) !important; backdrop-filter: blur(12px) !important; border: 1px solid rgba(240,192,80,0.42) !important; border-radius: 16px !important; }
-
-/* PERSONAL INPUT */
-.personal-wrap .personal-input { background: rgba(255,255,255,0.92) !important; border: 1.5px solid rgba(52,160,164,0.35) !important; color: var(--lg-text) !important; border-radius: 12px !important; box-shadow: inset 0 1.5px 0 rgba(255,255,255,1), 0 2px 8px rgba(0,0,0,0.10) !important; }
-
-/* FOOTER */
-.footer { color: rgba(106,143,160,0.65) !important; font-size: 11px !important; }
-
-/* COACH */
-.coach-card h2 { color: var(--lg-text) !important; }
-.coach-card .subtitle { color: var(--lg-muted) !important; }
-.coach-team-wrap label { color: var(--lg-muted) !important; }
-
-
-/* BOTÕES MENU — sem volume, igual estilo aos laranjas */
-.fpn-btn {
+html.light-mode .fpn-btn {
   background: linear-gradient(135deg, #34A0A4, #1A759F) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
@@ -1168,273 +1465,245 @@ input::placeholder, .crono-swimmer-name::placeholder, .coach-team-input::placeho
   text-transform: uppercase !important;
   text-shadow: none !important;
   box-shadow: 0 4px 16px rgba(0,0,0,0.18) !important;
-  transition: transform 0.18s, box-shadow 0.18s !important;
   width: 100% !important;
 }
-.fpn-btn:hover {
-  transform: translateY(-2px) !important;
-  box-shadow: 0 8px 22px rgba(0,0,0,0.22) !important;
-}
-.fpn-btn:active { transform: scale(0.98) !important; }
-
-
-/* UNIFORMIZAR INPUT TEMPO PESSOAL com estilo dos botões */
-.personal-input {
-  background: rgba(255,255,255,0.92) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  border: 1.5px solid rgba(52,160,164,0.30) !important;
-  border-radius: 10px !important;
-  color: var(--lg-text) !important;
-  padding: 10px 22px !important;
-  font-weight: 500 !important;
-  font-size: 13px !important;
-  letter-spacing: 0.4px !important;
-  box-shadow: inset 0 1.5px 0 rgba(255,255,255,1), 0 2px 8px rgba(0,0,0,0.09) !important;
-  width: 160px !important;
-  height: 44px !important;
-}
-.personal-input:focus {
-  border-color: rgba(52,160,164,0.75) !important;
-  background: rgba(255,255,255,0.98) !important;
-  box-shadow: inset 0 1.5px 0 rgba(255,255,255,1), 0 0 0 4px rgba(52,160,164,0.16) !important;
-  outline: none !important;
-}
-.personal-label {
-  font-weight: 700 !important;
-  font-size: 13px !important;
-  letter-spacing: 0.4px !important;
-  color: var(--lg-muted) !important;
-}
-
-
-/* FORÇAR INPUT "O teu tempo" — sobrepor inline style */
-#fpn-tempo,
-#conv-input-esq {
-  background: rgba(255,255,255,0.92) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
-  border: 1.5px solid rgba(52,160,164,0.35) !important;
-  border-radius: 14px !important;
-  color: #1a2e3a !important;
-  font-weight: 500 !important;
-  box-shadow:
-    inset 0 1.5px 0 rgba(255,255,255,1),
-    inset 0 -1px 0 rgba(0,0,0,0.04),
-    0 2px 8px rgba(0,0,0,0.10) !important;
-}
-#fpn-tempo {
-  padding: 10px 22px !important;
-  font-size: 13px !important;
-  letter-spacing: 0.4px !important;
-  width: 160px !important;
-  height: 44px !important;
-}
-#fpn-tempo:focus,
-#conv-input-esq:focus {
-  border-color: rgba(52,160,164,0.75) !important;
-  background: rgba(255,255,255,0.98) !important;
-  box-shadow:
-    inset 0 1.5px 0 rgba(255,255,255,1),
-    0 0 0 4px rgba(52,160,164,0.16) !important;
-  outline: none !important;
-}
-
-/* Conversor input — full width, sobrepõe o 160px do personal-input */
-#conv-input-esq {
-  width: 100% !important;
-  height: 50px !important;
-  padding: 0 10px !important;
-  font-size: 16px !important;
-  text-align: center !important;
-  box-sizing: border-box !important;
-}
-
-/* Seta do conversor — borda mais visível */
-#conv-seta-btn {
-  border: 1.5px solid rgba(52,160,164,0.35) !important;
-  background: rgba(255,255,255,0.88) !important;
-  box-shadow:
-    inset 0 1.5px 0 rgba(255,255,255,1),
-    0 2px 8px rgba(0,0,0,0.10) !important;
-}
-
-
-/* GARANTIR QUE OS BOTÕES DE TOGGLE FUNCIONAM */
-.fpn-btn-wrap button {
-  pointer-events: auto !important;
-  cursor: pointer !important;
-  z-index: 10 !important;
-  position: relative !important;
-}
-#atleta-btn, #crono-btn, #conv-btn {
-  pointer-events: auto !important;
-  cursor: pointer !important;
-}
-
-/* =====================================================
-   LIQUID GLASS — INTERIOR DO RESULT-BOX & FPN-RESULT-BOX
-   Cobre todos os elementos internos com estilo coerente
-   ===================================================== */
-
-/* Linha separadora dentro dos result boxes */
-.result-box .result-dates,
-.fpn-result-box .fpn-divider {
-  border-top-color: rgba(255,255,255,0.18) !important;
-}
-.result-dates-title,
-.result-box .result-dates-title {
-  color: rgba(255,255,255,0.55) !important;
-  font-size: 10px !important;
-  letter-spacing: 1.5px !important;
-  text-transform: uppercase !important;
-}
-.result-dates-item,
-.result-box .result-dates-item {
-  color: rgba(255,255,255,0.85) !important;
-  font-size: 13px !important;
-}
-
-/* "O teu tempo" label e preview inline */
-.personal-label {
-  color: rgba(255,255,255,0.55) !important;
-  font-size: 10px !important;
-  letter-spacing: 1.5px !important;
-  text-transform: uppercase !important;
-}
-/* Preview do tempo pessoal (span ao lado do input) — sobrepor inline style */
-#personal-time-preview {
-  color: rgba(255,255,255,0.90) !important;
-  font-family: 'Bebas Neue', sans-serif !important;
-  font-size: 22px !important;
-  letter-spacing: 2px !important;
-  min-width: 70px !important;
-}
-
-/* diff passa */
-.diff-result.passa {
-  background: rgba(118,200,147,0.18) !important;
-  border: 1px solid rgba(118,200,147,0.40) !important;
-  border-radius: 12px !important;
-}
-.diff-result.passa .diff-time { color: #76C893 !important; }
-.diff-result.passa .diff-msg  { color: rgba(118,200,147,0.9) !important; }
-
-/* diff falta */
-.diff-result.falta {
-  background: rgba(220,80,80,0.12) !important;
-  border: 1px solid rgba(220,80,80,0.30) !important;
-  border-radius: 12px !important;
-}
-.diff-result.falta .diff-time { color: #ff8080 !important; }
-.diff-result.falta .diff-msg  { color: rgba(255,140,140,0.85) !important; }
-
-/* progress bar */
-.progress-pct { color: rgba(255,255,255,0.55) !important; font-size: 11px !important; }
-.progress-bar-bg { background: rgba(255,255,255,0.15) !important; }
-.progress-bar-fill { background: linear-gradient(90deg, #76C893, #34A0A4) !important; }
-
-/* FPN result box interior */
-.fpn-rn-label { color: rgba(255,255,255,0.75) !important; }
-.fpn-rn-nome  { color: #76C893 !important; }
-.fpn-rn-info  { color: rgba(255,255,255,0.55) !important; }
-
-/* Conversor interno */
-#conv-resultado {
-  color: #fff !important;
-  font-family: 'Bebas Neue', sans-serif !important;
-  font-size: 28px !important;
-  letter-spacing: 2px !important;
-}
-#conv-preview-esq,
-#conv-preview-dir {
-  color: rgba(52,160,164,0.9) !important;
-  font-family: 'Bebas Neue', sans-serif !important;
-  font-size: 22px !important;
-  letter-spacing: 2px !important;
-}
-#conv-aviso-dist {
-  color: rgba(52,160,164,0.85) !important;
-  font-size: 12px !important;
-}
-#conv-aviso .result-unavailable {
-  background: rgba(255,248,220,0.72) !important;
-  color: #856404 !important;
-}
-/* Seta conversor */
-#conv-seta-btn {
-  background: rgba(255,255,255,0.55) !important;
-  backdrop-filter: blur(12px) !important;
-  border: 1px solid rgba(255,255,255,0.82) !important;
-  border-radius: 50% !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), 0 2px 6px rgba(0,0,0,0.08) !important;
-  color: var(--lg-accent) !important;
-  transition: transform 0.3s !important;
-}
-
-/* Labels dentro do conversor */
-#conv-label-esq, #conv-label-dir {
-  color: var(--lg-muted) !important;
-  font-size: 11px !important;
-  font-weight: 600 !important;
-  text-transform: uppercase !important;
-  letter-spacing: 1px !important;
-}
-#conv-direcao {
-  font-weight: 700 !important;
-  color: var(--lg-accent) !important;
-  font-size: 13px !important;
-}
-
-/* Crono summary name dot */
-.crono-summary-name { color: var(--lg-text) !important; }
-.crono-summary-stats { color: var(--lg-text) !important; }
-.crono-summary-splits { color: var(--lg-muted) !important; }
-.crono-detail-btn { color: var(--lg-accent) !important; }
-
-/* Histórico overlay (modal ver sessão) */
-#sw-hist-view > div,
-#crono-hist-view > div {
-  background: rgba(255,255,255,0.88) !important;
-  backdrop-filter: blur(40px) !important;
-  -webkit-backdrop-filter: blur(40px) !important;
-  border: 1px solid rgba(255,255,255,0.9) !important;
+html.light-mode .fpn-btn:hover { transform: translateY(-2px) !important; box-shadow: 0 8px 22px rgba(0,0,0,0.22) !important; }
+html.light-mode .fpn-btn:active { transform: scale(0.98) !important; }
+html.light-mode .divider { height: 1px !important; border: none !important; background: rgba(255,255,255,0.85) !important; margin: 24px 0 !important; }
+html.light-mode .result-box {
+  background: rgba(30,96,145,0.78) !important;
+  backdrop-filter: blur(28px) saturate(170%) !important;
+  border: 1px solid rgba(255,255,255,0.28) !important;
   border-radius: 22px !important;
-  box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.96), 0 20px 60px rgba(0,0,0,0.14) !important;
+  box-shadow: 0 8px 28px rgba(30,96,145,0.18) !important;
+  animation: none !important;
 }
-
-/* Auth badge user email */
-#auth-user-email { color: var(--lg-accent-deep) !important; }
-
-/* Botão instalar — já coberto mas reforço do ícone de seta */
-#btn-instalar {
-  background: rgba(52,160,164,0.82) !important;
+html.light-mode .result-box::before, html.light-mode .result-box::after { display: none !important; }
+html.light-mode .result-time { font-size: 72px !important; color: #fff !important; text-shadow: none !important; }
+html.light-mode .result-time.big { font-size: 80px !important; }
+html.light-mode .result-label, html.light-mode .result-desc { color: rgba(255,255,255,0.75) !important; }
+html.light-mode .fpn-result-box {
+  background: rgba(30,96,145,0.78) !important;
+  backdrop-filter: blur(28px) saturate(170%) !important;
+  border: 1px solid rgba(255,255,255,0.28) !important;
+  border-radius: 22px !important;
+  box-shadow: 0 8px 28px rgba(30,96,145,0.18) !important;
+  animation: none !important;
+}
+html.light-mode .fpn-result-box::before, html.light-mode .fpn-result-box::after { display: none !important; }
+html.light-mode .fpn-pontos { color: #ffffff !important; font-size: 88px !important; text-shadow: none !important; }
+html.light-mode .fpn-pontos-label { color: rgba(255,255,255,0.55) !important; }
+html.light-mode .fpn-rn-label { color: rgba(255,255,255,0.75) !important; }
+html.light-mode .fpn-rn-nome  { color: #76C893 !important; }
+html.light-mode .fpn-rn-info  { color: rgba(255,255,255,0.55) !important; }
+html.light-mode .fpn-divider  { border-top: 1px solid rgba(255,255,255,0.14) !important; }
+html.light-mode .result-empty {
+  background: rgba(255,255,255,0.42) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1.5px dashed rgba(52,160,164,0.32) !important;
+  border-radius: 18px !important;
+  color: var(--lg-muted) !important;
+}
+html.light-mode .fpn-title, html.light-mode .crono-title { color: var(--lg-text) !important; }
+html.light-mode .fpn-subtitle, html.light-mode .crono-subtitle { color: var(--lg-muted) !important; }
+html.light-mode .diff-result.passa { background: rgba(118,200,147,0.18) !important; border: 1px solid rgba(118,200,147,0.40) !important; border-radius: 12px !important; }
+html.light-mode .diff-result.falta { background: rgba(220,80,80,0.12) !important; border: 1px solid rgba(220,80,80,0.30) !important; border-radius: 12px !important; }
+html.light-mode .diff-result.passa .diff-time { color: #76C893 !important; }
+html.light-mode .diff-result.falta .diff-time  { color: #ff8080 !important; }
+html.light-mode .diff-result.passa .diff-msg   { color: rgba(118,200,147,0.9) !important; }
+html.light-mode .diff-result.falta .diff-msg   { color: rgba(255,140,140,0.85) !important; }
+html.light-mode .progress-pct { color: rgba(255,255,255,0.55) !important; }
+html.light-mode .progress-bar-bg { background: rgba(255,255,255,0.55) !important; }
+html.light-mode .progress-bar-fill { background: linear-gradient(90deg, #76C893, #34A0A4) !important; }
+html.light-mode .crono-tab {
+  background: rgba(255,255,255,0.48) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid var(--glass-border) !important;
+  color: var(--lg-muted) !important;
+  border-radius: 12px !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.9) !important;
+}
+html.light-mode .crono-tab.active {
+  background: rgba(52,160,164,0.80) !important;
+  border-color: rgba(255,255,255,0.48) !important;
   color: #fff !important;
+  box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.55), 0 4px 12px rgba(52,160,164,0.22) !important;
 }
-
-
-
-/* Relay calcs */
-.relay-calc h3 { color: var(--lg-text) !important; }
-.relay-leg-name { color: var(--lg-text) !important; }
-.relay-leg-style { background: rgba(255,255,255,0.55) !important; color: var(--lg-muted) !important; }
-.relay-leg-time { color: var(--lg-accent) !important; }
-.relay-empty { color: var(--lg-muted) !important; }
-.btn-calc-relay {
+html.light-mode .crono-start-btn {
+  background: rgba(30,96,145,0.78) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255,255,255,0.38) !important;
+  border-radius: 18px !important;
+  height: 68px !important;
+  color: #fff !important;
+  box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.48), 0 4px 14px rgba(30,96,145,0.18) !important;
+}
+html.light-mode .crono-start-btn.started { background: rgba(52,160,164,0.80) !important; }
+html.light-mode .crono-swimmer-btn {
+  border-radius: 20px !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), 0 4px 14px rgba(0,0,0,0.10) !important;
+}
+html.light-mode .sw-card {
+  background: rgba(255,255,255,0.58) !important;
+  backdrop-filter: blur(24px) saturate(150%) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 22px !important;
+  box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.96), var(--glass-shadow) !important;
+}
+html.light-mode .sw-display { color: var(--lg-text) !important; }
+html.light-mode .sw-btn-start { background: rgba(52,160,164,0.82) !important; border: 1px solid rgba(255,255,255,0.42) !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.5) !important; }
+html.light-mode .sw-btn-stop  { background: rgba(210,55,55,0.78) !important; border: 1px solid rgba(255,255,255,0.32) !important; }
+html.light-mode .sw-btn-split { background: rgba(30,96,145,0.78) !important; border: 1px solid rgba(255,255,255,0.32) !important; }
+html.light-mode .sw-btn-reset { background: rgba(255,255,255,0.65) !important; border: 1px solid var(--glass-border) !important; color: var(--lg-text) !important; box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.96) !important; }
+html.light-mode .athlete-item {
+  background: rgba(255,255,255,0.58) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 16px !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.95), var(--glass-shadow) !important;
+}
+html.light-mode .athlete-item-name { color: var(--lg-text) !important; font-weight: 700 !important; }
+html.light-mode .athlete-item-meta { color: var(--lg-muted) !important; }
+html.light-mode .btn-add-athlete {
+  background: rgba(255,255,255,0.48) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1.5px dashed rgba(52,160,164,0.38) !important;
+  color: var(--lg-accent) !important;
+  border-radius: 14px !important;
+  height: 48px !important;
+  font-weight: 700 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.9) !important;
+}
+html.light-mode .btn-edit { background: rgba(255,255,255,0.68) !important; color: var(--lg-accent-deep) !important; border-radius: 8px !important; box-shadow: inset 0 1px 0 rgba(255,255,255,0.95) !important; }
+html.light-mode .btn-del  { background: rgba(253,234,234,0.82) !important; color: #c0392b !important; border-radius: 8px !important; }
+html.light-mode .add-athlete-form {
+  background: rgba(240,248,252,0.75) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1.5px solid rgba(52,160,164,0.20) !important;
+  border-radius: 18px !important;
+}
+html.light-mode .form-row .field input, html.light-mode .form-row .field select, html.light-mode .time-field input {
+  background: rgba(255,255,255,0.92) !important;
+  border: 1.5px solid rgba(52,160,164,0.28) !important;
+  color: var(--lg-text) !important;
+  border-radius: 10px !important;
+  box-shadow: inset 0 1.5px 0 rgba(255,255,255,1), 0 2px 6px rgba(0,0,0,0.07) !important;
+}
+html.light-mode .btn-save-athlete   { background: rgba(52,160,164,0.85) !important; color: #fff !important; border-radius: 12px !important; }
+html.light-mode .btn-cancel-athlete { background: rgba(255,255,255,0.60) !important; color: var(--lg-text) !important; border-radius: 12px !important; }
+html.light-mode .btn-del-form       { background: rgba(253,234,234,0.82) !important; color: #c0392b !important; border-radius: 12px !important; }
+html.light-mode .relay-selects select {
+  background: rgba(255,255,255,0.90) !important;
+  border: 1.5px solid rgba(52,160,164,0.28) !important;
+  color: var(--lg-text) !important;
+  box-shadow: inset 0 1.5px 0 rgba(255,255,255,1), 0 2px 6px rgba(0,0,0,0.07) !important;
+  border-radius: 12px !important;
+}
+html.light-mode .relay-result-item {
+  background: rgba(255,255,255,0.48) !important;
+  backdrop-filter: blur(14px) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 18px !important;
+}
+html.light-mode .relay-result-item.best { background: rgba(82,182,154,0.16) !important; border-color: rgba(82,182,154,0.48) !important; }
+html.light-mode .relay-total { color: var(--lg-text) !important; }
+html.light-mode .relay-result-item.best .relay-total { color: var(--lg-accent) !important; }
+html.light-mode .relay-result-item.best .relay-rank  { color: var(--lg-accent) !important; }
+html.light-mode .relay-calc h3 { color: var(--lg-text) !important; }
+html.light-mode .relay-leg-name { color: var(--lg-text) !important; }
+html.light-mode .relay-leg-style { background: rgba(255,255,255,0.55) !important; color: var(--lg-muted) !important; }
+html.light-mode .relay-leg-time { color: var(--lg-accent) !important; }
+html.light-mode .relay-empty { color: var(--lg-muted) !important; }
+html.light-mode .btn-calc-relay {
   background: rgba(52,160,164,0.85) !important;
   border: 1px solid rgba(255,255,255,0.42) !important;
   border-radius: 14px !important;
   box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.45), 0 4px 14px rgba(52,160,164,0.22) !important;
   color: #fff !important;
 }
-
-/* Crono add swimmer btn */
-.crono-add-swimmer-btn {
+html.light-mode .crono-summary-swimmer { background: rgba(255,255,255,0.52) !important; backdrop-filter: blur(14px) !important; border: 1px solid var(--glass-border) !important; border-radius: 16px !important; }
+html.light-mode .crono-history-item    { background: rgba(255,255,255,0.52) !important; backdrop-filter: blur(12px) !important; border: 1px solid var(--glass-border) !important; border-radius: 14px !important; }
+html.light-mode .crono-summary-name   { color: var(--lg-text) !important; }
+html.light-mode .crono-summary-stats  { color: var(--lg-text) !important; }
+html.light-mode .crono-summary-splits { color: var(--lg-muted) !important; }
+html.light-mode .crono-detail-btn     { color: var(--lg-accent) !important; }
+html.light-mode .crono-export-btn { background: rgba(30,96,145,0.80) !important; border: 1px solid rgba(255,255,255,0.35) !important; color: #fff !important; border-radius: 10px !important; }
+html.light-mode .crono-undo-btn   { background: rgba(255,255,255,0.52) !important; border: 1px solid var(--glass-border) !important; color: var(--lg-muted) !important; border-radius: 12px !important; }
+html.light-mode .crono-warning    { background: rgba(255,255,255,0.42) !important; color: var(--lg-muted) !important; border-radius: 10px !important; }
+html.light-mode .crono-add-swimmer-btn {
   background: rgba(255,255,255,0.35) !important;
   backdrop-filter: blur(10px) !important;
   border: 1.5px dashed rgba(52,160,164,0.40) !important;
   color: var(--lg-accent) !important;
   border-radius: 12px !important;
+}
+html.light-mode .crono-color-picker { background: rgba(255,255,255,0.88) !important; backdrop-filter: blur(40px) !important; border: 1px solid var(--glass-border) !important; border-radius: 22px !important; box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.96), 0 20px 60px rgba(0,0,0,0.12) !important; }
+html.light-mode #btn-instalar { background: rgba(52,160,164,0.82) !important; backdrop-filter: blur(16px) !important; border: 1px solid rgba(255,255,255,0.48) !important; border-radius: 14px !important; color: #fff !important; font-weight: 700 !important; }
+html.light-mode #auth-badge button { background: rgba(52,160,164,0.82) !important; backdrop-filter: blur(16px) !important; border: 1px solid rgba(255,255,255,0.48) !important; }
+html.light-mode #auth-badge-menu { background: rgba(255,255,255,0.88) !important; backdrop-filter: blur(32px) !important; border: 1px solid var(--glass-border) !important; border-radius: 16px !important; }
+html.light-mode #auth-user-email { color: var(--lg-accent-deep) !important; }
+html.light-mode .result-unavailable { background: rgba(255,248,220,0.72) !important; backdrop-filter: blur(12px) !important; border: 1px solid rgba(240,192,80,0.42) !important; border-radius: 16px !important; color: #856404 !important; }
+html.light-mode .fpn-unavailable { background: rgba(255,248,220,0.72) !important; border-color: rgba(240,192,80,0.42) !important; color: #856404 !important; }
+html.light-mode .personal-wrap .personal-input { background: rgba(255,255,255,0.92) !important; border: 1.5px solid rgba(52,160,164,0.35) !important; color: var(--lg-text) !important; border-radius: 12px !important; }
+html.light-mode .personal-input {
+  background: rgba(255,255,255,0.92) !important;
+  border: 1.5px solid rgba(52,160,164,0.30) !important;
+  border-radius: 10px !important;
+  color: var(--lg-text) !important;
+  padding: 10px 22px !important;
+  font-weight: 500 !important;
+  font-size: 13px !important;
+  box-shadow: inset 0 1.5px 0 rgba(255,255,255,1), 0 2px 8px rgba(0,0,0,0.09) !important;
+  width: 160px !important;
+  height: 44px !important;
+}
+html.light-mode .personal-input:focus {
+  border-color: rgba(52,160,164,0.75) !important;
+  background: rgba(255,255,255,0.98) !important;
+  box-shadow: inset 0 1.5px 0 rgba(255,255,255,1), 0 0 0 4px rgba(52,160,164,0.16) !important;
+  outline: none !important;
+}
+html.light-mode .personal-label { font-weight: 700 !important; font-size: 13px !important; letter-spacing: 0.4px !important; color: var(--lg-muted) !important; }
+html.light-mode #personal-time-preview { color: rgba(255,255,255,0.90) !important; font-family: 'Bebas Neue', sans-serif !important; font-size: 22px !important; }
+html.light-mode #fpn-tempo, html.light-mode #conv-input-esq {
+  background: rgba(255,255,255,0.92) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1.5px solid rgba(52,160,164,0.35) !important;
+  border-radius: 14px !important;
+  color: #1a2e3a !important;
+  font-weight: 500 !important;
+  box-shadow: inset 0 1.5px 0 rgba(255,255,255,1), inset 0 -1px 0 rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.10) !important;
+}
+html.light-mode #fpn-tempo { padding: 10px 22px !important; font-size: 13px !important; width: 160px !important; height: 44px !important; }
+html.light-mode #fpn-tempo:focus, html.light-mode #conv-input-esq:focus {
+  border-color: rgba(52,160,164,0.75) !important;
+  background: rgba(255,255,255,0.98) !important;
+  box-shadow: inset 0 1.5px 0 rgba(255,255,255,1), 0 0 0 4px rgba(52,160,164,0.16) !important;
+  outline: none !important;
+}
+html.light-mode #conv-input-esq { width: 100% !important; height: 50px !important; padding: 0 10px !important; font-size: 16px !important; text-align: center !important; }
+html.light-mode #conv-seta-btn { border: 1.5px solid rgba(52,160,164,0.35) !important; background: rgba(255,255,255,0.88) !important; box-shadow: inset 0 1.5px 0 rgba(255,255,255,1), 0 2px 8px rgba(0,0,0,0.10) !important; }
+html.light-mode #conv-dir-wrap { background: rgba(255,255,255,0.55) !important; border: 1.5px solid rgba(52,160,164,0.22) !important; box-shadow: inset 0 1.5px 0 rgba(255,255,255,1) !important; }
+html.light-mode #conv-resultado { color: var(--lg-accent-deep) !important; font-family: 'Bebas Neue', sans-serif !important; font-size: 28px !important; }
+html.light-mode #conv-resultado-wrap { background: rgba(255,255,255,0.92) !important; border: 1.5px solid rgba(52,160,164,0.35) !important; border-radius: 12px !important; }
+html.light-mode #conv-preview-esq, html.light-mode #conv-preview-dir { color: rgba(52,160,164,0.9) !important; font-family: 'Bebas Neue', sans-serif !important; font-size: 22px !important; }
+html.light-mode #conv-aviso-dist { color: rgba(52,160,164,0.85) !important; font-size: 12px !important; }
+html.light-mode #conv-aviso .result-unavailable { background: rgba(255,248,220,0.72) !important; color: #856404 !important; }
+html.light-mode #conv-label-esq, html.light-mode #conv-label-dir { color: var(--lg-muted) !important; font-size: 11px !important; font-weight: 600 !important; text-transform: uppercase !important; letter-spacing: 1px !important; }
+html.light-mode #conv-direcao { font-weight: 700 !important; color: var(--lg-accent) !important; font-size: 13px !important; }
+html.light-mode .result-box .result-dates, html.light-mode .fpn-result-box .fpn-divider { border-top-color: rgba(255,255,255,0.18) !important; }
+html.light-mode .result-dates-title { color: rgba(255,255,255,0.55) !important; font-size: 10px !important; letter-spacing: 1.5px !important; text-transform: uppercase !important; }
+html.light-mode .result-dates-item { color: rgba(255,255,255,0.85) !important; font-size: 13px !important; }
+html.light-mode .footer { color: rgba(106,143,160,0.65) !important; font-size: 11px !important; }
+html.light-mode .coach-card h2 { color: var(--lg-text) !important; }
+html.light-mode .coach-card .subtitle { color: var(--lg-muted) !important; }
+html.light-mode .coach-team-wrap label { color: var(--lg-muted) !important; }
+html.light-mode #sw-hist-view > div, html.light-mode #crono-hist-view > div {
+  background: rgba(255,255,255,0.88) !important;
+  backdrop-filter: blur(40px) !important;
+  border: 1px solid rgba(255,255,255,0.9) !important;
+  border-radius: 22px !important;
+  box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.96), 0 20px 60px rgba(0,0,0,0.14) !important;
 }
 
 </style>
@@ -1442,16 +1711,49 @@ input::placeholder, .crono-swimmer-name::placeholder, .coach-team-input::placeho
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 </head>
 <body>
-<div id="auth-badge" style="display:none;position:fixed;top:14px;right:14px;z-index:9000;">
+<div id="auth-badge" style="display:none;position:fixed;top:14px;left:14px;z-index:9000;">
   <button onclick="toggleAuthBadge()" style="background:#00c98d;border:none;border-radius:50%;width:38px;height:38px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,201,141,0.5);padding:0;" title="Sessão iniciada">
     <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
   </button>
-  <div id="auth-badge-menu" style="display:none;position:absolute;top:46px;right:0;background:#fff;border-radius:14px;padding:16px;min-width:210px;box-shadow:0 8px 28px rgba(0,0,0,0.15);border:1px solid #e0edf5;">
+  <div id="auth-badge-menu" style="display:none;position:absolute;top:46px;left:0;background:#fff;border-radius:14px;padding:16px;min-width:210px;box-shadow:0 8px 28px rgba(0,0,0,0.15);border:1px solid #e0edf5;">
     <div style="font-size:10px;font-weight:700;color:#6b8fa8;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">Sessão ativa</div>
     <div id="auth-user-email" style="font-size:13px;color:#003d6b;font-weight:600;margin-bottom:12px;word-break:break-all;"></div>
     <button id="btn-logout" style="width:100%;padding:9px;border-radius:9px;border:1.5px solid #e0edf5;background:#f4f8fb;color:#1a3a4a;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Terminar sessão</button>
   </div>
 </div>
+<script>
+(function() {
+  var saved = localStorage.getItem('swimmin-theme') || 'dark';
+  if (saved === 'light') {
+    document.documentElement.classList.add('light-mode');
+  }
+  updateThemeBtn(saved);
+
+  function updateThemeBtn(mode) {
+    var btn = document.getElementById('theme-toggle-btn');
+    var moon = document.getElementById('theme-icon-moon');
+    var sun = document.getElementById('theme-icon-sun');
+    var lbl = document.getElementById('theme-label');
+    if (!btn) return;
+    if (mode === 'light') {
+      if (moon) moon.style.display = 'block';
+      if (sun)  sun.style.display  = 'none';
+      if (lbl)  lbl.textContent = 'Escuro';
+    } else {
+      if (moon) moon.style.display = 'none';
+      if (sun)  sun.style.display  = 'block';
+      if (lbl)  lbl.textContent = 'Claro';
+    }
+  }
+
+  window.toggleTheme = function() {
+    var isLight = document.documentElement.classList.toggle('light-mode');
+    var mode = isLight ? 'light' : 'dark';
+    localStorage.setItem('swimmin-theme', mode);
+    updateThemeBtn(mode);
+  };
+})();
+</script>
 <script>
 function toggleAuthBadge() {
   var m = document.getElementById("auth-badge-menu");
@@ -1470,6 +1772,14 @@ document.addEventListener("click", function(e) {
 
 
 <div class="container">
+  <!-- Barra de topo: toggle à direita, scroll com a página -->
+  <div style="display:flex;justify-content:flex-end;align-items:center;margin-bottom:12px;">
+    <button id="theme-toggle-btn" onclick="toggleTheme()" title="Alternar tema">
+      <svg id="theme-icon-moon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg id="theme-icon-sun" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <span id="theme-label">Claro</span>
+    </button>
+  </div>
   <div class="header">
     <div class="logo">Swim<span>Min</span></div>
     <div class="subtitle">TEMPOS MÍNIMOS FPN</div>
@@ -1710,7 +2020,7 @@ document.addEventListener("click", function(e) {
     <div class="fpn-subtitle">Sistema Colorado Timing &middot; 25m / 50m</div>
 
     <!-- Toggle direção -->
-    <div style="display:flex;background:rgba(255,255,255,0.55);border:1.5px solid rgba(52,160,164,0.22);border-radius:14px;overflow:hidden;margin-bottom:16px;box-shadow:inset 0 1.5px 0 rgba(255,255,255,1);">
+    <div id="conv-dir-wrap" style="display:flex;background:rgba(255,255,255,0.12);border:1px solid rgba(0,212,255,0.25);border-radius:14px;overflow:hidden;margin-bottom:16px;">
       <button type="button" id="conv-dir-50-25"
         onclick="convSetDir('50to25')"
         style="flex:1;padding:13px 8px;border:none;background:linear-gradient(135deg,#34A0A4,#1A759F);color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:0.3px;transition:all 0.2s;">
@@ -1718,7 +2028,7 @@ document.addEventListener("click", function(e) {
       </button>
       <button type="button" id="conv-dir-25-50"
         onclick="convSetDir('25to50')"
-        style="flex:1;padding:13px 8px;border:none;background:transparent;color:#34A0A4;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:0.3px;transition:all 0.2s;">
+        style="flex:1;padding:13px 8px;border:none;background:transparent;color:#00d4ff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:0.3px;transition:all 0.2s;">
         25m &rarr; 50m
       </button>
     </div>
@@ -1757,7 +2067,7 @@ document.addEventListener("click", function(e) {
       </div>
       <div class="field">
         <label id="conv-label-dir">Resultado 25m</label>
-        <div style="width:100%;box-sizing:border-box;background:rgba(30,96,145,0.82);backdrop-filter:blur(28px) saturate(170%);-webkit-backdrop-filter:blur(28px) saturate(170%);border:1.5px solid rgba(255,255,255,0.28);border-radius:14px;height:50px;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 1.5px 0 rgba(255,255,255,0.40),0 2px 8px rgba(30,96,145,0.18);">
+        <div id="conv-resultado-wrap" style="width:100%;box-sizing:border-box;background:rgba(0,30,55,0.75);border:1px solid rgba(0,220,255,0.18);border-radius:12px;height:50px;display:flex;align-items:center;justify-content:center;">
           <span id="conv-resultado" style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:#fff;letter-spacing:2px;">--</span>
         </div>
       </div>
@@ -7308,41 +7618,80 @@ function renderFormProvas(data) {
     {key:'400_E',  label:'400m Estilos',   c:true, l:true}
   ];
 
-  var inputStyle = 'width:100%;box-sizing:border-box;font-size:14px;padding:7px 6px;border-radius:8px;text-align:center;border:none;background:transparent;color:var(--lg-text,#1a2e3a);font-family:inherit;';
-  var cellStyle = 'border-radius:10px;background:rgba(255,255,255,0.92);border:1.5px solid rgba(52,160,164,0.30);box-shadow:inset 0 1.5px 0 rgba(255,255,255,1),0 2px 6px rgba(0,0,0,0.08);padding:2px 4px;';
-  var cellDisabled = 'border-radius:10px;background:rgba(200,210,220,0.18);border:1.5px solid rgba(200,210,220,0.25);padding:2px 4px;';
+  var isDark = !document.documentElement.classList.contains('light-mode');
+  var textColor  = isDark ? '#e8f4ff' : '#1a2e3a';
+  var labelColor = isDark ? 'rgba(0,212,255,0.55)' : '#6a8fa0';
+  var cellBg     = isDark ? 'rgba(0,30,55,0.75)'   : 'rgba(255,255,255,0.92)';
+  var cellBorder = isDark ? 'rgba(0,212,255,0.22)'  : 'rgba(52,160,164,0.30)';
+  var cellShadow = isDark ? 'inset 0 1px 0 rgba(0,212,255,0.12),0 2px 6px rgba(0,0,0,0.3)' : 'inset 0 1.5px 0 rgba(255,255,255,1),0 2px 6px rgba(0,0,0,0.08)';
+  var cellDisBg  = isDark ? 'rgba(255,255,255,0.04)' : 'rgba(200,210,220,0.18)';
+  var cellDisBorder = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(200,210,220,0.25)';
+  var rowEvenBg  = isDark ? 'rgba(0,212,255,0.04)' : 'rgba(255,255,255,0.12)';
+  var phColor    = isDark ? 'rgba(0,212,255,0.35)' : 'rgba(106,143,160,0.50)';
 
-  var html = '<div style="display:grid;grid-template-columns:1fr 80px 80px;gap:6px;">';
-  // Header
-  html += '<div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#6a8fa0;padding:4px 2px;"></div>';
-  html += '<div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#6a8fa0;text-align:center;padding:4px 2px;">25m</div>';
-  html += '<div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#6a8fa0;text-align:center;padding:4px 2px;">50m</div>';
+  var inputStyle = 'width:100%;box-sizing:border-box;font-size:14px;padding:7px 6px;border-radius:8px;text-align:center;border:none;background:transparent;color:' + textColor + ';font-family:inherit;';
+  var cellStyle = 'border-radius:10px;background:' + cellBg + ';border:1.5px solid ' + cellBorder + ';box-shadow:' + cellShadow + ';padding:2px 4px;';
+  var cellDisabled = 'border-radius:10px;background:' + cellDisBg + ';border:1.5px solid ' + cellDisBorder + ';padding:2px 4px;';
 
-  for (var i = 0; i < PROVAS.length; i++) {
-    var p = PROVAS[i];
-    var valC = tg['curta'] && tg['curta'][p.key] ? formatAtletaMs(tg['curta'][p.key]) : '';
-    var valL = tg['longa'] && tg['longa'][p.key] ? formatAtletaMs(tg['longa'][p.key]) : '';
-    var rowBg = (i % 2 === 0) ? 'rgba(255,255,255,0.12)' : 'transparent';
+  var html;
 
-    html += '<div style="font-size:13px;font-weight:500;color:var(--lg-text,#1a2e3a);display:flex;align-items:center;padding:4px 2px;background:' + rowBg + ';border-radius:6px;">' + p.label + '</div>';
+  if (isDark) {
+    // Modo escuro: layout flexbox por linha (labels sempre visíveis)
+    var rowBase   = 'display:flex;align-items:center;gap:8px;padding:5px 2px;border-radius:8px;';
+    var colLabel  = 'flex:1;min-width:0;font-size:13px;font-weight:500;color:' + textColor + ';';
+    var colCell   = 'width:80px;flex-shrink:0;border-radius:10px;border:1.5px solid ' + cellBorder + ';background:' + cellBg + ';box-shadow:' + cellShadow + ';padding:2px 4px;';
+    var colCellDis = 'width:80px;flex-shrink:0;border-radius:10px;border:1.5px solid ' + cellDisBorder + ';background:' + cellDisBg + ';padding:2px 4px;';
 
-    // 25m cell
-    html += '<div style="' + cellStyle + 'background:' + (p.c ? 'rgba(255,255,255,0.92)' : 'rgba(200,210,220,0.18)') + ';border:1.5px solid ' + (p.c ? 'rgba(52,160,164,0.30)' : 'rgba(200,210,220,0.25)') + ';">';
-    if (p.c) {
-      html += '<input type="tel" inputmode="numeric" id="fc-' + p.key + '" value="' + valC + '" placeholder="--" style="' + inputStyle + '">';
+    html = '<div style="display:flex;flex-direction:column;gap:4px;">';
+    html += '<div style="' + rowBase + '">';
+    html += '<div style="flex:1;"></div>';
+    html += '<div style="width:80px;flex-shrink:0;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:' + labelColor + ';text-align:center;">25M</div>';
+    html += '<div style="width:80px;flex-shrink:0;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:' + labelColor + ';text-align:center;">50M</div>';
+    html += '</div>';
+    for (var i = 0; i < PROVAS.length; i++) {
+      var p = PROVAS[i];
+      var valC = tg['curta'] && tg['curta'][p.key] ? formatAtletaMs(tg['curta'][p.key]) : '';
+      var valL = tg['longa'] && tg['longa'][p.key] ? formatAtletaMs(tg['longa'][p.key]) : '';
+      var rowBg = (i % 2 === 0) ? rowEvenBg : 'transparent';
+      html += '<div style="' + rowBase + 'background:' + rowBg + ';">';
+      html += '<div style="' + colLabel + '">' + p.label + '</div>';
+      if (p.c) {
+        html += '<div style="' + colCell + '"><input type="tel" inputmode="numeric" id="fc-' + p.key + '" value="' + valC + '" placeholder="--" style="' + inputStyle + '" oninput=""></div>';
+      } else {
+        html += '<div style="' + colCellDis + '"></div>';
+      }
+      if (p.l) {
+        html += '<div style="' + colCell + '"><input type="tel" inputmode="numeric" id="fl-' + p.key + '" value="' + valL + '" placeholder="--" style="' + inputStyle + '" oninput=""></div>';
+      } else {
+        html += '<div style="' + colCellDis + ';display:flex;align-items:center;justify-content:center;"><span style="color:rgba(0,212,255,0.18);font-size:14px;">—</span></div>';
+      }
+      html += '</div>';
     }
     html += '</div>';
-
-    // 50m cell
-    html += '<div style="' + (p.l ? cellStyle : cellDisabled) + '">';
-    if (p.l) {
-      html += '<input type="tel" inputmode="numeric" id="fl-' + p.key + '" value="' + valL + '" placeholder="--" style="' + inputStyle + '">';
-    } else {
-      html += '<div style="text-align:center;color:rgba(100,130,150,0.4);font-size:18px;line-height:34px;">—</div>';
+  } else {
+    // Modo claro: layout grid original
+    var lgInputStyle = 'width:100%;box-sizing:border-box;font-size:14px;padding:7px 6px;border-radius:8px;text-align:center;border:none;background:transparent;color:#1a2e3a;font-family:inherit;';
+    var lgCellStyle  = 'border-radius:10px;background:rgba(255,255,255,0.92);border:1.5px solid rgba(52,160,164,0.30);box-shadow:inset 0 1.5px 0 rgba(255,255,255,1),0 2px 6px rgba(0,0,0,0.08);padding:2px 4px;';
+    var lgCellDis    = 'border-radius:10px;background:rgba(200,210,220,0.18);border:1.5px solid rgba(200,210,220,0.25);padding:2px 4px;';
+    html = '<div style="display:grid;grid-template-columns:1fr 80px 80px;gap:6px;">';
+    html += '<div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#6a8fa0;padding:4px 2px;"></div>';
+    html += '<div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#6a8fa0;text-align:center;padding:4px 2px;">25m</div>';
+    html += '<div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#6a8fa0;text-align:center;padding:4px 2px;">50m</div>';
+    for (var i = 0; i < PROVAS.length; i++) {
+      var p = PROVAS[i];
+      var valC = tg['curta'] && tg['curta'][p.key] ? formatAtletaMs(tg['curta'][p.key]) : '';
+      var valL = tg['longa'] && tg['longa'][p.key] ? formatAtletaMs(tg['longa'][p.key]) : '';
+      html += '<div style="font-size:13px;font-weight:500;color:#1a2e3a;display:flex;align-items:center;padding:4px 2px;background:' + ((i%2===0)?'rgba(255,255,255,0.12)':'transparent') + ';border-radius:6px;">' + p.label + '</div>';
+      html += '<div style="' + lgCellStyle + 'background:' + (p.c?'rgba(255,255,255,0.92)':'rgba(200,210,220,0.18)') + ';border:1.5px solid ' + (p.c?'rgba(52,160,164,0.30)':'rgba(200,210,220,0.25)') + ';">';
+      if (p.c) html += '<input type="tel" inputmode="numeric" id="fc-' + p.key + '" value="' + valC + '" placeholder="--" style="' + lgInputStyle + '" oninput="">';
+      html += '</div>';
+      html += '<div style="' + (p.l ? lgCellStyle : lgCellDis) + '">';
+      if (p.l) html += '<input type="tel" inputmode="numeric" id="fl-' + p.key + '" value="' + valL + '" placeholder="--" style="' + lgInputStyle + '" oninput="">';
+      else html += '<div style="text-align:center;color:rgba(100,130,150,0.4);font-size:18px;line-height:34px;">—</div>';
+      html += '</div>';
     }
     html += '</div>';
   }
-  html += '</div>';
   document.getElementById('form-tempos-grid').innerHTML = html;
 }
 
@@ -7450,38 +7799,52 @@ function renderAtletaResultados(data, compId) {
   }
 
   var html = '';
+  var isDarkR = !document.documentElement.classList.contains('light-mode');
 
   // Summary
   var total = comMinimo.length + semMinimo.length;
   var pct = total > 0 ? Math.round(comMinimo.length/total*100) : 0;
-  html += '<div style="background:#e8f4fb;border-radius:10px;padding:12px 14px;margin-bottom:14px;">';
-  html += '<div style="font-size:12px;color:#7ab8d4;margin-bottom:4px;">Provas com minimos atingidos</div>';
-  html += '<div style="font-size:28px;font-weight:700;color:var(--blue-deep);">' + comMinimo.length + '<span style="font-size:16px;color:#7ab8d4;"> / ' + total + '</span></div>';
+  var sumBg   = isDarkR ? 'rgba(0,212,255,0.06)' : '#e8f4fb';
+  var sumTxt  = isDarkR ? 'rgba(0,212,255,0.60)' : '#7ab8d4';
+  var sumNum  = isDarkR ? '#e8f4ff' : 'var(--blue-deep)';
+  var barBg   = isDarkR ? 'rgba(255,255,255,0.10)' : '#c8dce8';
+  html += '<div style="background:' + sumBg + ';border-radius:10px;padding:12px 14px;margin-bottom:14px;">';
+  html += '<div style="font-size:12px;color:' + sumTxt + ';margin-bottom:4px;">Provas com mínimos atingidos</div>';
+  html += '<div style="font-size:28px;font-weight:700;color:' + sumNum + ';">' + comMinimo.length + '<span style="font-size:16px;color:' + sumTxt + ';"> / ' + total + '</span></div>';
   if (total > 0) {
-    html += '<div style="margin-top:8px;background:#c8dce8;border-radius:6px;height:8px;overflow:hidden;">';
+    html += '<div style="margin-top:8px;background:' + barBg + ';border-radius:6px;height:8px;overflow:hidden;">';
     html += '<div style="height:8px;border-radius:6px;background:var(--aqua);width:' + pct + '%;"></div></div>';
   }
   html += '</div>';
+
+  var divBorderPass  = isDarkR ? 'rgba(0,229,160,0.15)' : '#e8f5e9';
+  var divBorderFail  = isDarkR ? 'rgba(255,77,109,0.15)' : '#fde8e8';
+  var passLabel  = isDarkR ? '#00e5a0' : '#1a7a3a';
+  var passDetail = isDarkR ? 'rgba(0,229,160,0.75)' : '#27ae60';
+  var failLabel  = isDarkR ? '#ff6b8a' : '#c0392b';
+  var failDetail = isDarkR ? 'rgba(255,107,138,0.80)' : '#e74c3c';
+  var minColor   = isDarkR ? 'rgba(0,212,255,0.55)' : '#7ab8d4';
+  var noTempo    = isDarkR ? 'rgba(180,215,240,0.35)' : '#bbb';
 
   if (comp.longa_only) html += '<div style="font-size:12px;color:#e67e22;margin-bottom:10px;">Apenas piscina longa (50m) conta para esta competição.</div>';
 
   for (var i = 0; i < comMinimo.length; i++) {
     var e = comMinimo[i];
-    html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 4px;border-bottom:1px solid #e8f5e9;">';
-    html += '<div><div style="font-size:14px;font-weight:600;color:#1a7a3a;">&#10003; ' + e.label + '</div>';
-    html += '<div style="font-size:12px;color:#27ae60;">' + formatAtletaMs(e.tempo) + ' (' + (e.pisc==='curta'?'25m':'50m') + ') · -' + formatAtletaMs(e.diff) + '</div></div>';
-    html += '<div style="font-size:12px;color:#7ab8d4;text-align:right;">min<br>' + formatAtletaMs(e.minimo) + '</div></div>';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 4px;border-bottom:1px solid ' + divBorderPass + ';">';
+    html += '<div><div style="font-size:14px;font-weight:600;color:' + passLabel + ';">&#10003; ' + e.label + '</div>';
+    html += '<div style="font-size:12px;color:' + passDetail + ';">' + formatAtletaMs(e.tempo) + ' (' + (e.pisc==='curta'?'25m':'50m') + ') · -' + formatAtletaMs(e.diff) + '</div></div>';
+    html += '<div style="font-size:12px;color:' + minColor + ';text-align:right;">min<br>' + formatAtletaMs(e.minimo) + '</div></div>';
   }
   for (var i = 0; i < semMinimo.length; i++) {
     var e = semMinimo[i];
-    html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 4px;border-bottom:1px solid #fde8e8;">';
-    html += '<div><div style="font-size:14px;font-weight:600;color:#c0392b;">&#10007; ' + e.label + '</div>';
-    html += '<div style="font-size:12px;color:#e74c3c;">' + formatAtletaMs(e.tempo) + ' (' + (e.pisc==='curta'?'25m':'50m') + ') · faltam ' + formatAtletaMs(e.diff) + '</div></div>';
-    html += '<div style="font-size:12px;color:#7ab8d4;text-align:right;">min<br>' + formatAtletaMs(e.minimo) + '</div></div>';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 4px;border-bottom:1px solid ' + divBorderFail + ';">';
+    html += '<div><div style="font-size:14px;font-weight:600;color:' + failLabel + ';">&#10007; ' + e.label + '</div>';
+    html += '<div style="font-size:12px;color:' + failDetail + ';">' + formatAtletaMs(e.tempo) + ' (' + (e.pisc==='curta'?'25m':'50m') + ') · faltam ' + formatAtletaMs(e.diff) + '</div></div>';
+    html += '<div style="font-size:12px;color:' + minColor + ';text-align:right;">min<br>' + formatAtletaMs(e.minimo) + '</div></div>';
   }
   if (semTempo.length > 0 && total > 0) {
     var labs = []; for (var i=0;i<semTempo.length;i++) labs.push(semTempo[i].label);
-    html += '<div style="font-size:12px;color:#bbb;margin-top:8px;">Sem tempo: ' + labs.join(' · ') + '</div>';
+    html += '<div style="font-size:12px;color:' + noTempo + ';margin-top:8px;">Sem tempo: ' + labs.join(' · ') + '</div>';
   }
 
   document.getElementById('atleta-resultados').innerHTML = html;
@@ -10032,17 +10395,19 @@ function convSetDir(dir){
   // Update pill buttons
   var b5025 = document.getElementById('conv-dir-50-25');
   var b2550 = document.getElementById('conv-dir-25-50');
+  var isLight = document.documentElement.classList.contains('light-mode');
+  var inactiveColor = isLight ? '#34A0A4' : '#00d4ff';
   if(b5025 && b2550){
     if(dir==='50to25'){
       b5025.style.background='linear-gradient(135deg,#34A0A4,#1A759F)';
       b5025.style.color='#fff';
       b2550.style.background='transparent';
-      b2550.style.color='#34A0A4';
+      b2550.style.color=inactiveColor;
     } else {
       b2550.style.background='linear-gradient(135deg,#34A0A4,#1A759F)';
       b2550.style.color='#fff';
       b5025.style.background='transparent';
-      b5025.style.color='#34A0A4';
+      b5025.style.color=inactiveColor;
     }
   }
   // Update labels
