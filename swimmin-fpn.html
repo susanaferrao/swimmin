@@ -590,6 +590,509 @@
     letter-spacing: 0.5px;
   }
 
+/* ===== CALENDÁRIO ===== */
+.cal-section {
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 2;
+  background: var(--card);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 28px 28px 22px;
+  box-shadow:
+    0 32px 64px rgba(0,0,0,0.4),
+    0 0 0 1px rgba(255,255,255,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.8);
+}
+.cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.cal-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px;
+  color: var(--blue-deep);
+  letter-spacing: 2px;
+}
+.cal-subtitle {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+.cal-edit-btn {
+  background: linear-gradient(135deg, var(--aqua), var(--blue-bright));
+  border: none;
+  border-radius: 20px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  padding: 7px 16px;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: all 0.2s;
+  box-shadow: 0 2px 10px rgba(0,196,204,0.3);
+}
+.cal-edit-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.cal-cards {
+  display: flex;
+  gap: 10px;
+  overflow: visible;
+}
+.cal-card {
+  flex: 1;
+  background: linear-gradient(135deg, var(--blue-deep) 0%, var(--blue-mid) 100%);
+  border-radius: 16px;
+  padding: 14px 12px 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 0;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0,63,107,0.25);
+}
+.cal-card::before {
+  content: '';
+  position: absolute;
+  top: -30px; right: -30px;
+  width: 80px; height: 80px;
+  background: radial-gradient(circle, rgba(0,196,204,0.25) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.cal-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,63,107,0.35); }
+.cal-card-days {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 30px;
+  color: var(--aqua);
+  line-height: 1;
+  letter-spacing: 1px;
+}
+.cal-card-days-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(0,196,204,0.7);
+  margin-bottom: 6px;
+}
+.cal-card-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.3;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cal-card-date {
+  font-size: 10px;
+  color: var(--blue-light);
+}
+.cal-card-local {
+  font-size: 10px;
+  color: rgba(184,223,245,0.7);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cal-card-empty {
+  flex: 1;
+  background: #eef5fa;
+  border: 1.5px dashed #c5dcea;
+  border-radius: 16px;
+  padding: 20px 8px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 600;
+}
+.cal-card-empty:hover { border-color: var(--aqua); color: var(--aqua); background: #e8f9fa; }
+.cal-more-btn {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  background: #eef5fa;
+  border: 1.5px solid #d0e4f0;
+  border-radius: 12px;
+  color: var(--blue-mid);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+.cal-more-btn:hover { background: #dceef8; border-color: var(--blue-bright); color: var(--blue-deep); }
+
+/* Pop-up próxima prova */
+.cal-popup-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 9000;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 0 24px 0;
+}
+.cal-popup-overlay.open { display: flex; }
+.cal-popup {
+  background: var(--card);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 32px 28px 28px;
+  width: 100%;
+  max-width: 520px;
+  box-shadow:
+    0 -8px 40px rgba(0,0,0,0.3),
+    0 0 0 1px rgba(255,255,255,0.3),
+    inset 0 1px 0 rgba(255,255,255,0.8);
+  animation: slideUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+}
+@keyframes slideUp {
+  from { transform: translateY(60px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.cal-popup-close {
+  position: absolute;
+  top: 14px; right: 16px;
+  background: #eef5fa;
+  border: none;
+  color: var(--muted);
+  font-size: 16px;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Sans', sans-serif;
+}
+.cal-popup-days {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 80px;
+  color: var(--aqua);
+  line-height: 1;
+  text-align: center;
+  text-shadow: 0 0 30px rgba(0,196,204,0.3);
+}
+.cal-popup-days-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: center;
+  margin-bottom: 16px;
+}
+.cal-popup-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--blue-deep);
+  text-align: center;
+  margin-bottom: 6px;
+}
+.cal-popup-info {
+  font-size: 13px;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.7;
+  white-space: pre-line;
+}
+
+/* Calendário completo overlay — respeita tema claro/escuro */
+.cal-full-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--dp-bg);
+  z-index: 9500;
+  overflow-y: auto;
+  padding: 0;
+}
+html.light-mode .cal-full-overlay {
+  background: #f0f7fc;
+}
+.cal-full-overlay.open { display: block; }
+.cal-full-header {
+  background: rgba(13,31,60,0.95);
+  backdrop-filter: blur(20px);
+  padding: 20px 20px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1px solid rgba(0,196,204,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+html.light-mode .cal-full-header {
+  background: rgba(255,255,255,0.95);
+  border-bottom: 1px solid #d0e8f0;
+}
+.cal-full-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  color: #fff;
+  letter-spacing: 3px;
+}
+html.light-mode .cal-full-title { color: var(--blue-deep); }
+.cal-full-season {
+  font-size: 11px;
+  color: var(--aqua);
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+html.light-mode .cal-full-season { color: var(--blue-mid); }
+.cal-full-close {
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: #fff;
+  font-size: 22px;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  display: flex; align-items: center; justify-content: center;
+}
+html.light-mode .cal-full-close {
+  background: #eef5fa;
+  color: var(--blue-deep);
+}
+.cal-full-body { padding: 20px; }
+.cal-event-item {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 10px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  position: relative;
+}
+html.light-mode .cal-event-item {
+  background: #fff;
+  border: 1px solid #d8eaf4;
+  box-shadow: 0 2px 8px rgba(0,63,107,0.07);
+}
+.cal-event-item.past { opacity: 0.45; }
+.cal-event-item.next {
+  background: rgba(0,196,204,0.1);
+  border-color: rgba(0,196,204,0.35);
+}
+html.light-mode .cal-event-item.next {
+  background: #e8fafc;
+  border-color: var(--aqua);
+}
+.cal-event-date-block {
+  text-align: center;
+  min-width: 44px;
+}
+.cal-event-day {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  color: var(--aqua);
+  line-height: 1;
+}
+.cal-event-month {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(0,196,204,0.8);
+}
+html.light-mode .cal-event-month { color: var(--blue-mid); }
+.cal-event-info { flex: 1; min-width: 0; }
+.cal-event-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #e8f4ff;
+  margin-bottom: 3px;
+}
+html.light-mode .cal-event-name { color: var(--blue-deep); }
+.cal-event-meta {
+  font-size: 12px;
+  color: rgba(184,223,245,0.7);
+  line-height: 1.6;
+}
+html.light-mode .cal-event-meta { color: var(--muted); }
+.cal-event-reg {
+  font-size: 11px;
+  color: var(--aqua);
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-block;
+  margin-top: 4px;
+}
+html.light-mode .cal-event-reg { color: var(--blue-mid); }
+.cal-event-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: flex-end;
+}
+.cal-del-btn {
+  background: rgba(255,77,109,0.12);
+  border: 1px solid rgba(255,77,109,0.25);
+  color: #ff4d6d;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: 'DM Sans', sans-serif;
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+html.light-mode .cal-del-btn {
+  background: #fdecea;
+  border-color: #f5b8b0;
+  color: #c0392b;
+}
+.cal-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(184,223,245,0.45);
+  margin: 20px 0 8px;
+}
+html.light-mode .cal-section-label { color: var(--muted); }
+/* Modal de edição / sugestões */
+.cal-edit-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  z-index: 10000;
+  overflow-y: auto;
+  padding: 20px;
+}
+.cal-edit-overlay.open { display: block; }
+.cal-edit-modal {
+  background: #fff;
+  border-radius: 24px;
+  padding: 28px 24px;
+  max-width: 520px;
+  margin: 0 auto;
+  position: relative;
+}
+.cal-edit-modal h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px;
+  color: #0a2a4a;
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+.cal-edit-modal .subtitle {
+  font-size: 11px;
+  color: #888;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.cal-suggest-item {
+  background: #f4f8fb;
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.cal-suggest-info { flex: 1; }
+.cal-suggest-name { font-size: 14px; font-weight: 700; color: #0a2a4a; margin-bottom: 2px; }
+.cal-suggest-meta { font-size: 12px; color: #5a7a8a; line-height: 1.5; }
+.cal-suggest-actions { display: flex; gap: 6px; flex-direction: column; }
+.cal-accept-btn {
+  background: #e8fafc;
+  border: 1.5px solid #00c4cc;
+  color: #007a82;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: 'DM Sans', sans-serif;
+  padding: 7px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.cal-accept-btn:hover { background: #d0f6f8; }
+.cal-reject-btn {
+  background: #fdecea;
+  border: 1.5px solid #e5b0ac;
+  color: #c0392b;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: 'DM Sans', sans-serif;
+  padding: 7px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.cal-modal-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  background: #f0f0f0;
+  border: none;
+  font-size: 18px;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Sans', sans-serif;
+  color: #555;
+}
+.cal-add-form {
+  background: #f0fafc;
+  border-radius: 14px;
+  padding: 16px;
+  margin-top: 8px;
+}
+.cal-add-form h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0a2a4a;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.cal-field { margin-bottom: 10px; }
+.cal-field label { font-size: 10px; font-weight: 700; color: #0a2a4a; letter-spacing: 1px; text-transform: uppercase; display: block; margin-bottom: 4px; }
+.cal-field input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1.5px solid #cce0e8;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  color: #0a2a4a;
+  background: #fff;
+  box-sizing: border-box;
+}
+.cal-field input:focus { outline: none; border-color: #00c4cc; }
+.cal-save-btn {
+  width: 100%;
+  padding: 12px;
+  background: var(--aqua);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 4px;
+}
+.cal-save-btn:hover { opacity: 0.9; }
+
 
 /* ===== TREINADOR ===== */
 .coach-wrap { margin-top: 28px; text-align: center; }
@@ -1885,6 +2388,82 @@ document.addEventListener("click", function(e) {
 
 </div>
 
+
+<!-- ===== CALENDÁRIO ===== -->
+<div class="cal-section" id="cal-section">
+  <div class="cal-header">
+    <div>
+      <div class="cal-title">CALENDÁRIO</div>
+      <div class="cal-subtitle">Época <span id="cal-header-season"></span></div>
+    </div>
+    <button class="cal-edit-btn" onclick="calOpenEdit()">Editar</button>
+  </div>
+  <div class="cal-cards" id="cal-cards">
+    <!-- Rendered by JS -->
+  </div>
+  <button class="cal-more-btn" onclick="calOpenFull()">Ver época completa</button>
+</div>
+
+<!-- Pop-up próxima prova -->
+<div class="cal-popup-overlay" id="cal-popup-overlay" onclick="if(event.target===this)calClosePopup()">
+  <div class="cal-popup">
+    <button class="cal-popup-close" onclick="calClosePopup()">✕</button>
+    <div class="cal-popup-days" id="cal-popup-days">--</div>
+    <div class="cal-popup-days-label">dias para a próxima prova</div>
+    <div class="cal-popup-name" id="cal-popup-name"></div>
+    <div class="cal-popup-info" id="cal-popup-info"></div>
+  </div>
+</div>
+
+<!-- Calendário completo overlay -->
+<div class="cal-full-overlay" id="cal-full-overlay">
+  <div class="cal-full-header">
+    <div>
+      <div class="cal-full-title">CALENDÁRIO</div>
+      <div class="cal-full-season" id="cal-full-season">2024/2025</div>
+    </div>
+    <button class="cal-full-close" onclick="calCloseFull()">✕</button>
+  </div>
+  <div class="cal-full-body" id="cal-full-body">
+    <!-- Rendered by JS -->
+  </div>
+</div>
+
+<!-- Modal editar calendário -->
+<div class="cal-edit-overlay" id="cal-edit-overlay" onclick="if(event.target===this)calCloseEdit()">
+  <div class="cal-edit-modal">
+    <button class="cal-modal-close" onclick="calCloseEdit()">✕</button>
+    <h2>CALENDÁRIO</h2>
+
+    <div id="cal-suggestions-wrap"></div>
+
+    <div style="border-top:1.5px solid #e0edf5;margin:20px 0;"></div>
+    <div class="cal-add-form">
+      <h3>Adicionar prova</h3>
+      <div class="cal-field">
+        <label>Nome da prova *</label>
+        <input type="text" id="cal-add-nome" placeholder="ex: Meeting Nacional" />
+      </div>
+      <div class="cal-field">
+        <label>Data de início *</label>
+        <input type="date" id="cal-add-data-ini" />
+      </div>
+      <div class="cal-field">
+        <label>Data de fim (opcional)</label>
+        <input type="date" id="cal-add-data-fim" />
+      </div>
+      <div class="cal-field">
+        <label>Local</label>
+        <input type="text" id="cal-add-local" placeholder="ex: Coimbra" />
+      </div>
+      <div class="cal-field">
+        <label>Link do Regulamento</label>
+        <input type="url" id="cal-add-reg" placeholder="https://..." />
+      </div>
+      <button class="cal-save-btn" onclick="calAddManual()">Guardar Prova</button>
+    </div>
+  </div>
+</div>
 
 <div class="fpn-btn-wrap">
     <button class="fpn-btn" id="atleta-btn" onclick="toggleAtleta()">Zona do Nadador</button>
@@ -7858,6 +8437,402 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js').catch(() => {});
   });
 }
+
+// ===== CALENDÁRIO =====
+
+var CAL_KEY = 'swimmin_calendar_v1';
+var CAL_REJECTED_KEY = 'swimmin_cal_rejected_v1';
+var CAL_POPUP_KEY = 'swimmin_cal_popup_date';
+
+// Provas sugeridas (pré-definidas)
+var CAL_SUGESTOES = [
+  {
+    id: 'sug_1',
+    nome: 'Campeonatos Nacionais Juniores e Absolutos',
+    dataIni: '2026-03-28',
+    dataFim: '2026-03-31',
+    local: 'Coimbra',
+    regulamento: 'https://www.swimrankings.net/services/CalendarFile/49106/Regulamento_Open%20de%20Portugal.pdf'
+  },
+  {
+    id: 'sug_2',
+    nome: 'Meeting Internacional do Porto',
+    dataIni: '2026-06-06',
+    dataFim: '2026-06-07',
+    local: 'Porto',
+    regulamento: 'https://www.swimrankings.net/services/CalendarFile/47962/REGULAMENTO.pdf'
+  },
+  {
+    id: 'sug_3',
+    nome: 'Campeonatos Nacionais de Infantis',
+    dataIni: '2026-07-17',
+    dataFim: '2026-07-19',
+    local: 'Setúbal (ANL)',
+    regulamento: ''
+  },
+  {
+    id: 'sug_4',
+    nome: 'Campeonatos Nacionais Juv, Jun e Seniores',
+    dataIni: '2026-07-23',
+    dataFim: '2026-07-26',
+    local: 'Oeiras-Jamor',
+    regulamento: ''
+  }
+];
+
+function calLoad() {
+  try { return JSON.parse(localStorage.getItem(CAL_KEY) || '[]'); } catch(e) { return []; }
+}
+function calSave(events) {
+  try { localStorage.setItem(CAL_KEY, JSON.stringify(events)); } catch(e) {}
+}
+function calLoadRejected() {
+  try { return JSON.parse(localStorage.getItem(CAL_REJECTED_KEY) || '[]'); } catch(e) { return []; }
+}
+function calSaveRejected(arr) {
+  try { localStorage.setItem(CAL_REJECTED_KEY, JSON.stringify(arr)); } catch(e) {}
+}
+
+function calParseDate(str) {
+  // Returns Date object from YYYY-MM-DD
+  if (!str) return null;
+  var parts = str.split('-');
+  return new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
+}
+
+function calDaysUntil(dateStr) {
+  var d = calParseDate(dateStr);
+  if (!d) return null;
+  var now = new Date();
+  now.setHours(0,0,0,0);
+  d.setHours(0,0,0,0);
+  return Math.round((d - now) / 86400000);
+}
+
+var CAL_MONTHS_PT = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+var CAL_MONTHS_FULL = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+function calFormatDate(dateStr, useFull) {
+  var d = calParseDate(dateStr);
+  if (!d) return '';
+  var months = useFull ? CAL_MONTHS_FULL : CAL_MONTHS_PT;
+  return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+function calFormatRange(ini, fim) {
+  var dIni = calParseDate(ini);
+  var dFim = fim ? calParseDate(fim) : null;
+  if (!dIni) return '';
+  if (!dFim || ini === fim) return calFormatDate(ini, false);
+  if (dIni.getMonth() === dFim.getMonth() && dIni.getFullYear() === dFim.getFullYear()) {
+    return dIni.getDate() + ' a ' + dFim.getDate() + ' ' + CAL_MONTHS_PT[dIni.getMonth()] + ' ' + dIni.getFullYear();
+  }
+  return calFormatDate(ini, false) + ' – ' + calFormatDate(fim, false);
+}
+
+function calGetSeason(dateStr) {
+  // Season: 1 Sep to 31 Aug
+  var d = calParseDate(dateStr);
+  if (!d) return '';
+  var y = d.getFullYear();
+  var m = d.getMonth(); // 0-indexed
+  if (m >= 8) return y + '/' + (y+1); // Sep onwards = new season
+  return (y-1) + '/' + y;
+}
+
+function calCurrentSeason() {
+  var now = new Date();
+  var y = now.getFullYear();
+  var m = now.getMonth();
+  if (m >= 8) return y + '/' + (y+1);
+  return (y-1) + '/' + y;
+}
+
+function calSeasonRange(season) {
+  // returns {start: Date, end: Date}
+  var parts = season.split('/');
+  var y1 = parseInt(parts[0]);
+  var y2 = parseInt(parts[1]);
+  return { start: new Date(y1, 8, 1), end: new Date(y2, 7, 31) };
+}
+
+function calGetUpcoming(max) {
+  var events = calLoad();
+  var now = new Date(); now.setHours(0,0,0,0);
+  var upcoming = events.filter(function(e) {
+    var d = calParseDate(e.dataIni);
+    return d && d >= now;
+  }).sort(function(a,b) {
+    return calParseDate(a.dataIni) - calParseDate(b.dataIni);
+  });
+  return max ? upcoming.slice(0, max) : upcoming;
+}
+
+function calRenderCards() {
+  var container = document.getElementById('cal-cards');
+  if (!container) return;
+  var upcoming = calGetUpcoming(3);
+  var html = '';
+  if (upcoming.length === 0) {
+    html = '<div class="cal-card-empty" onclick="calOpenEdit()" style="width:100%;text-align:center;padding:24px 12px;">'
+      + 'Sem provas agendadas<br><span style="color:var(--aqua);font-weight:700;">Adicionar prova +</span>'
+      + '</div>';
+  } else {
+    for (var i = 0; i < 3; i++) {
+      if (i < upcoming.length) {
+        var e = upcoming[i];
+        var days = calDaysUntil(e.dataIni);
+        var daysLabel = days === 0 ? 'HOJE' : days === 1 ? '1 DIA' : days + ' DIAS';
+        html += '<div class="cal-card" onclick="calShowEventPopup(\'' + e.id + '\')">'
+          + '<div class="cal-card-days">' + (days <= 0 ? '!' : days) + '</div>'
+          + '<div class="cal-card-days-label">' + (days <= 0 ? 'A DECORRER' : 'DIAS') + '</div>'
+          + '<div class="cal-card-name">' + e.nome + '</div>'
+          + '<div class="cal-card-date">' + calFormatRange(e.dataIni, e.dataFim) + '</div>'
+          + (e.local ? '<div class="cal-card-local">' + e.local + '</div>' : '')
+          + '</div>';
+      } else {
+        html += '<div class="cal-card-empty" onclick="calOpenEdit()">+<br><span style="font-size:9px;">Adicionar</span></div>';
+      }
+    }
+  }
+  container.innerHTML = html;
+}
+
+function calShowEventPopup(id) {
+  var events = calLoad();
+  var e = null;
+  for (var i = 0; i < events.length; i++) { if (events[i].id === id) { e = events[i]; break; } }
+  if (!e) return;
+  var days = calDaysUntil(e.dataIni);
+  document.getElementById('cal-popup-days').textContent = days <= 0 ? 'HOJE' : days;
+  document.getElementById('cal-popup-name').textContent = e.nome;
+  var info = calFormatRange(e.dataIni, e.dataFim);
+  if (e.local) info += '\n' + e.local;
+  document.getElementById('cal-popup-info').textContent = info;
+  document.getElementById('cal-popup-overlay').classList.add('open');
+}
+
+function calClosePopup() {
+  document.getElementById('cal-popup-overlay').classList.remove('open');
+}
+
+function calMaybeShowDailyPopup() {
+  var upcoming = calGetUpcoming(1);
+  if (!upcoming.length) return;
+  var today = new Date().toISOString().slice(0,10);
+  var lastShown = localStorage.getItem(CAL_POPUP_KEY) || '';
+  if (lastShown === today) return;
+  localStorage.setItem(CAL_POPUP_KEY, today);
+  setTimeout(function() {
+    calShowEventPopup(upcoming[0].id);
+  }, 900);
+}
+
+function calOpenFull() {
+  var season = calCurrentSeason();
+  document.getElementById('cal-full-season').textContent = 'Época ' + season;
+  calRenderFull();
+  document.getElementById('cal-full-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function calCloseFull() {
+  document.getElementById('cal-full-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function calRenderFull() {
+  var events = calLoad();
+  var now = new Date(); now.setHours(0,0,0,0);
+  var season = calCurrentSeason();
+  var range = calSeasonRange(season);
+
+  var inSeason = events.filter(function(e) {
+    var d = calParseDate(e.dataIni);
+    return d && d >= range.start && d <= range.end;
+  }).sort(function(a,b) {
+    return calParseDate(a.dataIni) - calParseDate(b.dataIni);
+  });
+
+  var past = inSeason.filter(function(e) { return calParseDate(e.dataIni) < now; });
+  var upcoming = inSeason.filter(function(e) { return calParseDate(e.dataIni) >= now; });
+
+  var html = '';
+
+  function renderEvent(e, isNext) {
+    var d = calParseDate(e.dataIni);
+    var day = d.getDate();
+    var month = CAL_MONTHS_PT[d.getMonth()].toUpperCase();
+    var days = calDaysUntil(e.dataIni);
+    var isPast = days < 0;
+    var classes = 'cal-event-item' + (isPast ? ' past' : '') + (isNext ? ' next' : '');
+    var nextLabel = isNext ? '<div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--aqua);margin-top:5px;">Proxima prova</div>' : '';
+
+    var regHtml = e.regulamento ? '<a class="cal-event-reg" href="' + e.regulamento + '" target="_blank">Regulamento</a>' : '';
+    var daysStr = isPast ? 'Concluída' : (days === 0 ? 'Hoje!' : 'em ' + days + ' dias');
+
+    return '<div class="' + classes + '">'
+      + '<div class="cal-event-date-block">'
+      + '<div class="cal-event-day">' + day + '</div>'
+      + '<div class="cal-event-month">' + month + '</div>'
+      + '</div>'
+      + '<div class="cal-event-info">'
+      + '<div class="cal-event-name">' + e.nome + '</div>'
+      + '<div class="cal-event-meta">'
+      + calFormatRange(e.dataIni, e.dataFim)
+      + (e.local ? ' · ' + e.local : '')
+      + '<br>' + daysStr
+      + '</div>'
+      + nextLabel
+      + (regHtml ? '<br>' + regHtml : '')
+      + '</div>'
+      + '<div class="cal-event-actions">'
+      + '<button class="cal-del-btn" onclick="calDeleteEvent(\'' + e.id + '\')">✕</button>'
+      + '</div>'
+      + '</div>';
+  }
+
+  if (upcoming.length === 0 && past.length === 0) {
+    html = '<div style="text-align:center;padding:40px 20px;color:rgba(184,223,245,0.5);">'
+      + '<div style="font-size:48px;margin-bottom:12px;font-family:Bebas Neue,sans-serif;letter-spacing:2px;">SEM PROVAS</div>'
+      + '<div style="font-size:15px;">Sem provas nesta época.</div>'
+      + '<div style="font-size:13px;margin-top:8px;">Carrega em Editar para adicionar.</div>'
+      + '</div>';
+  } else {
+    if (upcoming.length > 0) {
+      html += '<div class="cal-section-label">Próximas provas</div>';
+      for (var i = 0; i < upcoming.length; i++) {
+        html += renderEvent(upcoming[i], i === 0);
+      }
+    }
+    if (past.length > 0) {
+      html += '<div class="cal-section-label">Provas concluídas</div>';
+      for (var i = past.length - 1; i >= 0; i--) {
+        html += renderEvent(past[i], false);
+      }
+    }
+  }
+  document.getElementById('cal-full-body').innerHTML = html;
+}
+
+function calDeleteEvent(id) {
+  var events = calLoad();
+  var removed = events.filter(function(e) { return e.id !== id; });
+  calSave(removed);
+  calRenderCards();
+  calRenderFull();
+}
+
+function calOpenEdit() {
+  calRenderSuggestions();
+  document.getElementById('cal-edit-overlay').classList.add('open');
+}
+function calCloseEdit() {
+  document.getElementById('cal-edit-overlay').classList.remove('open');
+  calRenderCards();
+}
+
+function calRenderSuggestions() {
+  var rejected = calLoadRejected();
+  var accepted = calLoad().map(function(e) { return e.id; });
+  var pending = CAL_SUGESTOES.filter(function(s) {
+    return rejected.indexOf(s.id) < 0 && accepted.indexOf(s.id) < 0;
+  });
+
+  var wrap = document.getElementById('cal-suggestions-wrap');
+  if (pending.length === 0) {
+    wrap.innerHTML = '<div style="text-align:center;padding:12px;font-size:13px;color:#888;">Sem novas sugestões de provas.</div>';
+    return;
+  }
+
+  var html = '<div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#5a7a8a;margin-bottom:10px;">Provas sugeridas</div>';
+  for (var i = 0; i < pending.length; i++) {
+    var s = pending[i];
+    html += '<div class="cal-suggest-item">'
+      + '<div class="cal-suggest-info">'
+      + '<div class="cal-suggest-name">' + s.nome + '</div>'
+      + '<div class="cal-suggest-meta">'
+      + calFormatRange(s.dataIni, s.dataFim)
+      + (s.local ? ' · ' + s.local : '')
+      + (s.regulamento ? '<br><a href="' + s.regulamento + '" target="_blank" style="color:#007a82;font-weight:600;font-size:11px;">Regulamento</a>' : '')
+      + '</div>'
+      + '</div>'
+      + '<div class="cal-suggest-actions">'
+      + '<button class="cal-accept-btn" onclick="calAcceptSuggestion(\'' + s.id + '\')">✓ Aceitar</button>'
+      + '<button class="cal-reject-btn" onclick="calRejectSuggestion(\'' + s.id + '\')">✕ Rejeitar</button>'
+      + '</div>'
+      + '</div>';
+  }
+  wrap.innerHTML = html;
+}
+
+function calAcceptSuggestion(id) {
+  var sug = null;
+  for (var i = 0; i < CAL_SUGESTOES.length; i++) { if (CAL_SUGESTOES[i].id === id) { sug = CAL_SUGESTOES[i]; break; } }
+  if (!sug) return;
+  var events = calLoad();
+  var newEvent = {
+    id: sug.id,
+    nome: sug.nome,
+    dataIni: sug.dataIni,
+    dataFim: sug.dataFim,
+    local: sug.local,
+    regulamento: sug.regulamento,
+    suggested: true
+  };
+  events.push(newEvent);
+  calSave(events);
+  calRenderSuggestions();
+  calRenderCards();
+}
+
+function calRejectSuggestion(id) {
+  var rejected = calLoadRejected();
+  if (rejected.indexOf(id) < 0) rejected.push(id);
+  calSaveRejected(rejected);
+  calRenderSuggestions();
+}
+
+function calAddManual() {
+  var nome = document.getElementById('cal-add-nome').value.trim();
+  var dataIni = document.getElementById('cal-add-data-ini').value;
+  if (!nome || !dataIni) {
+    alert('Nome e data de início são obrigatórios.');
+    return;
+  }
+  var dataFim = document.getElementById('cal-add-data-fim').value || dataIni;
+  var local = document.getElementById('cal-add-local').value.trim();
+  var reg = document.getElementById('cal-add-reg').value.trim();
+
+  var events = calLoad();
+  events.push({
+    id: 'man_' + Date.now(),
+    nome: nome,
+    dataIni: dataIni,
+    dataFim: dataFim,
+    local: local,
+    regulamento: reg,
+    suggested: false
+  });
+  calSave(events);
+
+  document.getElementById('cal-add-nome').value = '';
+  document.getElementById('cal-add-data-ini').value = '';
+  document.getElementById('cal-add-data-fim').value = '';
+  document.getElementById('cal-add-local').value = '';
+  document.getElementById('cal-add-reg').value = '';
+
+  calCloseEdit();
+}
+
+// Init calendar on page load
+document.addEventListener('DOMContentLoaded', function() {
+  var seasonEl = document.getElementById('cal-header-season');
+  if (seasonEl) seasonEl.textContent = calCurrentSeason();
+  calRenderCards();
+  calMaybeShowDailyPopup();
+});
+
+// ===== FIM CALENDÁRIO =====
 
 var deferredPrompt = null;
 window.addEventListener('beforeinstallprompt', function(e) {
