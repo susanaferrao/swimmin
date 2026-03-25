@@ -7827,9 +7827,14 @@ function renderAtletaResultados(data, compId) {
   }
   for (var i = 0; i < semMinimo.length; i++) {
     var e = semMinimo[i];
+    var pct = Math.round(e.minimo / e.tempo * 100);
+    var pctColor = pct >= 97 ? (isDarkR ? '#f0c040' : '#c8860a')
+                 : pct >= 93 ? (isDarkR ? 'rgba(255,160,80,0.85)' : '#d4681a')
+                 :              (isDarkR ? 'rgba(255,107,138,0.70)' : '#c0392b');
     html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 4px;border-bottom:1px solid ' + divBorderFail + ';">';
     html += '<div><div style="font-size:14px;font-weight:600;color:' + failLabel + ';">&#10007; ' + e.label + '</div>';
     html += '<div style="font-size:12px;color:' + failDetail + ';">' + formatAtletaMs(e.tempo) + ' (' + (e.pisc==='curta'?'25m':'50m') + ') · faltam ' + formatAtletaMs(e.diff) + '</div></div>';
+    html += '<div style="font-size:12px;font-weight:700;color:' + pctColor + ';text-align:center;min-width:36px;">' + pct + '%</div>';
     html += '<div style="font-size:12px;color:' + minColor + ';text-align:right;">min<br>' + formatAtletaMs(e.minimo) + '</div></div>';
   }
   if (semTempo.length > 0 && total > 0) {
