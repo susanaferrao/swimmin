@@ -2582,12 +2582,15 @@ document.addEventListener("click", function(e) {
   <div class="poll-section" id="poll-section">
     <div class="poll-header">
       <div>
-        <div class="poll-title">QUEM VAI GANHAR?</div>
+        <div class="poll-title" id="poll-title-tap" onclick="pollTapTitle()" style="cursor:default;user-select:none;">QUEM VAI GANHAR?</div>
         <div class="poll-subtitle">Campeonato Nacional · Dia 1</div>
       </div>
     </div>
     <div id="poll-body">
       <!-- Rendered by JS -->
+    </div>
+    <div id="poll-reset-wrap" style="display:none; text-align:center; margin-top:10px;">
+      <button onclick="pollResetLocal()" style="background:none; border:1.5px solid #ff8c00; border-radius:99px; padding:7px 18px; font-family:'DM Sans',sans-serif; font-size:12px; font-weight:600; color:#ff8c00; cursor:pointer;">🗑️ Limpar os meus votos</button>
     </div>
   </div>
 
@@ -12064,6 +12067,27 @@ async function pollRefresh() {
     pollRenderResult(poll.id, totals, voted[poll.id]);
   }));
   if (btn) { btn.textContent = '🔄 Actualizar resultados'; btn.disabled = false; }
+}
+
+/* --- Reset local (só votos, não toca em mais nada) --- */
+var _pollTapCount = 0;
+var _pollTapTimer = null;
+function pollTapTitle() {
+  _pollTapCount++;
+  clearTimeout(_pollTapTimer);
+  _pollTapTimer = setTimeout(function() { _pollTapCount = 0; }, 2000);
+  if (_pollTapCount >= 5) {
+    _pollTapCount = 0;
+    var wrap = document.getElementById('poll-reset-wrap');
+    if (wrap) wrap.style.display = wrap.style.display === 'none' ? 'block' : 'none';
+  }
+}
+function pollResetLocal() {
+  if (!confirm('Limpar os teus votos neste dispositivo?')) return;
+  localStorage.removeItem(POLL_VOTED_KEY);
+  localStorage.removeItem(POLL_FP_KEY);
+  document.getElementById('poll-reset-wrap').style.display = 'none';
+  pollRender();
 }
 
 /* --- Reset para testes (remove do localStorage) --- */
