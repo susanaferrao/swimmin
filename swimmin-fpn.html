@@ -641,6 +641,174 @@
   }
 }
 
+/* ===== POLLS ===== */
+.poll-section {
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 2;
+  background: var(--card);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 28px 28px 24px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12), 0 0 0 1px rgba(255,255,255,0.3), inset 0 1px 0 rgba(255,255,255,0.8);
+}
+.poll-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.poll-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px;
+  color: var(--blue-deep);
+  letter-spacing: 2px;
+}
+.poll-subtitle {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+.poll-badge {
+  background: linear-gradient(135deg, #ff8c00, #e65c00);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 20px;
+}
+.poll-item {
+  margin-bottom: 20px;
+}
+.poll-item:last-child { margin-bottom: 0; }
+.poll-event-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--blue-deep);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1.5px solid rgba(0,63,107,0.1);
+}
+.poll-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+.poll-option-btn {
+  width: 100%;
+  background: #eef5fa;
+  border: 1.5px solid #d0e4f0;
+  border-radius: 12px;
+  padding: 12px 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--blue-deep);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.poll-option-btn:hover { border-color: var(--aqua); background: #e0f7f8; }
+.poll-option-btn.selected {
+  background: linear-gradient(135deg, var(--blue-deep), var(--blue-mid));
+  border-color: transparent;
+  color: #fff;
+}
+.poll-option-btn.voted {
+  cursor: default;
+  pointer-events: none;
+}
+.poll-option-btn.voted.selected {
+  background: linear-gradient(135deg, var(--blue-deep), var(--blue-mid));
+  color: #fff;
+}
+.poll-option-name { line-height: 1.3; font-size: 13px; }
+.poll-option-club { font-size: 10px; font-weight: 400; opacity: 0.7; display: block; }
+.poll-bar-wrap {
+  display: none;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.poll-bar-wrap.show { display: flex; }
+.poll-pct {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  color: var(--aqua);
+  line-height: 1;
+}
+.poll-option-btn.selected .poll-pct { color: #fff; }
+.poll-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(0,0,0,0.1);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.poll-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  background: var(--aqua);
+  transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.poll-option-btn.selected .poll-bar-fill { background: rgba(255,255,255,0.6); }
+.poll-total {
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 8px;
+}
+.poll-vote-btn {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--aqua), var(--blue-bright));
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 14px rgba(0,196,204,0.35);
+}
+.poll-vote-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,196,204,0.45); }
+.poll-vote-btn:disabled { opacity: 0.6; cursor: default; transform: none; }
+/* dark mode */
+html:not(.light-mode) .poll-section {
+  background: rgba(0,25,50,0.75);
+  box-shadow: 0 32px 64px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+html:not(.light-mode) .poll-title { color: #fff; }
+html:not(.light-mode) .poll-subtitle { color: var(--blue-light); }
+html:not(.light-mode) .poll-event-name { color: var(--blue-light); border-bottom-color: rgba(184,223,245,0.15); }
+html:not(.light-mode) .poll-option-btn {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(184,223,245,0.2);
+  color: #fff;
+}
+html:not(.light-mode) .poll-option-btn:hover { background: rgba(0,196,204,0.1); border-color: var(--aqua); }
+html:not(.light-mode) .poll-total { color: var(--blue-light); }
+/* fallback sem backdrop-filter */
+@supports not (backdrop-filter: blur(1px)) {
+  .poll-section { background: #0d2340 !important; }
+  html.light-mode .poll-section { background: #ffffff !important; }
+}
+
 /* ===== CALENDÁRIO ===== */
 .cal-section {
   margin-bottom: 20px;
@@ -2383,7 +2551,21 @@ document.addEventListener("click", function(e) {
     </a>
   </div>
 
+  <!-- Poll -->
+  <div class="poll-section" id="poll-section">
+    <div class="poll-header">
+      <div>
+        <div class="poll-title">QUEM VAI GANHAR?</div>
+        <div class="poll-subtitle">Campeonato Nacional · Dia 1</div>
+      </div>
+    </div>
+    <div id="poll-body">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+
   <div class="card">
+    <div class="fpn-title" style="margin-bottom:16px;">Tempos de Acesso a Campeonatos</div>
     <div class="grid">
       <div class="field">
         <label>Piscina</label>
@@ -11614,6 +11796,261 @@ html.light-mode {
       '</svg>';
   });
 })();
+</script>
+
+<script>
+/* ===== POLLS ===== */
+var POLL_DATA = [
+  {
+    id: 'poll_1500L_d1',
+    evento: '1500m Livres — Femininos',
+    opcoes: [
+      { id: 'a', nome: 'Beatriz Cardeal', clube: 'Condeixa AC' },
+      { id: 'b', nome: 'Diana Durães',    clube: 'SL Benfica' },
+      { id: 'c', nome: 'Carolina Viana',  clube: 'Sporting CP' }
+    ]
+  },
+  {
+    id: 'poll_400L_d1',
+    evento: '400m Livres — Masculinos',
+    opcoes: [
+      { id: 'a', nome: 'Gustavo Ribeiro', clube: 'SL Benfica' },
+      { id: 'b', nome: 'Rodrigo Borges',  clube: 'FC Porto' },
+      { id: 'c', nome: 'Filipe Laranjo',  clube: 'SC Braga' }
+    ]
+  },
+  {
+    id: 'poll_200M_d1',
+    evento: '200m Mariposa — Femininos',
+    opcoes: [
+      { id: 'a', nome: 'Mariana Cunha',   clube: 'C. Efanor' },
+      { id: 'b', nome: 'Inês Henriques',  clube: 'Louzan EFAPEL' },
+      { id: 'c', nome: 'Maria Moura',     clube: 'Sporting CP' }
+    ]
+  }
+];
+
+var POLL_NAMESPACE = 'swimmin-fpn-2025';
+var POLL_VOTED_KEY = 'swimmin_poll_voted_v2';
+var POLL_FP_KEY    = 'swimmin_poll_fp';
+
+/* --- Fingerprint do dispositivo --- */
+function pollGetFingerprint() {
+  var fp = localStorage.getItem(POLL_FP_KEY);
+  if (fp) return fp;
+  var raw = [
+    navigator.userAgent,
+    navigator.language,
+    screen.width + 'x' + screen.height,
+    screen.colorDepth,
+    new Date().getTimezoneOffset(),
+    navigator.hardwareConcurrency || '',
+    navigator.platform || ''
+  ].join('|');
+  // hash simples
+  var hash = 0;
+  for (var i = 0; i < raw.length; i++) {
+    hash = ((hash << 5) - hash) + raw.charCodeAt(i);
+    hash |= 0;
+  }
+  fp = 'fp_' + Math.abs(hash).toString(36) + '_' + Date.now().toString(36);
+  localStorage.setItem(POLL_FP_KEY, fp);
+  return fp;
+}
+
+function pollGetVoted() {
+  try { return JSON.parse(localStorage.getItem(POLL_VOTED_KEY)) || {}; } catch(e) { return {}; }
+}
+function pollSetVoted(voted) {
+  try { localStorage.setItem(POLL_VOTED_KEY, JSON.stringify(voted)); } catch(e) {}
+}
+
+/* --- CountAPI --- */
+async function pollHit(key) {
+  try {
+    var r = await fetch('https://api.countapi.xyz/hit/' + POLL_NAMESPACE + '/' + key);
+    var j = await r.json();
+    return j.value || 0;
+  } catch(e) { return 0; }
+}
+async function pollGet(key) {
+  try {
+    var r = await fetch('https://api.countapi.xyz/get/' + POLL_NAMESPACE + '/' + key);
+    var j = await r.json();
+    return j.value || 0;
+  } catch(e) { return 0; }
+}
+
+/* --- Seleccionar opção (sem votar ainda) --- */
+function pollSelect(pollId, optId) {
+  var voted = pollGetVoted();
+  if (voted[pollId]) return;
+  var poll = POLL_DATA.find(function(p) { return p.id === pollId; });
+  if (!poll) return;
+
+  // Toggle: se já está seleccionado, desselecciona; senão selecciona
+  var btn = document.getElementById('poll-btn-' + pollId + '-' + optId);
+  if (btn.classList.contains('selected')) {
+    btn.classList.remove('selected');
+  } else {
+    // Só um pode estar seleccionado por prova
+    poll.opcoes.forEach(function(opt) {
+      var b = document.getElementById('poll-btn-' + pollId + '-' + opt.id);
+      if (b) b.classList.remove('selected');
+    });
+    btn.classList.add('selected');
+  }
+
+  // Botão "Votar" só aparece quando as 3 provas têm uma opção seleccionada
+  var allSelected = POLL_DATA.every(function(p) {
+    // Provas já votadas contam como seleccionadas
+    if (voted[p.id]) return true;
+    return !!document.querySelector('#poll-item-' + p.id + ' .poll-option-btn.selected');
+  });
+
+  // Mostra/esconde o botão votar global
+  var vBtn = document.getElementById('poll-vote-all-btn');
+  if (vBtn) vBtn.style.display = allSelected ? 'block' : 'none';
+}
+
+/* --- Animação de contagem crescente --- */
+function pollAnimateCount(el, target, duration) {
+  var start = 0;
+  var startTime = null;
+  function step(ts) {
+    if (!startTime) startTime = ts;
+    var progress = Math.min((ts - startTime) / duration, 1);
+    var ease = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+    el.textContent = Math.round(ease * target) + '%';
+    if (progress < 1) requestAnimationFrame(step);
+    else el.textContent = target + '%';
+  }
+  requestAnimationFrame(step);
+}
+
+/* --- Submeter todos os votos --- */
+async function pollSubmitAll() {
+  var voted = pollGetVoted();
+  var vBtn = document.getElementById('poll-vote-all-btn');
+  if (vBtn) { vBtn.disabled = true; vBtn.textContent = 'A registar...'; }
+
+  var fp = pollGetFingerprint();
+
+  // Para cada prova não votada, regista o voto seleccionado
+  await Promise.all(POLL_DATA.map(async function(poll) {
+    if (voted[poll.id]) return;
+    var selectedBtn = document.querySelector('#poll-item-' + poll.id + ' .poll-option-btn.selected');
+    if (!selectedBtn) return;
+    var optId = selectedBtn.id.replace('poll-btn-' + poll.id + '-', '');
+    voted[poll.id] = optId;
+    await pollHit(poll.id + '_' + optId);
+  }));
+  pollSetVoted(voted);
+
+  // Busca todos os totais e mostra resultados
+  await Promise.all(POLL_DATA.map(async function(poll) {
+    var totals = {};
+    await Promise.all(poll.opcoes.map(async function(opt) {
+      totals[opt.id] = await pollGet(poll.id + '_' + opt.id);
+    }));
+    if (voted[poll.id] && (!totals[voted[poll.id]] || totals[voted[poll.id]] < 1)) totals[voted[poll.id]] = 1;
+    pollRenderResult(poll.id, totals, voted[poll.id]);
+  }));
+
+  if (vBtn) vBtn.style.display = 'none';
+  if (typeof gtag === 'function') gtag('event', 'poll_voto', { feature: 'poll' });
+}
+
+/* --- Mostrar resultados com animação --- */
+function pollRenderResult(pollId, totals, myVote) {
+  var poll = POLL_DATA.find(function(p) { return p.id === pollId; });
+  if (!poll) return;
+  totals = totals || {};
+
+  // Garante que o voto da pessoa aparece mesmo que o API devolva 0
+  if (myVote && (!totals[myVote] || totals[myVote] < 1)) totals[myVote] = 1;
+
+  var total = poll.opcoes.reduce(function(s, o) { return s + (totals[o.id] || 0); }, 0);
+
+  // Esconde botão votar
+  var vBtn = document.getElementById('poll-vote-btn-' + pollId);
+  if (vBtn) vBtn.style.display = 'none';
+
+  poll.opcoes.forEach(function(opt) {
+    var btn = document.getElementById('poll-btn-' + pollId + '-' + opt.id);
+    if (!btn) return;
+    var pct = total > 0 ? Math.round((totals[opt.id] || 0) / total * 100) : 0;
+    btn.classList.add('voted');
+    btn.classList.remove('selected');
+    if (opt.id === myVote) btn.classList.add('selected');
+    var barWrap = btn.querySelector('.poll-bar-wrap');
+    var pctEl   = btn.querySelector('.poll-pct');
+    var barFill = btn.querySelector('.poll-bar-fill');
+    if (barWrap) barWrap.classList.add('show');
+    if (pctEl) pollAnimateCount(pctEl, pct, 900);
+    if (barFill) setTimeout(function() { barFill.style.width = pct + '%'; }, 50);
+  });
+
+  var totalEl = document.getElementById('poll-total-' + pollId);
+  if (totalEl) totalEl.textContent = total + (total === 1 ? ' voto' : ' votos');
+}
+
+/* --- Reset para testes (remove do localStorage) --- */
+function pollResetVotes() {
+  localStorage.removeItem(POLL_VOTED_KEY);
+  localStorage.removeItem(POLL_FP_KEY);
+  pollRender();
+}
+
+/* --- Render inicial --- */
+async function pollRender() {
+  var body = document.getElementById('poll-body');
+  if (!body) return;
+  var voted = pollGetVoted();
+  var allVoted = POLL_DATA.every(function(p) { return voted[p.id]; });
+
+  var html = '';
+  POLL_DATA.forEach(function(poll) {
+    html += '<div class="poll-item" id="poll-item-' + poll.id + '">';
+    html += '<div class="poll-event-name">' + poll.evento + '</div>';
+    html += '<div class="poll-options">';
+    poll.opcoes.forEach(function(opt) {
+      html += '<button class="poll-option-btn" id="poll-btn-' + poll.id + '-' + opt.id + '"'
+        + ' onclick="pollSelect(\'' + poll.id + '\',\'' + opt.id + '\')">'
+        + '<span class="poll-option-name">' + opt.nome
+        + (opt.clube ? '<span class="poll-option-club">' + opt.clube + '</span>' : '')
+        + '</span>'
+        + '<div class="poll-bar-wrap">'
+        + '<span class="poll-pct">0%</span>'
+        + '<div class="poll-bar"><div class="poll-bar-fill" style="width:0%"></div></div>'
+        + '</div>'
+        + '</button>';
+    });
+    html += '</div>';
+    html += '<div class="poll-total" id="poll-total-' + poll.id + '"></div>';
+    html += '</div>';
+  });
+
+  // Botão votar global — só aparece quando as 3 provas têm selecção
+  if (!allVoted) {
+    html += '<button class="poll-vote-btn" id="poll-vote-all-btn" style="display:none;"'
+      + ' onclick="pollSubmitAll()">Votar nas 3 provas</button>';
+  }
+
+  body.innerHTML = html;
+
+  // Restaura votos anteriores com totais reais
+  var votedPolls = POLL_DATA.filter(function(p) { return voted[p.id]; });
+  await Promise.all(votedPolls.map(async function(poll) {
+    var totals = {};
+    await Promise.all(poll.opcoes.map(async function(opt) {
+      totals[opt.id] = await pollGet(poll.id + '_' + opt.id);
+    }));
+    pollRenderResult(poll.id, totals, voted[poll.id]);
+  }));
+}
+
+document.addEventListener('DOMContentLoaded', function() { pollRender(); });
 </script>
 
 <script>
