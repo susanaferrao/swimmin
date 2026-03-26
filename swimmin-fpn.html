@@ -729,9 +729,28 @@
   pointer-events: none;
 }
 .poll-option-btn.voted.selected {
-  background: linear-gradient(135deg, var(--blue-deep), var(--blue-mid));
-  color: #fff;
+  background: #eef5fa;
+  border: 2.5px solid #ff8c00;
+  color: var(--blue-deep);
+  box-shadow: 0 0 0 3px rgba(255,140,0,0.2);
 }
+.poll-option-btn.voted.selected .poll-pct { color: var(--aqua); }
+.poll-option-btn.voted.selected .poll-bar-fill { background: var(--aqua); }
+.poll-refresh-btn {
+  display: block;
+  margin: 12px auto 0;
+  background: none;
+  border: 1.5px solid #d0e4f0;
+  border-radius: 99px;
+  padding: 7px 18px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.poll-refresh-btn:hover { border-color: var(--aqua); color: var(--aqua); }
 .poll-option-name { line-height: 1.3; font-size: 13px; }
 .poll-option-club { font-size: 10px; font-weight: 400; opacity: 0.7; display: block; }
 .poll-bar-wrap {
@@ -802,6 +821,14 @@ html:not(.light-mode) .poll-option-btn {
   color: #fff;
 }
 html:not(.light-mode) .poll-option-btn:hover { background: rgba(0,196,204,0.1); border-color: var(--aqua); }
+html:not(.light-mode) .poll-option-btn.voted.selected {
+  background: rgba(255,255,255,0.06);
+  border: 2.5px solid #ff8c00;
+  color: #fff;
+  box-shadow: 0 0 0 3px rgba(255,140,0,0.2);
+}
+html:not(.light-mode) .poll-option-btn.voted.selected .poll-pct { color: var(--aqua); }
+html:not(.light-mode) .poll-option-btn.voted.selected .poll-bar-fill { background: var(--aqua); }
 html:not(.light-mode) .poll-total { color: var(--blue-light); }
 /* fallback sem backdrop-filter */
 @supports not (backdrop-filter: blur(1px)) {
@@ -11980,6 +12007,12 @@ async function pollSubmitAll() {
   }));
 
   if (vBtn) vBtn.style.display = 'none';
+  // Mostra botão de actualizar
+  var refreshHtml = '<button class="poll-refresh-btn" id="poll-refresh-btn" onclick="pollRefresh()">🔄 Actualizar resultados</button>';
+  var body = document.getElementById('poll-body');
+  if (body && !document.getElementById('poll-refresh-btn')) {
+    body.insertAdjacentHTML('beforeend', refreshHtml);
+  }
   if (typeof gtag === 'function') gtag('event', 'poll_voto', { feature: 'poll' });
 }
 
@@ -12015,6 +12048,22 @@ function pollRenderResult(pollId, totals, myVote) {
 
   var totalEl = document.getElementById('poll-total-' + pollId);
   if (totalEl) totalEl.textContent = total + (total === 1 ? ' voto' : ' votos');
+}
+
+/* --- Actualizar resultados --- */
+async function pollRefresh() {
+  var btn = document.getElementById('poll-refresh-btn');
+  if (btn) { btn.textContent = '⏳ A actualizar...'; btn.disabled = true; }
+  var voted = pollGetVoted();
+  await Promise.all(POLL_DATA.map(async function(poll) {
+    if (!voted[poll.id]) return;
+    var totals = {};
+    await Promise.all(poll.opcoes.map(async function(opt) {
+      totals[opt.id] = await pollGet(poll.id + '_' + opt.id);
+    }));
+    pollRenderResult(poll.id, totals, voted[poll.id]);
+  }));
+  if (btn) { btn.textContent = '🔄 Actualizar resultados'; btn.disabled = false; }
 }
 
 /* --- Reset para testes (remove do localStorage) --- */
@@ -12057,6 +12106,9 @@ async function pollRender() {
   if (!allVoted) {
     html += '<button class="poll-vote-btn" id="poll-vote-all-btn" style="display:none;"'
       + ' onclick="pollSubmitAll()">Votar nas 3 provas</button>';
+  } else {
+    html += '<button class="poll-refresh-btn" id="poll-refresh-btn"'
+      + ' onclick="pollRefresh()">🔄 Actualizar resultados</button>';
   }
 
   body.innerHTML = html;
