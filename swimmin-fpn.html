@@ -590,6 +590,57 @@
     letter-spacing: 0.5px;
   }
 
+/* ===== FALLBACK PARA BROWSERS SEM backdrop-filter (Android antigo, etc.) ===== */
+@supports not (backdrop-filter: blur(1px)) {
+  /* Dark mode — fundos sólidos apresentáveis */
+  .card, .fpn-section, .crono-card, .coach-card, .cal-section {
+    background: #0d2340 !important;
+  }
+  .cal-popup {
+    background: #0d2340 !important;
+  }
+  .cal-full-overlay {
+    background: #091a2e !important;
+  }
+  .cal-full-header {
+    background: #0d2340 !important;
+  }
+  .crono-history-item, .crono-summary-swimmer {
+    background: #0d2340 !important;
+  }
+  .sw-card {
+    background: #0d2340 !important;
+  }
+  .crono-color-picker, #auth-badge-menu {
+    background: #091a2e !important;
+  }
+
+  /* Light mode — fundos brancos sólidos */
+  html.light-mode .card,
+  html.light-mode .fpn-section,
+  html.light-mode .crono-card,
+  html.light-mode .coach-card,
+  html.light-mode .cal-section {
+    background: #ffffff !important;
+  }
+  html.light-mode .cal-popup {
+    background: #ffffff !important;
+  }
+  html.light-mode .cal-full-overlay {
+    background: #f0f7fc !important;
+  }
+  html.light-mode .cal-full-header {
+    background: #ffffff !important;
+  }
+  html.light-mode .crono-history-item,
+  html.light-mode .crono-summary-swimmer {
+    background: #f4f8fb !important;
+  }
+  html.light-mode .sw-card {
+    background: #f0f7ff !important;
+  }
+}
+
 /* ===== CALENDÁRIO ===== */
 .cal-section {
   margin-bottom: 20px;
