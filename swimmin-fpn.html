@@ -12005,7 +12005,6 @@ async function pollSubmitAll() {
     await Promise.all(poll.opcoes.map(async function(opt) {
       totals[opt.id] = await pollGet(poll.id + '_' + opt.id);
     }));
-    if (voted[poll.id] && (!totals[voted[poll.id]] || totals[voted[poll.id]] < 1)) totals[voted[poll.id]] = 1;
     pollRenderResult(poll.id, totals, voted[poll.id]);
   }));
 
@@ -12026,8 +12025,6 @@ function pollRenderResult(pollId, totals, myVote) {
   totals = totals || {};
 
   // Garante que o voto da pessoa aparece mesmo que o API devolva 0
-  if (myVote && (!totals[myVote] || totals[myVote] < 1)) totals[myVote] = 1;
-
   var total = poll.opcoes.reduce(function(s, o) { return s + (totals[o.id] || 0); }, 0);
 
   // Esconde botão votar
