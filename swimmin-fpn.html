@@ -11920,8 +11920,9 @@ async function pollHit(key) {
 
 async function pollGet(key) {
   try {
+    var fullKey = POLL_NAMESPACE + '_' + key;
     var r = await fetch(
-      SUPABASE_URL + '/rest/v1/poll_votes?select=count&key=eq.' + encodeURIComponent(POLL_NAMESPACE + '_' + key),
+      SUPABASE_URL + '/rest/v1/poll_votes?select=count&key=eq.' + fullKey,
       {
         headers: {
           'apikey': SUPABASE_ANON,
