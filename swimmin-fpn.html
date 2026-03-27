@@ -11923,25 +11923,17 @@ async function pollGet(key) {
 }
 
 // Cache dos totais para evitar pedidos repetidos
-var _pollTotalsCache = null;
-var _pollTotalsCacheTime = 0;
 async function pollGetAllTotals() {
-  var now = Date.now();
-  if (_pollTotalsCache && (now - _pollTotalsCacheTime) < 3000) return _pollTotalsCache;
   try {
-    var r = await fetch(SUPABASE_URL + '/rest/v1/poll_votes?select=key,votes&limit=100&_=' + now, {
+    var r = await fetch(SUPABASE_URL + '/rest/v1/poll_votes?select=key,votes&limit=100', {
       cache: 'no-store',
       headers: {
         'apikey': SUPABASE_ANON,
-        'Authorization': 'Bearer ' + SUPABASE_ANON,
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'Pragma': 'no-cache'
+        'Authorization': 'Bearer ' + SUPABASE_ANON
       }
     });
     var j = await r.json();
-    _pollTotalsCache = Array.isArray(j) ? j : [];
-    _pollTotalsCacheTime = now;
-    return _pollTotalsCache;
+    return Array.isArray(j) ? j : [];
   } catch(e) { return []; }
 }
 
@@ -11987,7 +11979,7 @@ async function pollSubmitAll() {
   pollSetVoted(voted);
 
   // Invalida cache e aguarda confirmação do Supabase
-  _pollTotalsCache = null;
+  
   await new Promise(function(resolve) { setTimeout(resolve, 800); });
 
   // Vai buscar totais reais e mostra resultados
@@ -12031,7 +12023,7 @@ async function pollMostrarResultados(voted) {
 async function pollRefresh() {
   var btn = document.getElementById('poll-refresh-btn');
   if (btn) { btn.textContent = '⏳ A actualizar...'; btn.disabled = true; }
-  _pollTotalsCache = null; // força pedido fresco
+  // pedido sempre fresco
   var voted = pollGetVoted();
   await pollMostrarResultados(voted);
   if (btn) { btn.textContent = '🔄 Actualizar resultados'; btn.disabled = false; }
