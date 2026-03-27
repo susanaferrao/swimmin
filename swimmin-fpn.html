@@ -11929,10 +11929,13 @@ async function pollGetAllTotals() {
   var now = Date.now();
   if (_pollTotalsCache && (now - _pollTotalsCacheTime) < 3000) return _pollTotalsCache;
   try {
-    var r = await fetch(SUPABASE_URL + '/rest/v1/poll_votes?select=key,votes&limit=100', {
+    var r = await fetch(SUPABASE_URL + '/rest/v1/poll_votes?select=key,votes&limit=100&_=' + now, {
+      cache: 'no-store',
       headers: {
         'apikey': SUPABASE_ANON,
-        'Authorization': 'Bearer ' + SUPABASE_ANON
+        'Authorization': 'Bearer ' + SUPABASE_ANON,
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache'
       }
     });
     var j = await r.json();
