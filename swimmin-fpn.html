@@ -832,7 +832,7 @@ html:not(.light-mode) .poll-option-btn.voted.selected {
 }
 html:not(.light-mode) .poll-option-btn.voted.selected .poll-pct { color: var(--aqua); }
 html:not(.light-mode) .poll-option-btn.voted.selected .poll-bar-fill { background: var(--aqua); }
-html:not(.light-mode) .poll-total { color: var(--blue-light); }
+html:not(.light-mode) .atleta-summary-name { color: #ffffff !important; }
 
 .hint-box { border-radius:8px; padding:10px 14px; margin-bottom:14px; border-left:3px solid var(--aqua); background:rgba(0,196,204,0.1); }
 .hint-box-title { font-size:12px; font-weight:600; margin-bottom:3px; color:var(--blue-deep); }
@@ -2589,7 +2589,7 @@ document.addEventListener("click", function(e) {
   </div>
 
   <!-- Poll -->
-  <div class="poll-section" id="poll-section">
+  <div class="poll-section" id="poll-section" style="display:none;">
     <div class="poll-header">
       <div>
         <div class="poll-title" id="poll-title-tap" onclick="pollTapTitle()" style="cursor:default;user-select:none;">QUEM VENCE?</div>
@@ -8361,7 +8361,7 @@ function mostrarPerfilAtivo() {
   }
 
   document.getElementById('atleta-saved-summary').innerHTML =
-    '<div style="font-size:15px;color:var(--blue-deep);margin-bottom:4px;">' +
+    '<div style="font-size:15px;color:var(--blue-deep);margin-bottom:4px;" class="atleta-summary-name">' +
     '<strong>' + (data.nome || 'Nadador') + '</strong> · ' + (ESC_LABEL[data.escalao] || data.escalao) + '</div>';
 
   ATLETA_COMP_ATUAL = null;
