@@ -11904,8 +11904,8 @@ async function pollGet(key) {
       .from('poll_votes')
       .select('votes')
       .eq('key', POLL_NAMESPACE + '_' + key)
-      .maybeSingle();
-    if (error) { console.warn('pollGet error', error.message); return 0; }
+      .maybeSingle()
+      .throwOnError();
     return (data && data.votes) ? Number(data.votes) : 0;
   } catch(e) { console.warn('pollGet exception', e); return 0; }
 }
@@ -11950,6 +11950,9 @@ async function pollSubmitAll() {
     await pollHit(poll.id + '_' + optId);
   }
   pollSetVoted(voted);
+
+  // Pequena pausa para garantir que o Supabase confirmou os votos
+  await new Promise(function(resolve) { setTimeout(resolve, 800); });
 
   // Vai buscar totais reais e mostra resultados
   await pollMostrarResultados(voted);
