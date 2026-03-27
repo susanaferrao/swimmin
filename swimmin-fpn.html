@@ -11895,7 +11895,7 @@ async function pollHit(key) {
     var j = await r.json();
     // RPC pode devolver array ou objecto
     var row = Array.isArray(j) ? j[0] : j;
-    return (row && row.count) ? Number(row.count) : 0;
+    return (row && row.votes) ? Number(row.votes) : 0;
   } catch(e) { console.warn('pollHit exception', e); return 0; }
 }
 
@@ -11903,12 +11903,16 @@ async function pollHit(key) {
 async function pollGet(key) {
   try {
     var fullKey = POLL_NAMESPACE + '_' + key;
-    var r = await fetch(
-      SUPABASE_URL + '/rest/v1/poll_votes?select=count&key=eq.' + fullKey,
-      { headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + SUPABASE_ANON } }
-    );
+    var url = SUPABASE_URL + '/rest/v1/poll_votes?select=votes&key=eq.' + fullKey + '&_=' + Date.now();
+    var r = await fetch(url, {
+      cache: 'no-store',
+      headers: {
+        'apikey': SUPABASE_ANON,
+        'Authorization': 'Bearer ' + SUPABASE_ANON
+      }
+    });
     var j = await r.json();
-    return (j && j[0] && j[0].count) ? Number(j[0].count) : 0;
+    return (j && j[0] && j[0].votes) ? Number(j[0].votes) : 0;
   } catch(e) { return 0; }
 }
 
