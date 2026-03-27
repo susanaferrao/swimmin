@@ -833,6 +833,13 @@ html:not(.light-mode) .poll-option-btn.voted.selected {
 html:not(.light-mode) .poll-option-btn.voted.selected .poll-pct { color: var(--aqua); }
 html:not(.light-mode) .poll-option-btn.voted.selected .poll-bar-fill { background: var(--aqua); }
 html:not(.light-mode) .poll-total { color: var(--blue-light); }
+
+.hint-box { border-radius:8px; padding:10px 14px; margin-bottom:14px; border-left:3px solid var(--aqua); background:rgba(0,196,204,0.1); }
+.hint-box-title { font-size:12px; font-weight:600; margin-bottom:3px; color:var(--blue-deep); }
+.hint-box-text { font-size:12px; line-height:1.6; color:#1a5a7a; }
+html:not(.light-mode) .hint-box { background:rgba(0,196,204,0.12); }
+html:not(.light-mode) .hint-box-title { color:#ffffff; }
+html:not(.light-mode) .hint-box-text { color:#ffffff; }
 /* fallback sem backdrop-filter */
 @supports not (backdrop-filter: blur(1px)) {
   .poll-section { background: #0d2340 !important; }
@@ -2585,7 +2592,7 @@ document.addEventListener("click", function(e) {
   <div class="poll-section" id="poll-section">
     <div class="poll-header">
       <div>
-        <div class="poll-title" id="poll-title-tap" onclick="pollTapTitle()" style="cursor:default;user-select:none;">QUEM VAI GANHAR?</div>
+        <div class="poll-title" id="poll-title-tap" onclick="pollTapTitle()" style="cursor:default;user-select:none;">QUEM VENCE?</div>
         <div class="poll-subtitle">Campeonato Nacional · Dia 1</div>
       </div>
     </div>
@@ -2859,9 +2866,9 @@ document.addEventListener("click", function(e) {
 
 
 
-      <div style="background:rgba(0,196,204,0.1);border-radius:8px;padding:10px 14px;margin-bottom:14px;border-left:3px solid var(--aqua);">
-        <div style="font-size:12px;color:var(--blue-deep);font-weight:600;margin-bottom:3px;">Como inserir os tempos</div>
-        <div style="font-size:12px;color:#1a5a7a;line-height:1.6;">
+      <div class="hint-box">
+        <div class="hint-box-title">Como inserir os tempos</div>
+        <div class="hint-box-text">
           Escreve só os dígitos, sem pontuação:<br>
           <strong>30,43</strong> → escreve <strong>3043</strong><br>
           <strong>1:17,09</strong> → escreve <strong>11709</strong>
@@ -9236,9 +9243,9 @@ function instalarApp() {
             </select>
           </div>
         </div>
-                <div style="background:#e8f6f8;border-radius:10px;padding:12px 14px;margin-bottom:12px;">
-          <div style="font-size:13px;font-weight:700;color:#0a2a4a;margin-bottom:6px;">Como inserir os tempos</div>
-          <div style="font-size:12px;color:#0a2a4a;line-height:1.6;">
+                <div class="hint-box" style="border-radius:10px;padding:12px 14px;margin-bottom:12px;border-left:none;">
+          <div class="hint-box-title" style="font-size:13px;">Como inserir os tempos</div>
+          <div class="hint-box-text">
             Escreve só os dígitos, sem pontuação:<br>
             <strong>30,43</strong> &rarr; escreve <strong>3043</strong><br>
             <strong>1:17,09</strong> &rarr; escreve <strong>11709</strong>
