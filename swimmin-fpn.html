@@ -11880,19 +11880,20 @@ function pollSetVoted(v) {
   try { localStorage.setItem(POLL_VOTED_KEY, JSON.stringify(v)); } catch(e) {}
 }
 
-/* --- Supabase SDK client --- */
-var _sb = null;
-function getSB() {
-  if (!_sb) _sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-  return _sb;
-}
-
 /* --- Supabase: incrementar voto --- */
 async function pollHit(key) {
   try {
-    var { data, error } = await getSB().rpc('poll_increment', { p_key: POLL_NAMESPACE + '_' + key });
-    if (error) { console.warn('pollHit error', error.message); return 0; }
-    var row = Array.isArray(data) ? data[0] : data;
+    var r = await fetch(SUPABASE_URL + '/rest/v1/rpc/poll_increment', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON,
+        'Authorization': 'Bearer ' + SUPABASE_ANON
+      },
+      body: JSON.stringify({ p_key: POLL_NAMESPACE + '_' + key })
+    });
+    var j = await r.json();
+    var row = Array.isArray(j) ? j[0] : j;
     return (row && row.votes) ? Number(row.votes) : 0;
   } catch(e) { console.warn('pollHit exception', e); return 0; }
 }
@@ -11900,14 +11901,39 @@ async function pollHit(key) {
 /* --- Supabase: ler contagem --- */
 async function pollGet(key) {
   try {
-    var { data, error } = await getSB()
-      .from('poll_votes')
-      .select('votes')
-      .eq('key', POLL_NAMESPACE + '_' + key)
-      .maybeSingle()
-      .throwOnError();
-    return (data && data.votes) ? Number(data.votes) : 0;
+    var fullKey = POLL_NAMESPACE + '_' + key;
+    // Mesmo formato que funcionou no diagnóstico do Android
+    var r = await fetch(SUPABASE_URL + '/rest/v1/poll_votes?select=key,votes&limit=100', {
+      headers: {
+        'apikey': SUPABASE_ANON,
+        'Authorization': 'Bearer ' + SUPABASE_ANON
+      }
+    });
+    var j = await r.json();
+    if (!Array.isArray(j)) return 0;
+    var row = j.find(function(r) { return r.key === fullKey; });
+    return (row && row.votes) ? Number(row.votes) : 0;
   } catch(e) { console.warn('pollGet exception', e); return 0; }
+}
+
+// Cache dos totais para evitar pedidos repetidos
+var _pollTotalsCache = null;
+var _pollTotalsCacheTime = 0;
+async function pollGetAllTotals() {
+  var now = Date.now();
+  if (_pollTotalsCache && (now - _pollTotalsCacheTime) < 3000) return _pollTotalsCache;
+  try {
+    var r = await fetch(SUPABASE_URL + '/rest/v1/poll_votes?select=key,votes&limit=100', {
+      headers: {
+        'apikey': SUPABASE_ANON,
+        'Authorization': 'Bearer ' + SUPABASE_ANON
+      }
+    });
+    var j = await r.json();
+    _pollTotalsCache = Array.isArray(j) ? j : [];
+    _pollTotalsCacheTime = now;
+    return _pollTotalsCache;
+  } catch(e) { return []; }
 }
 
 /* --- Seleccionar opção (antes de votar) --- */
@@ -11951,7 +11977,8 @@ async function pollSubmitAll() {
   }
   pollSetVoted(voted);
 
-  // Pequena pausa para garantir que o Supabase confirmou os votos
+  // Invalida cache e aguarda confirmação do Supabase
+  _pollTotalsCache = null;
   await new Promise(function(resolve) { setTimeout(resolve, 800); });
 
   // Vai buscar totais reais e mostra resultados
@@ -11975,13 +12002,17 @@ async function pollSubmitAll() {
 
 /* --- Buscar totais e mostrar resultados para todas as provas votadas --- */
 async function pollMostrarResultados(voted) {
+  // Um único pedido para buscar tudo
+  var allRows = await pollGetAllTotals();
   for (var i = 0; i < POLL_DATA.length; i++) {
     var poll = POLL_DATA[i];
     if (!voted[poll.id]) continue;
     var totals = {};
     for (var j = 0; j < poll.opcoes.length; j++) {
       var opt = poll.opcoes[j];
-      totals[opt.id] = await pollGet(poll.id + '_' + opt.id);
+      var fullKey = POLL_NAMESPACE + '_' + poll.id + '_' + opt.id;
+      var row = allRows.find(function(r) { return r.key === fullKey; });
+      totals[opt.id] = (row && row.votes) ? Number(row.votes) : 0;
     }
     pollRenderResult(poll.id, totals, voted[poll.id]);
   }
@@ -11991,6 +12022,7 @@ async function pollMostrarResultados(voted) {
 async function pollRefresh() {
   var btn = document.getElementById('poll-refresh-btn');
   if (btn) { btn.textContent = '⏳ A actualizar...'; btn.disabled = true; }
+  _pollTotalsCache = null; // força pedido fresco
   var voted = pollGetVoted();
   await pollMostrarResultados(voted);
   if (btn) { btn.textContent = '🔄 Actualizar resultados'; btn.disabled = false; }
