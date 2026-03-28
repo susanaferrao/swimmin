@@ -2810,7 +2810,7 @@ document.addEventListener("click", function(e) {
   </div>
 
   <div class="fpn-section" id="atleta-section" style="display:none">
-    <div class="fpn-title">Zona do Nadador</div>
+    <div class="fpn-title" id="zona-nadador-title" onclick="perfilEasterEgg()" style="cursor:default;">Zona do Nadador</div>
     <div class="fpn-subtitle">Compara os teus tempos com os minimos FPN</div>
 
     <div id="atleta-view-intro">
@@ -2902,6 +2902,31 @@ document.addEventListener("click", function(e) {
     </div>
 
     <div id="atleta-resultados" style="margin-top:20px;"></div>
+
+    <!-- Perfil do Nadador — desbloqueado com 5 cliques no título -->
+    <div id="perfil-radar-section" style="display:none; margin-top:24px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
+        <div>
+          <div class="fpn-title" style="font-size:20px;">MEU PERFIL</div>
+          <div style="font-size:11px; color:var(--muted); letter-spacing:1px; text-transform:uppercase;">Análise de desempenho</div>
+        </div>
+        <div style="display:flex; gap:6px;">
+          <button id="perfil-toggle-nacional" onclick="perfilSetMode('nacional')"
+            style="padding:6px 14px; border-radius:20px; border:1.5px solid; font-size:12px; font-weight:700; font-family:'DM Sans',sans-serif; cursor:pointer; transition:all 0.2s;">
+            🇵🇹 Nacional
+          </button>
+          <button id="perfil-toggle-mundial" onclick="perfilSetMode('mundial')"
+            style="padding:6px 14px; border-radius:20px; border:1.5px solid; font-size:12px; font-weight:700; font-family:'DM Sans',sans-serif; cursor:pointer; transition:all 0.2s;">
+            🌍 Mundial
+          </button>
+        </div>
+      </div>
+      <div id="perfil-radar-body">
+        <!-- Rendered by JS -->
+      </div>
+      <div id="perfil-destaque" style="margin-top:14px; padding:14px 16px; border-radius:14px; font-size:13px; font-weight:600; text-align:center; display:none;"></div>
+    </div>
+
     <div class="footer">Dados guardados na nuvem</div>
   </div>
 
@@ -12195,6 +12220,249 @@ async function pollRender() {
 }
 
 document.addEventListener('DOMContentLoaded', function() { pollRender(); });
+</script>
+
+<script>
+/* ===== PERFIL DO NADADOR — RADAR ===== */
+
+var _perfilEasterClicks = 0;
+var _perfilEasterTimer = null;
+var _perfilUnlocked = false;
+var _perfilMode = 'nacional'; // 'nacional' | 'mundial'
+
+function perfilEasterEgg() {
+  _perfilEasterClicks++;
+  clearTimeout(_perfilEasterTimer);
+  _perfilEasterTimer = setTimeout(function() { _perfilEasterClicks = 0; }, 2000);
+  if (_perfilEasterClicks >= 5) {
+    _perfilEasterClicks = 0;
+    _perfilUnlocked = true;
+    var sec = document.getElementById('perfil-radar-section');
+    if (sec) {
+      sec.style.display = 'block';
+      perfilRender();
+      sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+}
+
+function perfilSetMode(mode) {
+  _perfilMode = mode;
+  var btnN = document.getElementById('perfil-toggle-nacional');
+  var btnM = document.getElementById('perfil-toggle-mundial');
+  var isLight = document.documentElement.classList.contains('light-mode');
+  var activeColor = isLight ? '#1E6091' : '#00c4cc';
+  var inactiveBg = isLight ? 'transparent' : 'transparent';
+  if (btnN && btnM) {
+    if (mode === 'nacional') {
+      btnN.style.background = activeColor; btnN.style.color = '#fff'; btnN.style.borderColor = activeColor;
+      btnM.style.background = inactiveBg; btnM.style.color = activeColor; btnM.style.borderColor = activeColor;
+    } else {
+      btnM.style.background = activeColor; btnM.style.color = '#fff'; btnM.style.borderColor = activeColor;
+      btnN.style.background = inactiveBg; btnN.style.color = activeColor; btnN.style.borderColor = activeColor;
+    }
+  }
+  perfilRender();
+}
+
+// Converte ms (centésimas) para segundos decimais
+function perfilMsToSec(ms) { return ms / 100; }
+
+// Calcula pontos FPN ou FINA para um tempo
+function perfilCalcPontos(ms, piscina, sexo, key, mode) {
+  try {
+    var rec;
+    if (mode === 'nacional') {
+      var parts = key.split('_'); var k = parts[0] + '_' + parts[1];
+      var rn = recordesNacionais[piscina][sexo][k];
+      if (!rn || !rn.tempo) return null;
+      rec = parseAtletaMs(rn.tempo);
+    } else {
+      var parts = key.split('_'); var k2 = parts[0] + parts[1];
+      var rm = recordesMundiais[piscina][sexo][k2];
+      if (!rm || !rm.tempo) return null;
+      rec = parseAtletaMs(rm.tempo);
+    }
+    if (!rec || !ms) return null;
+    return Math.round(1000 * Math.pow(rec / ms, 3));
+  } catch(e) { return null; }
+}
+
+// Escolhe piscina com melhor pontuação para uma prova
+function perfilMelhorPiscina(tempos, key, sexo, mode) {
+  var best = null; var bestPool = null;
+  ['curta', 'longa'].forEach(function(p) {
+    var ms = tempos[p] && tempos[p][key] ? tempos[p][key] : null;
+    if (!ms) return;
+    var pts = perfilCalcPontos(ms, p, sexo, key, mode);
+    if (pts !== null && (best === null || pts > best)) { best = pts; bestPool = p; }
+  });
+  return best;
+}
+
+// Média dos pontos disponíveis para uma lista de chaves
+function perfilMedia(tempos, keys, sexo, mode) {
+  var soma = 0; var n = 0;
+  keys.forEach(function(key) {
+    var pts = perfilMelhorPiscina(tempos, key, sexo, mode);
+    if (pts !== null) { soma += pts; n++; }
+  });
+  return n > 0 ? Math.round(soma / n) : null;
+}
+
+// Desenha um SVG radar
+function perfilDesenharRadar(dados, titulo, cor) {
+  // dados = [{label, value, max}] — value pode ser null (eixo ausente)
+  var validos = dados.filter(function(d) { return d.value !== null; });
+  if (validos.length === 0) return '<div style="text-align:center;color:var(--muted);font-size:13px;padding:20px;">Sem tempos suficientes</div>';
+
+  var N = validos.length;
+  var cx = 120, cy = 120, R = 90;
+  var angleStep = (2 * Math.PI) / N;
+
+  // Normaliza: máximo possível = 1000 pts, mostramos até 110% do max real para dar espaço
+  var maxVal = Math.max.apply(null, validos.map(function(d) { return d.value; }));
+  var scale = maxVal > 0 ? Math.min(maxVal * 1.15, 1000) : 1000;
+
+  function pt(i, val) {
+    var angle = -Math.PI / 2 + i * angleStep;
+    var r = (val / scale) * R;
+    return { x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle) };
+  }
+  function ptEdge(i) { var angle = -Math.PI / 2 + i * angleStep; return { x: cx + R * Math.cos(angle), y: cy + R * Math.sin(angle) }; }
+
+  // Grid circles
+  var grid = '';
+  [0.25, 0.5, 0.75, 1].forEach(function(f) {
+    grid += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (R * f) + '" fill="none" stroke="rgba(128,128,128,0.15)" stroke-width="1"/>';
+  });
+
+  // Axis lines
+  var axes = '';
+  for (var i = 0; i < N; i++) {
+    var e = ptEdge(i);
+    axes += '<line x1="' + cx + '" y1="' + cy + '" x2="' + e.x + '" y2="' + e.y + '" stroke="rgba(128,128,128,0.2)" stroke-width="1"/>';
+  }
+
+  // Data polygon
+  var polyPts = validos.map(function(d, i) { var p = pt(i, d.value); return p.x + ',' + p.y; }).join(' ');
+  var poly = '<polygon points="' + polyPts + '" fill="' + cor + '" fill-opacity="0.25" stroke="' + cor + '" stroke-width="2.5" stroke-linejoin="round"/>';
+
+  // Dots
+  var dots = validos.map(function(d, i) {
+    var p = pt(i, d.value);
+    return '<circle cx="' + p.x + '" cy="' + p.y + '" r="4" fill="' + cor + '" stroke="#fff" stroke-width="1.5"/>';
+  }).join('');
+
+  // Labels
+  var labels = validos.map(function(d, i) {
+    var e = ptEdge(i);
+    var angle = -Math.PI / 2 + i * angleStep;
+    var lx = cx + (R + 18) * Math.cos(angle);
+    var ly = cy + (R + 18) * Math.sin(angle);
+    var anchor = Math.abs(Math.cos(angle)) < 0.1 ? 'middle' : (Math.cos(angle) > 0 ? 'start' : 'end');
+    return '<text x="' + lx + '" y="' + (ly + 4) + '" text-anchor="' + anchor + '" font-family="DM Sans,sans-serif" font-size="10" font-weight="600" fill="currentColor" opacity="0.75">' + d.label + '</text>';
+  }).join('');
+
+  // Pontos no centro
+  var scoreLabel = '<text x="' + cx + '" y="' + (cy + 5) + '" text-anchor="middle" font-family="Bebas Neue,sans-serif" font-size="22" fill="' + cor + '">' + Math.round(maxVal) + '</text>';
+  var scoreSub = '<text x="' + cx + '" y="' + (cy + 18) + '" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="8" fill="currentColor" opacity="0.5">pts</text>';
+
+  return '<div style="text-align:center;margin-bottom:6px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);">' + titulo + '</div>'
+    + '<svg viewBox="0 0 240 240" style="width:100%;max-width:220px;display:block;margin:0 auto;">'
+    + grid + axes + poly + dots + labels + scoreLabel + scoreSub
+    + '</svg>';
+}
+
+function perfilRender() {
+  var body = document.getElementById('perfil-radar-body');
+  var destaque = document.getElementById('perfil-destaque');
+  if (!body) return;
+
+  // Carrega perfil activo
+  var activeId = typeof getActiveProfileId === 'function' ? getActiveProfileId() : null;
+  var data = null;
+  if (activeId && typeof getProfile === 'function') data = getProfile(activeId);
+  if (!data) {
+    // tenta saveAtleta storage
+    try { data = JSON.parse(localStorage.getItem('swimmin_atleta')); } catch(e) {}
+  }
+  if (!data || !data.tempos) {
+    body.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:13px;padding:16px;">Guarda o teu perfil com pelo menos um tempo para ver a infografia.</div>';
+    if (destaque) destaque.style.display = 'none';
+    return;
+  }
+
+  var sexo = data.sexo || 'M';
+  var ts = data.tempos;
+  var mode = _perfilMode;
+
+  // Actualiza botões
+  perfilSetMode(mode);
+
+  // === GRÁFICO 1: PERFIL DE DISTÂNCIA ===
+  var distAxes = [
+    { label: 'Velocidade\nCurta', keys: ['50_L'] },
+    { label: 'Velocidade', keys: ['100_L'] },
+    { label: 'Meio-Fundo', keys: ['200_L', '400_L'] },
+    { label: 'Fundo', keys: ['800_L', '1500_L'] }
+  ];
+  var distData = distAxes.map(function(ax) {
+    var pts = perfilMedia(ts, ax.keys, sexo, mode);
+    return { label: ax.label, value: pts };
+  }).filter(function(d) { return d.value !== null; });
+
+  // === GRÁFICO 2: PERFIL DE ESTILO ===
+  var estiloAxes = [
+    { label: 'Livres', keys: ['50_L', '100_L', '200_L'] },
+    { label: 'Costas', keys: ['50_C', '100_C', '200_C'] },
+    { label: 'Bruços', keys: ['50_B', '100_B', '200_B'] },
+    { label: 'Mariposa', keys: ['50_M', '100_M', '200_M'] }
+  ];
+  var estiloData = estiloAxes.map(function(ax) {
+    var pts = perfilMedia(ts, ax.keys, sexo, mode);
+    return { label: ax.label, value: pts };
+  }).filter(function(d) { return d.value !== null; });
+
+  var corNacional = '#1E6091';
+  var corMundial = '#00c4cc';
+  var cor = mode === 'nacional' ? corNacional : corMundial;
+  var label1 = mode === 'nacional' ? 'Perfil de Distância · FPN' : 'Perfil de Distância · FINA';
+  var label2 = mode === 'nacional' ? 'Perfil de Estilo · FPN' : 'Perfil de Estilo · FINA';
+
+  body.innerHTML =
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">'
+    + '<div style="background:rgba(128,128,128,0.05);border-radius:16px;padding:16px 8px;">' + perfilDesenharRadar(distData, label1, cor) + '</div>'
+    + '<div style="background:rgba(128,128,128,0.05);border-radius:16px;padding:16px 8px;">' + perfilDesenharRadar(estiloData, label2, cor) + '</div>'
+    + '</div>';
+
+  // Destaque textual
+  if (destaque && (distData.length > 0 || estiloData.length > 0)) {
+    var melhorDist = distData.length > 0 ? distData.reduce(function(a,b) { return b.value > a.value ? b : a; }) : null;
+    var melhorEst  = estiloData.length > 0 ? estiloData.reduce(function(a,b) { return b.value > a.value ? b : a; }) : null;
+    var txt = '';
+    if (melhorEst && melhorDist) txt = '🏊 O teu ponto forte é <strong>' + melhorEst.label + '</strong> de <strong>' + melhorDist.label + '</strong>';
+    else if (melhorEst) txt = '🏊 O teu ponto forte é <strong>' + melhorEst.label + '</strong>';
+    else if (melhorDist) txt = '🏊 O teu ponto forte é <strong>' + melhorDist.label + '</strong>';
+    if (txt) {
+      var pts = melhorEst ? melhorEst.value : melhorDist.value;
+      txt += ' · ' + Math.round(pts) + ' pts ' + (mode === 'nacional' ? 'FPN' : 'FINA');
+      destaque.innerHTML = txt;
+      destaque.style.display = 'block';
+      destaque.style.background = mode === 'nacional' ? 'rgba(30,96,145,0.1)' : 'rgba(0,196,204,0.1)';
+      destaque.style.border = '1.5px solid ' + (mode === 'nacional' ? 'rgba(30,96,145,0.3)' : 'rgba(0,196,204,0.3)');
+      destaque.style.color = mode === 'nacional' ? corNacional : corMundial;
+    }
+  }
+}
+
+// Re-render quando guardar o atleta
+var _guardarAtletaOrig2 = window.guardarAtleta;
+window.guardarAtleta = function() {
+  var r = _guardarAtletaOrig2 && _guardarAtletaOrig2.apply(this, arguments);
+  if (_perfilUnlocked) setTimeout(perfilRender, 300);
+  return r;
+};
 </script>
 
 <script>
