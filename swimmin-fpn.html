@@ -12378,21 +12378,9 @@ function perfilRender() {
   var destaque = document.getElementById('perfil-destaque');
   if (!body) return;
 
-  // Carrega perfil activo usando as funções correctas da app
-  var data = null;
-  try {
-    var activeId = getActiveProfileId();
-    if (activeId) {
-      var allProfiles = getAllProfiles();
-      data = allProfiles[activeId] || null;
-    }
-    // fallback: primeiro perfil disponível
-    if (!data) {
-      var allProfiles2 = getAllProfiles();
-      var ids = Object.keys(allProfiles2);
-      if (ids.length > 0) data = allProfiles2[ids[0]];
-    }
-  } catch(e) {}
+  // loadAtleta() é a função oficial da app — trata todos os casos e fallbacks
+  var data = loadAtleta();
+
   if (!data || !data.tempos) {
     body.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:13px;padding:16px;">Guarda o teu perfil com pelo menos um tempo para ver a infografia.</div>';
     if (destaque) destaque.style.display = 'none';
@@ -12400,64 +12388,106 @@ function perfilRender() {
   }
 
   var sexo = data.sexo || 'M';
-  var ts = data.tempos;
+  var tsCurta = data.tempos.curta || {};  // { '50_L': 2450, ... } em centésimas
+  var tsLonga = data.tempos.longa || {};
   var mode = _perfilMode;
 
-  // Actualiza botões
   perfilSetMode(mode);
 
-  // === GRÁFICO 1: PERFIL DE DISTÂNCIA ===
+  // Calcula pontos para uma prova, escolhendo a piscina com melhor resultado
+  function calcPts(key) {
+    var best = null;
+    ['curta', 'longa'].forEach(function(pisc) {
+      var ts2 = pisc === 'curta' ? tsCurta : tsLonga;
+      var ms = ts2[key];
+      if (!ms) return;
+      try {
+        var rec, obj;
+        if (mode === 'nacional') {
+          obj = recordesNacionais[pisc][sexo][key];
+          if (!obj || !obj.tempo) return;
+          rec = parseAtletaMs(obj.tempo);
+        } else {
+          obj = recordesMundiais[pisc][sexo][key];
+          if (!obj || !obj.tempo) return;
+          rec = parseAtletaMs(obj.tempo);
+        }
+        if (!rec) return;
+        var pts = Math.round(1000 * Math.pow(rec / ms, 3));
+        if (best === null || pts > best) best = pts;
+      } catch(e) {}
+    });
+    return best;
+  }
+
+  // Média dos pontos de uma lista de chaves (só as que têm valor)
+  function mediaKeys(keys) {
+    var soma = 0, n = 0;
+    keys.forEach(function(k) {
+      var p = calcPts(k);
+      if (p !== null) { soma += p; n++; }
+    });
+    return n > 0 ? Math.round(soma / n) : null;
+  }
+
+  // GRÁFICO 1 — Distância
   var distAxes = [
-    { label: 'Velocidade\nCurta', keys: ['50_L'] },
+    { label: 'Vel. Curta', keys: ['50_L'] },
     { label: 'Velocidade', keys: ['100_L'] },
     { label: 'Meio-Fundo', keys: ['200_L', '400_L'] },
-    { label: 'Fundo', keys: ['800_L', '1500_L'] }
+    { label: 'Fundo',      keys: ['800_L', '1500_L'] }
   ];
   var distData = distAxes.map(function(ax) {
-    var pts = perfilMedia(ts, ax.keys, sexo, mode);
-    return { label: ax.label, value: pts };
+    return { label: ax.label, value: mediaKeys(ax.keys) };
   }).filter(function(d) { return d.value !== null; });
 
-  // === GRÁFICO 2: PERFIL DE ESTILO ===
+  // GRÁFICO 2 — Estilo
   var estiloAxes = [
-    { label: 'Livres', keys: ['50_L', '100_L', '200_L'] },
-    { label: 'Costas', keys: ['50_C', '100_C', '200_C'] },
-    { label: 'Bruços', keys: ['50_B', '100_B', '200_B'] },
+    { label: 'Livres',   keys: ['50_L', '100_L', '200_L'] },
+    { label: 'Costas',   keys: ['50_C', '100_C', '200_C'] },
+    { label: 'Bruços',   keys: ['50_B', '100_B', '200_B'] },
     { label: 'Mariposa', keys: ['50_M', '100_M', '200_M'] }
   ];
   var estiloData = estiloAxes.map(function(ax) {
-    var pts = perfilMedia(ts, ax.keys, sexo, mode);
-    return { label: ax.label, value: pts };
+    return { label: ax.label, value: mediaKeys(ax.keys) };
   }).filter(function(d) { return d.value !== null; });
 
-  var corNacional = '#1E6091';
-  var corMundial = '#00c4cc';
-  var cor = mode === 'nacional' ? corNacional : corMundial;
-  var label1 = mode === 'nacional' ? 'Perfil de Distância · FPN' : 'Perfil de Distância · FINA';
-  var label2 = mode === 'nacional' ? 'Perfil de Estilo · FPN' : 'Perfil de Estilo · FINA';
+  if (distData.length === 0 && estiloData.length === 0) {
+    body.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:13px;padding:16px;">Sem tempos suficientes para gerar o perfil.</div>';
+    if (destaque) destaque.style.display = 'none';
+    return;
+  }
+
+  var corN = '#1E6091', corM = '#00c4cc';
+  var cor  = mode === 'nacional' ? corN : corM;
 
   body.innerHTML =
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">'
-    + '<div style="background:rgba(128,128,128,0.05);border-radius:16px;padding:16px 8px;">' + perfilDesenharRadar(distData, label1, cor) + '</div>'
-    + '<div style="background:rgba(128,128,128,0.05);border-radius:16px;padding:16px 8px;">' + perfilDesenharRadar(estiloData, label2, cor) + '</div>'
+    + '<div style="background:rgba(128,128,128,0.05);border-radius:16px;padding:16px 8px;">'
+    + perfilDesenharRadar(distData, mode === 'nacional' ? 'Distância · FPN' : 'Distância · FINA', cor)
+    + '</div>'
+    + '<div style="background:rgba(128,128,128,0.05);border-radius:16px;padding:16px 8px;">'
+    + perfilDesenharRadar(estiloData, mode === 'nacional' ? 'Estilo · FPN' : 'Estilo · FINA', cor)
+    + '</div>'
     + '</div>';
 
-  // Destaque textual
-  if (destaque && (distData.length > 0 || estiloData.length > 0)) {
-    var melhorDist = distData.length > 0 ? distData.reduce(function(a,b) { return b.value > a.value ? b : a; }) : null;
-    var melhorEst  = estiloData.length > 0 ? estiloData.reduce(function(a,b) { return b.value > a.value ? b : a; }) : null;
+  if (destaque) {
+    var melhorDist = distData.length > 0 ? distData.reduce(function(a,b) { return b.value>a.value?b:a; }) : null;
+    var melhorEst  = estiloData.length > 0 ? estiloData.reduce(function(a,b) { return b.value>a.value?b:a; }) : null;
     var txt = '';
-    if (melhorEst && melhorDist) txt = '🏊 O teu ponto forte é <strong>' + melhorEst.label + '</strong> de <strong>' + melhorDist.label + '</strong>';
-    else if (melhorEst) txt = '🏊 O teu ponto forte é <strong>' + melhorEst.label + '</strong>';
-    else if (melhorDist) txt = '🏊 O teu ponto forte é <strong>' + melhorDist.label + '</strong>';
+    if (melhorEst && melhorDist) txt = 'O teu ponto forte é <strong>' + melhorEst.label + '</strong> de <strong>' + melhorDist.label + '</strong>';
+    else if (melhorEst)          txt = 'O teu ponto forte é <strong>' + melhorEst.label + '</strong>';
+    else if (melhorDist)         txt = 'O teu ponto forte é <strong>' + melhorDist.label + '</strong>';
     if (txt) {
-      var pts = melhorEst ? melhorEst.value : melhorDist.value;
-      txt += ' · ' + Math.round(pts) + ' pts ' + (mode === 'nacional' ? 'FPN' : 'FINA');
-      destaque.innerHTML = txt;
-      destaque.style.display = 'block';
-      destaque.style.background = mode === 'nacional' ? 'rgba(30,96,145,0.1)' : 'rgba(0,196,204,0.1)';
-      destaque.style.border = '1.5px solid ' + (mode === 'nacional' ? 'rgba(30,96,145,0.3)' : 'rgba(0,196,204,0.3)');
-      destaque.style.color = mode === 'nacional' ? corNacional : corMundial;
+      var topPts = melhorEst ? melhorEst.value : (melhorDist ? melhorDist.value : 0);
+      txt += ' · ' + Math.round(topPts) + ' pts ' + (mode === 'nacional' ? 'FPN' : 'FINA');
+      destaque.innerHTML = '🏊 ' + txt;
+      destaque.style.cssText = 'display:block;margin-top:14px;padding:14px 16px;border-radius:14px;font-size:13px;font-weight:600;text-align:center;'
+        + 'background:' + (mode==='nacional'?'rgba(30,96,145,0.1)':'rgba(0,196,204,0.1)') + ';'
+        + 'border:1.5px solid ' + (mode==='nacional'?'rgba(30,96,145,0.3)':'rgba(0,196,204,0.3)') + ';'
+        + 'color:' + cor + ';';
+    } else {
+      destaque.style.display = 'none';
     }
   }
 }
