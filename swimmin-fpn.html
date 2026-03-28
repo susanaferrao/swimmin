@@ -2913,11 +2913,11 @@ document.addEventListener("click", function(e) {
         <div style="display:flex; gap:6px;">
           <button id="perfil-toggle-nacional" onclick="perfilSetMode('nacional')"
             style="padding:6px 14px; border-radius:20px; border:1.5px solid; font-size:12px; font-weight:700; font-family:'DM Sans',sans-serif; cursor:pointer; transition:all 0.2s;">
-            🇵🇹 Nacional
+            Nacional
           </button>
           <button id="perfil-toggle-mundial" onclick="perfilSetMode('mundial')"
             style="padding:6px 14px; border-radius:20px; border:1.5px solid; font-size:12px; font-weight:700; font-family:'DM Sans',sans-serif; cursor:pointer; transition:all 0.2s;">
-            🌍 Mundial
+            Mundial
           </button>
         </div>
       </div>
@@ -12272,14 +12272,13 @@ function perfilMsToSec(ms) { return ms / 100; }
 function perfilCalcPontos(ms, piscina, sexo, key, mode) {
   try {
     var rec;
+    var k = key; // key já está no formato '50_L', '100_C', etc.
     if (mode === 'nacional') {
-      var parts = key.split('_'); var k = parts[0] + '_' + parts[1];
       var rn = recordesNacionais[piscina][sexo][k];
       if (!rn || !rn.tempo) return null;
       rec = parseAtletaMs(rn.tempo);
     } else {
-      var parts = key.split('_'); var k2 = parts[0] + parts[1];
-      var rm = recordesMundiais[piscina][sexo][k2];
+      var rm = recordesMundiais[piscina][sexo][k];
       if (!rm || !rm.tempo) return null;
       rec = parseAtletaMs(rm.tempo);
     }
@@ -12379,14 +12378,21 @@ function perfilRender() {
   var destaque = document.getElementById('perfil-destaque');
   if (!body) return;
 
-  // Carrega perfil activo
-  var activeId = typeof getActiveProfileId === 'function' ? getActiveProfileId() : null;
+  // Carrega perfil activo usando as funções correctas da app
   var data = null;
-  if (activeId && typeof getProfile === 'function') data = getProfile(activeId);
-  if (!data) {
-    // tenta saveAtleta storage
-    try { data = JSON.parse(localStorage.getItem('swimmin_atleta')); } catch(e) {}
-  }
+  try {
+    var activeId = getActiveProfileId();
+    if (activeId) {
+      var allProfiles = getAllProfiles();
+      data = allProfiles[activeId] || null;
+    }
+    // fallback: primeiro perfil disponível
+    if (!data) {
+      var allProfiles2 = getAllProfiles();
+      var ids = Object.keys(allProfiles2);
+      if (ids.length > 0) data = allProfiles2[ids[0]];
+    }
+  } catch(e) {}
   if (!data || !data.tempos) {
     body.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:13px;padding:16px;">Guarda o teu perfil com pelo menos um tempo para ver a infografia.</div>';
     if (destaque) destaque.style.display = 'none';
