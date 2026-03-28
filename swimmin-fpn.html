@@ -21,7 +21,6 @@
 
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 
   :root {
@@ -720,12 +719,10 @@
   gap: 6px;
 }
 .poll-option-btn:hover { border-color: var(--aqua); background: #e0f7f8; }
-.poll-option-btn.selected,
-.poll-option-btn.selected:hover {
-  background: #eef5fa;
-  border: 2.5px solid #ff8c00;
-  color: var(--blue-deep);
-  box-shadow: 0 0 0 3px rgba(255,140,0,0.2);
+.poll-option-btn.selected {
+  background: linear-gradient(135deg, var(--blue-deep), var(--blue-mid));
+  border-color: transparent;
+  color: #fff;
 }
 .poll-option-btn.voted {
   cursor: default;
@@ -770,7 +767,7 @@
   color: var(--aqua);
   line-height: 1;
 }
-.poll-option-btn.selected .poll-pct { color: var(--aqua); }
+.poll-option-btn.selected .poll-pct { color: #fff; }
 .poll-bar {
   width: 100%;
   height: 4px;
@@ -784,7 +781,7 @@
   background: var(--aqua);
   transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-.poll-option-btn.selected .poll-bar-fill { background: var(--aqua); }
+.poll-option-btn.selected .poll-bar-fill { background: rgba(255,255,255,0.6); }
 .poll-total {
   font-size: 11px;
   color: var(--muted);
@@ -832,14 +829,7 @@ html:not(.light-mode) .poll-option-btn.voted.selected {
 }
 html:not(.light-mode) .poll-option-btn.voted.selected .poll-pct { color: var(--aqua); }
 html:not(.light-mode) .poll-option-btn.voted.selected .poll-bar-fill { background: var(--aqua); }
-html:not(.light-mode) .atleta-summary-name { color: #ffffff !important; }
-
-.hint-box { border-radius:8px; padding:10px 14px; margin-bottom:14px; border-left:3px solid var(--aqua); background:rgba(0,196,204,0.1); }
-.hint-box-title { font-size:12px; font-weight:600; margin-bottom:3px; color:var(--blue-deep); }
-.hint-box-text { font-size:12px; line-height:1.6; color:#1a5a7a; }
-html:not(.light-mode) .hint-box { background:rgba(0,196,204,0.12); }
-html:not(.light-mode) .hint-box-title { color:#ffffff; }
-html:not(.light-mode) .hint-box-text { color:#ffffff; }
+html:not(.light-mode) .poll-total { color: var(--blue-light); }
 /* fallback sem backdrop-filter */
 @supports not (backdrop-filter: blur(1px)) {
   .poll-section { background: #0d2340 !important; }
@@ -850,13 +840,12 @@ html:not(.light-mode) .hint-box-text { color:#ffffff; }
 .cal-section {
   margin-bottom: 20px;
   position: relative;
-  z-index: 2;
   background: var(--card);
   backdrop-filter: blur(20px);
   border-radius: 24px;
   padding: 28px 28px 22px;
   box-shadow:
-    0 32px 64px rgba(0,0,0,0.4),
+    0 8px 24px rgba(0,0,0,0.15),
     0 0 0 1px rgba(255,255,255,0.3),
     inset 0 1px 0 rgba(255,255,255,0.8);
 }
@@ -2589,10 +2578,10 @@ document.addEventListener("click", function(e) {
   </div>
 
   <!-- Poll -->
-  <div class="poll-section" id="poll-section" style="display:none;">
+  <div class="poll-section" id="poll-section">
     <div class="poll-header">
       <div>
-        <div class="poll-title" id="poll-title-tap" onclick="pollTapTitle()" style="cursor:default;user-select:none;">QUEM VENCE?</div>
+        <div class="poll-title" id="poll-title-tap" onclick="pollTapTitle()" style="cursor:default;user-select:none;">QUEM VAI GANHAR?</div>
         <div class="poll-subtitle">Campeonato Nacional · Dia 1</div>
       </div>
     </div>
@@ -2601,6 +2590,7 @@ document.addEventListener("click", function(e) {
     </div>
     <div id="poll-reset-wrap" style="display:none; text-align:center; margin-top:10px;">
       <button onclick="pollResetLocal()" style="background:none; border:1.5px solid #ff8c00; border-radius:99px; padding:7px 18px; font-family:'DM Sans',sans-serif; font-size:12px; font-weight:600; color:#ff8c00; cursor:pointer;">🗑️ Limpar os meus votos</button>
+      <button onclick="pollDiag()" style="background:none; border:1.5px solid #aaa; border-radius:99px; padding:7px 18px; font-family:'DM Sans',sans-serif; font-size:12px; font-weight:600; color:#aaa; cursor:pointer; margin-left:8px;">🔍 Diagnóstico</button>
     </div>
   </div>
 
@@ -2865,9 +2855,9 @@ document.addEventListener("click", function(e) {
 
 
 
-      <div class="hint-box">
-        <div class="hint-box-title">Como inserir os tempos</div>
-        <div class="hint-box-text">
+      <div style="background:rgba(0,196,204,0.1);border-radius:8px;padding:10px 14px;margin-bottom:14px;border-left:3px solid var(--aqua);">
+        <div style="font-size:12px;color:var(--blue-deep);font-weight:600;margin-bottom:3px;">Como inserir os tempos</div>
+        <div style="font-size:12px;color:#1a5a7a;line-height:1.6;">
           Escreve só os dígitos, sem pontuação:<br>
           <strong>30,43</strong> → escreve <strong>3043</strong><br>
           <strong>1:17,09</strong> → escreve <strong>11709</strong>
@@ -8361,7 +8351,7 @@ function mostrarPerfilAtivo() {
   }
 
   document.getElementById('atleta-saved-summary').innerHTML =
-    '<div style="font-size:15px;color:var(--blue-deep);margin-bottom:4px;" class="atleta-summary-name">' +
+    '<div style="font-size:15px;color:var(--blue-deep);margin-bottom:4px;">' +
     '<strong>' + (data.nome || 'Nadador') + '</strong> · ' + (ESC_LABEL[data.escalao] || data.escalao) + '</div>';
 
   ATLETA_COMP_ATUAL = null;
@@ -9242,9 +9232,9 @@ function instalarApp() {
             </select>
           </div>
         </div>
-                <div class="hint-box" style="border-radius:10px;padding:12px 14px;margin-bottom:12px;border-left:none;">
-          <div class="hint-box-title" style="font-size:13px;">Como inserir os tempos</div>
-          <div class="hint-box-text">
+                <div style="background:#e8f6f8;border-radius:10px;padding:12px 14px;margin-bottom:12px;">
+          <div style="font-size:13px;font-weight:700;color:#0a2a4a;margin-bottom:6px;">Como inserir os tempos</div>
+          <div style="font-size:12px;color:#0a2a4a;line-height:1.6;">
             Escreve só os dígitos, sem pontuação:<br>
             <strong>30,43</strong> &rarr; escreve <strong>3043</strong><br>
             <strong>1:17,09</strong> &rarr; escreve <strong>11709</strong>
@@ -11839,7 +11829,7 @@ html.light-mode {
 </script>
 
 <script>
-/* ===== POLLS v2 ===== */
+/* ===== POLLS ===== */
 var POLL_DATA = [
   {
     id: 'poll_1500L_d1',
@@ -11874,28 +11864,48 @@ var POLL_NAMESPACE = 'swimmin-fpn-2025';
 var POLL_VOTED_KEY = 'swimmin_poll_voted_v2';
 var POLL_FP_KEY    = 'swimmin_poll_fp';
 
-/* --- Supabase --- */
-var SUPABASE_URL  = 'https://edjbfdhwejwrshxeijdh.supabase.co';
-var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVkamJmZGh3ZWp3cnNoeGVpamRoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ1NDM0MjIsImV4cCI6MjA5MDExOTQyMn0.TDP9dg9ZqCTnbbbND6Vw34VPUAxFF2jJZbsPairmYSk';
+/* --- Fingerprint do dispositivo --- */
+function pollGetFingerprint() {
+  var fp = localStorage.getItem(POLL_FP_KEY);
+  if (fp) return fp;
+  var raw = [
+    navigator.userAgent,
+    navigator.language,
+    screen.width + 'x' + screen.height,
+    screen.colorDepth,
+    new Date().getTimezoneOffset(),
+    navigator.hardwareConcurrency || '',
+    navigator.platform || ''
+  ].join('|');
+  // hash simples
+  var hash = 0;
+  for (var i = 0; i < raw.length; i++) {
+    hash = ((hash << 5) - hash) + raw.charCodeAt(i);
+    hash |= 0;
+  }
+  fp = 'fp_' + Math.abs(hash).toString(36) + '_' + Date.now().toString(36);
+  localStorage.setItem(POLL_FP_KEY, fp);
+  return fp;
+}
 
-/* --- Guardar/ler votos locais --- */
 function pollGetVoted() {
   try { return JSON.parse(localStorage.getItem(POLL_VOTED_KEY)) || {}; } catch(e) { return {}; }
 }
-function pollSetVoted(v) {
-  try { localStorage.setItem(POLL_VOTED_KEY, JSON.stringify(v)); } catch(e) {}
+function pollSetVoted(voted) {
+  try { localStorage.setItem(POLL_VOTED_KEY, JSON.stringify(voted)); } catch(e) {}
 }
 
-/* --- Supabase: incrementar voto --- */
+/* --- Supabase --- */
+// ⚙️ CONFIGURAÇÃO: substitui pelos teus valores do projecto Supabase
+var SUPABASE_URL    = 'https://edjbfdhwejwrshxeijdh.supabase.co';
+var SUPABASE_ANON   = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVkamJmZGh3ZWp3cnNoeGVpamRoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ1NDM0MjIsImV4cCI6MjA5MDExOTQyMn0.TDP9dg9ZqCTnbbbND6Vw34VPUAxFF2jJZbsPairmYSk';
+
+/* --- Incrementar voto --- */
 async function pollHit(key) {
   try {
     var r = await fetch(SUPABASE_URL + '/rest/v1/rpc/poll_increment', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': SUPABASE_ANON,
-        'Authorization': 'Bearer ' + SUPABASE_ANON
-      },
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + SUPABASE_ANON },
       body: JSON.stringify({ p_key: POLL_NAMESPACE + '_' + key })
     });
     var j = await r.json();
@@ -11904,16 +11914,12 @@ async function pollHit(key) {
   } catch(e) { return 0; }
 }
 
-/* --- Supabase: ler todos os totais via POST (nunca cacheado) --- */
+/* --- Ler todos os totais via POST (nunca cacheado pelo browser) --- */
 async function pollGetAllTotals() {
   try {
     var r = await fetch(SUPABASE_URL + '/rest/v1/rpc/poll_get_all', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': SUPABASE_ANON,
-        'Authorization': 'Bearer ' + SUPABASE_ANON
-      },
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + SUPABASE_ANON },
       body: JSON.stringify({ ns: POLL_NAMESPACE })
     });
     var j = await r.json();
@@ -11921,27 +11927,51 @@ async function pollGetAllTotals() {
   } catch(e) { return []; }
 }
 
-/* --- Seleccionar opção (antes de votar) --- */
+/* --- Seleccionar opção (sem votar ainda) --- */
 function pollSelect(pollId, optId) {
   var voted = pollGetVoted();
-  if (voted[pollId]) return; // já votou nesta prova
+  if (voted[pollId]) return;
   var poll = POLL_DATA.find(function(p) { return p.id === pollId; });
   if (!poll) return;
-  // limpa selecção anterior nesta prova
-  poll.opcoes.forEach(function(opt) {
-    var b = document.getElementById('poll-btn-' + pollId + '-' + opt.id);
-    if (b) b.classList.remove('selected');
-  });
-  // se clicou no mesmo, desselecciona; senão selecciona
+
+  // Toggle: se já está seleccionado, desselecciona; senão selecciona
   var btn = document.getElementById('poll-btn-' + pollId + '-' + optId);
-  if (btn) btn.classList.add('selected');
-  // mostra/esconde botão votar global
+  if (btn.classList.contains('selected')) {
+    btn.classList.remove('selected');
+  } else {
+    // Só um pode estar seleccionado por prova
+    poll.opcoes.forEach(function(opt) {
+      var b = document.getElementById('poll-btn-' + pollId + '-' + opt.id);
+      if (b) b.classList.remove('selected');
+    });
+    btn.classList.add('selected');
+  }
+
+  // Botão "Votar" só aparece quando as 3 provas têm uma opção seleccionada
   var allSelected = POLL_DATA.every(function(p) {
-    if (pollGetVoted()[p.id]) return true;
+    // Provas já votadas contam como seleccionadas
+    if (voted[p.id]) return true;
     return !!document.querySelector('#poll-item-' + p.id + ' .poll-option-btn.selected');
   });
+
+  // Mostra/esconde o botão votar global
   var vBtn = document.getElementById('poll-vote-all-btn');
   if (vBtn) vBtn.style.display = allSelected ? 'block' : 'none';
+}
+
+/* --- Animação de contagem crescente --- */
+function pollAnimateCount(el, target, duration) {
+  var start = 0;
+  var startTime = null;
+  function step(ts) {
+    if (!startTime) startTime = ts;
+    var progress = Math.min((ts - startTime) / duration, 1);
+    var ease = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+    el.textContent = Math.round(ease * target) + '%';
+    if (progress < 1) requestAnimationFrame(step);
+    else el.textContent = target + '%';
+  }
+  requestAnimationFrame(step);
 }
 
 /* --- Submeter todos os votos --- */
@@ -11950,67 +11980,53 @@ async function pollSubmitAll() {
   var vBtn = document.getElementById('poll-vote-all-btn');
   if (vBtn) { vBtn.disabled = true; vBtn.textContent = 'A registar...'; }
 
+  var fp = pollGetFingerprint();
+
+  // Para cada prova não votada, regista o voto seleccionado
   for (var i = 0; i < POLL_DATA.length; i++) {
     var poll = POLL_DATA[i];
     if (voted[poll.id]) continue;
     var selectedBtn = document.querySelector('#poll-item-' + poll.id + ' .poll-option-btn.selected');
     if (!selectedBtn) continue;
-    var optId = selectedBtn.dataset.optId;
+    var optId = selectedBtn.id.replace('poll-btn-' + poll.id + '-', '');
     voted[poll.id] = optId;
     await pollHit(poll.id + '_' + optId);
   }
   pollSetVoted(voted);
 
-  await pollMostrarResultados(voted);
-
-  if (vBtn) vBtn.style.display = 'none';
-
-  var body = document.getElementById('poll-body');
-  if (body && !document.getElementById('poll-refresh-btn')) {
-    var rb = document.createElement('button');
-    rb.className = 'poll-refresh-btn';
-    rb.id = 'poll-refresh-btn';
-    rb.textContent = '🔄 Actualizar resultados';
-    rb.onclick = pollRefresh;
-    body.appendChild(rb);
-  }
-
-  if (typeof gtag === 'function') gtag('event', 'poll_voto', { feature: 'poll' });
-}
-
-/* --- Buscar totais e mostrar resultados para todas as provas votadas --- */
-async function pollMostrarResultados(voted) {
-  // Um único pedido para buscar tudo
+  // Busca todos os totais via POST (nunca cacheado) e mostra resultados
   var allRows = await pollGetAllTotals();
-  for (var i = 0; i < POLL_DATA.length; i++) {
-    var poll = POLL_DATA[i];
-    if (!voted[poll.id]) continue;
+  POLL_DATA.forEach(function(poll) {
+    if (!voted[poll.id]) return;
     var totals = {};
-    for (var j = 0; j < poll.opcoes.length; j++) {
-      var opt = poll.opcoes[j];
+    poll.opcoes.forEach(function(opt) {
       var fullKey = POLL_NAMESPACE + '_' + poll.id + '_' + opt.id;
       var row = allRows.find(function(r) { return r.key === fullKey; });
       totals[opt.id] = (row && row.votes) ? Number(row.votes) : 0;
-    }
+    });
     pollRenderResult(poll.id, totals, voted[poll.id]);
-  }
-}
+  });
 
-/* --- Actualizar resultados --- */
-async function pollRefresh() {
-  var btn = document.getElementById('poll-refresh-btn');
-  if (btn) { btn.textContent = '⏳ A actualizar...'; btn.disabled = true; }
-  // pedido sempre fresco
-  var voted = pollGetVoted();
-  await pollMostrarResultados(voted);
-  if (btn) { btn.textContent = '🔄 Actualizar resultados'; btn.disabled = false; }
+  if (vBtn) vBtn.style.display = 'none';
+  // Mostra botão de actualizar
+  var refreshHtml = '<button class="poll-refresh-btn" id="poll-refresh-btn" onclick="pollRefresh()">🔄 Actualizar resultados</button>';
+  var body = document.getElementById('poll-body');
+  if (body && !document.getElementById('poll-refresh-btn')) {
+    body.insertAdjacentHTML('beforeend', refreshHtml);
+  }
+  if (typeof gtag === 'function') gtag('event', 'poll_voto', { feature: 'poll' });
 }
 
 /* --- Mostrar resultados com animação --- */
 function pollRenderResult(pollId, totals, myVote) {
   var poll = POLL_DATA.find(function(p) { return p.id === pollId; });
   if (!poll) return;
+  totals = totals || {};
+
   var total = poll.opcoes.reduce(function(s, o) { return s + (totals[o.id] || 0); }, 0);
+
+  var vBtn = document.getElementById('poll-vote-btn-' + pollId);
+  if (vBtn) vBtn.style.display = 'none';
 
   poll.opcoes.forEach(function(opt) {
     var btn = document.getElementById('poll-btn-' + pollId + '-' + opt.id);
@@ -12031,22 +12047,28 @@ function pollRenderResult(pollId, totals, myVote) {
   if (totalEl) totalEl.textContent = total + (total === 1 ? ' voto' : ' votos');
 }
 
-/* --- Animação percentagem --- */
-function pollAnimateCount(el, target, duration) {
-  var startTime = null;
-  function step(ts) {
-    if (!startTime) startTime = ts;
-    var progress = Math.min((ts - startTime) / duration, 1);
-    var ease = 1 - Math.pow(1 - progress, 3);
-    el.textContent = Math.round(ease * target) + '%';
-    if (progress < 1) requestAnimationFrame(step);
-    else el.textContent = target + '%';
-  }
-  requestAnimationFrame(step);
+/* --- Actualizar resultados --- */
+async function pollRefresh() {
+  var btn = document.getElementById('poll-refresh-btn');
+  if (btn) { btn.textContent = '⏳ A actualizar...'; btn.disabled = true; }
+  var voted = pollGetVoted();
+  var allRows = await pollGetAllTotals();
+  POLL_DATA.forEach(function(poll) {
+    if (!voted[poll.id]) return;
+    var totals = {};
+    poll.opcoes.forEach(function(opt) {
+      var fullKey = POLL_NAMESPACE + '_' + poll.id + '_' + opt.id;
+      var row = allRows.find(function(r) { return r.key === fullKey; });
+      totals[opt.id] = (row && row.votes) ? Number(row.votes) : 0;
+    });
+    pollRenderResult(poll.id, totals, voted[poll.id]);
+  });
+  if (btn) { btn.textContent = '🔄 Actualizar resultados'; btn.disabled = false; }
 }
 
-/* --- Botão secreto: 5 toques no título --- */
-var _pollTapCount = 0, _pollTapTimer = null;
+/* --- Reset local (só votos, não toca em mais nada) --- */
+var _pollTapCount = 0;
+var _pollTapTimer = null;
 function pollTapTitle() {
   _pollTapCount++;
   clearTimeout(_pollTapTimer);
@@ -12057,8 +12079,6 @@ function pollTapTitle() {
     if (wrap) wrap.style.display = wrap.style.display === 'none' ? 'block' : 'none';
   }
 }
-
-/* --- Limpar votos deste dispositivo --- */
 function pollResetLocal() {
   if (!confirm('Limpar os teus votos neste dispositivo?')) return;
   localStorage.removeItem(POLL_VOTED_KEY);
@@ -12066,24 +12086,22 @@ function pollResetLocal() {
   document.getElementById('poll-reset-wrap').style.display = 'none';
   pollRender();
 }
-
-/* --- Diagnóstico --- */
 async function pollDiag() {
-  var lines = [];
-  // Teste 1: ler todos os votos
+  var url = SUPABASE_URL + '/rest/v1/poll_votes?select=key,count&limit=3';
   try {
-    var r1 = await fetch(SUPABASE_URL + '/rest/v1/poll_votes?select=key,votes&limit=3', {
-      headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + SUPABASE_ANON }
-    });
-    lines.push('GET status: ' + r1.status);
-    lines.push('GET body: ' + (await r1.text()).substring(0, 200));
-  } catch(e) { lines.push('GET erro: ' + e.message); }
-  // Teste 2: pollGet directo
-  try {
-    var val = await pollGet('poll_1500L_d1_a');
-    lines.push('pollGet resultado: ' + val);
-  } catch(e) { lines.push('pollGet erro: ' + e.message); }
-  alert(lines.join('\n'));
+    var r = await fetch(url, { headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + SUPABASE_ANON } });
+    var txt = await r.text();
+    alert('Status: ' + r.status + '\n' + txt.substring(0, 300));
+  } catch(e) {
+    alert('Erro: ' + e.message);
+  }
+}
+
+/* --- Reset para testes (remove do localStorage) --- */
+function pollResetVotes() {
+  localStorage.removeItem(POLL_VOTED_KEY);
+  localStorage.removeItem(POLL_FP_KEY);
+  pollRender();
 }
 
 /* --- Render inicial --- */
@@ -12100,7 +12118,6 @@ async function pollRender() {
     html += '<div class="poll-options">';
     poll.opcoes.forEach(function(opt) {
       html += '<button class="poll-option-btn" id="poll-btn-' + poll.id + '-' + opt.id + '"'
-        + ' data-opt-id="' + opt.id + '"'
         + ' onclick="pollSelect(\'' + poll.id + '\',\'' + opt.id + '\')">'
         + '<span class="poll-option-name">' + opt.nome
         + (opt.clube ? '<span class="poll-option-club">' + opt.clube + '</span>' : '')
@@ -12116,6 +12133,7 @@ async function pollRender() {
     html += '</div>';
   });
 
+  // Botão votar global — só aparece quando as 3 provas têm selecção
   if (!allVoted) {
     html += '<button class="poll-vote-btn" id="poll-vote-all-btn" style="display:none;"'
       + ' onclick="pollSubmitAll()">Votar nas 3 provas</button>';
@@ -12126,15 +12144,24 @@ async function pollRender() {
 
   body.innerHTML = html;
 
-  // Se já votou, vai buscar os totais reais e mostra resultados
-  if (allVoted) {
-    await pollMostrarResultados(voted);
+  // Restaura votos anteriores com totais reais via POST
+  var votedPolls = POLL_DATA.filter(function(p) { return voted[p.id]; });
+  if (votedPolls.length > 0) {
+    var allRows = await pollGetAllTotals();
+    votedPolls.forEach(function(poll) {
+      var totals = {};
+      poll.opcoes.forEach(function(opt) {
+        var fullKey = POLL_NAMESPACE + '_' + poll.id + '_' + opt.id;
+        var row = allRows.find(function(r) { return r.key === fullKey; });
+        totals[opt.id] = (row && row.votes) ? Number(row.votes) : 0;
+      });
+      pollRenderResult(poll.id, totals, voted[poll.id]);
+    });
   }
 }
 
 document.addEventListener('DOMContentLoaded', function() { pollRender(); });
 </script>
-
 
 <script>
 /* ===== SWIMMIN — ANALYTICS DE USO ===== */
