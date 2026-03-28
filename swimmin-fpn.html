@@ -830,6 +830,22 @@ html:not(.light-mode) .poll-option-btn.voted.selected {
 html:not(.light-mode) .poll-option-btn.voted.selected .poll-pct { color: var(--aqua); }
 html:not(.light-mode) .poll-option-btn.voted.selected .poll-bar-fill { background: var(--aqua); }
 html:not(.light-mode) .poll-total { color: var(--blue-light); }
+
+.hint-box { background:rgba(0,196,204,0.1); border-radius:8px; padding:10px 14px; margin-bottom:14px; border-left:3px solid var(--aqua); }
+.hint-box-title { font-size:12px; font-weight:600; margin-bottom:3px; color:var(--blue-deep); }
+.hint-box-text { font-size:12px; color:#1a5a7a; line-height:1.6; }
+.hint-box-alt { background:#e8f6f8; border-radius:10px; padding:12px 14px; margin-bottom:12px; }
+.hint-box-alt-title { font-size:13px; font-weight:700; color:#0a2a4a; margin-bottom:6px; }
+.hint-box-alt-text { font-size:12px; color:#0a2a4a; line-height:1.6; }
+.atleta-summary { font-size:15px; color:var(--blue-deep); margin-bottom:4px; }
+html:not(.light-mode) .hint-box { background:rgba(0,196,204,0.12); }
+html:not(.light-mode) .hint-box-title,
+html:not(.light-mode) .hint-box-text,
+html:not(.light-mode) .hint-box-alt,
+html:not(.light-mode) .hint-box-alt-title,
+html:not(.light-mode) .hint-box-alt-text,
+html:not(.light-mode) .atleta-summary { color:#ffffff; }
+html:not(.light-mode) .hint-box-alt { background:rgba(0,196,204,0.12); }
 /* fallback sem backdrop-filter */
 @supports not (backdrop-filter: blur(1px)) {
   .poll-section { background: #0d2340 !important; }
@@ -2570,12 +2586,25 @@ document.addEventListener("click", function(e) {
 
 
   <!-- Botões Campeonatos -->
-  <div style="margin:0 0 14px 0;">
+  <div style="margin:0 0 8px 0;">
     <a href="https://live.swimrankings.net/49106/" target="_blank" rel="noopener noreferrer"
        style="display:block;background:linear-gradient(135deg,#ff8c00,#e65c00);color:#fff;font-family:'DM Sans',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;text-decoration:none;padding:10px 22px;border-radius:10px;box-shadow:0 4px 16px rgba(230,92,0,0.35);cursor:pointer;text-align:center;">
       Campeonato Nacional de JUN, Sub21 e ABS<br>OPEN de Portugal / ASTRALPOOL
     </a>
   </div>
+  <div style="margin:0 0 14px 0;">
+    <a href="https://natacaotv.pt/live2.php" target="_blank" rel="noopener noreferrer"
+       style="display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#005fa3,#003d6b);color:#fff;font-family:'DM Sans',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;text-decoration:none;padding:10px 22px;border-radius:10px;box-shadow:0 4px 16px rgba(0,63,107,0.35);cursor:pointer;text-align:center;">
+      <span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:#00c4cc;box-shadow:0 0 6px #00c4cc;flex-shrink:0;animation:livePulse 1.4s ease-in-out infinite;"></span>
+      Ver Finais em Direto · Sessão da Tarde
+    </a>
+  </div>
+  <style>
+    @keyframes livePulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50% { opacity:0.5; transform:scale(1.35); }
+    }
+  </style>
 
   <!-- Poll -->
   <div class="poll-section" id="poll-section">
@@ -2855,9 +2884,9 @@ document.addEventListener("click", function(e) {
 
 
 
-      <div style="background:rgba(0,196,204,0.1);border-radius:8px;padding:10px 14px;margin-bottom:14px;border-left:3px solid var(--aqua);">
-        <div style="font-size:12px;color:var(--blue-deep);font-weight:600;margin-bottom:3px;">Como inserir os tempos</div>
-        <div style="font-size:12px;color:#1a5a7a;line-height:1.6;">
+      <div class="hint-box">
+        <div class="hint-box-title">Como inserir os tempos</div>
+        <div class="hint-box-text">
           Escreve só os dígitos, sem pontuação:<br>
           <strong>30,43</strong> → escreve <strong>3043</strong><br>
           <strong>1:17,09</strong> → escreve <strong>11709</strong>
@@ -8351,7 +8380,7 @@ function mostrarPerfilAtivo() {
   }
 
   document.getElementById('atleta-saved-summary').innerHTML =
-    '<div style="font-size:15px;color:var(--blue-deep);margin-bottom:4px;">' +
+    '<div class="atleta-summary">' +
     '<strong>' + (data.nome || 'Nadador') + '</strong> · ' + (ESC_LABEL[data.escalao] || data.escalao) + '</div>';
 
   ATLETA_COMP_ATUAL = null;
@@ -9232,9 +9261,9 @@ function instalarApp() {
             </select>
           </div>
         </div>
-                <div style="background:#e8f6f8;border-radius:10px;padding:12px 14px;margin-bottom:12px;">
-          <div style="font-size:13px;font-weight:700;color:#0a2a4a;margin-bottom:6px;">Como inserir os tempos</div>
-          <div style="font-size:12px;color:#0a2a4a;line-height:1.6;">
+                <div class="hint-box-alt">
+          <div class="hint-box-alt-title">Como inserir os tempos</div>
+          <div class="hint-box-alt-text">
             Escreve só os dígitos, sem pontuação:<br>
             <strong>30,43</strong> &rarr; escreve <strong>3043</strong><br>
             <strong>1:17,09</strong> &rarr; escreve <strong>11709</strong>
