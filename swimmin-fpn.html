@@ -2611,7 +2611,7 @@ document.addEventListener("click", function(e) {
     <div class="poll-header">
       <div>
         <div class="poll-title" id="poll-title-tap" onclick="pollTapTitle()" style="cursor:default;user-select:none;">QUEM VAI GANHAR?</div>
-        <div class="poll-subtitle">Campeonato Nacional · Dia 1</div>
+        <div class="poll-subtitle">Campeonato Nacional · Dia 2</div>
       </div>
     </div>
     <div id="poll-body">
@@ -11861,36 +11861,36 @@ html.light-mode {
 /* ===== POLLS ===== */
 var POLL_DATA = [
   {
-    id: 'poll_1500L_d1',
-    evento: '1500m Livres — Femininos',
+    id: 'poll_1500L_d2',
+    evento: '1500m Livres — Masculinos',
     opcoes: [
-      { id: 'a', nome: 'Beatriz Cardeal', clube: 'Condeixa AC' },
-      { id: 'b', nome: 'Diana Durães',    clube: 'SL Benfica' },
-      { id: 'c', nome: 'Carolina Viana',  clube: 'Sporting CP' }
+      { id: 'a', nome: 'Rodrigo Borges',  clube: 'FC Porto' },
+      { id: 'b', nome: 'Rui Pereira',     clube: 'ADRCCI Monte Maior' },
+      { id: 'c', nome: 'Duarte Marques',  clube: 'Condeixa AC' }
     ]
   },
   {
-    id: 'poll_400L_d1',
-    evento: '400m Livres — Masculinos',
+    id: 'poll_400L_d2',
+    evento: '400m Livres — Femininos',
     opcoes: [
-      { id: 'a', nome: 'Gustavo Ribeiro', clube: 'SL Benfica' },
-      { id: 'b', nome: 'Rodrigo Borges',  clube: 'FC Porto' },
-      { id: 'c', nome: 'Filipe Laranjo',  clube: 'SC Braga' }
+      { id: 'a', nome: 'Francisca Martins', clube: 'FOCA QL' },
+      { id: 'b', nome: 'Anna Fomina',       clube: 'Sporting CP' },
+      { id: 'c', nome: 'Joana Cardeal',     clube: 'Condeixa AC' }
     ]
   },
   {
-    id: 'poll_200M_d1',
-    evento: '200m Mariposa — Femininos',
+    id: 'poll_200E_d2',
+    evento: '200m Estilos — Masculinos',
     opcoes: [
-      { id: 'a', nome: 'Mariana Cunha',   clube: 'C. Efanor' },
-      { id: 'b', nome: 'Inês Henriques',  clube: 'Louzan EFAPEL' },
-      { id: 'c', nome: 'Maria Moura',     clube: 'Sporting CP' }
+      { id: 'a', nome: 'Vasco Morgado',  clube: 'S Algés Dafundo' },
+      { id: 'b', nome: 'Gabriel Lopes',  clube: 'Louzan EFAPEL' },
+      { id: 'c', nome: 'Yury Fomin',     clube: 'S Algés Dafundo' }
     ]
   }
 ];
 
-var POLL_NAMESPACE = 'swimmin-fpn-2025';
-var POLL_VOTED_KEY = 'swimmin_poll_voted_v2';
+var POLL_NAMESPACE = 'swimmin-fpn-2025-d2';
+var POLL_VOTED_KEY = 'swimmin_poll_voted_d2';
 var POLL_FP_KEY    = 'swimmin_poll_fp';
 
 /* --- Fingerprint do dispositivo --- */
@@ -12141,6 +12141,11 @@ async function pollRender() {
   var allVoted = POLL_DATA.every(function(p) { return voted[p.id]; });
 
   var html = '';
+  if (!allVoted) {
+    html += '<div style="font-family:\'DM Sans\',sans-serif;font-size:13px;color:var(--muted,#6b8fa8);background:#eef5fa;border-radius:10px;padding:10px 14px;margin-bottom:14px;line-height:1.5;">'
+          + '👇 Seleciona <strong>um nadador por prova</strong> e clica em <strong>Votar nas 3 provas</strong>.'
+          + '</div>';
+  }
   POLL_DATA.forEach(function(poll) {
     html += '<div class="poll-item" id="poll-item-' + poll.id + '">';
     html += '<div class="poll-event-name">' + poll.evento + '</div>';
