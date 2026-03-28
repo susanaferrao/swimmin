@@ -21,6 +21,7 @@
 
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 
   :root {
@@ -831,7 +832,14 @@ html:not(.light-mode) .poll-option-btn.voted.selected {
 }
 html:not(.light-mode) .poll-option-btn.voted.selected .poll-pct { color: var(--aqua); }
 html:not(.light-mode) .poll-option-btn.voted.selected .poll-bar-fill { background: var(--aqua); }
-html:not(.light-mode) .poll-total { color: var(--blue-light); }
+html:not(.light-mode) .atleta-summary-name { color: #ffffff !important; }
+
+.hint-box { border-radius:8px; padding:10px 14px; margin-bottom:14px; border-left:3px solid var(--aqua); background:rgba(0,196,204,0.1); }
+.hint-box-title { font-size:12px; font-weight:600; margin-bottom:3px; color:var(--blue-deep); }
+.hint-box-text { font-size:12px; line-height:1.6; color:#1a5a7a; }
+html:not(.light-mode) .hint-box { background:rgba(0,196,204,0.12); }
+html:not(.light-mode) .hint-box-title { color:#ffffff; }
+html:not(.light-mode) .hint-box-text { color:#ffffff; }
 /* fallback sem backdrop-filter */
 @supports not (backdrop-filter: blur(1px)) {
   .poll-section { background: #0d2340 !important; }
@@ -2581,10 +2589,10 @@ document.addEventListener("click", function(e) {
   </div>
 
   <!-- Poll -->
-  <div class="poll-section" id="poll-section">
+  <div class="poll-section" id="poll-section" style="display:none;">
     <div class="poll-header">
       <div>
-        <div class="poll-title" id="poll-title-tap" onclick="pollTapTitle()" style="cursor:default;user-select:none;">QUEM VAI GANHAR?</div>
+        <div class="poll-title" id="poll-title-tap" onclick="pollTapTitle()" style="cursor:default;user-select:none;">QUEM VENCE?</div>
         <div class="poll-subtitle">Campeonato Nacional · Dia 1</div>
       </div>
     </div>
@@ -2857,9 +2865,9 @@ document.addEventListener("click", function(e) {
 
 
 
-      <div style="background:rgba(0,196,204,0.1);border-radius:8px;padding:10px 14px;margin-bottom:14px;border-left:3px solid var(--aqua);">
-        <div style="font-size:12px;color:var(--blue-deep);font-weight:600;margin-bottom:3px;">Como inserir os tempos</div>
-        <div style="font-size:12px;color:#1a5a7a;line-height:1.6;">
+      <div class="hint-box">
+        <div class="hint-box-title">Como inserir os tempos</div>
+        <div class="hint-box-text">
           Escreve só os dígitos, sem pontuação:<br>
           <strong>30,43</strong> → escreve <strong>3043</strong><br>
           <strong>1:17,09</strong> → escreve <strong>11709</strong>
@@ -8353,7 +8361,7 @@ function mostrarPerfilAtivo() {
   }
 
   document.getElementById('atleta-saved-summary').innerHTML =
-    '<div style="font-size:15px;color:var(--blue-deep);margin-bottom:4px;">' +
+    '<div style="font-size:15px;color:var(--blue-deep);margin-bottom:4px;" class="atleta-summary-name">' +
     '<strong>' + (data.nome || 'Nadador') + '</strong> · ' + (ESC_LABEL[data.escalao] || data.escalao) + '</div>';
 
   ATLETA_COMP_ATUAL = null;
@@ -9234,9 +9242,9 @@ function instalarApp() {
             </select>
           </div>
         </div>
-                <div style="background:#e8f6f8;border-radius:10px;padding:12px 14px;margin-bottom:12px;">
-          <div style="font-size:13px;font-weight:700;color:#0a2a4a;margin-bottom:6px;">Como inserir os tempos</div>
-          <div style="font-size:12px;color:#0a2a4a;line-height:1.6;">
+                <div class="hint-box" style="border-radius:10px;padding:12px 14px;margin-bottom:12px;border-left:none;">
+          <div class="hint-box-title" style="font-size:13px;">Como inserir os tempos</div>
+          <div class="hint-box-text">
             Escreve só os dígitos, sem pontuação:<br>
             <strong>30,43</strong> &rarr; escreve <strong>3043</strong><br>
             <strong>1:17,09</strong> &rarr; escreve <strong>11709</strong>
@@ -11890,34 +11898,27 @@ async function pollHit(key) {
       },
       body: JSON.stringify({ p_key: POLL_NAMESPACE + '_' + key })
     });
-    if (!r.ok) { console.warn('pollHit error', r.status, await r.text()); return 0; }
     var j = await r.json();
-    // RPC pode devolver array ou objecto
     var row = Array.isArray(j) ? j[0] : j;
     return (row && row.votes) ? Number(row.votes) : 0;
-  } catch(e) { console.warn('pollHit exception', e); return 0; }
+  } catch(e) { return 0; }
 }
 
-/* --- Supabase: ler contagem --- */
-async function pollGet(key) {
+/* --- Supabase: ler todos os totais via POST (nunca cacheado) --- */
+async function pollGetAllTotals() {
   try {
-    var fullKey = POLL_NAMESPACE + '_' + key;
-    // encodeURIComponent garante que o filtro chega correcto ao Supabase
-    // o cache-buster vai como parâmetro separado e não polui o filtro eq.
-    var url = SUPABASE_URL + '/rest/v1/poll_votes?select=votes&key=eq.'
-              + encodeURIComponent(fullKey)
-              + '&nocache=' + Date.now();
-    var r = await fetch(url, {
-      cache: 'no-store',
+    var r = await fetch(SUPABASE_URL + '/rest/v1/rpc/poll_get_all', {
+      method: 'POST',
       headers: {
+        'Content-Type': 'application/json',
         'apikey': SUPABASE_ANON,
         'Authorization': 'Bearer ' + SUPABASE_ANON
-      }
+      },
+      body: JSON.stringify({ ns: POLL_NAMESPACE })
     });
-    if (!r.ok) { console.warn('pollGet error', r.status); return 0; }
     var j = await r.json();
-    return (j && j[0] && j[0].votes) ? Number(j[0].votes) : 0;
-  } catch(e) { console.warn('pollGet exception', e); return 0; }
+    return Array.isArray(j) ? j : [];
+  } catch(e) { return []; }
 }
 
 /* --- Seleccionar opção (antes de votar) --- */
@@ -11949,7 +11950,6 @@ async function pollSubmitAll() {
   var vBtn = document.getElementById('poll-vote-all-btn');
   if (vBtn) { vBtn.disabled = true; vBtn.textContent = 'A registar...'; }
 
-  // Regista cada voto no Supabase
   for (var i = 0; i < POLL_DATA.length; i++) {
     var poll = POLL_DATA[i];
     if (voted[poll.id]) continue;
@@ -11961,15 +11961,10 @@ async function pollSubmitAll() {
   }
   pollSetVoted(voted);
 
-  // Pausa para o Supabase propagar os writes antes de ler
-  await new Promise(function(r) { setTimeout(r, 800); });
-
-  // Vai buscar totais reais e mostra resultados
   await pollMostrarResultados(voted);
 
   if (vBtn) vBtn.style.display = 'none';
 
-  // Mostra botão de actualizar
   var body = document.getElementById('poll-body');
   if (body && !document.getElementById('poll-refresh-btn')) {
     var rb = document.createElement('button');
@@ -11985,13 +11980,17 @@ async function pollSubmitAll() {
 
 /* --- Buscar totais e mostrar resultados para todas as provas votadas --- */
 async function pollMostrarResultados(voted) {
+  // Um único pedido para buscar tudo
+  var allRows = await pollGetAllTotals();
   for (var i = 0; i < POLL_DATA.length; i++) {
     var poll = POLL_DATA[i];
     if (!voted[poll.id]) continue;
     var totals = {};
     for (var j = 0; j < poll.opcoes.length; j++) {
       var opt = poll.opcoes[j];
-      totals[opt.id] = await pollGet(poll.id + '_' + opt.id);
+      var fullKey = POLL_NAMESPACE + '_' + poll.id + '_' + opt.id;
+      var row = allRows.find(function(r) { return r.key === fullKey; });
+      totals[opt.id] = (row && row.votes) ? Number(row.votes) : 0;
     }
     pollRenderResult(poll.id, totals, voted[poll.id]);
   }
@@ -12001,6 +12000,7 @@ async function pollMostrarResultados(voted) {
 async function pollRefresh() {
   var btn = document.getElementById('poll-refresh-btn');
   if (btn) { btn.textContent = '⏳ A actualizar...'; btn.disabled = true; }
+  // pedido sempre fresco
   var voted = pollGetVoted();
   await pollMostrarResultados(voted);
   if (btn) { btn.textContent = '🔄 Actualizar resultados'; btn.disabled = false; }
@@ -12060,28 +12060,30 @@ function pollTapTitle() {
 
 /* --- Limpar votos deste dispositivo --- */
 function pollResetLocal() {
-  // confirm() bloqueado em iframes — usa diálogo custom inline
-  var wrap = document.getElementById('poll-reset-wrap');
-  if (wrap.querySelector('.poll-reset-confirm')) return; // já aberto
-  var box = document.createElement('div');
-  box.className = 'poll-reset-confirm';
-  box.style.cssText = 'margin-top:10px;padding:12px 16px;background:#fff3e0;border-radius:12px;font-family:DM Sans,sans-serif;font-size:13px;color:#7a4000;';
-  box.innerHTML = 'Tens a certeza? Isto apaga os teus votos neste dispositivo.<br><br>'
-    + '<button onclick="doPollReset()" style="background:#ff8c00;color:#fff;border:none;border-radius:8px;padding:7px 16px;font-family:DM Sans,sans-serif;font-size:13px;font-weight:600;cursor:pointer;margin-right:8px;">Confirmar</button>'
-    + '<button onclick="cancelPollReset()" style="background:none;border:1.5px solid #ccc;border-radius:8px;padding:7px 14px;font-family:DM Sans,sans-serif;font-size:13px;cursor:pointer;">Cancelar</button>';
-  wrap.appendChild(box);
-}
-function doPollReset() {
+  if (!confirm('Limpar os teus votos neste dispositivo?')) return;
   localStorage.removeItem(POLL_VOTED_KEY);
   localStorage.removeItem(POLL_FP_KEY);
   document.getElementById('poll-reset-wrap').style.display = 'none';
-  var box = document.querySelector('.poll-reset-confirm');
-  if (box) box.remove();
   pollRender();
 }
-function cancelPollReset() {
-  var box = document.querySelector('.poll-reset-confirm');
-  if (box) box.remove();
+
+/* --- Diagnóstico --- */
+async function pollDiag() {
+  var lines = [];
+  // Teste 1: ler todos os votos
+  try {
+    var r1 = await fetch(SUPABASE_URL + '/rest/v1/poll_votes?select=key,votes&limit=3', {
+      headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + SUPABASE_ANON }
+    });
+    lines.push('GET status: ' + r1.status);
+    lines.push('GET body: ' + (await r1.text()).substring(0, 200));
+  } catch(e) { lines.push('GET erro: ' + e.message); }
+  // Teste 2: pollGet directo
+  try {
+    var val = await pollGet('poll_1500L_d1_a');
+    lines.push('pollGet resultado: ' + val);
+  } catch(e) { lines.push('pollGet erro: ' + e.message); }
+  alert(lines.join('\n'));
 }
 
 /* --- Render inicial --- */
