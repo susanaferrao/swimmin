@@ -562,10 +562,6 @@
 .crono-btn-name { font-size:13px; font-weight:700; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,0.3); text-align:center; line-height:1.2; margin-bottom:5px; }
 .crono-btn-info { font-size:10px; color:rgba(255,255,255,0.88); text-align:center; line-height:1.6; }
 .crono-btn-finish-label { font-size:10px; font-weight:700; color:rgba(255,255,255,0.95); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:2px; }
-.crono-swimmer-btn.light-cap .crono-btn-name { color: #1a3a4a !important; text-shadow: none !important; }
-.crono-swimmer-btn.light-cap .crono-btn-info { color: rgba(26,58,74,0.85) !important; }
-.crono-swimmer-btn.light-cap .crono-btn-finish-label { color: rgba(26,58,74,0.9) !important; }
-.crono-swimmer-btn.light-cap { box-shadow: 0 3px 10px rgba(0,0,0,0.15), inset 0 0 0 1.5px rgba(0,0,0,0.12); }
 .crono-action-bar { display:flex; gap:8px; align-items:center; margin-bottom:14px; }
 .crono-undo-btn { flex:1; padding:0; min-height:64px; height:64px; display:flex; align-items:center; justify-content:center; border-radius:10px; border:1.5px solid #c0d8ee; background:#f0f7ff; color:#1a3a4a; font-size:12px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; }
 .crono-warning { font-size:11px; color:#8a9ab0; text-align:center; padding:6px 8px; background:#f5f9fc; border-radius:8px; flex:1.5; line-height:1.4; }
@@ -10821,15 +10817,13 @@ function cronoRenderActive() {
         lastSplit = cronoFmtMs(n.splits[toques-1]);
       }
 
-      var lightBg = !n.finished && isLightColor(n.cor || '#3498db');
-      var btnClass = 'crono-swimmer-btn' + (n.finished ? ' finished' : (!g.started ? ' waiting' : '')) + (lightBg ? ' light-cap' : '');
+      var btnClass = 'crono-swimmer-btn' + (n.finished ? ' finished' : (!g.started ? ' waiting' : ''));
       var btnStyle = 'background:' + (n.finished ? '#b0b8c1' : n.cor) + ';';
-      var terminadoColor = lightBg ? 'rgba(26,58,74,0.85)' : 'rgba(255,255,255,0.9)';
 
       var innerHtml = '';
       if (n.finished) {
         innerHtml = '<div class="crono-btn-name">' + n.nome + '</div>' +
-          '<div style="font-size:10px;font-weight:700;color:' + terminadoColor + ';text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Terminado</div>' +
+          '<div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.9);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Terminado</div>' +
           '<div class="crono-btn-info"><strong>' + cronoFmtTotal(n) + '</strong><br>Média 100: ' + mediaStr + '</div>';
       } else if (isLast) {
         innerHtml = '<div class="crono-btn-finish-label">Terminar</div>' +
@@ -11383,18 +11377,6 @@ function cronoPersistSession() {
 function cronoCapSvg(color) {
   var stroke = color === '#ffffff' ? '#cccccc' : color === '#222222' ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)';
   return '<svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><path d="M4 28 C4 10 32 10 32 28 L32 30 C32 31.1 31.1 32 30 32 L6 32 C4.9 32 4 31.1 4 30 Z" fill="' + color + '" stroke="' + stroke + '" stroke-width="1"/></svg>';
-}
-
-function isLightColor(hex) {
-  // Converte hex para RGB e calcula luminância relativa
-  var c = hex.replace('#', '');
-  if (c.length === 3) c = c[0]+c[0]+c[1]+c[1]+c[2]+c[2];
-  var r = parseInt(c.substring(0,2),16);
-  var g = parseInt(c.substring(2,4),16);
-  var b = parseInt(c.substring(4,6),16);
-  // Fórmula de luminância percetual (YIQ)
-  var luminance = (r * 299 + g * 587 + b * 114) / 1000;
-  return luminance > 160;
 }
 
 var _cronoPickingIdx = -1;
@@ -12641,6 +12623,99 @@ function perfilAbrirPopup(svgEl, titulo) {
   document.body.appendChild(overlay);
 }
 
+// === GRÁFICO DE VELOCIDADE POR ESTILO ===
+function perfilDesenharVelocidadeEstilo(distancias, sufixo, titulo, tsCurta, tsLonga) {
+  var isLight = document.documentElement.classList.contains('light-mode');
+  var W = 280;
+  var LBL = 42;      // largura da coluna de labels (distâncias)
+  var BARMAX = 174;  // largura máxima das barras (vai de LBL até LBL+BARMAX = 216)
+  var TXSTART = 220; // x onde começa o texto da velocidade
+  var BAR_H = 11, GAP_B = 4, GAP_G = 14;
+  var LEG_H = 28, PAD_TOP = 4, PAD_BOT = 10;
+
+  var CC = '#00c4cc';                              // cor Curta
+  var LC = isLight ? '#1E6091' : '#4a9fd4';        // cor Longa
+  var TC = isLight ? '#1a3a4a' : '#c0d8ee';        // texto labels
+  var MC = isLight ? '#6a8899' : '#6a9ab5';        // texto muted
+
+  // Velocidade máxima para escalar barras
+  var maxV = 0;
+  distancias.forEach(function(d) {
+    var k = d.dist + '_' + sufixo;
+    if (tsCurta[k] > 0) maxV = Math.max(maxV, d.dist * 100 / tsCurta[k]);
+    if (tsLonga[k] > 0) maxV = Math.max(maxV, d.dist * 100 / tsLonga[k]);
+  });
+  if (maxV < 0.5) maxV = 2.5;
+  maxV *= 1.12; // margem direita
+
+  // Calcular altura total do SVG
+  var H = PAD_TOP + LEG_H;
+  distancias.forEach(function(d) {
+    H += BAR_H * 2 + GAP_B + GAP_G + (d.showMedia100 ? 12 : 0);
+  });
+  H = H - GAP_G + PAD_BOT;
+
+  var svgId = 'vl' + sufixo + (Date.now() % 99999);
+  var s = '';
+
+  // Legenda
+  var lx = LBL;
+  s += '<rect x="'+lx+'" y="'+(PAD_TOP+8)+'" width="9" height="9" rx="2" fill="'+CC+'"/>';
+  s += '<text x="'+(lx+12)+'" y="'+(PAD_TOP+17)+'" font-size="9" fill="'+MC+'">Curta 25m</text>';
+  s += '<rect x="'+(lx+80)+'" y="'+(PAD_TOP+8)+'" width="9" height="9" rx="2" fill="'+LC+'"/>';
+  s += '<text x="'+(lx+93)+'" y="'+(PAD_TOP+17)+'" font-size="9" fill="'+MC+'">Longa 50m</text>';
+
+  var y = PAD_TOP + LEG_H;
+
+  distancias.forEach(function(d) {
+    var k = d.dist + '_' + sufixo;
+    var csC = tsCurta[k] || 0;
+    var csL = tsLonga[k] || 0;
+
+    // Label da distância (centrado verticalmente nas duas barras)
+    var ly = y + BAR_H + GAP_B / 2 + 4;
+    s += '<text x="'+(LBL-4)+'" y="'+ly+'" font-size="10" font-weight="600" fill="'+TC+'" text-anchor="end">'+d.label+'</text>';
+
+    // Barra Curta
+    if (csC > 0) {
+      var vC = d.dist * 100 / csC;
+      var bwC = Math.min(vC / maxV * BARMAX, BARMAX);
+      s += '<rect x="'+LBL+'" y="'+y+'" width="'+bwC.toFixed(1)+'" height="'+BAR_H+'" rx="3" fill="'+CC+'" opacity="0.9"/>';
+      s += '<text x="'+TXSTART+'" y="'+(y+BAR_H-1)+'" font-size="9" fill="'+CC+'">'+vC.toFixed(2)+' m/s</text>';
+    } else {
+      s += '<text x="'+(LBL+4)+'" y="'+(y+BAR_H-1)+'" font-size="9" fill="'+MC+'" opacity="0.4">—</text>';
+      s += '<text x="'+TXSTART+'" y="'+(y+BAR_H-1)+'" font-size="9" fill="'+MC+'" opacity="0.4">—</text>';
+    }
+
+    // Barra Longa
+    var y2 = y + BAR_H + GAP_B;
+    if (csL > 0) {
+      var vL = d.dist * 100 / csL;
+      var bwL = Math.min(vL / maxV * BARMAX, BARMAX);
+      s += '<rect x="'+LBL+'" y="'+y2+'" width="'+bwL.toFixed(1)+'" height="'+BAR_H+'" rx="3" fill="'+LC+'" opacity="0.9"/>';
+      s += '<text x="'+TXSTART+'" y="'+(y2+BAR_H-1)+'" font-size="9" fill="'+LC+'">'+vL.toFixed(2)+' m/s</text>';
+    } else {
+      s += '<text x="'+(LBL+4)+'" y="'+(y2+BAR_H-1)+'" font-size="9" fill="'+MC+'" opacity="0.4">—</text>';
+      s += '<text x="'+TXSTART+'" y="'+(y2+BAR_H-1)+'" font-size="9" fill="'+MC+'" opacity="0.4">—</text>';
+    }
+
+    // Média /100m (apenas Crol distâncias longas)
+    if (d.showMedia100 && (csC > 0 || csL > 0)) {
+      var mStr = '/100m:';
+      if (csC > 0) mStr += '  C ' + formatAtletaMs(Math.round(csC * 100 / d.dist));
+      if (csC > 0 && csL > 0) mStr += '  ·';
+      if (csL > 0) mStr += '  L ' + formatAtletaMs(Math.round(csL * 100 / d.dist));
+      s += '<text x="'+LBL+'" y="'+(y2+BAR_H+10)+'" font-size="8" fill="'+MC+'" opacity="0.85">'+mStr+'</text>';
+    }
+
+    y += BAR_H * 2 + GAP_B + GAP_G + (d.showMedia100 ? 12 : 0);
+  });
+
+  var tSafe = titulo.replace(/['"]/g, '');
+  return '<div style="text-align:center;margin-bottom:6px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);">' + titulo + '</div>'
+    + '<svg id="'+svgId+'" viewBox="0 0 '+W+' '+H+'" style="width:100%;display:block;cursor:pointer;" onclick="perfilAbrirPopup(this,\''+tSafe+'\')">' + s + '</svg>';
+}
+
 // Calcula pontos para uma prova+piscina
 function _perfilCalcPts(ms, pisc, sexo, key, mode) {
   try {
@@ -12759,7 +12834,8 @@ function perfilRender() {
 
   var labelN = mode === 'nacional' ? 'FPN' : 'FINA';
 
-  body.innerHTML = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">'
+  // Radares existentes
+  var htmlOut = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">'
     + '<div style="background:rgba(128,128,128,0.05);border-radius:16px;padding:16px 8px;">'
     + perfilDesenharRadar(distData, 'Distância · ' + labelN, cor)
     + '</div>'
@@ -12767,6 +12843,45 @@ function perfilRender() {
     + perfilDesenharRadar(estiloData, 'Estilo · ' + labelN, cor)
     + '</div>'
     + '</div>';
+
+  // Gráficos de velocidade por estilo
+  var estilosVel = [
+    { sufixo:'M', titulo:'Mariposa', dists:[
+      {dist:50,  label:'50m',   showMedia100:false},
+      {dist:100, label:'100m',  showMedia100:false},
+      {dist:200, label:'200m',  showMedia100:false}
+    ]},
+    { sufixo:'C', titulo:'Costas', dists:[
+      {dist:50,  label:'50m',   showMedia100:false},
+      {dist:100, label:'100m',  showMedia100:false},
+      {dist:200, label:'200m',  showMedia100:false}
+    ]},
+    { sufixo:'B', titulo:'Bruços', dists:[
+      {dist:50,  label:'50m',   showMedia100:false},
+      {dist:100, label:'100m',  showMedia100:false},
+      {dist:200, label:'200m',  showMedia100:false}
+    ]},
+    { sufixo:'L', titulo:'Crol', dists:[
+      {dist:50,   label:'50m',    showMedia100:false},
+      {dist:100,  label:'100m',   showMedia100:false},
+      {dist:200,  label:'200m',   showMedia100:false},
+      {dist:400,  label:'400m',   showMedia100:true},
+      {dist:800,  label:'800m',   showMedia100:true},
+      {dist:1500, label:'1500m',  showMedia100:true}
+    ]}
+  ];
+
+  htmlOut += '<div style="margin-top:18px;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);text-align:center;padding:8px 0 10px;border-top:1px solid rgba(128,128,128,0.12);">Velocidade por Estilo</div>';
+  htmlOut += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start;">';
+
+  estilosVel.forEach(function(e) {
+    htmlOut += '<div style="background:rgba(128,128,128,0.05);border-radius:16px;padding:14px 8px;">';
+    htmlOut += perfilDesenharVelocidadeEstilo(e.dists, e.sufixo, e.titulo, tsCurta, tsLonga);
+    htmlOut += '</div>';
+  });
+
+  htmlOut += '</div>';
+  body.innerHTML = htmlOut;
 
   if (destaque) {
     var mD = distData.length > 0 ? distData.reduce(function(a,b){return b.value>a.value?b:a;}) : null;
