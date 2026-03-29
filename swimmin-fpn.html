@@ -12424,7 +12424,12 @@ function perfilRender() {
   var destaque = document.getElementById('perfil-destaque');
   if (!body) return;
 
+  // Tenta carregar dados de todas as fontes possíveis
   var data = loadAtleta();
+  if (!data) {
+    try { var r = localStorage.getItem(ATLETA_KEY); data = r ? JSON.parse(r) : null; } catch(e) {}
+  }
+
   if (!data || !data.tempos) {
     body.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:13px;padding:16px;">Guarda o teu perfil com pelo menos um tempo para ver a infografia.</div>';
     if (destaque) destaque.style.display = 'none';
@@ -12432,25 +12437,30 @@ function perfilRender() {
   }
 
   var sexo = data.sexo || 'M';
-  var tsCurta = data.tempos.curta || {};
-  var tsLonga = data.tempos.longa || {};
+  // Suporta tanto {curta/longa} como {25/50} para compatibilidade
+  var tsCurta = data.tempos.curta || data.tempos['25'] || {};
+  var tsLonga = data.tempos.longa || data.tempos['50'] || {};
   var mode = _perfilMode;
 
   // Actualiza botões
   var btnN = document.getElementById('perfil-toggle-nacional');
   var btnM = document.getElementById('perfil-toggle-mundial');
-  if (btnN) { btnN.style.fontWeight = mode === 'nacional' ? '700' : '400'; btnN.style.opacity = mode === 'nacional' ? '1' : '0.5'; }
-  if (btnM) { btnM.style.fontWeight = mode === 'mundial' ? '700' : '400'; btnM.style.opacity = mode === 'mundial' ? '1' : '0.5'; }
+  var cor = mode === 'nacional' ? '#1E6091' : '#00c4cc';
+  if (btnN && btnM) {
+    btnN.style.background = mode === 'nacional' ? cor : 'transparent';
+    btnN.style.color = mode === 'nacional' ? '#fff' : cor;
+    btnN.style.borderColor = cor;
+    btnM.style.background = mode === 'mundial' ? cor : 'transparent';
+    btnM.style.color = mode === 'mundial' ? '#fff' : cor;
+    btnM.style.borderColor = cor;
+  }
 
-  // Eixos do gráfico de Distância (só Livres para manter consistência)
   var distAxes = [
     { label: 'Vel. Curta', keys: ['50_L'] },
     { label: 'Velocidade', keys: ['100_L'] },
     { label: 'Meio-Fundo', keys: ['200_L', '400_L'] },
     { label: 'Fundo',      keys: ['800_L', '1500_L'] }
   ];
-
-  // Eixos do gráfico de Estilo (média das distâncias disponíveis por estilo)
   var estiloAxes = [
     { label: 'Livres',   keys: ['50_L', '100_L', '200_L', '400_L'] },
     { label: 'Costas',   keys: ['50_C', '100_C', '200_C'] },
@@ -12476,12 +12486,17 @@ function perfilRender() {
   }).filter(function(d) { return d.value !== null; });
 
   if (distData.length === 0 && estiloData.length === 0) {
-    body.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:13px;padding:16px;">Sem pontuações calculáveis. Verifica se tens tempos guardados e se existem recordes para o teu sexo.</div>';
+    // Mostra o que temos para diagnosticar
+    var temCurta = Object.keys(tsCurta).length;
+    var temLonga = Object.keys(tsLonga).length;
+    body.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:13px;padding:16px;">'
+      + 'Sem pontuações calculáveis.<br>'
+      + '<small>Sexo: ' + sexo + ' · 25m: ' + temCurta + ' provas · 50m: ' + temLonga + ' provas</small>'
+      + '</div>';
     if (destaque) destaque.style.display = 'none';
     return;
   }
 
-  var cor = mode === 'nacional' ? '#1E6091' : '#00c4cc';
   var labelN = mode === 'nacional' ? 'FPN' : 'FINA';
 
   body.innerHTML = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">'
