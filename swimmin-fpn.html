@@ -12728,6 +12728,217 @@ function perfilDesenharVelocidadeEstilo(distancias, sufixo, titulo, tsCurta, tsL
     + '<svg id="'+svgId+'" viewBox="0 0 '+W+' '+H+'" style="width:100%;display:block;cursor:pointer;" onclick="perfilAbrirPopup(this,\''+tSafe+'\')">' + s + '</svg>';
 }
 
+// === TOP 5 MELHORES PROVAS (pódio) ===
+function perfilTopProvas(tsCurta, tsLonga, sexo, mode, labelN, cor) {
+  var isLight = document.documentElement.classList.contains('light-mode');
+  var eventos = [
+    {key:'50_L',  nome:'50m Crol'},   {key:'100_L', nome:'100m Crol'},
+    {key:'200_L', nome:'200m Crol'},  {key:'400_L', nome:'400m Crol'},
+    {key:'800_L', nome:'800m Crol'},  {key:'1500_L',nome:'1500m Crol'},
+    {key:'50_C',  nome:'50m Costas'}, {key:'100_C', nome:'100m Costas'}, {key:'200_C', nome:'200m Costas'},
+    {key:'50_B',  nome:'50m Bruços'}, {key:'100_B', nome:'100m Bruços'}, {key:'200_B', nome:'200m Bruços'},
+    {key:'50_M',  nome:'50m Mariposa'},{key:'100_M',nome:'100m Mariposa'},{key:'200_M',nome:'200m Mariposa'},
+    {key:'100_E', nome:'100m Estilos'},{key:'200_E',nome:'200m Estilos'},{key:'400_E',nome:'400m Estilos'}
+  ];
+  var todos = [];
+  eventos.forEach(function(e) {
+    var pts = _perfilBestPts(tsCurta, tsLonga, e.key, sexo, mode);
+    if (pts !== null) todos.push({ nome: e.nome, pts: pts });
+  });
+  if (todos.length === 0) return '';
+  todos.sort(function(a,b) { return b.pts - a.pts; });
+  var top = todos.slice(0, Math.min(5, todos.length));
+  var medals = ['🥇','🥈','🥉','4.º','5.º'];
+  var bgAlpha = ['0.15','0.10','0.08','0.05','0.04'];
+  var html = '<div style="text-align:center;margin-bottom:8px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);">Melhores Provas</div>';
+  top.forEach(function(e, i) {
+    var bg = 'rgba(' + (isLight ? '30,96,145' : (mode==='nacional' ? '30,96,145' : '0,196,204')) + ',' + bgAlpha[i] + ')';
+    html += '<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;margin-bottom:6px;background:' + bg + ';">'
+      + '<span style="font-size:' + (i < 3 ? '20' : '13') + 'px;min-width:26px;text-align:center;">' + medals[i] + '</span>'
+      + '<div style="flex:1;">'
+      + '<div style="font-size:13px;font-weight:700;color:' + cor + ';">' + e.nome + '</div>'
+      + '<div style="font-size:11px;color:var(--muted);">' + e.pts + ' pts ' + labelN + '</div>'
+      + '</div>'
+      + '</div>';
+  });
+  return html;
+}
+
+// === PONTUAÇÃO POR PROVA (barras FPN/FINA) ===
+function perfilPontuacaoProvas(tsCurta, tsLonga, sexo, mode, cor) {
+  var isLight = document.documentElement.classList.contains('light-mode');
+  var TC = isLight ? '#1a3a4a' : '#ffffff';
+  var MC = isLight ? '#6a8899' : '#6a9ab5';
+  var W = 280, LBL = 50, BARMAX = 164, TXSTART = 220;
+  var BAR_H = 11, GAP_E = 6, GAP_G = 16, HDR_H = 16;
+  var PAD_TOP = 6, PAD_BOT = 8;
+  var grupos = [
+    { label:'Crol',     sufixo:'L', dists:[50,100,200,400,800,1500] },
+    { label:'Costas',   sufixo:'C', dists:[50,100,200] },
+    { label:'Bruços',   sufixo:'B', dists:[50,100,200] },
+    { label:'Mariposa', sufixo:'M', dists:[50,100,200] },
+    { label:'Estilos',  sufixo:'E', dists:[100,200,400] }
+  ];
+  var dadosGrupos = grupos.map(function(g) {
+    var eventos = [];
+    g.dists.forEach(function(dist) {
+      var pts = _perfilBestPts(tsCurta, tsLonga, dist+'_'+g.sufixo, sexo, mode);
+      if (pts !== null) eventos.push({ label: dist+'m', pts: pts });
+    });
+    return { label: g.label, eventos: eventos };
+  }).filter(function(g) { return g.eventos.length > 0; });
+  if (dadosGrupos.length === 0) return '';
+  var maxPts = 0;
+  dadosGrupos.forEach(function(g) { g.eventos.forEach(function(e) { maxPts = Math.max(maxPts, e.pts); }); });
+  maxPts = Math.max(maxPts * 1.1, 100);
+  var H = PAD_TOP;
+  dadosGrupos.forEach(function(g) { H += HDR_H + g.eventos.length * (BAR_H + GAP_E) + GAP_G; });
+  H = H - GAP_G + PAD_BOT;
+  var svgId = 'pprov' + (Date.now() % 99999);
+  var s = '', y = PAD_TOP;
+  dadosGrupos.forEach(function(g) {
+    s += '<text x="'+LBL+'" y="'+(y+HDR_H-3)+'" font-size="10" font-weight="700" fill="'+cor+'" letter-spacing="1">'+g.label.toUpperCase()+'</text>';
+    y += HDR_H;
+    g.eventos.forEach(function(e) {
+      var bw = Math.min(e.pts / maxPts * BARMAX, BARMAX);
+      s += '<text x="'+(LBL-4)+'" y="'+(y+BAR_H-1)+'" font-size="10" fill="'+TC+'" text-anchor="end">'+e.label+'</text>';
+      s += '<rect x="'+LBL+'" y="'+y+'" width="'+bw.toFixed(1)+'" height="'+BAR_H+'" rx="3" fill="'+cor+'" opacity="0.85"/>';
+      s += '<text x="'+TXSTART+'" y="'+(y+BAR_H-1)+'" font-size="9" fill="'+cor+'">'+e.pts+'</text>';
+      y += BAR_H + GAP_E;
+    });
+    y += GAP_G;
+  });
+  var titulo = 'Pontuação por Prova';
+  return '<div style="text-align:center;margin-bottom:6px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);">' + titulo + '</div>'
+    + '<svg id="'+svgId+'" viewBox="0 0 '+W+' '+H+'" style="width:100%;display:block;cursor:pointer;" onclick="perfilAbrirPopup(this,\''+titulo+'\')">' + s + '</svg>';
+}
+
+// === COMPARAÇÃO DE ESTILOS A 100m ===
+function perfilComparacao100m(tsCurta, tsLonga) {
+  var isLight = document.documentElement.classList.contains('light-mode');
+  var TC = isLight ? '#1a3a4a' : '#ffffff';
+  var MC = isLight ? '#6a8899' : '#6a9ab5';
+  var W = 280, LBL = 58, BARMAX = 162, TXSTART = 226;
+  var BAR_H = 16, GAP = 10, PAD_TOP = 6, PAD_BOT = 8;
+  var estilos = [
+    { label:'Crol',     s:'L', cor:'#00c4cc' },
+    { label:'Costas',   s:'C', cor:'#4a9fd4' },
+    { label:'Bruços',   s:'B', cor:'#f07d30' },
+    { label:'Mariposa', s:'M', cor:'#c46fcc' }
+  ];
+  var dados = [];
+  estilos.forEach(function(e) {
+    var k = '100_' + e.s;
+    var csC = tsCurta[k] || 0, csL = tsLonga[k] || 0;
+    var cs = (csC > 0 && csL > 0) ? Math.min(csC, csL) : (csC || csL);
+    if (cs > 0) dados.push({ label: e.label, v: 100 * 100 / cs, cor: e.cor });
+  });
+  if (dados.length < 2) return '';
+  var maxV = dados.reduce(function(m,d) { return Math.max(m, d.v); }, 0) * 1.1;
+  var H = PAD_TOP + dados.length * (BAR_H + GAP) - GAP + PAD_BOT;
+  var svgId = 'cmp100' + (Date.now() % 99999);
+  var s = '', y = PAD_TOP;
+  dados.forEach(function(d) {
+    var bw = Math.min(d.v / maxV * BARMAX, BARMAX);
+    s += '<text x="'+(LBL-4)+'" y="'+(y+BAR_H-3)+'" font-size="11" font-weight="600" fill="'+TC+'" text-anchor="end">'+d.label+'</text>';
+    s += '<rect x="'+LBL+'" y="'+y+'" width="'+bw.toFixed(1)+'" height="'+BAR_H+'" rx="4" fill="'+d.cor+'" opacity="0.85"/>';
+    s += '<text x="'+TXSTART+'" y="'+(y+BAR_H-3)+'" font-size="9" fill="'+d.cor+'">'+d.v.toFixed(2)+' m/s</text>';
+    y += BAR_H + GAP;
+  });
+  var titulo = 'Comparação 100m';
+  return '<div style="text-align:center;margin-bottom:4px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);">' + titulo + '</div>'
+    + '<div style="text-align:center;font-size:9px;color:var(--muted);margin-bottom:6px;">melhor velocidade a 100m por estilo</div>'
+    + '<svg id="'+svgId+'" viewBox="0 0 '+W+' '+H+'" style="width:100%;display:block;cursor:pointer;" onclick="perfilAbrirPopup(this,\''+titulo+'\')">' + s + '</svg>';
+}
+
+// === RESISTÊNCIA 100→200m ===
+function perfilRatioDistancia(tsCurta, tsLonga) {
+  var isLight = document.documentElement.classList.contains('light-mode');
+  var TC = isLight ? '#1a3a4a' : '#ffffff';
+  var MC = isLight ? '#6a8899' : '#6a9ab5';
+  var W = 280, LBL = 58, BARMAX = 150, TXSTART = 215;
+  var BAR_H = 14, GAP = 10, PAD_TOP = 6, PAD_BOT = 26;
+  var BARSTART = LBL, SCALEMIN = 85, SCALEMAX = 100;
+  var estilos = [
+    { label:'Crol', s:'L' }, { label:'Costas', s:'C' },
+    { label:'Bruços', s:'B' }, { label:'Mariposa', s:'M' }
+  ];
+  var dados = [];
+  estilos.forEach(function(e) {
+    var cs100 = Math.min(tsCurta['100_'+e.s]||Infinity, tsLonga['100_'+e.s]||Infinity);
+    var cs200 = Math.min(tsCurta['200_'+e.s]||Infinity, tsLonga['200_'+e.s]||Infinity);
+    if (cs100 < Infinity && cs200 < Infinity) {
+      var ratio = (200 * 100 / cs200) / (100 * 100 / cs100) * 100;
+      dados.push({ label: e.label, ratio: ratio });
+    }
+  });
+  if (dados.length === 0) return '';
+  var H = PAD_TOP + dados.length * (BAR_H + GAP) - GAP + PAD_BOT;
+  var svgId = 'ratio' + (Date.now() % 99999);
+  var s = '', y = PAD_TOP;
+  // Linhas de referência verticais
+  [90,95,100].forEach(function(ref) {
+    var bx = BARSTART + (ref - SCALEMIN) / (SCALEMAX - SCALEMIN) * BARMAX;
+    s += '<line x1="'+bx+'" y1="'+PAD_TOP+'" x2="'+bx+'" y2="'+(H-PAD_BOT+4)+'" stroke="'+MC+'" stroke-width="0.6" opacity="0.35" stroke-dasharray="3,3"/>';
+    s += '<text x="'+bx+'" y="'+(H-8)+'" font-size="8" fill="'+MC+'" text-anchor="middle">'+ref+'%</text>';
+  });
+  dados.forEach(function(d) {
+    var rClamp = Math.min(Math.max(d.ratio, SCALEMIN), SCALEMAX);
+    var bw = (rClamp - SCALEMIN) / (SCALEMAX - SCALEMIN) * BARMAX;
+    var barCor = d.ratio < 90 ? '#f05050' : (d.ratio < 95 ? '#f0b040' : '#26d47c');
+    s += '<text x="'+(LBL-4)+'" y="'+(y+BAR_H-2)+'" font-size="11" font-weight="600" fill="'+TC+'" text-anchor="end">'+d.label+'</text>';
+    s += '<rect x="'+BARSTART+'" y="'+y+'" width="'+BARMAX+'" height="'+BAR_H+'" rx="3" fill="'+MC+'" opacity="0.08"/>';
+    s += '<rect x="'+BARSTART+'" y="'+y+'" width="'+bw.toFixed(1)+'" height="'+BAR_H+'" rx="3" fill="'+barCor+'" opacity="0.85"/>';
+    s += '<text x="'+(BARSTART+bw+4)+'" y="'+(y+BAR_H-2)+'" font-size="9" fill="'+barCor+'">'+d.ratio.toFixed(1)+'%</text>';
+    y += BAR_H + GAP;
+  });
+  var titulo = 'Resistência 100→200m';
+  return '<div style="text-align:center;margin-bottom:4px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);">' + titulo + '</div>'
+    + '<div style="text-align:center;font-size:9px;color:var(--muted);margin-bottom:6px;">% da velocidade a 100m mantida nos 200m</div>'
+    + '<svg id="'+svgId+'" viewBox="0 0 '+W+' '+H+'" style="width:100%;display:block;cursor:pointer;" onclick="perfilAbrirPopup(this,\''+titulo+'\')">' + s + '</svg>';
+}
+
+// === GANHO PISCINA CURTA (delta %) ===
+function perfilDeltaCurtaLonga(tsCurta, tsLonga) {
+  var isLight = document.documentElement.classList.contains('light-mode');
+  var TC = isLight ? '#1a3a4a' : '#ffffff';
+  var MC = isLight ? '#6a8899' : '#6a9ab5';
+  var VERDE = '#26d47c';
+  var W = 280, LBL = 68, BARMAX = 152, TXSTART = 226;
+  var BAR_H = 11, GAP = 7, PAD_TOP = 6, PAD_BOT = 8;
+  var nomes = {
+    '50_L':'50m Crol','100_L':'100m Crol','200_L':'200m Crol','400_L':'400m Crol',
+    '800_L':'800m Crol','1500_L':'1500m Crol','50_C':'50m Costas','100_C':'100m Costas',
+    '200_C':'200m Costas','50_B':'50m Bruços','100_B':'100m Bruços','200_B':'200m Bruços',
+    '50_M':'50m Mariposa','100_M':'100m Mariposa','200_M':'200m Mariposa',
+    '100_E':'100m Estilos','200_E':'200m Estilos','400_E':'400m Estilos'
+  };
+  var dados = [];
+  Object.keys(nomes).forEach(function(k) {
+    var csC = tsCurta[k] || 0, csL = tsLonga[k] || 0;
+    if (csC > 0 && csL > 0 && csL > csC) {
+      dados.push({ label: nomes[k], delta: (csL - csC) / csL * 100 });
+    }
+  });
+  if (dados.length < 2) return '';
+  dados.sort(function(a,b) { return b.delta - a.delta; });
+  var maxDelta = Math.max(dados[0].delta * 1.15, 2);
+  var H = PAD_TOP + dados.length * (BAR_H + GAP) - GAP + PAD_BOT;
+  var svgId = 'delta' + (Date.now() % 99999);
+  var s = '', y = PAD_TOP;
+  dados.forEach(function(d) {
+    var bw = Math.min(d.delta / maxDelta * BARMAX, BARMAX);
+    s += '<text x="'+(LBL-4)+'" y="'+(y+BAR_H-1)+'" font-size="9" fill="'+TC+'" text-anchor="end">'+d.label+'</text>';
+    s += '<rect x="'+LBL+'" y="'+y+'" width="'+bw.toFixed(1)+'" height="'+BAR_H+'" rx="3" fill="'+VERDE+'" opacity="0.8"/>';
+    s += '<text x="'+TXSTART+'" y="'+(y+BAR_H-1)+'" font-size="9" fill="'+VERDE+'">+'+d.delta.toFixed(1)+'%</text>';
+    y += BAR_H + GAP;
+  });
+  var titulo = 'Ganho Piscina Curta';
+  return '<div style="text-align:center;margin-bottom:4px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);">' + titulo + '</div>'
+    + '<div style="text-align:center;font-size:9px;color:var(--muted);margin-bottom:6px;">melhoria de tempo longa → curta (para provas com tempos em ambas)</div>'
+    + '<svg id="'+svgId+'" viewBox="0 0 '+W+' '+H+'" style="width:100%;display:block;cursor:pointer;" onclick="perfilAbrirPopup(this,\''+titulo+'\')">' + s + '</svg>';
+}
+
 // Calcula pontos para uma prova+piscina
 function _perfilCalcPts(ms, pisc, sexo, key, mode) {
   try {
@@ -12893,6 +13104,55 @@ function perfilRender() {
   });
 
   htmlOut += '</div>';
+
+  // ====================================================
+  // SECÇÃO: ANÁLISE POR PONTOS — responde ao toggle FPN/FINA
+  // ====================================================
+  var corBorda = mode === 'nacional' ? 'rgba(30,96,145,0.35)' : 'rgba(0,196,204,0.35)';
+  htmlOut += '<div style="margin-top:20px;padding:10px 0 10px;border-top:2px solid ' + corBorda + ';">'
+    + '<div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:' + cor + ';text-align:center;margin-bottom:12px;">Análise por Pontos · ' + labelN + '</div>';
+
+  // Top 5 melhores provas
+  var htmlTop = perfilTopProvas(tsCurta, tsLonga, sexo, mode, labelN, cor);
+  if (htmlTop) {
+    htmlOut += '<div style="background:rgba(128,128,128,0.05);border-radius:16px;padding:14px 12px;margin-bottom:12px;">' + htmlTop + '</div>';
+  }
+
+  // Pontuação por prova (barras)
+  var htmlPontuacao = perfilPontuacaoProvas(tsCurta, tsLonga, sexo, mode, cor);
+  if (htmlPontuacao) {
+    htmlOut += '<div style="background:rgba(128,128,128,0.05);border-radius:16px;padding:14px 8px;">' + htmlPontuacao + '</div>';
+  }
+
+  htmlOut += '</div>';
+
+  // ====================================================
+  // SECÇÃO: PERFIL DE NADADOR — independente do toggle
+  // ====================================================
+  var htmlCmp100  = perfilComparacao100m(tsCurta, tsLonga);
+  var htmlRatio   = perfilRatioDistancia(tsCurta, tsLonga);
+  var htmlDelta   = perfilDeltaCurtaLonga(tsCurta, tsLonga);
+
+  if (htmlCmp100 || htmlRatio || htmlDelta) {
+    htmlOut += '<div style="margin-top:20px;padding-top:10px;border-top:1px solid rgba(128,128,128,0.15);">'
+      + '<div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:12px;">Perfil de Nadador</div>';
+
+    // Comparação 100m + Resistência lado a lado
+    if (htmlCmp100 || htmlRatio) {
+      htmlOut += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start;margin-bottom:12px;">';
+      if (htmlCmp100) htmlOut += '<div style="background:rgba(128,128,128,0.05);border-radius:16px;padding:14px 8px;">' + htmlCmp100 + '</div>';
+      if (htmlRatio)  htmlOut += '<div style="background:rgba(128,128,128,0.05);border-radius:16px;padding:14px 8px;">' + htmlRatio  + '</div>';
+      htmlOut += '</div>';
+    }
+
+    // Delta curta/longa — só aparece se houver tempos nos dois
+    if (htmlDelta) {
+      htmlOut += '<div style="background:rgba(128,128,128,0.05);border-radius:16px;padding:14px 8px;">' + htmlDelta + '</div>';
+    }
+
+    htmlOut += '</div>';
+  }
+
   body.innerHTML = htmlOut;
 
   if (destaque) {
