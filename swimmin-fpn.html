@@ -12635,7 +12635,7 @@ function perfilDesenharVelocidadeEstilo(distancias, sufixo, titulo, tsCurta, tsL
 
   var CC = '#00c4cc';                              // cor Curta
   var LC = isLight ? '#1E6091' : '#4a9fd4';        // cor Longa
-  var TC = isLight ? '#1a3a4a' : '#c0d8ee';        // texto labels
+  var TC = isLight ? '#1a3a4a' : '#ffffff';          // texto labels (branco no dark mode)
   var MC = isLight ? '#6a8899' : '#6a9ab5';        // texto muted
 
   // Velocidade máxima para escalar barras
@@ -12651,7 +12651,7 @@ function perfilDesenharVelocidadeEstilo(distancias, sufixo, titulo, tsCurta, tsL
   // Calcular altura total do SVG
   var H = PAD_TOP + LEG_H;
   distancias.forEach(function(d) {
-    H += BAR_H * 2 + GAP_B + GAP_G + (d.showMedia100 ? 12 : 0);
+    H += BAR_H * 2 + GAP_B + GAP_G + (d.showMedia100 ? 14 : 0);
   });
   H = H - GAP_G + PAD_BOT;
 
@@ -12699,16 +12699,28 @@ function perfilDesenharVelocidadeEstilo(distancias, sufixo, titulo, tsCurta, tsL
       s += '<text x="'+TXSTART+'" y="'+(y2+BAR_H-1)+'" font-size="9" fill="'+MC+'" opacity="0.4">—</text>';
     }
 
-    // Média /100m (apenas Crol distâncias longas)
+    // Média /100m com bolinhas coloridas (apenas Crol distâncias longas)
     if (d.showMedia100 && (csC > 0 || csL > 0)) {
-      var mStr = '/100m:';
-      if (csC > 0) mStr += '  C ' + formatAtletaMs(Math.round(csC * 100 / d.dist));
-      if (csC > 0 && csL > 0) mStr += '  ·';
-      if (csL > 0) mStr += '  L ' + formatAtletaMs(Math.round(csL * 100 / d.dist));
-      s += '<text x="'+LBL+'" y="'+(y2+BAR_H+10)+'" font-size="8" fill="'+MC+'" opacity="0.85">'+mStr+'</text>';
+      var my = y2 + BAR_H + 3;
+      // Label "média @ 100"
+      s += '<text x="'+LBL+'" y="'+(my+8)+'" font-size="8" fill="'+MC+'" font-weight="600">média @ 100</text>';
+      // Bolinha + tempo Curta
+      if (csC > 0) {
+        var paceC = formatAtletaMs(Math.round(csC * 100 / d.dist));
+        s += '<circle cx="'+(LBL+66)+'" cy="'+(my+4)+'" r="3.5" fill="'+CC+'"/>';
+        s += '<text x="'+(LBL+73)+'" y="'+(my+8)+'" font-size="8" fill="'+CC+'">'+paceC+'</text>';
+      }
+      // Bolinha + tempo Longa
+      if (csL > 0) {
+        var paceL = formatAtletaMs(Math.round(csL * 100 / d.dist));
+        var dotX2 = csC > 0 ? LBL + 112 : LBL + 66;
+        var txtX2 = csC > 0 ? LBL + 119 : LBL + 73;
+        s += '<circle cx="'+dotX2+'" cy="'+(my+4)+'" r="3.5" fill="'+LC+'"/>';
+        s += '<text x="'+txtX2+'" y="'+(my+8)+'" font-size="8" fill="'+LC+'">'+paceL+'</text>';
+      }
     }
 
-    y += BAR_H * 2 + GAP_B + GAP_G + (d.showMedia100 ? 12 : 0);
+    y += BAR_H * 2 + GAP_B + GAP_G + (d.showMedia100 ? 14 : 0);
   });
 
   var tSafe = titulo.replace(/['"]/g, '');
