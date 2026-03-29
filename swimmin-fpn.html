@@ -12327,8 +12327,8 @@ function perfilDesenharRadar(dados, titulo, cor, idSuffix) {
   var cx = 120, cy = 120, R = 80;
   var angleStep = (2 * Math.PI) / N;
   var isLight = document.documentElement.classList.contains('light-mode');
-  var gridStroke = isLight ? 'rgba(0,0,0,0.12)' : 'rgba(255,255,255,0.25)';
-  var axisStroke = isLight ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.3)';
+  var gridStroke = isLight ? 'rgba(0,0,0,0.12)' : 'rgba(255,255,255,0.35)';
+  var axisStroke = isLight ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.4)';
 
   var maxVal = Math.max.apply(null, validos.map(function(d) { return d.value; }));
   var scale = maxVal > 0 ? Math.min(maxVal * 1.15, 1000) : 1000;
@@ -12366,22 +12366,24 @@ function perfilDesenharRadar(dados, titulo, cor, idSuffix) {
     return '<circle cx="' + p.x + '" cy="' + p.y + '" r="4" fill="' + cor + '" stroke="#fff" stroke-width="1.5"/>';
   }).join('');
 
-  // Labels — rodar os que ficam de lado (ângulo entre 30° e 150° ou entre 210° e 330°)
+  // Labels — sempre centrados, com quebra de linha para palavras longas
   var labels = validos.map(function(d, i) {
     var angle = -Math.PI / 2 + i * angleStep;
-    var deg = angle * 180 / Math.PI;
-    var lx = cx + (R + 22) * Math.cos(angle);
-    var ly = cy + (R + 22) * Math.sin(angle);
-    var cosA = Math.cos(angle);
-    var isSide = Math.abs(cosA) > 0.4 && Math.abs(Math.sin(angle)) > 0.4;
-    var anchor = Math.abs(cosA) < 0.15 ? 'middle' : (cosA > 0 ? 'start' : 'end');
-
-    if (isSide) {
-      // Roda 90° para labels laterais, ajusta para não sobrepor
-      var rotDeg = cosA > 0 ? -90 : 90;
-      return '<text x="' + lx + '" y="' + ly + '" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" font-weight="600" fill="currentColor" opacity="0.8" transform="rotate(' + rotDeg + ',' + lx + ',' + ly + ')">' + d.label + '</text>';
+    var lx = cx + (R + 26) * Math.cos(angle);
+    var ly = cy + (R + 26) * Math.sin(angle);
+    // Parte a label em palavras para caber no espaço
+    var words = d.label.split(' ');
+    var tspans = '';
+    if (words.length === 1) {
+      tspans = '<tspan x="' + lx + '" dy="0">' + words[0] + '</tspan>';
+    } else {
+      tspans = words.map(function(w, wi) {
+        return '<tspan x="' + lx + '" dy="' + (wi === 0 ? '0' : '12') + '">' + w + '</tspan>';
+      }).join('');
+      // Sobe o primeiro tspan para centrar verticalmente
+      ly -= (words.length - 1) * 6;
     }
-    return '<text x="' + lx + '" y="' + (ly + 4) + '" text-anchor="' + anchor + '" font-family="DM Sans,sans-serif" font-size="10" font-weight="600" fill="currentColor" opacity="0.8">' + d.label + '</text>';
+    return '<text x="' + lx + '" y="' + (ly + 4) + '" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" font-weight="600" fill="currentColor" opacity="0.85">' + tspans + '</text>';
   }).join('');
 
   // Score no centro
@@ -12518,7 +12520,8 @@ function perfilRender() {
     { label: 'Livres',   keys: ['50_L', '100_L', '200_L', '400_L'] },
     { label: 'Costas',   keys: ['50_C', '100_C', '200_C'] },
     { label: 'Bruços',   keys: ['50_B', '100_B', '200_B'] },
-    { label: 'Mariposa', keys: ['50_M', '100_M', '200_M'] }
+    { label: 'Mariposa', keys: ['50_M', '100_M', '200_M'] },
+    { label: 'Estilos',  keys: ['100_E', '200_E', '400_E'] }
   ];
 
   function calcMedia(keys) {
