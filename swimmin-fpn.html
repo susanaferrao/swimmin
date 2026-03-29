@@ -12319,16 +12319,17 @@ function perfilMedia(tempos, keys, sexo, mode) {
 }
 
 // Desenha um SVG radar
-function perfilDesenharRadar(dados, titulo, cor) {
-  // dados = [{label, value, max}] — value pode ser null (eixo ausente)
+function perfilDesenharRadar(dados, titulo, cor, idSuffix) {
   var validos = dados.filter(function(d) { return d.value !== null; });
   if (validos.length === 0) return '<div style="text-align:center;color:var(--muted);font-size:13px;padding:20px;">Sem tempos suficientes</div>';
 
   var N = validos.length;
-  var cx = 120, cy = 120, R = 90;
+  var cx = 120, cy = 120, R = 80;
   var angleStep = (2 * Math.PI) / N;
+  var isLight = document.documentElement.classList.contains('light-mode');
+  var gridStroke = isLight ? 'rgba(0,0,0,0.12)' : 'rgba(255,255,255,0.25)';
+  var axisStroke = isLight ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.3)';
 
-  // Normaliza: máximo possível = 1000 pts, mostramos até 110% do max real para dar espaço
   var maxVal = Math.max.apply(null, validos.map(function(d) { return d.value; }));
   var scale = maxVal > 0 ? Math.min(maxVal * 1.15, 1000) : 1000;
 
@@ -12337,19 +12338,22 @@ function perfilDesenharRadar(dados, titulo, cor) {
     var r = (val / scale) * R;
     return { x: cx + r * Math.cos(angle), y: cy + r * Math.sin(angle) };
   }
-  function ptEdge(i) { var angle = -Math.PI / 2 + i * angleStep; return { x: cx + R * Math.cos(angle), y: cy + R * Math.sin(angle) }; }
+  function ptEdge(i) {
+    var angle = -Math.PI / 2 + i * angleStep;
+    return { x: cx + R * Math.cos(angle), y: cy + R * Math.sin(angle) };
+  }
 
   // Grid circles
   var grid = '';
   [0.25, 0.5, 0.75, 1].forEach(function(f) {
-    grid += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (R * f) + '" fill="none" stroke="rgba(128,128,128,0.15)" stroke-width="1"/>';
+    grid += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (R * f) + '" fill="none" stroke="' + gridStroke + '" stroke-width="1"/>';
   });
 
   // Axis lines
   var axes = '';
   for (var i = 0; i < N; i++) {
     var e = ptEdge(i);
-    axes += '<line x1="' + cx + '" y1="' + cy + '" x2="' + e.x + '" y2="' + e.y + '" stroke="rgba(128,128,128,0.2)" stroke-width="1"/>';
+    axes += '<line x1="' + cx + '" y1="' + cy + '" x2="' + e.x + '" y2="' + e.y + '" stroke="' + axisStroke + '" stroke-width="1"/>';
   }
 
   // Data polygon
@@ -12362,24 +12366,73 @@ function perfilDesenharRadar(dados, titulo, cor) {
     return '<circle cx="' + p.x + '" cy="' + p.y + '" r="4" fill="' + cor + '" stroke="#fff" stroke-width="1.5"/>';
   }).join('');
 
-  // Labels
+  // Labels — rodar os que ficam de lado (ângulo entre 30° e 150° ou entre 210° e 330°)
   var labels = validos.map(function(d, i) {
-    var e = ptEdge(i);
     var angle = -Math.PI / 2 + i * angleStep;
-    var lx = cx + (R + 18) * Math.cos(angle);
-    var ly = cy + (R + 18) * Math.sin(angle);
-    var anchor = Math.abs(Math.cos(angle)) < 0.1 ? 'middle' : (Math.cos(angle) > 0 ? 'start' : 'end');
-    return '<text x="' + lx + '" y="' + (ly + 4) + '" text-anchor="' + anchor + '" font-family="DM Sans,sans-serif" font-size="10" font-weight="600" fill="currentColor" opacity="0.75">' + d.label + '</text>';
+    var deg = angle * 180 / Math.PI;
+    var lx = cx + (R + 22) * Math.cos(angle);
+    var ly = cy + (R + 22) * Math.sin(angle);
+    var cosA = Math.cos(angle);
+    var isSide = Math.abs(cosA) > 0.4 && Math.abs(Math.sin(angle)) > 0.4;
+    var anchor = Math.abs(cosA) < 0.15 ? 'middle' : (cosA > 0 ? 'start' : 'end');
+
+    if (isSide) {
+      // Roda 90° para labels laterais, ajusta para não sobrepor
+      var rotDeg = cosA > 0 ? -90 : 90;
+      return '<text x="' + lx + '" y="' + ly + '" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" font-weight="600" fill="currentColor" opacity="0.8" transform="rotate(' + rotDeg + ',' + lx + ',' + ly + ')">' + d.label + '</text>';
+    }
+    return '<text x="' + lx + '" y="' + (ly + 4) + '" text-anchor="' + anchor + '" font-family="DM Sans,sans-serif" font-size="10" font-weight="600" fill="currentColor" opacity="0.8">' + d.label + '</text>';
   }).join('');
 
-  // Pontos no centro
+  // Score no centro
   var scoreLabel = '<text x="' + cx + '" y="' + (cy + 5) + '" text-anchor="middle" font-family="Bebas Neue,sans-serif" font-size="22" fill="' + cor + '">' + Math.round(maxVal) + '</text>';
   var scoreSub = '<text x="' + cx + '" y="' + (cy + 18) + '" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="8" fill="currentColor" opacity="0.5">pts</text>';
 
+  var svgId = 'radar-svg-' + (idSuffix || Math.random().toString(36).substr(2,5));
+  var svgContent = grid + axes + poly + dots + labels + scoreLabel + scoreSub;
+
   return '<div style="text-align:center;margin-bottom:6px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);">' + titulo + '</div>'
-    + '<svg viewBox="0 0 240 240" style="width:100%;max-width:220px;display:block;margin:0 auto;">'
-    + grid + axes + poly + dots + labels + scoreLabel + scoreSub
+    + '<svg id="' + svgId + '" viewBox="0 0 240 240" style="width:100%;max-width:220px;display:block;margin:0 auto;cursor:pointer;" onclick="perfilAbrirPopup(this,\'' + titulo + '\')">'
+    + svgContent
     + '</svg>';
+}
+
+// Popup para ampliar gráfico
+function perfilAbrirPopup(svgEl, titulo) {
+  var overlay = document.createElement('div');
+  overlay.id = 'perfil-popup-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.75);display:flex;align-items:center;justify-content:center;padding:20px;';
+
+  var box = document.createElement('div');
+  var isLight = document.documentElement.classList.contains('light-mode');
+  box.style.cssText = 'background:' + (isLight ? '#fff' : '#0d2340') + ';border-radius:24px;padding:24px 20px 20px;max-width:380px;width:100%;position:relative;box-shadow:0 24px 64px rgba(0,0,0,0.5);';
+
+  // Botão fechar
+  var closeBtn = document.createElement('button');
+  closeBtn.innerHTML = '✕';
+  closeBtn.style.cssText = 'position:absolute;top:14px;right:16px;background:none;border:none;font-size:18px;cursor:pointer;color:var(--muted);line-height:1;padding:4px;';
+  closeBtn.onclick = function() { document.body.removeChild(overlay); };
+
+  // Título
+  var titleEl = document.createElement('div');
+  titleEl.textContent = titulo;
+  titleEl.style.cssText = 'text-align:center;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;';
+
+  // SVG ampliado — clona o SVG original
+  var svgClone = svgEl.cloneNode(true);
+  svgClone.style.cssText = 'width:100%;max-width:320px;display:block;margin:0 auto;cursor:default;';
+  svgClone.removeAttribute('onclick');
+  svgClone.removeAttribute('id');
+
+  box.appendChild(closeBtn);
+  box.appendChild(titleEl);
+  box.appendChild(svgClone);
+  overlay.appendChild(box);
+
+  // Fechar ao clicar fora
+  overlay.onclick = function(e) { if (e.target === overlay) document.body.removeChild(overlay); };
+
+  document.body.appendChild(overlay);
 }
 
 // Calcula pontos para uma prova+piscina
@@ -12517,7 +12570,7 @@ function perfilRender() {
     else if (mD)  txt = 'O teu ponto forte é <strong>' + mD.label + '</strong>';
     if (txt) {
       var topPts = mE ? mE.value : (mD ? mD.value : 0);
-      destaque.innerHTML = '🏊 ' + txt + ' · ' + topPts + ' pts ' + labelN;
+      destaque.innerHTML = txt + ' · ' + topPts + ' pts ' + labelN;
       destaque.style.cssText = 'display:block;margin-top:14px;padding:14px 16px;border-radius:14px;font-size:13px;font-weight:600;text-align:center;background:' + (mode==='nacional' ? 'rgba(30,96,145,0.1)' : 'rgba(0,196,204,0.1)') + ';border:1.5px solid ' + (mode==='nacional' ? 'rgba(30,96,145,0.3)' : 'rgba(0,196,204,0.3)') + ';color:' + cor + ';';
     } else {
       destaque.style.display = 'none';
