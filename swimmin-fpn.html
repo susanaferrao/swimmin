@@ -2589,7 +2589,7 @@ document.addEventListener("click", function(e) {
   <div style="margin:0 0 8px 0;">
     <a href="https://live.swimrankings.net/49106/" target="_blank" rel="noopener noreferrer"
        style="display:block;background:linear-gradient(135deg,#ff8c00,#e65c00);color:#fff;font-family:'DM Sans',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;text-decoration:none;padding:10px 22px;border-radius:10px;box-shadow:0 4px 16px rgba(230,92,0,0.35);cursor:pointer;text-align:center;">
-      Campeonato Nacional de JUN, Sub21 e ABS<br>OPEN de Portugal / ASTRALPOOL
+      Ver Campeonato Nacional em Direto
     </a>
   </div>
   <div style="margin:0 0 14px 0;">
@@ -12373,12 +12373,46 @@ function perfilDesenharRadar(dados, titulo, cor) {
     + '</svg>';
 }
 
+// Calcula pontos para uma prova+piscina
+function _perfilCalcPts(ms, pisc, sexo, key, mode) {
+  try {
+    var obj = mode === 'nacional' ? recordesNacionais[pisc][sexo][key] : recordesMundiais[pisc][sexo][key];
+    if (!obj || !obj.tempo) return null;
+    var rec = parseAtletaMs(obj.tempo);
+    if (!rec || !ms) return null;
+    return Math.round(1000 * Math.pow(rec / ms, 3));
+  } catch(e) { return null; }
+}
+
+// Melhor pontuação para uma chave (compara curta e longa)
+function _perfilBestPts(tsCurta, tsLonga, key, sexo, mode) {
+  var best = null;
+  var pairs = [['longa', tsLonga], ['curta', tsCurta]];
+  for (var i = 0; i < pairs.length; i++) {
+    var pisc = pairs[i][0], ts = pairs[i][1];
+    var ms = ts[key];
+    if (!ms) continue;
+    var pts = _perfilCalcPts(ms, pisc, sexo, key, mode);
+    if (pts !== null && (best === null || pts > best)) best = pts;
+  }
+  return best;
+}
+
+// Média das pontuações disponíveis para uma lista de chaves
+function _perfilMedia(tsCurta, tsLonga, keys, sexo, mode) {
+  var soma = 0, n = 0;
+  for (var i = 0; i < keys.length; i++) {
+    var p = _perfilBestPts(tsCurta, tsLonga, keys[i], sexo, mode);
+    if (p !== null) { soma += p; n++; }
+  }
+  return n > 0 ? Math.round(soma / n) : null;
+}
+
 function perfilRender() {
   var body = document.getElementById('perfil-radar-body');
   var destaque = document.getElementById('perfil-destaque');
   if (!body) return;
 
-  // loadAtleta() é a função oficial da app — trata todos os casos e fallbacks
   var data = loadAtleta();
 
   if (!data || !data.tempos) {
@@ -12388,81 +12422,65 @@ function perfilRender() {
   }
 
   var sexo = data.sexo || 'M';
-  var tsCurta = data.tempos.curta || {};  // { '50_L': 2450, ... } em centésimas
+  var tsCurta = data.tempos.curta || {};
   var tsLonga = data.tempos.longa || {};
   var mode = _perfilMode;
 
   perfilSetMode(mode);
 
-  // Calcula pontos para uma prova, escolhendo a piscina com melhor resultado
-  function calcPts(key) {
-    var best = null;
-    ['curta', 'longa'].forEach(function(pisc) {
-      var ts2 = pisc === 'curta' ? tsCurta : tsLonga;
-      var ms = ts2[key];
-      if (!ms) return;
-      try {
-        var rec, obj;
-        if (mode === 'nacional') {
-          obj = recordesNacionais[pisc][sexo][key];
-          if (!obj || !obj.tempo) return;
-          rec = parseAtletaMs(obj.tempo);
-        } else {
-          obj = recordesMundiais[pisc][sexo][key];
-          if (!obj || !obj.tempo) return;
-          rec = parseAtletaMs(obj.tempo);
-        }
-        if (!rec) return;
-        var pts = Math.round(1000 * Math.pow(rec / ms, 3));
-        if (best === null || pts > best) best = pts;
-      } catch(e) {}
-    });
-    return best;
-  }
+  // Diagnóstico inline — ajuda a identificar problemas
+  var nC = Object.keys(tsCurta).length, nL = Object.keys(tsLonga).length;
+  var diagHtml = '<div style="font-size:11px;background:#f0f7ff;border-radius:10px;padding:10px 12px;margin-bottom:12px;color:#1a3a4a;line-height:1.7;">'
+    + '<strong>Diagnóstico</strong> · ' + sexo + ' · ' + (data.escalao||'?') + '<br>'
+    + '25m: ' + nC + ' provas | 50m: ' + nL + ' provas<br>';
 
-  // Média dos pontos de uma lista de chaves (só as que têm valor)
-  function mediaKeys(keys) {
-    var soma = 0, n = 0;
-    keys.forEach(function(k) {
-      var p = calcPts(k);
-      if (p !== null) { soma += p; n++; }
-    });
-    return n > 0 ? Math.round(soma / n) : null;
+  // Testa um cálculo real
+  var testKey = Object.keys(tsLonga)[0] || Object.keys(tsCurta)[0];
+  if (testKey) {
+    var testPisc = tsLonga[testKey] ? 'longa' : 'curta';
+    var testMs = tsLonga[testKey] || tsCurta[testKey];
+    var testPts = _perfilCalcPts(testMs, testPisc, sexo, testKey, mode);
+    diagHtml += 'Teste: ' + testKey + ' = ' + testMs + 'cs → ' + (testPts !== null ? testPts + ' pts' : 'sem recorde');
   }
+  diagHtml += '</div>';
 
-  // GRÁFICO 1 — Distância
   var distAxes = [
     { label: 'Vel. Curta', keys: ['50_L'] },
     { label: 'Velocidade', keys: ['100_L'] },
     { label: 'Meio-Fundo', keys: ['200_L', '400_L'] },
     { label: 'Fundo',      keys: ['800_L', '1500_L'] }
   ];
-  var distData = distAxes.map(function(ax) {
-    return { label: ax.label, value: mediaKeys(ax.keys) };
-  }).filter(function(d) { return d.value !== null; });
-
-  // GRÁFICO 2 — Estilo
   var estiloAxes = [
     { label: 'Livres',   keys: ['50_L', '100_L', '200_L'] },
     { label: 'Costas',   keys: ['50_C', '100_C', '200_C'] },
     { label: 'Bruços',   keys: ['50_B', '100_B', '200_B'] },
     { label: 'Mariposa', keys: ['50_M', '100_M', '200_M'] }
   ];
-  var estiloData = estiloAxes.map(function(ax) {
-    return { label: ax.label, value: mediaKeys(ax.keys) };
+
+  var distData = distAxes.map(function(ax) {
+    return { label: ax.label, value: _perfilMedia(tsCurta, tsLonga, ax.keys, sexo, mode) };
   }).filter(function(d) { return d.value !== null; });
 
+  var estiloData = estiloAxes.map(function(ax) {
+    return { label: ax.label, value: _perfilMedia(tsCurta, tsLonga, ax.keys, sexo, mode) };
+  }).filter(function(d) { return d.value !== null; });
+
+  diagHtml += '<div style="font-size:11px;background:#f0f7ff;border-radius:10px;padding:10px 12px;margin-bottom:12px;color:#1a3a4a;">'
+    + 'Dist: [' + distData.map(function(d){return d.label+'='+d.value;}).join(', ') + ']<br>'
+    + 'Estilo: [' + estiloData.map(function(d){return d.label+'='+d.value;}).join(', ') + ']'
+    + '</div>';
+
   if (distData.length === 0 && estiloData.length === 0) {
-    body.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:13px;padding:16px;">Sem tempos suficientes para gerar o perfil.</div>';
+    body.innerHTML = diagHtml + '<div style="text-align:center;color:var(--muted);font-size:13px;padding:16px;">Sem pontuações calculáveis. Verifica se os recordes existem para o teu sexo/piscina.</div>';
     if (destaque) destaque.style.display = 'none';
     return;
   }
 
   var corN = '#1E6091', corM = '#00c4cc';
-  var cor  = mode === 'nacional' ? corN : corM;
+  var cor = mode === 'nacional' ? corN : corM;
 
-  body.innerHTML =
-    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">'
+  body.innerHTML = diagHtml
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">'
     + '<div style="background:rgba(128,128,128,0.05);border-radius:16px;padding:16px 8px;">'
     + perfilDesenharRadar(distData, mode === 'nacional' ? 'Distância · FPN' : 'Distância · FINA', cor)
     + '</div>'
@@ -12472,20 +12490,16 @@ function perfilRender() {
     + '</div>';
 
   if (destaque) {
-    var melhorDist = distData.length > 0 ? distData.reduce(function(a,b) { return b.value>a.value?b:a; }) : null;
-    var melhorEst  = estiloData.length > 0 ? estiloData.reduce(function(a,b) { return b.value>a.value?b:a; }) : null;
+    var mD = distData.length > 0 ? distData.reduce(function(a,b){return b.value>a.value?b:a;}) : null;
+    var mE = estiloData.length > 0 ? estiloData.reduce(function(a,b){return b.value>a.value?b:a;}) : null;
     var txt = '';
-    if (melhorEst && melhorDist) txt = 'O teu ponto forte é <strong>' + melhorEst.label + '</strong> de <strong>' + melhorDist.label + '</strong>';
-    else if (melhorEst)          txt = 'O teu ponto forte é <strong>' + melhorEst.label + '</strong>';
-    else if (melhorDist)         txt = 'O teu ponto forte é <strong>' + melhorDist.label + '</strong>';
+    if (mE && mD) txt = 'O teu ponto forte é <strong>'+mE.label+'</strong> de <strong>'+mD.label+'</strong>';
+    else if (mE)  txt = 'O teu ponto forte é <strong>'+mE.label+'</strong>';
+    else if (mD)  txt = 'O teu ponto forte é <strong>'+mD.label+'</strong>';
     if (txt) {
-      var topPts = melhorEst ? melhorEst.value : (melhorDist ? melhorDist.value : 0);
-      txt += ' · ' + Math.round(topPts) + ' pts ' + (mode === 'nacional' ? 'FPN' : 'FINA');
-      destaque.innerHTML = '🏊 ' + txt;
-      destaque.style.cssText = 'display:block;margin-top:14px;padding:14px 16px;border-radius:14px;font-size:13px;font-weight:600;text-align:center;'
-        + 'background:' + (mode==='nacional'?'rgba(30,96,145,0.1)':'rgba(0,196,204,0.1)') + ';'
-        + 'border:1.5px solid ' + (mode==='nacional'?'rgba(30,96,145,0.3)':'rgba(0,196,204,0.3)') + ';'
-        + 'color:' + cor + ';';
+      var topPts = mE ? mE.value : (mD ? mD.value : 0);
+      destaque.innerHTML = '🏊 ' + txt + ' · ' + topPts + ' pts ' + (mode==='nacional'?'FPN':'FINA');
+      destaque.style.cssText = 'display:block;margin-top:14px;padding:14px 16px;border-radius:14px;font-size:13px;font-weight:600;text-align:center;background:'+(mode==='nacional'?'rgba(30,96,145,0.1)':'rgba(0,196,204,0.1)')+';border:1.5px solid '+(mode==='nacional'?'rgba(30,96,145,0.3)':'rgba(0,196,204,0.3)')+';color:'+cor+';';
     } else {
       destaque.style.display = 'none';
     }
