@@ -12576,12 +12576,8 @@ function perfilDesenharRadar(dados, titulo, cor, idSuffix) {
     return '<text x="' + lx + '" y="' + (ly + 4) + '" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" font-weight="600" fill="currentColor" opacity="0.85">' + tspans + '</text>';
   }).join('');
 
-  // Score no centro
-  var scoreLabel = '<text x="' + cx + '" y="' + (cy + 7) + '" text-anchor="middle" font-family="Bebas Neue,sans-serif" font-size="24" fill="' + cor + '">' + Math.round(maxVal) + '</text>';
-  var scoreSub = '<text x="' + cx + '" y="' + (cy + 20) + '" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="8" fill="currentColor" opacity="0.5">pts</text>';
-
   var svgId = 'radar-svg-' + (idSuffix || Math.random().toString(36).substr(2,5));
-  var svgContent = grid + axes + poly + dots + labels + scoreLabel + scoreSub;
+  var svgContent = grid + axes + poly + dots + labels;
 
   return '<div style="text-align:center;margin-bottom:6px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);">' + titulo + '</div>'
     + '<svg id="' + svgId + '" viewBox="0 0 280 280" style="width:100%;max-width:220px;display:block;margin:0 auto;cursor:pointer;" onclick="perfilAbrirPopup(this,\'' + titulo + '\')">'
