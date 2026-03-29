@@ -12787,12 +12787,38 @@ function exportarNadador() {
   if (cartao) exportData.cartaoFPN = cartao;
 
   var json = JSON.stringify(exportData, null, 2);
-  var blob = new Blob([json], { type: 'application/json' });
+  var nome = (data.nome || 'nadador').replace(/\s+/g, '_').toLowerCase();
+  var fileName = nome + '.swimmin';
+  var blob = new Blob([json], { type: 'application/octet-stream' });
+  var file = new File([blob], fileName, { type: 'application/octet-stream' });
+
+  // Tenta Web Share API (abre painel nativo: WhatsApp, email, etc.)
+  if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+    navigator.share({
+      files: [file],
+      title: 'Dados de ' + (data.nome || 'Nadador'),
+      text: 'Os meus tempos SwimMin FPN'
+    }).catch(function(err) {
+      // Utilizador cancelou ou erro — fallback para download
+      if (err.name !== 'AbortError') _downloadSwimmin(blob, fileName);
+    });
+  } else if (navigator.share) {
+    // Share API existe mas não suporta ficheiros (alguns browsers) — partilha como texto
+    navigator.share({
+      title: 'Dados de ' + (data.nome || 'Nadador'),
+      text: 'Os meus tempos SwimMin FPN\n\n' + json
+    }).catch(function() { _downloadSwimmin(blob, fileName); });
+  } else {
+    // Desktop ou browser sem Share API — download direto
+    _downloadSwimmin(blob, fileName);
+  }
+}
+
+function _downloadSwimmin(blob, fileName) {
   var url = URL.createObjectURL(blob);
   var a = document.createElement('a');
-  var nome = (data.nome || 'nadador').replace(/\s+/g, '_').toLowerCase();
   a.href = url;
-  a.download = nome + '.swimmin';
+  a.download = fileName;
   document.body.appendChild(a);
   a.click();
   setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 500);
