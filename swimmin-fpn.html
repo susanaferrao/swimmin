@@ -8171,24 +8171,42 @@ var ATLETA_KEY = 'swimmin_atleta_v2';
 var PROFILES_KEY = 'swimmin_profiles_v1';
 var ACTIVE_PROFILE_KEY = 'swimmin_active_profile_v1';
 
+// RAM fallback — usado quando localStorage não está disponível (pré-visualizador, iframe, etc.)
+var _memProfiles = {};
+var _memActiveId = null;
+var _memAtleta = null;
+
+function _lsGet(key) {
+  try { return localStorage.getItem(key); } catch(e) { return null; }
+}
+function _lsSet(key, val) {
+  try { localStorage.setItem(key, val); return true; } catch(e) { return false; }
+}
+
 function getAllProfiles() {
-  try { var r = localStorage.getItem(PROFILES_KEY); return r ? JSON.parse(r) : {}; } catch(e) { return {}; }
+  var r = _lsGet(PROFILES_KEY);
+  if (r) { try { return JSON.parse(r); } catch(e) {} }
+  return _memProfiles;
 }
 function getActiveProfileId() {
-  try { return localStorage.getItem(ACTIVE_PROFILE_KEY) || null; } catch(e) { return null; }
+  return _lsGet(ACTIVE_PROFILE_KEY) || _memActiveId;
 }
 function setActiveProfileId(id) {
-  try { localStorage.setItem(ACTIVE_PROFILE_KEY, id); } catch(e) {}
+  _memActiveId = id;
+  _lsSet(ACTIVE_PROFILE_KEY, id);
 }
 function saveProfile(id, data) {
+  _memProfiles[id] = data;
   var profiles = getAllProfiles();
   profiles[id] = data;
-  try { localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles)); } catch(e) {}
+  _memProfiles = profiles;
+  _lsSet(PROFILES_KEY, JSON.stringify(profiles));
 }
 function deleteProfile(id) {
   var profiles = getAllProfiles();
   delete profiles[id];
-  try { localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles)); } catch(e) {}
+  _memProfiles = profiles;
+  _lsSet(PROFILES_KEY, JSON.stringify(profiles));
   if (getActiveProfileId() === id) {
     var ids = Object.keys(profiles);
     setActiveProfileId(ids.length > 0 ? ids[0] : null);
@@ -8329,8 +8347,8 @@ function formatAtletaMs(ms) {
 }
 
 function saveAtleta(data) {
-  // Legacy single-profile save (kept for compatibility)
-  try { localStorage.setItem(ATLETA_KEY, JSON.stringify(data)); } catch(e) {}
+  _memAtleta = data;
+  _lsSet(ATLETA_KEY, JSON.stringify(data));
 }
 function loadAtleta() {
   var activeId = getActiveProfileId();
@@ -8339,7 +8357,9 @@ function loadAtleta() {
     if (profiles[activeId]) return profiles[activeId];
   }
   // Fallback to legacy single profile
-  try { var r = localStorage.getItem(ATLETA_KEY); return r ? JSON.parse(r) : null; } catch(e) { return null; }
+  var r = _lsGet(ATLETA_KEY);
+  if (r) { try { return JSON.parse(r); } catch(e) {} }
+  return _memAtleta;
 }
 function saveActiveAtleta(data) {
   var activeId = getActiveProfileId();
@@ -8385,7 +8405,7 @@ function migrateLegatyProfile() {
   var profiles = getAllProfiles();
   if (Object.keys(profiles).length > 0) return; // already migrated
   try {
-    var r = localStorage.getItem(ATLETA_KEY);
+    var r = _lsGet(ATLETA_KEY) || (_memAtleta ? JSON.stringify(_memAtleta) : null);
     if (r) {
       var data = JSON.parse(r);
       if (data && data.escalao) {
