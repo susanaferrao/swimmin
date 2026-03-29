@@ -2858,8 +2858,10 @@ document.addEventListener("click", function(e) {
       <!-- Botões Partilhar / Importar -->
       <div style="display:flex;gap:8px;margin-top:10px;">
         <button onclick="exportarNadador()" style="flex:1;padding:11px 8px;border-radius:10px;background:#e8f4fd;border:1.5px solid #b0d4ee;color:#1a5a8a;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">Partilhar dados</button>
-        <button onclick="document.getElementById('importar-nadador-input').click()" style="flex:1;padding:11px 8px;border-radius:10px;background:#e8f4fd;border:1.5px solid #b0d4ee;color:#1a5a8a;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">Importar nadador</button>
-        <input type="file" id="importar-nadador-input" accept=".swimmin,.json,application/json,text/plain,*/*" style="display:none;" onchange="importarNadador(event)">
+        <label style="flex:1;padding:11px 8px;border-radius:10px;background:#e8f4fd;border:1.5px solid #b0d4ee;color:#1a5a8a;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:center;display:flex;align-items:center;justify-content:center;">
+          Importar nadador
+          <input type="file" accept=".swimmin,.json,application/json,text/plain,*/*" style="display:none;" onchange="importarNadador(event)">
+        </label>
       </div>
     </div>
 
@@ -2921,8 +2923,10 @@ document.addEventListener("click", function(e) {
       <button type="button" onclick="guardarAtleta()" style="margin-top:18px;padding:14px;border-radius:8px;background:var(--aqua);color:var(--dark);font-weight:700;font-size:16px;border:none;cursor:pointer;width:100%;">Guardar e ver resultados</button>
       <button type="button" onclick="cancelarFormulario()" style="margin-top:8px;padding:10px;border-radius:8px;background:transparent;border:1px solid #ccc;color:#7ab8d4;font-size:14px;cursor:pointer;width:100%;">Cancelar</button>
       <div style="margin-top:8px;">
-        <button type="button" onclick="document.getElementById('importar-nadador-form-input').click()" style="width:100%;padding:11px 8px;border-radius:10px;background:#e8f4fd;border:1.5px solid #b0d4ee;color:#1a5a8a;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">Importar nadador</button>
-        <input type="file" id="importar-nadador-form-input" accept=".swimmin,.json,application/json,text/plain,*/*" style="display:none;" onchange="importarNadador(event)">
+        <label style="display:flex;align-items:center;justify-content:center;width:100%;padding:11px 8px;border-radius:10px;background:#e8f4fd;border:1.5px solid #b0d4ee;color:#1a5a8a;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;box-sizing:border-box;">
+          Importar nadador
+          <input type="file" accept=".swimmin,.json,application/json,text/plain,*/*" style="display:none;" onchange="importarNadador(event)">
+        </label>
       </div>
       <div id="atleta-delete-btn" style="display:none;margin-top:16px;border-top:1px solid #f0d0d0;padding-top:14px;">
         <button type="button" onclick="eliminarPerfilAtleta()" style="padding:10px;border-radius:8px;background:transparent;border:1.5px solid #e74c3c;color:#e74c3c;font-size:13px;font-weight:600;cursor:pointer;width:100%;">Eliminar este nadador</button>
