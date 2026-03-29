@@ -2589,14 +2589,14 @@ document.addEventListener("click", function(e) {
   <div style="margin:0 0 8px 0;">
     <a href="https://live.swimrankings.net/49106/" target="_blank" rel="noopener noreferrer"
        style="display:block;background:linear-gradient(135deg,#ff8c00,#e65c00);color:#fff;font-family:'DM Sans',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;text-decoration:none;padding:10px 22px;border-radius:10px;box-shadow:0 4px 16px rgba(230,92,0,0.35);cursor:pointer;text-align:center;">
-      Ver Campeonato Nacional em Direto
+      RESULTADOS · CAMPEONATOS NACIONAIS JUN, SEN E ABSOLUTOS
     </a>
   </div>
   <div style="margin:0 0 14px 0;">
     <a href="https://natacaotv.pt/live2.php" target="_blank" rel="noopener noreferrer"
        style="display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#005fa3,#003d6b);color:#fff;font-family:'DM Sans',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;text-decoration:none;padding:10px 22px;border-radius:10px;box-shadow:0 4px 16px rgba(0,63,107,0.35);cursor:pointer;text-align:center;">
       <span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:#00c4cc;box-shadow:0 0 6px #00c4cc;flex-shrink:0;animation:livePulse 1.4s ease-in-out infinite;"></span>
-      Ver Finais em Direto · Sessão da Tarde
+      VER EM DIRETO
     </a>
   </div>
   <style>
@@ -2806,7 +2806,7 @@ document.addEventListener("click", function(e) {
 </div>
 
 <div class="fpn-btn-wrap">
-    <button class="fpn-btn" id="atleta-btn" onclick="toggleAtleta()">Zona do Nadador</button>
+    <button class="fpn-btn" id="atleta-btn" onclick="toggleAtleta()" ondblclick="">Zona do Nadador</button>
   </div>
 
   <div class="fpn-section" id="atleta-section" style="display:none">
@@ -12237,12 +12237,21 @@ function perfilEasterEgg() {
   if (_perfilEasterClicks >= 5) {
     _perfilEasterClicks = 0;
     _perfilUnlocked = true;
-    var sec = document.getElementById('perfil-radar-section');
-    if (sec) {
-      sec.style.display = 'block';
-      perfilRender();
-      sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Garante que a Zona do Nadador está aberta
+    var section = document.getElementById('atleta-section');
+    if (section && section.style.display === 'none') {
+      var btn = document.getElementById('atleta-btn');
+      if (btn) btn.click();
     }
+    // Pequeno delay para o DOM actualizar
+    setTimeout(function() {
+      var sec = document.getElementById('perfil-radar-section');
+      if (sec) {
+        sec.style.display = 'block';
+        perfilRender();
+        setTimeout(function() { sec.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+      }
+    }, 300);
   }
 }
 
