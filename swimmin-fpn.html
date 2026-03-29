@@ -2820,21 +2820,45 @@ document.addEventListener("click", function(e) {
           <select id="atleta-profile-select" onchange="mudarPerfil(this.value)" style="flex:1;padding:10px 12px;border-radius:10px;background:#f0f7ff;border:1.5px solid #c0d8ee;color:#1a3a4a;font-size:14px;font-weight:600;cursor:pointer;"></select>
           <button onclick="novoPerfilAtleta()" title="Novo nadador" style="padding:10px 14px;border-radius:10px;background:var(--aqua);color:var(--dark);border:none;font-weight:700;font-size:18px;cursor:pointer;line-height:1;">+</button>
         </div>
-  
-      </div>
-      <div id="atleta-saved-summary"></div>
-      <div id="atleta-comp-selector" style="display:none;margin-top:16px;">
-        <div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#7ab8d4;margin-bottom:6px;">Ver mínimos para</div>
-        <select id="atleta-comp-select" onchange="selecionarCompAtleta(this.value)" style="width:100%;padding:12px 14px;border-radius:10px;background:#f0f7ff;border:1.5px solid #c0d8ee;color:#1a3a4a;font-size:15px;font-weight:600;cursor:pointer;appearance:auto;">
-        </select>
-        <div style="background:#fff8e1;border-radius:8px;padding:10px 14px;margin-top:12px;border-left:3px solid #f0a500;">
-          <div style="font-size:12px;color:#7a5a00;line-height:1.5;">Para participação nas competições, ter em conta a data de obtenção dos tempos.</div>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <button onclick="exportarNadador()" style="flex:1;padding:10px 12px;border-radius:10px;background:#e8f4fd;border:1.5px solid #b0d4ee;color:#1a5a8a;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">&#128228; Partilhar dados</button>
+          <button onclick="document.getElementById('importar-nadador-input').click()" style="flex:1;padding:10px 12px;border-radius:10px;background:#e8f4fd;border:1.5px solid #b0d4ee;color:#1a5a8a;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;">&#128229; Importar nadador</button>
+          <input type="file" id="importar-nadador-input" accept=".swimmin,.json" style="display:none;" onchange="importarNadador(event)">
         </div>
       </div>
-      <button type="button" onclick="mostrarFormulario()" id="atleta-editar-btn" style="display:none;margin-top:14px;padding:10px 18px;border-radius:8px;background:transparent;border:2px solid var(--aqua);color:var(--aqua);font-weight:700;font-size:14px;cursor:pointer;width:100%;">Atualizar dados</button>
+      <div id="atleta-saved-summary"></div>
+
+      <!-- Botão cartão FPN -->
       <div id="ver-cartao-btn-wrap" style="display:none;margin-top:8px;">
         <button onclick="abrirCartaoFPN()" style="background:var(--blue-deep);color:#fff;border:none;border-radius:10px;padding:12px;font-size:15px;font-weight:700;cursor:pointer;text-align:center;width:100%;">Ver cartão FPN</button>
       </div>
+
+      <!-- Tabs: Os meus tempos / Os meus mínimos -->
+      <div id="atleta-tabs-wrap" style="display:none;margin-top:16px;">
+        <div style="display:flex;border-radius:12px;overflow:hidden;border:1.5px solid rgba(0,196,204,0.3);margin-bottom:16px;">
+          <button id="atleta-tab-tempos" onclick="atletaSwitchTab('tempos')" style="flex:1;padding:11px 6px;border:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.3px;transition:all 0.2s;">Os meus tempos</button>
+          <button id="atleta-tab-minimos" onclick="atletaSwitchTab('minimos')" style="flex:1;padding:11px 6px;border:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.3px;transition:all 0.2s;">Os meus mínimos</button>
+        </div>
+
+        <!-- Painel: Os meus tempos -->
+        <div id="atleta-panel-tempos" style="display:none;">
+          <div id="atleta-tempos-table"></div>
+        </div>
+
+        <!-- Painel: Os meus mínimos -->
+        <div id="atleta-panel-minimos" style="display:none;">
+          <div id="atleta-comp-selector" style="display:none;">
+            <div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#7ab8d4;margin-bottom:6px;">Ver mínimos para</div>
+            <select id="atleta-comp-select" onchange="selecionarCompAtleta(this.value)" style="width:100%;padding:12px 14px;border-radius:10px;background:#f0f7ff;border:1.5px solid #c0d8ee;color:#1a3a4a;font-size:15px;font-weight:600;cursor:pointer;appearance:auto;"></select>
+            <div style="background:#fff8e1;border-radius:8px;padding:10px 14px;margin-top:12px;border-left:3px solid #f0a500;">
+              <div style="font-size:12px;color:#7a5a00;line-height:1.5;">Para participação nas competições, ter em conta a data de obtenção dos tempos.</div>
+            </div>
+          </div>
+          <div id="atleta-resultados" style="margin-top:0;"></div>
+        </div>
+      </div>
+
+      <button type="button" onclick="mostrarFormulario()" id="atleta-editar-btn" style="display:none;margin-top:14px;padding:10px 18px;border-radius:8px;background:transparent;border:2px solid var(--aqua);color:var(--aqua);font-weight:700;font-size:14px;cursor:pointer;width:100%;">Atualizar dados</button>
     </div>
 
     <div id="atleta-form" style="display:none">
@@ -2882,8 +2906,6 @@ document.addEventListener("click", function(e) {
         <input type="file" id="cartao-fpn-input" accept="image/*" style="display:none;" onchange="previewCartaoFPN(event)">
       </div>
 
-
-
       <div class="hint-box">
         <div class="hint-box-title">Como inserir os tempos</div>
         <div class="hint-box-text">
@@ -2896,12 +2918,14 @@ document.addEventListener("click", function(e) {
 
       <button type="button" onclick="guardarAtleta()" style="margin-top:18px;padding:14px;border-radius:8px;background:var(--aqua);color:var(--dark);font-weight:700;font-size:16px;border:none;cursor:pointer;width:100%;">Guardar e ver resultados</button>
       <button type="button" onclick="cancelarFormulario()" style="margin-top:8px;padding:10px;border-radius:8px;background:transparent;border:1px solid #ccc;color:#7ab8d4;font-size:14px;cursor:pointer;width:100%;">Cancelar</button>
+      <div style="margin-top:8px;text-align:center;">
+        <button type="button" onclick="document.getElementById('importar-nadador-form-input').click()" style="padding:10px;border-radius:8px;background:transparent;border:1px solid #b0d4ee;color:#1a5a8a;font-size:13px;font-weight:600;cursor:pointer;width:100%;font-family:'DM Sans',sans-serif;">&#128229; Importar nadador (.swimmin)</button>
+        <input type="file" id="importar-nadador-form-input" accept=".swimmin,.json" style="display:none;" onchange="importarNadador(event)">
+      </div>
       <div id="atleta-delete-btn" style="display:none;margin-top:16px;border-top:1px solid #f0d0d0;padding-top:14px;">
         <button type="button" onclick="eliminarPerfilAtleta()" style="padding:10px;border-radius:8px;background:transparent;border:1.5px solid #e74c3c;color:#e74c3c;font-size:13px;font-weight:600;cursor:pointer;width:100%;">Eliminar este nadador</button>
       </div>
     </div>
-
-    <div id="atleta-resultados" style="margin-top:20px;"></div>
 
     <!-- Perfil do Nadador — desbloqueado com 5 cliques no título -->
     <div id="perfil-radar-section" style="display:none; margin-top:24px;">
@@ -2921,9 +2945,7 @@ document.addEventListener("click", function(e) {
           </button>
         </div>
       </div>
-      <div id="perfil-radar-body">
-        <!-- Rendered by JS -->
-      </div>
+      <div id="perfil-radar-body"></div>
       <div id="perfil-destaque" style="margin-top:14px; padding:14px 16px; border-radius:14px; font-size:13px; font-weight:600; text-align:center; display:none;"></div>
     </div>
 
@@ -8387,38 +8409,43 @@ function mostrarPerfilAtivo() {
   document.getElementById('atleta-view-intro').style.display = 'block';
   document.getElementById('atleta-editar-btn').style.display = 'block';
 
-  // Profile bar - só mostrar se houver mais do que 1 perfil
+  // Profile bar — mostra sempre
   var profileBar = document.getElementById('atleta-profile-bar');
-  profileBar.style.display = ids.length > 1 ? 'block' : 'none';
-  if (ids.length > 1) {
-    var sel = document.getElementById('atleta-profile-select');
-    sel.innerHTML = '';
-    for (var i = 0; i < ids.length; i++) {
-      var p = profiles[ids[i]];
-      var opt = document.createElement('option');
-      opt.value = ids[i];
-      opt.textContent = (p.nome || 'Nadador') + ' · ' + (ESC_LABEL[p.escalao] || p.escalao);
-      if (ids[i] === activeId) opt.selected = true;
-      sel.appendChild(opt);
-    }
-    document.getElementById('atleta-delete-btn').style.display = 'block';
+  profileBar.style.display = 'block';
+  var sel = document.getElementById('atleta-profile-select');
+  sel.innerHTML = '';
+  for (var i = 0; i < ids.length; i++) {
+    var p = profiles[ids[i]];
+    var opt = document.createElement('option');
+    opt.value = ids[i];
+    opt.textContent = (p.nome || 'Nadador') + ' · ' + (ESC_LABEL[p.escalao] || p.escalao);
+    if (ids[i] === activeId) opt.selected = true;
+    sel.appendChild(opt);
   }
+  document.getElementById('atleta-delete-btn').style.display = ids.length > 1 ? 'block' : 'none';
 
   document.getElementById('atleta-saved-summary').innerHTML =
     '<div class="atleta-summary">' +
     '<strong>' + (data.nome || 'Nadador') + '</strong> · ' + (ESC_LABEL[data.escalao] || data.escalao) + '</div>';
 
   ATLETA_COMP_ATUAL = null;
-  renderCompButtons(data);
+
+  // Cartão FPN
   var cartaoGuardado = null;
   try { cartaoGuardado = localStorage.getItem('cartaoFPN_' + activeId); } catch(e) {}
-  // Fallback: verificar memória
   if (!cartaoGuardado && window._cartaoFPNMemory && window._cartaoFPNMemory[activeId]) cartaoGuardado = window._cartaoFPNMemory[activeId];
-  // Fallback: preservar o que já está em _cartaoFPNAtivo (pode ter sido definido em guardarAtleta)
   if (!cartaoGuardado && window._cartaoFPNAtivo) cartaoGuardado = window._cartaoFPNAtivo;
   window._cartaoFPNAtivo = cartaoGuardado || null;
   var btnWrap = document.getElementById('ver-cartao-btn-wrap');
   if (btnWrap) btnWrap.style.display = cartaoGuardado ? 'block' : 'none';
+
+  // Mostrar tabs
+  var tabsWrap = document.getElementById('atleta-tabs-wrap');
+  if (tabsWrap) tabsWrap.style.display = 'block';
+
+  // Activar tab mínimos por defeito (comportamento anterior)
+  atletaSwitchTab('minimos');
+  renderCompButtons(data);
 }
 
 function mudarPerfil(id) {
@@ -8450,8 +8477,7 @@ function renderCompButtons(data) {
   var comps = COMP_POR_ESCALAO[data.escalao] || [];
   var selectorEl = document.getElementById('atleta-comp-selector');
   var selectEl = document.getElementById('atleta-comp-select');
-  if (comps.length === 0) { selectorEl.style.display = 'none'; return; }
-  selectorEl.style.display = 'block';
+  if (comps.length === 0) { if (selectorEl) selectorEl.style.display = 'none'; return; }
   if (!ATLETA_COMP_ATUAL) ATLETA_COMP_ATUAL = comps[0].id;
   REBUILDING_SELECT = true;
   selectEl.innerHTML = '';
@@ -8463,7 +8489,11 @@ function renderCompButtons(data) {
     selectEl.appendChild(opt);
   }
   REBUILDING_SELECT = false;
-  renderAtletaResultados(data, ATLETA_COMP_ATUAL);
+  // Só renderiza resultados se o tab mínimos estiver activo
+  if (_atletaActiveTab === 'minimos') {
+    if (selectorEl) selectorEl.style.display = 'block';
+    renderAtletaResultados(data, ATLETA_COMP_ATUAL);
+  }
 }
 
 function selecionarCompAtleta(compId) {
@@ -8472,6 +8502,142 @@ function selecionarCompAtleta(compId) {
   var activeId = getActiveProfileId();
   var data = activeId ? (getAllProfiles()[activeId] || null) : loadAtleta();
   if (data) renderAtletaResultados(data, ATLETA_COMP_ATUAL);
+}
+
+var _atletaActiveTab = 'minimos';
+
+function atletaSwitchTab(tab) {
+  _atletaActiveTab = tab;
+  var isLight = document.documentElement.classList.contains('light-mode');
+  var activeBg = isLight ? 'var(--blue-deep)' : '#00c4cc';
+  var activeColor = '#fff';
+  var inactiveBg = 'transparent';
+  var inactiveColor = isLight ? 'var(--blue-deep)' : '#00c4cc';
+
+  var tT = document.getElementById('atleta-tab-tempos');
+  var tM = document.getElementById('atleta-tab-minimos');
+  var pT = document.getElementById('atleta-panel-tempos');
+  var pM = document.getElementById('atleta-panel-minimos');
+  if (!tT || !tM || !pT || !pM) return;
+
+  if (tab === 'tempos') {
+    tT.style.background = activeBg; tT.style.color = activeColor;
+    tM.style.background = inactiveBg; tM.style.color = inactiveColor;
+    pT.style.display = 'block'; pM.style.display = 'none';
+    renderAtletaTempos();
+  } else {
+    tM.style.background = activeBg; tM.style.color = activeColor;
+    tT.style.background = inactiveBg; tT.style.color = inactiveColor;
+    pM.style.display = 'block'; pT.style.display = 'none';
+    var compSel = document.getElementById('atleta-comp-selector');
+    if (compSel) compSel.style.display = 'block';
+    var activeId = getActiveProfileId();
+    var data = activeId ? (getAllProfiles()[activeId] || null) : loadAtleta();
+    if (data && ATLETA_COMP_ATUAL) renderAtletaResultados(data, ATLETA_COMP_ATUAL);
+  }
+}
+
+function renderAtletaTempos() {
+  var el = document.getElementById('atleta-tempos-table');
+  if (!el) return;
+  var activeId = getActiveProfileId();
+  var data = activeId ? (getAllProfiles()[activeId] || null) : loadAtleta();
+  if (!data || !data.tempos) {
+    el.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:13px;padding:16px;">Sem tempos guardados.</div>';
+    return;
+  }
+  var sexo = data.sexo || 'M';
+  var tC = data.tempos.curta || {};
+  var tL = data.tempos.longa || {};
+
+  var PROVAS = [
+    {key:'50_L',   label:'50m Livres'},
+    {key:'100_L',  label:'100m Livres'},
+    {key:'200_L',  label:'200m Livres'},
+    {key:'400_L',  label:'400m Livres'},
+    {key:'800_L',  label:'800m Livres'},
+    {key:'1500_L', label:'1500m Livres'},
+    {key:'50_C',   label:'50m Costas'},
+    {key:'100_C',  label:'100m Costas'},
+    {key:'200_C',  label:'200m Costas'},
+    {key:'50_B',   label:'50m Bruços'},
+    {key:'100_B',  label:'100m Bruços'},
+    {key:'200_B',  label:'200m Bruços'},
+    {key:'50_M',   label:'50m Mariposa'},
+    {key:'100_M',  label:'100m Mariposa'},
+    {key:'200_M',  label:'200m Mariposa'},
+    {key:'100_E',  label:'100m Estilos'},
+    {key:'200_E',  label:'200m Estilos'},
+    {key:'400_E',  label:'400m Estilos'}
+  ];
+
+  // Só provas com pelo menos um tempo
+  var provasComTempo = PROVAS.filter(function(p) { return tC[p.key] || tL[p.key]; });
+  if (provasComTempo.length === 0) {
+    el.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:13px;padding:16px;">Sem tempos guardados.</div>';
+    return;
+  }
+
+  function calcPts(ms, piscina, key) {
+    try {
+      var obj = recordesMundiais[piscina][sexo][key];
+      if (!obj || !obj.tempo) return null;
+      var rec = parseAtletaMs(obj.tempo);
+      if (!rec || !ms) return null;
+      return Math.round(1000 * Math.pow(rec / ms, 3));
+    } catch(e) { return null; }
+  }
+
+  var isLight = document.documentElement.classList.contains('light-mode');
+  var hdColor = isLight ? '#7ab8d4' : 'rgba(0,212,255,0.6)';
+  var textColor = isLight ? '#1a3a4a' : '#e8f4ff';
+  var mutedColor = isLight ? '#7ab8d4' : 'rgba(0,212,255,0.5)';
+  var borderColor = isLight ? 'rgba(0,100,150,0.1)' : 'rgba(0,212,255,0.12)';
+
+  var html = '<div style="overflow-x:auto;">';
+  html += '<table style="width:100%;border-collapse:collapse;font-size:13px;">';
+  html += '<thead><tr style="border-bottom:2px solid ' + borderColor + ';">';
+  html += '<th style="text-align:left;padding:8px 4px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:' + hdColor + ';">Prova</th>';
+  html += '<th style="text-align:center;padding:8px 4px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:' + hdColor + ';">25m</th>';
+  html += '<th style="text-align:center;padding:8px 4px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:' + hdColor + ';">50m</th>';
+  html += '</tr></thead><tbody>';
+
+  provasComTempo.forEach(function(p, idx) {
+    var msC = tC[p.key] || null;
+    var msL = tL[p.key] || null;
+    var ptsC = msC ? calcPts(msC, 'curta', p.key) : null;
+    var ptsL = msL ? calcPts(msL, 'longa', p.key) : null;
+    var rowBg = idx % 2 === 0 ? (isLight ? 'rgba(0,100,150,0.04)' : 'rgba(0,212,255,0.04)') : 'transparent';
+
+    html += '<tr style="border-bottom:1px solid ' + borderColor + ';background:' + rowBg + ';">';
+    html += '<td style="padding:9px 4px;font-weight:600;color:' + textColor + ';">' + p.label + '</td>';
+
+    // 25m
+    if (msC) {
+      html += '<td style="text-align:center;padding:9px 4px;">';
+      html += '<div style="font-weight:700;color:' + textColor + ';">' + formatAtletaMs(msC) + '</div>';
+      if (ptsC !== null) html += '<div style="font-size:10px;color:' + mutedColor + ';">' + ptsC + ' pts</div>';
+      html += '</td>';
+    } else {
+      html += '<td style="text-align:center;padding:9px 4px;color:' + mutedColor + ';">—</td>';
+    }
+
+    // 50m
+    if (msL) {
+      html += '<td style="text-align:center;padding:9px 4px;">';
+      html += '<div style="font-weight:700;color:' + textColor + ';">' + formatAtletaMs(msL) + '</div>';
+      if (ptsL !== null) html += '<div style="font-size:10px;color:' + mutedColor + ';">' + ptsL + ' pts</div>';
+      html += '</td>';
+    } else {
+      html += '<td style="text-align:center;padding:9px 4px;color:' + mutedColor + ';">—</td>';
+    }
+
+    html += '</tr>';
+  });
+
+  html += '</tbody></table></div>';
+  html += '<div style="font-size:10px;color:' + mutedColor + ';text-align:right;margin-top:6px;">pts = Pontos FINA</div>';
+  el.innerHTML = html;
 }
 
 function mostrarFormulario() {
@@ -12509,7 +12675,7 @@ function perfilRender() {
   }
 
   var distAxes = [
-    { label: 'Velocidade',  keys: ['100_L'] },
+    { label: 'Velocidade',  keys: ['100_L', '100_C', '100_B', '100_M', '100_E'] },
     { label: 'Meio Fundo',  keys: ['200_L', '400_L'] },
     { label: 'Fundo',       keys: ['800_L', '1500_L'] },
     { label: 'Vel. Curta',  keys: ['50_L'] }
@@ -12577,6 +12743,120 @@ function perfilRender() {
       destaque.style.display = 'none';
     }
   }
+}
+
+// ===== PARTILHA DE NADADORES =====
+
+function exportarNadador() {
+  var activeId = getActiveProfileId();
+  var profiles = getAllProfiles();
+  var data = activeId ? (profiles[activeId] || null) : null;
+  if (!data) { alert('Nenhum nadador ativo para partilhar.'); return; }
+
+  // Inclui o cartão FPN se existir (em memória ou localStorage)
+  var cartao = null;
+  try { cartao = localStorage.getItem('cartaoFPN_' + activeId); } catch(e) {}
+  if (!cartao && window._cartaoFPNMemory && window._cartaoFPNMemory[activeId]) cartao = window._cartaoFPNMemory[activeId];
+
+  var exportData = {
+    _swimmin: true,
+    _version: 1,
+    _exportedAt: new Date().toISOString(),
+    profile: data
+  };
+  if (cartao) exportData.cartaoFPN = cartao;
+
+  var json = JSON.stringify(exportData, null, 2);
+  var blob = new Blob([json], { type: 'application/json' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  var nome = (data.nome || 'nadador').replace(/\s+/g, '_').toLowerCase();
+  a.href = url;
+  a.download = nome + '.swimmin';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 500);
+}
+
+function importarNadador(event) {
+  var file = event.target.files[0];
+  event.target.value = ''; // reset para permitir reimportar o mesmo ficheiro
+  if (!file) return;
+
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var exportData = JSON.parse(e.target.result);
+      if (!exportData._swimmin || !exportData.profile) {
+        alert('Ficheiro inválido. Deve ser um ficheiro .swimmin exportado pela app.');
+        return;
+      }
+      var incoming = exportData.profile;
+      if (!incoming.escalao || !incoming.sexo) {
+        alert('Dados incompletos no ficheiro.');
+        return;
+      }
+
+      var profiles = getAllProfiles();
+      var nome = incoming.nome || 'Nadador';
+
+      // Verifica se já existe um perfil com o mesmo nome
+      var existingId = null;
+      for (var id in profiles) {
+        if (profiles[id].nome && profiles[id].nome.trim().toLowerCase() === nome.trim().toLowerCase()) {
+          existingId = id;
+          break;
+        }
+      }
+
+      if (existingId) {
+        var confirmMsg = 'Já existe um perfil com o nome "' + nome + '".\nDeseja substituir os dados existentes?';
+        if (!confirm(confirmMsg)) return;
+        // Atualiza perfil existente mas mantém o id
+        incoming.id = existingId;
+        saveProfile(existingId, incoming);
+        if (exportData.cartaoFPN) {
+          try { localStorage.setItem('cartaoFPN_' + existingId, exportData.cartaoFPN); } catch(f) {
+            if (!window._cartaoFPNMemory) window._cartaoFPNMemory = {};
+            window._cartaoFPNMemory[existingId] = exportData.cartaoFPN;
+          }
+        }
+        setActiveProfileId(existingId);
+      } else {
+        // Novo perfil
+        var newId = generateProfileId();
+        incoming.id = newId;
+        saveProfile(newId, incoming);
+        if (exportData.cartaoFPN) {
+          try { localStorage.setItem('cartaoFPN_' + newId, exportData.cartaoFPN); } catch(f) {
+            if (!window._cartaoFPNMemory) window._cartaoFPNMemory = {};
+            window._cartaoFPNMemory[newId] = exportData.cartaoFPN;
+          }
+        }
+        setActiveProfileId(newId);
+      }
+
+      // Guarda também no legacy para compatibilidade
+      saveAtleta(incoming);
+
+      // Reinicia a zona do nadador com o novo perfil ativo
+      mostrarPerfilAtivo();
+
+      // Feedback
+      var msg = existingId
+        ? '✅ Perfil de ' + nome + ' atualizado com sucesso!'
+        : '✅ ' + nome + ' importado com sucesso!';
+      var toast = document.createElement('div');
+      toast.textContent = msg;
+      toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#003d6b;color:#fff;padding:14px 24px;border-radius:14px;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.3);';
+      document.body.appendChild(toast);
+      setTimeout(function() { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 3000);
+
+    } catch(err) {
+      alert('Erro ao ler o ficheiro. Certifica-te que é um ficheiro .swimmin válido.');
+    }
+  };
+  reader.readAsText(file);
 }
 
 // Re-render quando guardar o atleta
