@@ -562,6 +562,10 @@
 .crono-btn-name { font-size:13px; font-weight:700; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,0.3); text-align:center; line-height:1.2; margin-bottom:5px; }
 .crono-btn-info { font-size:10px; color:rgba(255,255,255,0.88); text-align:center; line-height:1.6; }
 .crono-btn-finish-label { font-size:10px; font-weight:700; color:rgba(255,255,255,0.95); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:2px; }
+.crono-swimmer-btn.light-cap .crono-btn-name { color: #1a3a4a !important; text-shadow: none !important; }
+.crono-swimmer-btn.light-cap .crono-btn-info { color: rgba(26,58,74,0.85) !important; }
+.crono-swimmer-btn.light-cap .crono-btn-finish-label { color: rgba(26,58,74,0.9) !important; }
+.crono-swimmer-btn.light-cap { box-shadow: 0 3px 10px rgba(0,0,0,0.15), inset 0 0 0 1.5px rgba(0,0,0,0.12); }
 .crono-action-bar { display:flex; gap:8px; align-items:center; margin-bottom:14px; }
 .crono-undo-btn { flex:1; padding:0; min-height:64px; height:64px; display:flex; align-items:center; justify-content:center; border-radius:10px; border:1.5px solid #c0d8ee; background:#f0f7ff; color:#1a3a4a; font-size:12px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; }
 .crono-warning { font-size:11px; color:#8a9ab0; text-align:center; padding:6px 8px; background:#f5f9fc; border-radius:8px; flex:1.5; line-height:1.4; }
@@ -10817,13 +10821,15 @@ function cronoRenderActive() {
         lastSplit = cronoFmtMs(n.splits[toques-1]);
       }
 
-      var btnClass = 'crono-swimmer-btn' + (n.finished ? ' finished' : (!g.started ? ' waiting' : ''));
+      var lightBg = !n.finished && isLightColor(n.cor || '#3498db');
+      var btnClass = 'crono-swimmer-btn' + (n.finished ? ' finished' : (!g.started ? ' waiting' : '')) + (lightBg ? ' light-cap' : '');
       var btnStyle = 'background:' + (n.finished ? '#b0b8c1' : n.cor) + ';';
+      var terminadoColor = lightBg ? 'rgba(26,58,74,0.85)' : 'rgba(255,255,255,0.9)';
 
       var innerHtml = '';
       if (n.finished) {
         innerHtml = '<div class="crono-btn-name">' + n.nome + '</div>' +
-          '<div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.9);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Terminado</div>' +
+          '<div style="font-size:10px;font-weight:700;color:' + terminadoColor + ';text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Terminado</div>' +
           '<div class="crono-btn-info"><strong>' + cronoFmtTotal(n) + '</strong><br>Média 100: ' + mediaStr + '</div>';
       } else if (isLast) {
         innerHtml = '<div class="crono-btn-finish-label">Terminar</div>' +
@@ -11377,6 +11383,18 @@ function cronoPersistSession() {
 function cronoCapSvg(color) {
   var stroke = color === '#ffffff' ? '#cccccc' : color === '#222222' ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.15)';
   return '<svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg"><path d="M4 28 C4 10 32 10 32 28 L32 30 C32 31.1 31.1 32 30 32 L6 32 C4.9 32 4 31.1 4 30 Z" fill="' + color + '" stroke="' + stroke + '" stroke-width="1"/></svg>';
+}
+
+function isLightColor(hex) {
+  // Converte hex para RGB e calcula luminância relativa
+  var c = hex.replace('#', '');
+  if (c.length === 3) c = c[0]+c[0]+c[1]+c[1]+c[2]+c[2];
+  var r = parseInt(c.substring(0,2),16);
+  var g = parseInt(c.substring(2,4),16);
+  var b = parseInt(c.substring(4,6),16);
+  // Fórmula de luminância percetual (YIQ)
+  var luminance = (r * 299 + g * 587 + b * 114) / 1000;
+  return luminance > 160;
 }
 
 var _cronoPickingIdx = -1;
