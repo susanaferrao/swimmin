@@ -9,7 +9,32 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="SwimMin">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjgwIiBmaWxsPSIjMDAzZDZiIi8+CiAgPHRleHQgeD0iMjU2IiB5PSIyMDAiIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjaywgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxODAiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiMwMGM0Y2MiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlNXPC90ZXh0PgogIDx0ZXh0IHg9IjI1NiIgeT0iMzcwIiBmb250LWZhbWlseT0iQXJpYWwgQmxhY2ssIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIwIiBmb250LXdlaWdodD0iOTAwIiBmaWxsPSIjZmZmZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5NSU48L3RleHQ+Cjwvc3ZnPg==">
-<link rel="manifest" href="manifest.json">
+<link rel="manifest" id="manifest-link">
+<script>
+(function() {
+  var manifest = {
+    "name": "SwimMin FPN",
+    "short_name": "SwimMin",
+    "description": "Mínimos FPN de natação",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#001f3a",
+    "theme_color": "#003d6b",
+    "orientation": "portrait",
+    "icons": [
+      {
+        "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjgwIiBmaWxsPSIjMDAzZDZiIi8+CiAgPHRleHQgeD0iMjU2IiB5PSIyMDAiIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjaywgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxODAiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiMwMGM0Y2MiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlNXPC90ZXh0PgogIDx0ZXh0IHg9IjI1NiIgeT0iMzcwIiBmb250LWZhbWlseT0iQXJpYWwgQmxhY2ssIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIwIiBmb250LXdlaWdodD0iOTAwIiBmaWxsPSIjZmZmZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5NSU48L3RleHQ+Cjwvc3ZnPg==",
+        "sizes": "512x512",
+        "type": "image/svg+xml",
+        "purpose": "any maskable"
+      }
+    ]
+  };
+  var blob = new Blob([JSON.stringify(manifest)], {type: 'application/manifest+json'});
+  var url = URL.createObjectURL(blob);
+  document.getElementById('manifest-link').href = url;
+})();
+</script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-HBVBLT12D1"></script>
 <script>
@@ -3223,18 +3248,6 @@ var recordesNacionais = {
         "local": "Funchal"
       },
       "200_L": {
-        "tempo": "1:55,91",
-        "nome": "Martins, Francisca Soares",
-        "data": "12/04/2025",
-        "local": "Felgueiras"
-      },
-      "400_L": {
-        "tempo": "4:04,57",
-        "nome": "Martins, Francisca Soares",
-        "data": "10/12/2023",
-        "local": "Otopeni (ROU)"
-      },
-      "200_L": {
         "tempo": "1:47,97",
         "nome": "Nascimento, Miguel Duarte",
         "data": "06/04/2019",
@@ -6020,12 +6033,6 @@ var recordesNacionais = {
         "data": "31/03/2023",
         "local": "Funchal"
       },
-      "200_L": {
-        "tempo": "1:47,97",
-        "nome": "Nascimento, Miguel Duarte",
-        "data": "06/04/2019",
-        "local": "Coimbra"
-      },
       "400_L": {
         "tempo": "3:50,56",
         "nome": "Lopes, Jose Paulo",
@@ -6055,18 +6062,6 @@ var recordesNacionais = {
         "nome": "Costa, Joao Nogueira",
         "data": "24/07/2023",
         "local": "Fukuoka (JPN)"
-      },
-      "200_C": {
-        "tempo": "1:57,06",
-        "nome": "Santos, Francisco Rogerio",
-        "data": "06/06/2021",
-        "local": "Porto"
-      },
-      "50_B": {
-        "tempo": "27,92",
-        "nome": "Amorim, Alexandre Ferreira",
-        "data": "15/04/2025",
-        "local": "Estocolmo (SWE)"
       },
       "100_B": {
         "tempo": "1:01,01",
@@ -6118,24 +6113,6 @@ var recordesNacionais = {
         "data": "30/03/2023",
         "local": "Funchal"
       },
-      "100_L": {
-        "tempo": "55,88",
-        "nome": "Martins, Francisca Soares",
-        "data": "12/07/2024",
-        "local": "Oeiras"
-      },
-      "200_L": {
-        "tempo": "1:57,85",
-        "nome": "Martins, Francisca Soares",
-        "data": "22/07/2025",
-        "local": "Berlin (GER)"
-      },
-      "400_L": {
-        "tempo": "4:07,50",
-        "nome": "Martins, Francisca Soares",
-        "data": "23/07/2025",
-        "local": "Berlin (GER)"
-      },
       "800_L": {
         "tempo": "8:29,33",
         "nome": "Duraes, Diana Margarida",
@@ -6147,24 +6124,6 @@ var recordesNacionais = {
         "nome": "Duraes, Diana Margarida",
         "data": "09/02/2020",
         "local": "Lisboa"
-      },
-      "50_C": {
-        "tempo": "28,24",
-        "nome": "Azevedo, Rafaela Gomes",
-        "data": "23/12/2021",
-        "local": "Oeiras"
-      },
-      "100_C": {
-        "tempo": "1:00,34",
-        "nome": "Rebelo, Camila Rodrigues",
-        "data": "20/07/2025",
-        "local": "Berlin (GER)"
-      },
-      "200_C": {
-        "tempo": "2:08,95",
-        "nome": "Rebelo, Camila Rodrigues",
-        "data": "18/06/2024",
-        "local": "Belgrado (SRB)"
       },
       "50_B": {
         "tempo": "30,73",
@@ -6230,12 +6189,6 @@ var recordesNacionais = {
         "data": "15/12/2024",
         "local": "Tomar"
       },
-      "200_L": {
-        "tempo": "1:43,16",
-        "nome": "Nascimento, Miguel Duarte",
-        "data": "14/12/2018",
-        "local": "Hangzhou (CHN)"
-      },
       "400_L": {
         "tempo": "3:42,57",
         "nome": "Lopes, Jose Paulo",
@@ -6271,12 +6224,6 @@ var recordesNacionais = {
         "nome": "Lopes, Gabriel Jose",
         "data": "16/12/2018",
         "local": "Hangzhou (CHN)"
-      },
-      "50_B": {
-        "tempo": "27,01",
-        "nome": "Amorim, Alexandre Ferreira",
-        "data": "14/04/2024",
-        "local": "Felgueiras"
       },
       "100_B": {
         "tempo": "58,19",
@@ -6340,18 +6287,6 @@ var recordesNacionais = {
         "data": "20/12/2019",
         "local": "Felgueiras"
       },
-      "200_L": {
-        "tempo": "1:55,91",
-        "nome": "Martins, Francisca Soares",
-        "data": "12/04/2025",
-        "local": "Felgueiras"
-      },
-      "400_L": {
-        "tempo": "4:04,57",
-        "nome": "Martins, Francisca Soares",
-        "data": "10/12/2023",
-        "local": "Otopeni (ROU)"
-      },
       "800_L": {
         "tempo": "8:20,97",
         "nome": "Duraes, Diana Margarida",
@@ -6363,24 +6298,6 @@ var recordesNacionais = {
         "nome": "Duraes, Diana Margarida",
         "data": "23/11/2019",
         "local": "Felgueiras"
-      },
-      "50_C": {
-        "tempo": "27,16",
-        "nome": "Rebelo, Camila Rodrigues",
-        "data": "06/12/2025",
-        "local": "Lublin (POL)"
-      },
-      "100_C": {
-        "tempo": "57,79",
-        "nome": "Rebelo, Camila Rodrigues",
-        "data": "04/12/2025",
-        "local": "Lublin (POL)"
-      },
-      "200_C": {
-        "tempo": "2:03,51",
-        "nome": "Rebelo, Camila Rodrigues",
-        "data": "03/12/2025",
-        "local": "Lublin (POL)"
       },
       "50_B": {
         "tempo": "29,98",
@@ -6423,12 +6340,6 @@ var recordesNacionais = {
         "nome": "Cunha, Mariana Pacheco",
         "data": "13/04/2025",
         "local": "Felgueiras"
-      },
-      "200_E": {
-        "tempo": "2:11,70",
-        "nome": "Rebelo, Camila Rodrigues",
-        "data": "14/12/2024",
-        "local": "Tomar"
       },
       "400_E": {
         "tempo": "4:36,19",
@@ -9104,8 +9015,16 @@ function renderAtletaResultados(data, compId) {
 <script>
 
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
+  window.addEventListener('load', function() {
+    var swCode = [
+      'var CACHE="swimmin-v1";',
+      'self.addEventListener("install",function(e){self.skipWaiting();});',
+      'self.addEventListener("activate",function(e){e.waitUntil(self.clients.claim());});',
+      'self.addEventListener("fetch",function(e){e.respondWith(fetch(e.request).catch(function(){return caches.match(e.request);}));});'
+    ].join('\n');
+    var blob = new Blob([swCode], {type: 'application/javascript'});
+    var swUrl = URL.createObjectURL(blob);
+    navigator.serviceWorker.register(swUrl).catch(function(){});
   });
 }
 
@@ -12927,6 +12846,131 @@ function perfilPontuacaoProvas(tsCurta, tsLonga, sexo, mode, cor) {
     + '<svg id="'+svgId+'" viewBox="0 0 '+W+' '+H+'" style="width:100%;display:block;cursor:pointer;" onclick="perfilAbrirPopup(this,\''+titulo+'\')">' + s + '</svg>';
 }
 
+// === COMPARAÇÃO DE ESTILOS A 100m ===
+function perfilComparacao100m(tsCurta, tsLonga) {
+  var isLight = document.documentElement.classList.contains('light-mode');
+  var TC = isLight ? '#1a3a4a' : '#ffffff';
+  var MC = isLight ? '#6a8899' : '#6a9ab5';
+  var W = 280, LBL = 58, BARMAX = 162, TXSTART = 226;
+  var BAR_H = 16, GAP = 10, PAD_TOP = 6, PAD_BOT = 8;
+  var estilos = [
+    { label:'Crol',     s:'L', cor:'#00c4cc' },
+    { label:'Costas',   s:'C', cor:'#4a9fd4' },
+    { label:'Bruços',   s:'B', cor:'#f07d30' },
+    { label:'Mariposa', s:'M', cor:'#c46fcc' }
+  ];
+  var dados = [];
+  estilos.forEach(function(e) {
+    var k = '100_' + e.s;
+    var csC = tsCurta[k] || 0, csL = tsLonga[k] || 0;
+    var cs = (csC > 0 && csL > 0) ? Math.min(csC, csL) : (csC || csL);
+    if (cs > 0) dados.push({ label: e.label, v: 100 * 100 / cs, cor: e.cor });
+  });
+  if (dados.length < 2) return '';
+  var maxV = dados.reduce(function(m,d) { return Math.max(m, d.v); }, 0) * 1.1;
+  var H = PAD_TOP + dados.length * (BAR_H + GAP) - GAP + PAD_BOT;
+  var svgId = 'cmp100' + (Date.now() % 99999);
+  var s = '', y = PAD_TOP;
+  dados.forEach(function(d) {
+    var bw = Math.min(d.v / maxV * BARMAX, BARMAX);
+    s += '<text x="'+(LBL-4)+'" y="'+(y+BAR_H-3)+'" font-size="11" font-weight="600" fill="'+TC+'" text-anchor="end">'+d.label+'</text>';
+    s += '<rect x="'+LBL+'" y="'+y+'" width="'+bw.toFixed(1)+'" height="'+BAR_H+'" rx="4" fill="'+d.cor+'" opacity="0.85"/>';
+    s += '<text x="'+TXSTART+'" y="'+(y+BAR_H-3)+'" font-size="9" fill="'+d.cor+'">'+d.v.toFixed(2)+' m/s</text>';
+    y += BAR_H + GAP;
+  });
+  var titulo = 'Comparação 100m';
+  return '<div style="text-align:center;margin-bottom:4px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);">' + titulo + '</div>'
+    + '<div style="text-align:center;font-size:9px;color:var(--muted);margin-bottom:6px;">melhor velocidade a 100m por estilo</div>'
+    + '<svg id="'+svgId+'" viewBox="0 0 '+W+' '+H+'" style="width:100%;display:block;cursor:pointer;" onclick="perfilAbrirPopup(this,\''+titulo+'\')">' + s + '</svg>';
+}
+
+// === RESISTÊNCIA 100→200m ===
+function perfilRatioDistancia(tsCurta, tsLonga) {
+  var isLight = document.documentElement.classList.contains('light-mode');
+  var TC = isLight ? '#1a3a4a' : '#ffffff';
+  var MC = isLight ? '#6a8899' : '#6a9ab5';
+  var W = 280, LBL = 58, BARMAX = 150, TXSTART = 215;
+  var BAR_H = 14, GAP = 10, PAD_TOP = 6, PAD_BOT = 26;
+  var BARSTART = LBL, SCALEMIN = 85, SCALEMAX = 100;
+  var estilos = [
+    { label:'Crol', s:'L' }, { label:'Costas', s:'C' },
+    { label:'Bruços', s:'B' }, { label:'Mariposa', s:'M' }
+  ];
+  var dados = [];
+  estilos.forEach(function(e) {
+    var cs100 = Math.min(tsCurta['100_'+e.s]||Infinity, tsLonga['100_'+e.s]||Infinity);
+    var cs200 = Math.min(tsCurta['200_'+e.s]||Infinity, tsLonga['200_'+e.s]||Infinity);
+    if (cs100 < Infinity && cs200 < Infinity) {
+      var ratio = (200 * 100 / cs200) / (100 * 100 / cs100) * 100;
+      dados.push({ label: e.label, ratio: ratio });
+    }
+  });
+  if (dados.length === 0) return '';
+  var H = PAD_TOP + dados.length * (BAR_H + GAP) - GAP + PAD_BOT;
+  var svgId = 'ratio' + (Date.now() % 99999);
+  var s = '', y = PAD_TOP;
+  // Linhas de referência verticais
+  [90,95,100].forEach(function(ref) {
+    var bx = BARSTART + (ref - SCALEMIN) / (SCALEMAX - SCALEMIN) * BARMAX;
+    s += '<line x1="'+bx+'" y1="'+PAD_TOP+'" x2="'+bx+'" y2="'+(H-PAD_BOT+4)+'" stroke="'+MC+'" stroke-width="0.6" opacity="0.35" stroke-dasharray="3,3"/>';
+    s += '<text x="'+bx+'" y="'+(H-8)+'" font-size="8" fill="'+MC+'" text-anchor="middle">'+ref+'%</text>';
+  });
+  dados.forEach(function(d) {
+    var rClamp = Math.min(Math.max(d.ratio, SCALEMIN), SCALEMAX);
+    var bw = (rClamp - SCALEMIN) / (SCALEMAX - SCALEMIN) * BARMAX;
+    var barCor = d.ratio < 90 ? '#f05050' : (d.ratio < 95 ? '#f0b040' : '#26d47c');
+    s += '<text x="'+(LBL-4)+'" y="'+(y+BAR_H-2)+'" font-size="11" font-weight="600" fill="'+TC+'" text-anchor="end">'+d.label+'</text>';
+    s += '<rect x="'+BARSTART+'" y="'+y+'" width="'+BARMAX+'" height="'+BAR_H+'" rx="3" fill="'+MC+'" opacity="0.08"/>';
+    s += '<rect x="'+BARSTART+'" y="'+y+'" width="'+bw.toFixed(1)+'" height="'+BAR_H+'" rx="3" fill="'+barCor+'" opacity="0.85"/>';
+    s += '<text x="'+(BARSTART+bw+4)+'" y="'+(y+BAR_H-2)+'" font-size="9" fill="'+barCor+'">'+d.ratio.toFixed(1)+'%</text>';
+    y += BAR_H + GAP;
+  });
+  var titulo = 'Resistência 100→200m';
+  return '<div style="text-align:center;margin-bottom:4px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);">' + titulo + '</div>'
+    + '<div style="text-align:center;font-size:9px;color:var(--muted);margin-bottom:6px;">% da velocidade a 100m mantida nos 200m</div>'
+    + '<svg id="'+svgId+'" viewBox="0 0 '+W+' '+H+'" style="width:100%;display:block;cursor:pointer;" onclick="perfilAbrirPopup(this,\''+titulo+'\')">' + s + '</svg>';
+}
+
+// === GANHO PISCINA CURTA (delta %) ===
+function perfilDeltaCurtaLonga(tsCurta, tsLonga) {
+  var isLight = document.documentElement.classList.contains('light-mode');
+  var TC = isLight ? '#1a3a4a' : '#ffffff';
+  var MC = isLight ? '#6a8899' : '#6a9ab5';
+  var VERDE = '#26d47c';
+  var W = 280, LBL = 68, BARMAX = 152, TXSTART = 226;
+  var BAR_H = 11, GAP = 7, PAD_TOP = 6, PAD_BOT = 8;
+  var nomes = {
+    '50_L':'50m Crol','100_L':'100m Crol','200_L':'200m Crol','400_L':'400m Crol',
+    '800_L':'800m Crol','1500_L':'1500m Crol','50_C':'50m Costas','100_C':'100m Costas',
+    '200_C':'200m Costas','50_B':'50m Bruços','100_B':'100m Bruços','200_B':'200m Bruços',
+    '50_M':'50m Mariposa','100_M':'100m Mariposa','200_M':'200m Mariposa',
+    '100_E':'100m Estilos','200_E':'200m Estilos','400_E':'400m Estilos'
+  };
+  var dados = [];
+  Object.keys(nomes).forEach(function(k) {
+    var csC = tsCurta[k] || 0, csL = tsLonga[k] || 0;
+    if (csC > 0 && csL > 0 && csL > csC) {
+      dados.push({ label: nomes[k], delta: (csL - csC) / csL * 100 });
+    }
+  });
+  if (dados.length < 2) return '';
+  dados.sort(function(a,b) { return b.delta - a.delta; });
+  var maxDelta = Math.max(dados[0].delta * 1.15, 2);
+  var H = PAD_TOP + dados.length * (BAR_H + GAP) - GAP + PAD_BOT;
+  var svgId = 'delta' + (Date.now() % 99999);
+  var s = '', y = PAD_TOP;
+  dados.forEach(function(d) {
+    var bw = Math.min(d.delta / maxDelta * BARMAX, BARMAX);
+    s += '<text x="'+(LBL-4)+'" y="'+(y+BAR_H-1)+'" font-size="9" fill="'+TC+'" text-anchor="end">'+d.label+'</text>';
+    s += '<rect x="'+LBL+'" y="'+y+'" width="'+bw.toFixed(1)+'" height="'+BAR_H+'" rx="3" fill="'+VERDE+'" opacity="0.8"/>';
+    s += '<text x="'+TXSTART+'" y="'+(y+BAR_H-1)+'" font-size="9" fill="'+VERDE+'">+'+d.delta.toFixed(1)+'%</text>';
+    y += BAR_H + GAP;
+  });
+  var titulo = 'Ganho Piscina Curta';
+  return '<div style="text-align:center;margin-bottom:4px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);">' + titulo + '</div>'
+    + '<div style="text-align:center;font-size:9px;color:var(--muted);margin-bottom:6px;">melhoria de tempo longa → curta (para provas com tempos em ambas)</div>'
+    + '<svg id="'+svgId+'" viewBox="0 0 '+W+' '+H+'" style="width:100%;display:block;cursor:pointer;" onclick="perfilAbrirPopup(this,\''+titulo+'\')">' + s + '</svg>';
+}
 
 // Calcula pontos para uma prova+piscina
 function _perfilCalcPts(ms, pisc, sexo, key, mode) {
@@ -13115,9 +13159,50 @@ function perfilRender() {
 
   htmlOut += '</div>';
 
+  // ====================================================
+  // SECÇÃO: PERFIL DE NADADOR — independente do toggle
+  // ====================================================
+  var htmlCmp100  = perfilComparacao100m(tsCurta, tsLonga);
+  var htmlRatio   = perfilRatioDistancia(tsCurta, tsLonga);
+  var htmlDelta   = perfilDeltaCurtaLonga(tsCurta, tsLonga);
+
+  if (htmlCmp100 || htmlRatio || htmlDelta) {
+    htmlOut += '<div style="margin-top:20px;padding-top:10px;border-top:1px solid rgba(128,128,128,0.15);">'
+      + '<div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:12px;">Perfil de Nadador</div>';
+
+    // Comparação 100m + Resistência lado a lado
+    if (htmlCmp100 || htmlRatio) {
+      htmlOut += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start;margin-bottom:12px;">';
+      if (htmlCmp100) htmlOut += '<div style="background:rgba(128,128,128,0.05);border-radius:16px;padding:14px 8px;">' + htmlCmp100 + '</div>';
+      if (htmlRatio)  htmlOut += '<div style="background:rgba(128,128,128,0.05);border-radius:16px;padding:14px 8px;">' + htmlRatio  + '</div>';
+      htmlOut += '</div>';
+    }
+
+    // Delta curta/longa — só aparece se houver tempos nos dois
+    if (htmlDelta) {
+      htmlOut += '<div style="background:rgba(128,128,128,0.05);border-radius:16px;padding:14px 8px;">' + htmlDelta + '</div>';
+    }
+
+    htmlOut += '</div>';
+  }
 
   body.innerHTML = htmlOut;
 
+  if (destaque) {
+    var mD = distData.length > 0 ? distData.reduce(function(a,b){return b.value>a.value?b:a;}) : null;
+    var mE = estiloData.length > 0 ? estiloData.reduce(function(a,b){return b.value>a.value?b:a;}) : null;
+    var txt = '';
+    if (mE && mD) txt = 'O teu ponto forte é <strong>' + mE.label + '</strong> de <strong>' + mD.label + '</strong>';
+    else if (mE)  txt = 'O teu ponto forte é <strong>' + mE.label + '</strong>';
+    else if (mD)  txt = 'O teu ponto forte é <strong>' + mD.label + '</strong>';
+    if (txt) {
+      var topPts = mE ? mE.value : (mD ? mD.value : 0);
+      destaque.innerHTML = txt + ' · ' + topPts + ' pts ' + labelN;
+      destaque.style.cssText = 'display:block;margin-top:14px;padding:14px 16px;border-radius:14px;font-size:13px;font-weight:600;text-align:center;background:' + (mode==='nacional' ? 'rgba(30,96,145,0.1)' : 'rgba(0,196,204,0.1)') + ';border:1.5px solid ' + (mode==='nacional' ? 'rgba(30,96,145,0.3)' : 'rgba(0,196,204,0.3)') + ';color:' + cor + ';';
+    } else {
+      destaque.style.display = 'none';
+    }
+  }
 }
 
 // ===== PARTILHA DE NADADORES =====

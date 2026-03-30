@@ -1,24 +1,17 @@
 {
   "name": "SwimMin FPN",
   "short_name": "SwimMin",
-  "description": "Tempos m\u00ednimos de qualifica\u00e7\u00e3o FPN - Nata\u00e7\u00e3o Portuguesa",
-  "start_url": "/swimmin/swimmin-fpn.html",
-  "scope": "/swimmin/",
+  "description": "Mínimos FPN de natação",
+  "start_url": ".",
   "display": "standalone",
   "background_color": "#001f3a",
   "theme_color": "#003d6b",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icon-512.png",
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjgwIiBmaWxsPSIjMDAzZDZiIi8+CiAgPHRleHQgeD0iMjU2IiB5PSIyMDAiIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjaywgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxODAiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiMwMGM0Y2MiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlNXPC90ZXh0PgogIDx0ZXh0IHg9IjI1NiIgeT0iMzcwIiBmb250LWZhbWlseT0iQXJpYWwgQmxhY2ssIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIwIiBmb250LXdlaWdodD0iOTAwIiBmaWxsPSIjZmZmZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5NSU48L3RleHQ+Cjwvc3ZnPg==",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "any maskable"
     }
   ]
