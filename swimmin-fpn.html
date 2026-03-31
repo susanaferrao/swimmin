@@ -3010,7 +3010,7 @@ document.addEventListener("click", function(e) {
         </div>
       </div>
       <div id="perfil-radar-body"></div>
-      <div id="perfil-destaque" style="margin-top:14px; padding:14px 16px; border-radius:14px; font-size:13px; font-weight:600; text-align:center; display:none;"></div>
+
     </div>
 
     <div class="footer">Dados guardados na nuvem</div>
@@ -13311,21 +13311,6 @@ function perfilRender() {
 
   body.innerHTML = htmlOut;
 
-  if (destaque) {
-    var mD = distData.length > 0 ? distData.reduce(function(a,b){return b.value>a.value?b:a;}) : null;
-    var mE = estiloData.length > 0 ? estiloData.reduce(function(a,b){return b.value>a.value?b:a;}) : null;
-    var txt = '';
-    if (mE && mD) txt = 'O teu ponto forte é <strong>' + mE.label + '</strong> de <strong>' + mD.label + '</strong>';
-    else if (mE)  txt = 'O teu ponto forte é <strong>' + mE.label + '</strong>';
-    else if (mD)  txt = 'O teu ponto forte é <strong>' + mD.label + '</strong>';
-    if (txt) {
-      var topPts = mE ? mE.value : (mD ? mD.value : 0);
-      destaque.innerHTML = txt + ' · ' + topPts + ' pts ' + labelN;
-      destaque.style.cssText = 'display:block;margin-top:14px;padding:14px 16px;border-radius:14px;font-size:13px;font-weight:600;text-align:center;background:' + (mode==='nacional' ? 'rgba(30,96,145,0.1)' : 'rgba(0,196,204,0.1)') + ';border:1.5px solid ' + (mode==='nacional' ? 'rgba(30,96,145,0.3)' : 'rgba(0,196,204,0.3)') + ';color:' + cor + ';';
-    } else {
-      destaque.style.display = 'none';
-    }
-  }
 }
 
 // ===== PARTILHA DE NADADORES =====
