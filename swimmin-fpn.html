@@ -2890,12 +2890,13 @@ document.addEventListener("click", function(e) {
           <input type="file" accept=".swimmin,.json,application/json,text/plain,*/*" style="display:none;" onchange="importarNadador(event)">
         </label>
       </div>
+      <button type="button" onclick="verMeuPerfil()" id="btn-ver-perfil" style="display:none;margin-top:10px;padding:13px;border-radius:10px;background:linear-gradient(135deg,var(--blue-deep),var(--blue-mid));color:#fff;font-weight:700;font-size:14px;border:none;cursor:pointer;width:100%;font-family:'DM Sans',sans-serif;letter-spacing:0.5px;">Ver o meu perfil</button>
     </div>
 
     <div id="atleta-form" style="display:none">
 
-      <!-- OCR SwimRankings -->
-      <div id="ocr-panel" style="margin-bottom:18px;border-radius:14px;overflow:hidden;border:1.5px solid #b0d4ee;">
+      <!-- OCR SwimRankings — oculto por enquanto -->
+      <div id="ocr-panel" style="display:none;margin-bottom:18px;border-radius:14px;overflow:hidden;border:1.5px solid #b0d4ee;">
         <button type="button" onclick="ocrToggle()" style="width:100%;padding:13px 16px;background:#e8f4fd;border:none;color:#1a5a8a;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:left;display:flex;justify-content:space-between;align-items:center;">
           <span>Importar tempos do SwimRankings</span>
           <span id="ocr-arrow" style="font-size:18px;transition:transform 0.2s;">&#8964;</span>
@@ -2907,9 +2908,9 @@ document.addEventListener("click", function(e) {
             3. Os tempos são acumulados automaticamente — sem sobrescrever os anteriores
           </div>
           <div id="ocr-apikey-wrap" style="margin-bottom:12px;">
-            <div style="font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#7ab8d4;margin-bottom:5px;">Chave API Anthropic</div>
-            <input type="password" id="ocr-apikey" placeholder="sk-ant-api03-..." style="width:100%;padding:10px 12px;border-radius:8px;border:1.5px solid #b0d4ee;background:#fff;font-size:13px;color:#1a3a4a;box-sizing:border-box;font-family:'DM Sans',sans-serif;" oninput="ocrSaveKey(this.value)">
-            <div style="font-size:11px;color:#7ab8d4;margin-top:4px;">Necessária para leitura automática. Guardada localmente no teu dispositivo.</div>
+            <div style="font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#7ab8d4;margin-bottom:5px;">URL do servidor SwimMin</div>
+            <input type="text" id="ocr-apikey" placeholder="https://script.google.com/macros/s/..." style="width:100%;padding:10px 12px;border-radius:8px;border:1.5px solid #b0d4ee;background:#fff;font-size:12px;color:#1a3a4a;box-sizing:border-box;font-family:'DM Sans',sans-serif;" oninput="ocrSaveKey(this.value)">
+            <div style="font-size:11px;color:#7ab8d4;margin-top:4px;">Cola aqui o URL fornecido pelo administrador da app.</div>
           </div>
           <label style="display:flex;align-items:center;justify-content:center;width:100%;padding:11px;border-radius:10px;background:#0090e0;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;box-sizing:border-box;gap:8px;">
             Adicionar imagem
@@ -2990,7 +2991,7 @@ document.addEventListener("click", function(e) {
       </div>
     </div>
 
-    <!-- Perfil do Nadador — desbloqueado com 5 cliques no título -->
+    <!-- Perfil do Nadador -->
     <div id="perfil-radar-section" style="display:none; margin-top:24px;">
       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
         <div>
@@ -8526,6 +8527,12 @@ function mostrarPerfilAtivo() {
   var tabsWrap = document.getElementById('atleta-tabs-wrap');
   if (tabsWrap) tabsWrap.style.display = 'block';
 
+  // Mostrar botão "Ver o meu perfil" e esconder secção até clicar
+  var btnPerfil = document.getElementById('btn-ver-perfil');
+  if (btnPerfil) btnPerfil.style.display = 'block';
+  var perfilSec = document.getElementById('perfil-radar-section');
+  if (perfilSec) perfilSec.style.display = 'none';
+
   // Activar tab mínimos por defeito (comportamento anterior)
   atletaSwitchTab('minimos');
   renderCompButtons(data);
@@ -8727,6 +8734,10 @@ function mostrarFormulario() {
   document.getElementById('atleta-form').style.display = 'block';
   document.getElementById('atleta-view-intro').style.display = 'none';
   document.getElementById('atleta-resultados').innerHTML = '';
+  var btnPerfil = document.getElementById('btn-ver-perfil');
+  if (btnPerfil) btnPerfil.style.display = 'none';
+  var perfilSec = document.getElementById('perfil-radar-section');
+  if (perfilSec) perfilSec.style.display = 'none';
   // Load active profile if editing, otherwise blank form for new profile
   var activeId = getActiveProfileId();
   var data = null;
@@ -12554,8 +12565,18 @@ document.addEventListener('DOMContentLoaded', function() { pollRender(); });
 
 var _perfilEasterClicks = 0;
 var _perfilEasterTimer = null;
-var _perfilUnlocked = false;
+var _perfilUnlocked = true; // sempre visível
 var _perfilMode = 'nacional'; // 'nacional' | 'mundial'
+
+function verMeuPerfil() {
+  _perfilUnlocked = true;
+  var sec = document.getElementById('perfil-radar-section');
+  if (sec) {
+    sec.style.display = 'block';
+    perfilRender();
+    setTimeout(function() { sec.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+  }
+}
 
 function perfilEasterEgg() {
   _perfilEasterClicks++;
@@ -13811,9 +13832,9 @@ function ocrProcessar(event) {
 function ocrEnviar(base64, mediaType, idx) {
   var statusEl = document.getElementById('ocr-status');
 
-  var apiKey = ocrLoadKey();
-  if (!apiKey || !apiKey.startsWith('sk-ant-')) {
-    statusEl.innerHTML = '<span style="color:#c0392b;">Insere a chave API Anthropic para usar esta funcionalidade.</span>';
+  var proxyUrl = ocrLoadKey();
+  if (!proxyUrl || proxyUrl.indexOf('script.google.com') === -1) {
+    statusEl.innerHTML = '<span style="color:#c0392b;">Cola o URL do servidor SwimMin no campo acima para usar esta funcionalidade.</span>';
     _ocrEmCurso = false;
     return;
   }
@@ -13827,60 +13848,25 @@ function ocrEnviar(base64, mediaType, idx) {
 
   statusEl.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;gap:8px;"><div style="width:14px;height:14px;border:2px solid #0090e0;border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite;flex-shrink:0;"></div> A ler imagem #' + idx + '...</div>';
 
-  var prompt = 'Estás a analisar uma screenshot do SwimRankings com os tempos de um nadador.\n' +
-'Extrai APENAS os tempos de provas individuais FINAIS e oficiais. IGNORA COMPLETAMENTE:\n' +
-'- Splits/parciais/laps (tempos intercalares dentro de uma prova)\n' +
-'- Tempos de estafetas\n' +
-'- Qualquer secção intitulada "Splits", "Laps", "Parciais" ou similar\n' +
-'- Recordes pessoais de splits\n\n' +
-'Devolve APENAS um objeto JSON sem mais nenhum texto:\n' +
-'{\n' +
-'  "nome": "Nome do nadador se visível, senão null",\n' +
-'  "sexo": "M ou F se visível, senão null",\n' +
-'  "tempos": {\n' +
-'    "curta": { "50_L": "3043", "100_L": "10523" },\n' +
-'    "longa": { "50_L": "2897" }\n' +
-'  }\n' +
-'}\n\n' +
-'Regras:\n' +
-'- Formato de saída: centésimos totais sem pontuação. Ex: 30,43 → "3043", 1:05,23 → "6523", 2:17,09 → "13709"\n' +
-'- Chaves: distância_estilo (L=Livres C=Costas B=Bruços M=Mariposa E=Estilos)\n' +
-'- Ex: 50m Livres→"50_L", 100m Costas→"100_C", 400m Estilos→"400_E"\n' +
-'- Piscina: 25m=curta, 50m=longa. Se não indicada usa "longa"\n' +
-'- Só o melhor tempo por prova/piscina se aparecerem vários\n' +
-'- Responde APENAS com o JSON, sem markdown';
-
-  fetch('https://api.anthropic.com/v1/messages', {
+  fetch(proxyUrl, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true'
-    },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1000,
-      messages: [{ role: 'user', content: [
-        { type: 'image', source: { type: 'base64', media_type: mediaType, data: base64 } },
-        { type: 'text',  text: prompt }
-      ]}]
-    })
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ base64: base64, mimeType: mediaType })
   })
   .then(function(r) { return r.json(); })
   .then(function(data) {
-    var text = '';
-    if (data.content && data.content[0] && data.content[0].text) {
-      text = data.content[0].text.trim().replace(/```json|```/g, '').trim();
-    }
+    if (data.error) throw new Error(data.error);
+    var text = (data.result || '').trim().replace(/```json|```/g, '').trim();
     var parsed = JSON.parse(text);
     ocrAplicar(parsed, idx);
   })
   .catch(function(err) {
-    statusEl.innerHTML = '<span style="color:#c0392b;">Erro na imagem #' + idx + '. Tenta novamente.</span>';
+    statusEl.innerHTML = '<span style="color:#c0392b;">Erro ao processar a imagem. Verifica o URL e tenta novamente.</span>';
     _ocrEmCurso = false;
     console.error('OCR erro:', err);
   });
+}
+
 }
 
 function ocrAplicar(dados, idx) {
