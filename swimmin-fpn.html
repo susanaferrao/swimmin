@@ -2906,6 +2906,11 @@ document.addEventListener("click", function(e) {
             2. Faz screenshots às tabelas de tempos (podes adicionar várias imagens)<br>
             3. Os tempos são acumulados automaticamente — sem sobrescrever os anteriores
           </div>
+          <div id="ocr-apikey-wrap" style="margin-bottom:12px;">
+            <div style="font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#7ab8d4;margin-bottom:5px;">Chave API Anthropic</div>
+            <input type="password" id="ocr-apikey" placeholder="sk-ant-api03-..." style="width:100%;padding:10px 12px;border-radius:8px;border:1.5px solid #b0d4ee;background:#fff;font-size:13px;color:#1a3a4a;box-sizing:border-box;font-family:'DM Sans',sans-serif;" oninput="ocrSaveKey(this.value)">
+            <div style="font-size:11px;color:#7ab8d4;margin-top:4px;">Necessária para leitura automática. Guardada localmente no teu dispositivo.</div>
+          </div>
           <label style="display:flex;align-items:center;justify-content:center;width:100%;padding:11px;border-radius:10px;background:#0090e0;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;box-sizing:border-box;gap:8px;">
             Adicionar imagem
             <input type="file" id="ocr-input" accept="image/*" style="display:none;" onchange="ocrProcessar(event)">
@@ -13744,12 +13749,27 @@ function naCalc() {
 <script>
 /* ===== OCR SWIMRANKINGS ===== */
 
+var OCR_KEY_STORAGE = 'swimmin_ocr_apikey';
+
+function ocrSaveKey(val) {
+  _lsSet(OCR_KEY_STORAGE, val);
+}
+
+function ocrLoadKey() {
+  return _lsGet(OCR_KEY_STORAGE) || '';
+}
+
 function ocrToggle() {
   var body  = document.getElementById('ocr-body');
   var arrow = document.getElementById('ocr-arrow');
   var open  = body.style.display !== 'none';
   body.style.display    = open ? 'none' : 'block';
   arrow.style.transform = open ? '' : 'rotate(180deg)';
+  // Preenche chave guardada
+  if (!open) {
+    var keyEl = document.getElementById('ocr-apikey');
+    if (keyEl) keyEl.value = ocrLoadKey();
+  }
 }
 
 // Contador acumulado de tempos importados nesta sessão
@@ -13791,6 +13811,13 @@ function ocrProcessar(event) {
 function ocrEnviar(base64, mediaType, idx) {
   var statusEl = document.getElementById('ocr-status');
 
+  var apiKey = ocrLoadKey();
+  if (!apiKey || !apiKey.startsWith('sk-ant-')) {
+    statusEl.innerHTML = '<span style="color:#c0392b;">Insere a chave API Anthropic para usar esta funcionalidade.</span>';
+    _ocrEmCurso = false;
+    return;
+  }
+
   if (!document.getElementById('ocr-spin-style')) {
     var s = document.createElement('style');
     s.id = 'ocr-spin-style';
@@ -13825,7 +13852,12 @@ function ocrEnviar(base64, mediaType, idx) {
 
   fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
     body: JSON.stringify({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 1000,
