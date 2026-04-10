@@ -13352,33 +13352,6 @@ function perfilRender() {
 
   htmlOut += '</div>';
 
-  // ====================================================
-  // SECÇÃO: PERFIL DE NADADOR — independente do toggle
-  // ====================================================
-  var htmlCmp100  = perfilComparacao100m(tsCurta, tsLonga);
-  var htmlRatio   = perfilRatioDistancia(tsCurta, tsLonga);
-  var htmlDelta   = perfilDeltaCurtaLonga(tsCurta, tsLonga);
-
-  if (htmlCmp100 || htmlRatio || htmlDelta) {
-    htmlOut += '<div style="margin-top:20px;padding-top:10px;border-top:1px solid rgba(128,128,128,0.15);">'
-      + '<div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:12px;">Perfil de Nadador</div>';
-
-    // Comparação 100m + Resistência lado a lado
-    if (htmlCmp100 || htmlRatio) {
-      htmlOut += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start;margin-bottom:12px;">';
-      if (htmlCmp100) htmlOut += '<div style="background:rgba(128,128,128,0.05);border-radius:16px;padding:14px 8px;">' + htmlCmp100 + '</div>';
-      if (htmlRatio)  htmlOut += '<div style="background:rgba(128,128,128,0.05);border-radius:16px;padding:14px 8px;">' + htmlRatio  + '</div>';
-      htmlOut += '</div>';
-    }
-
-    // Delta curta/longa — só aparece se houver tempos nos dois
-    if (htmlDelta) {
-      htmlOut += '<div style="background:rgba(128,128,128,0.05);border-radius:16px;padding:14px 8px;">' + htmlDelta + '</div>';
-    }
-
-    htmlOut += '</div>';
-  }
-
   body.innerHTML = htmlOut;
 
 }
