@@ -2530,9 +2530,16 @@ html.light-mode #sw-hist-view > div, html.light-mode #crono-hist-view > div {
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 </head>
 <body>
-<div id="auth-badge" style="display:none!important;visibility:hidden;position:fixed;"></div>
-<div id="auth-badge-menu" style="display:none!important;visibility:hidden;"></div>
-<div id="auth-user-email" style="display:none;"></div>
+<div id="auth-badge" style="display:none;position:fixed;top:14px;left:14px;z-index:9000;">
+  <button onclick="toggleAuthBadge()" style="background:#00c98d;border:none;border-radius:50%;width:38px;height:38px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,201,141,0.5);padding:0;" title="Sessão iniciada">
+    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+  </button>
+  <div id="auth-badge-menu" style="display:none;position:absolute;top:46px;left:0;background:#fff;border-radius:14px;padding:16px;min-width:210px;box-shadow:0 8px 28px rgba(0,0,0,0.15);border:1px solid #e0edf5;">
+    <div style="font-size:10px;font-weight:700;color:#6b8fa8;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">Sessão ativa</div>
+    <div id="auth-user-email" style="font-size:13px;color:#003d6b;font-weight:600;margin-bottom:12px;word-break:break-all;"></div>
+    <button id="btn-logout" style="width:100%;padding:9px;border-radius:9px;border:1.5px solid #e0edf5;background:#f4f8fb;color:#1a3a4a;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Terminar sessão</button>
+  </div>
+</div>
 <script>
 (function() {
   var saved = localStorage.getItem('swimmin-theme') || 'light';
@@ -2716,7 +2723,31 @@ document.addEventListener("click", function(e) {
 
   
   
-<div class="fpn-section" id="auth-section" style="margin-top:20px;display:none;"></div>
+<div class="fpn-section" id="auth-section" style="margin-top:20px;">
+  <!-- Estado: não autenticado (expandido) -->
+  <div id="auth-logged-out">
+    <div class="fpn-title">Conta</div>
+    <div class="fpn-subtitle">Guarda os teus dados e acede em qualquer dispositivo</div>
+    <div class="grid" style="margin-top:14px;">
+      <div class="field"><label>Email</label><input id="auth-email" type="email" class="personal-input" placeholder="teu@email.com"></div>
+      <div class="field"><label>Palavra-passe</label><input id="auth-password" type="password" class="personal-input" placeholder="Mínimo 6 caracteres"></div>
+    </div>
+    <!-- 2 botões + link recuperar password -->
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button class="fpn-btn coach-btn" style="flex:1;padding:12px 10px;font-size:14px;font-weight:700;" id="btn-register">Criar conta</button>
+      <button class="fpn-btn" style="flex:1;padding:12px 10px;font-size:14px;font-weight:700;" id="btn-login">Entrar</button>
+    </div>
+    <div style="text-align:center;margin-top:12px;">
+      <span id="btn-forgot" style="color:#1a6fa8;font-size:13px;cursor:pointer;text-decoration:underline;font-weight:500;">Esqueci-me da palavra-passe</span><br><span style="color:#888;font-size:11px;">(verificar spam)</span>
+    </div>
+    <div id="auth-msg" style="margin-top:8px;font-size:13px;color:#d9f6ff;text-align:center;"></div>
+  </div>
+
+  <!-- Estado: autenticado -->
+  <div id="auth-logged-in" style="display:none;">
+  </div>
+
+</div>
 
 
 <!-- ===== CALENDÁRIO ===== -->
@@ -2898,16 +2929,8 @@ document.addEventListener("click", function(e) {
         <input type="text" id="atleta-nome" placeholder="Nome" style="background:var(--white);border:1.5px solid #d0e4f0;color:var(--text);font-size:16px;padding:10px 14px;border-radius:8px;width:100%;box-sizing:border-box;">
       </div>
       <div class="field">
-        <label>Sexo</label>
-        <select id="atleta-sexo" style="background:var(--white);border:1.5px solid #d0e4f0;color:var(--text);font-size:16px;padding:10px 14px;border-radius:8px;width:100%;box-sizing:border-box;">
-          <option value="">Selecionar</option>
-          <option value="M">Masculino</option>
-          <option value="F">Feminino</option>
-        </select>
-      </div>
-      <div class="field">
         <label>Escalao</label>
-        <select id="atleta-escalao" onchange="onAtletaEscalaoChange()" style="background:var(--white);border:1.5px solid #d0e4f0;color:var(--text);font-size:16px;padding:10px 14px;border-radius:8px;width:100%;box-sizing:border-box;">
+        <select id="atleta-escalao" style="background:var(--white);border:1.5px solid #d0e4f0;color:var(--text);font-size:16px;padding:10px 14px;border-radius:8px;width:100%;box-sizing:border-box;">
           <option value="">Selecionar</option>
           <option value="INF_B">Infantil B</option>
           <option value="INF_A">Infantil A</option>
@@ -2918,47 +2941,15 @@ document.addEventListener("click", function(e) {
           <option value="SUB21">Sub 21</option>
           <option value="SEN">Sénior</option>
           <option value="ABS">Absoluto</option>
-          <option value="NA">Natação Adaptada</option>
         </select>
       </div>
-      <!-- Campos extras para Natação Adaptada -->
-      <div id="atleta-na-campos" style="display:none;">
-        <div class="field">
-          <label>Escalão NA</label>
-          <select id="atleta-na-escalao" style="background:var(--white);border:1.5px solid #d0e4f0;color:var(--text);font-size:16px;padding:10px 14px;border-radius:8px;width:100%;box-sizing:border-box;">
-            <option value="">Selecionar</option>
-            <option value="SEN">Seniores</option>
-            <option value="ESP">Esperanças (até 16)</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Classe Desportiva</label>
-          <select id="atleta-na-classe" style="background:var(--white);border:1.5px solid #d0e4f0;color:var(--text);font-size:16px;padding:10px 14px;border-radius:8px;width:100%;box-sizing:border-box;">
-            <option value="">Selecionar</option>
-            <optgroup label="S (Livres, Costas, Mariposa, Estilos)">
-              <option value="S1">S1</option><option value="S2">S2</option><option value="S3">S3</option>
-              <option value="S4">S4</option><option value="S5">S5</option><option value="S6">S6</option>
-              <option value="S7">S7</option><option value="S8">S8</option><option value="S9">S9</option>
-              <option value="S10">S10</option><option value="S11">S11</option><option value="S12">S12</option>
-              <option value="S13">S13</option><option value="S14">S14</option><option value="S15">S15</option>
-              <option value="S16">S16</option><option value="S17">S17</option><option value="S21">S21/MO</option>
-            </optgroup>
-            <optgroup label="SB (Bruços)">
-              <option value="SB1">SB1</option><option value="SB2">SB2</option><option value="SB3">SB3</option>
-              <option value="SB4">SB4</option><option value="SB5">SB5</option><option value="SB6">SB6</option>
-              <option value="SB7">SB7</option><option value="SB8">SB8</option><option value="SB9">SB9</option>
-              <option value="SB10">SB10</option><option value="SB11">SB11</option><option value="SB12">SB12</option>
-              <option value="SB13">SB13</option><option value="SB14">SB14</option>
-            </optgroup>
-            <optgroup label="SM (Estilos individuais)">
-              <option value="SM1">SM1</option><option value="SM2">SM2</option><option value="SM3">SM3</option>
-              <option value="SM4">SM4</option><option value="SM5">SM5</option><option value="SM6">SM6</option>
-              <option value="SM7">SM7</option><option value="SM8">SM8</option><option value="SM9">SM9</option>
-              <option value="SM10">SM10</option><option value="SM11">SM11</option><option value="SM12">SM12</option>
-              <option value="SM13">SM13</option><option value="SM14">SM14</option>
-            </optgroup>
-          </select>
-        </div>
+      <div class="field">
+        <label>Sexo</label>
+        <select id="atleta-sexo" style="background:var(--white);border:1.5px solid #d0e4f0;color:var(--text);font-size:16px;padding:10px 14px;border-radius:8px;width:100%;box-sizing:border-box;">
+          <option value="">Selecionar</option>
+          <option value="M">Masculino</option>
+          <option value="F">Feminino</option>
+        </select>
       </div>
 
       <!-- Cartão FPN (opcional) -->
@@ -3035,11 +3026,9 @@ document.addEventListener("click", function(e) {
     <div style="display:flex;gap:0;margin-bottom:20px;border-radius:12px;overflow:hidden;border:1.5px solid #d0e4f0;">
       <button id="crono-tab-parciais" onclick="cronoSwitchTab('parciais')" style="flex:1;padding:10px;border:none;background:var(--blue-deep);color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;">Parciais</button>
       <button id="crono-tab-cronos" onclick="cronoSwitchTab('cronos')" style="flex:1;padding:10px;border:none;background:#f0f7ff;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;">Cronómetros</button>
-      <button id="crono-tab-swolf" onclick="cronoSwitchTab('swolf')" style="flex:1;padding:10px;border:none;background:#f0f7ff;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;">SWOLF</button>
     </div>
     <div id="crono-content"></div>
     <div id="crono-cronos-content" style="display:none;"></div>
-    <div id="crono-swolf-content" style="display:none;"></div>
   </div>
 </div>
 
@@ -3271,7 +3260,7 @@ document.addEventListener("click", function(e) {
 // ============================================================
 // DADOS — Piscina Curta (25m) e Piscina Longa (50m)
 // ============================================================
-var tempos = {"longa": {"M": {"50_L": {"ABS": "00:24,26", "SEN": "00:24,75", "SUB21": "00:24,99", "JUN": "00:25,23", "JUN1": "00:25,96", "JUV_A_VER": "00:26,44", "JUV_A_INV": "00:26,93", "JUV_B_VER": "00:23,37", "JUV_B_INV": "00:23,37", "INF_A": "00:29,84", "INF_B": "00:31,30", "JUV_A_ZON": "00:27,66", "JUV_B_ZON": "00:28,63", "INF_A_ZON": "00:30,08", "INF_B_ZON": "00:32,02"}, "100_L": {"ABS": "00:52,80", "SEN": "00:53,86", "SUB21": "00:54,38", "JUN": "00:54,91", "JUN1": "00:56,50", "JUV_A_VER": "00:57,55", "JUV_A_INV": "00:58,61", "JUV_B_VER": "01:00,19", "JUV_B_INV": "01:01,25", "INF_A": "01:04,94", "INF_B": "01:08,11", "JUV_A_ZON": "01:00,19", "JUV_B_ZON": "01:02,30", "INF_A_ZON": "01:05,47", "INF_B_ZON": "01:09,70"}, "200_L": {"ABS": "01:56,36", "SEN": "01:58,69", "SUB21": "01:59,85", "JUN": "02:01,01", "JUN1": "02:04,51", "JUV_A_VER": "02:06,83", "JUV_A_INV": "02:09,16", "JUV_B_VER": "02:12,65", "JUV_B_INV": "02:14,98", "INF_A": "02:23,12", "INF_B": "02:30,10", "JUV_A_ZON": "02:12,65", "JUV_B_ZON": "02:17,30", "INF_A_ZON": "02:24,29", "INF_B_ZON": "02:33,60"}, "400_L": {"ABS": "04:06,04", "SEN": "04:10,96", "SUB21": "04:13,42", "JUN": "04:15,88", "JUN1": "04:23,26", "JUV_A_VER": "04:28,18", "JUV_A_INV": "04:33,10", "JUV_B_VER": "04:40,49", "JUV_B_INV": "04:45,41", "INF_A": "05:02,63", "INF_B": "05:17,39", "JUV_A_ZON": "04:40,49", "JUV_B_ZON": "04:50,33", "INF_A_ZON": "05:05,09", "INF_B_ZON": "05:24,77"}, "800_L": {"ABS": "08:32,14", "SEN": "08:42,38", "SUB21": "08:47,50", "JUN": "08:52,63", "JUN1": "09:07,99", "JUV_A_VER": "09:18,23", "JUV_A_INV": "09:28,48", "JUV_B_VER": "09:43,84", "JUV_B_INV": "09:54,08", "INF_A": "10:29,93", "INF_B": "11:00,66", "JUV_A_ZON": "09:43,84", "JUV_B_ZON": "10:04,33", "INF_A_ZON": "10:35,05", "INF_B_ZON": "11:16,02"}, "1500_L": {"ABS": "16:21,19", "SEN": "16:40,81", "SUB21": "16:50,63", "JUN": "17:00,44", "JUN1": "17:29,87", "JUV_A_VER": "17:49,50", "JUV_A_INV": "18:09,12", "JUV_B_VER": "18:38,56", "JUV_B_INV": "18:58,18", "INF_A": "20:06,86", "INF_B": "21:05,74", "JUV_A_ZON": "18:38,56", "JUV_B_ZON": "19:17,80", "INF_A_ZON": "20:16,68", "INF_B_ZON": "21:35,17"}, "50_C": {"ABS": "00:27,87", "SEN": "00:28,43", "SUB21": "00:28,71", "JUN": "00:28,98", "JUN1": "00:24,65", "JUV_A_VER": "00:30,38", "JUV_A_INV": "00:30,94", "JUV_B_VER": "00:25,75", "JUV_B_INV": "00:25,75", "INF_A": "00:34,28", "INF_B": "00:35,95", "JUV_A_ZON": "00:31,77", "JUV_B_ZON": "00:32,89", "INF_A_ZON": "00:34,56", "INF_B_ZON": "00:36,79"}, "100_C": {"ABS": "00:59,87", "SEN": "01:01,07", "SUB21": "01:01,67", "JUN": "01:02,26", "JUN1": "00:56,02", "JUV_A_VER": "01:05,26", "JUV_A_INV": "01:06,46", "JUV_B_VER": "00:55,91", "JUV_B_INV": "00:55,91", "INF_A": "01:13,64", "INF_B": "01:17,23", "JUV_A_ZON": "01:08,25", "JUV_B_ZON": "01:10,65", "INF_A_ZON": "01:14,24", "INF_B_ZON": "01:19,03"}, "200_C": {"ABS": "02:12,75", "SEN": "02:15,41", "SUB21": "02:16,73", "JUN": "02:09,87", "JUN1": "02:22,04", "JUV_A_VER": "02:24,70", "JUV_A_INV": "02:27,35", "JUV_B_VER": "02:31,33", "JUV_B_INV": "02:33,99", "INF_A": "02:43,28", "INF_B": "02:51,25", "JUV_A_ZON": "02:31,33", "JUV_B_ZON": "02:36,64", "INF_A_ZON": "02:44,61", "INF_B_ZON": "02:55,23"}, "50_B": {"ABS": "00:30,72", "SEN": "00:31,33", "SUB21": "00:31,64", "JUN": "00:31,95", "JUN1": "00:32,87", "JUV_A_VER": "00:33,48", "JUV_A_INV": "00:34,10", "JUV_B_VER": "00:35,02", "JUV_B_INV": "00:35,64", "INF_A": "00:37,79", "INF_B": "00:39,63", "JUV_A_ZON": "00:35,02", "JUV_B_ZON": "00:36,25", "INF_A_ZON": "00:38,09", "INF_B_ZON": "00:40,55"}, "100_B": {"ABS": "01:07,76", "SEN": "01:09,12", "SUB21": "01:09,79", "JUN": "01:10,47", "JUN1": "01:12,50", "JUV_A_VER": "01:13,86", "JUV_A_INV": "01:15,21", "JUV_B_VER": "01:17,25", "JUV_B_INV": "01:18,60", "INF_A": "01:23,34", "INF_B": "01:27,41", "JUV_A_ZON": "01:17,25", "JUV_B_ZON": "01:19,96", "INF_A_ZON": "01:24,02", "INF_B_ZON": "01:29,44"}, "200_B": {"ABS": "02:28,12", "SEN": "02:31,08", "SUB21": "02:32,56", "JUN": "02:34,04", "JUN1": "02:38,49", "JUV_A_VER": "02:41,45", "JUV_A_INV": "02:44,41", "JUV_B_VER": "02:48,86", "JUV_B_INV": "02:51,82", "INF_A": "03:02,19", "INF_B": "03:11,07", "JUV_A_ZON": "02:48,86", "JUV_B_ZON": "02:54,78", "INF_A_ZON": "03:03,67", "INF_B_ZON": "03:15,52"}, "50_M": {"ABS": "00:25,59", "SEN": "00:26,10", "SUB21": "00:26,36", "JUN": "00:26,61", "JUN1": "00:27,38", "JUV_A_VER": "00:27,89", "JUV_A_INV": "00:28,40", "JUV_B_VER": "00:25,49", "JUV_B_INV": "00:25,49", "INF_A": "00:31,48", "INF_B": "00:33,01", "JUV_A_ZON": "00:29,17", "JUV_B_ZON": "00:30,20", "INF_A_ZON": "00:31,73", "INF_B_ZON": "00:33,78"}, "100_M": {"ABS": "00:57,00", "SEN": "00:58,14", "SUB21": "00:58,71", "JUN": "00:59,28", "JUN1": "01:00,99", "JUV_A_VER": "01:02,13", "JUV_A_INV": "01:03,27", "JUV_B_VER": "00:56,65", "JUV_B_INV": "00:56,65", "INF_A": "01:10,11", "INF_B": "01:13,53", "JUV_A_ZON": "01:04,98", "JUV_B_ZON": "01:07,26", "INF_A_ZON": "01:10,68", "INF_B_ZON": "01:15,24"}, "200_M": {"ABS": "02:09,36", "SEN": "02:11,95", "SUB21": "02:13,24", "JUN": "02:14,53", "JUN1": "02:18,42", "JUV_A_VER": "02:21,00", "JUV_A_INV": "02:23,59", "JUV_B_VER": "02:27,47", "JUV_B_INV": "02:30,06", "INF_A": "02:39,11", "INF_B": "02:46,87", "JUV_A_ZON": "02:27,47", "JUV_B_ZON": "02:32,64", "INF_A_ZON": "02:40,41", "INF_B_ZON": "02:50,76"}, "200_E": {"ABS": "02:12,78", "SEN": "02:15,44", "SUB21": "02:16,76", "JUN": "02:18,09", "JUN1": "02:22,07", "JUV_A_VER": "02:24,73", "JUV_A_INV": "02:27,39", "JUV_B_VER": "02:31,37", "JUV_B_INV": "02:34,02", "INF_A": "02:43,32", "INF_B": "02:51,29", "JUV_A_ZON": "02:31,37", "JUV_B_ZON": "02:36,68", "INF_A_ZON": "02:44,65", "INF_B_ZON": "02:55,27"}, "400_E": {"ABS": "04:43,91", "SEN": "04:49,59", "SUB21": "04:52,43", "JUN": "04:55,27", "JUN1": "05:03,78", "JUV_A_VER": "05:09,46", "JUV_A_INV": "05:15,14", "JUV_B_VER": "05:23,66", "JUV_B_INV": "05:29,34", "INF_A": "05:49,21", "INF_B": "06:06,24", "JUV_A_ZON": "05:23,66", "JUV_B_ZON": "05:35,01", "INF_A_ZON": "05:52,05", "INF_B_ZON": "06:14,76"}, "4X100_L": {"ABS": "03:37,49", "SEN": "03:41,84", "SUB21": "03:44,01", "JUN": "03:46,19", "JUN1": "03:52,71", "JUV_A_VER": "03:57,06", "JUV_A_INV": "04:01,41", "JUV_B_VER": "04:07,94", "JUV_B_INV": "04:12,29", "INF_A": "04:27,51", "INF_B": "04:40,56", "JUV_A_ZON": "04:07,94", "JUV_B_ZON": "04:16,64", "INF_A_ZON": "04:29,69", "INF_B_ZON": "04:47,09"}, "4X200_L": {"ABS": "08:11,93", "SEN": "08:21,77", "SUB21": "08:26,69", "JUN": "08:31,61", "JUN1": "08:46,37", "JUV_A_VER": "08:56,20", "JUV_A_INV": "09:06,04", "JUV_B_VER": "09:20,80", "JUV_B_INV": "09:30,64", "INF_A": "10:05,07", "INF_B": "10:34,59", "JUV_A_ZON": "09:20,80", "JUV_B_ZON": "09:40,48", "INF_A_ZON": "10:09,99", "INF_B_ZON": "10:49,35"}, "4X100_E": {"ABS": "03:41,31", "SEN": "03:41,31", "SUB21": "04:08,89", "JUN": "04:11,31", "JUN1": "04:18,55", "JUV_A_VER": "04:23,39", "JUV_A_INV": "04:28,22", "JUV_B_VER": "04:35,47", "JUV_B_INV": "04:40,30", "INF_A": "04:57,22", "INF_B": "05:11,72", "JUV_A_ZON": "04:35,47", "JUV_B_ZON": "04:45,14", "INF_A_ZON": "04:59,63", "INF_B_ZON": "05:18,96"}, "4X50_E": {"ABS": "01:50,40", "SEN": "01:52,61", "SUB21": "01:53,71", "JUN": "01:54,82", "JUN1": "01:58,13", "JUV_A_VER": "02:00,34", "JUV_A_INV": "02:02,54", "JUV_B_VER": "02:05,86", "JUV_B_INV": "02:08,06", "INF_A": "02:15,79", "INF_B": "02:22,42", "JUV_A_ZON": "02:05,86", "JUV_B_ZON": "02:10,27", "INF_A_ZON": "02:16,90", "INF_B_ZON": "02:25,73"}, "4X50_L": {"ABS": "01:39,21", "SEN": "01:41,19", "SUB21": "01:42,19", "JUN": "01:43,18", "JUN1": "01:46,15", "JUV_A_VER": "01:48,14", "JUV_A_INV": "01:50,12", "JUV_B_VER": "01:53,10", "JUV_B_INV": "01:55,08", "INF_A": "02:02,03", "INF_B": "02:07,98", "JUV_A_ZON": "01:53,10", "JUV_B_ZON": "01:57,07", "INF_A_ZON": "02:03,02", "INF_B_ZON": "02:10,96"}}, "F": {"50_L": {"ABS": "00:27,63", "SEN": "00:28,18", "SUB21": "00:28,46", "JUN": "00:28,74", "JUN1": "00:25,96", "JUV_A_VER": "00:29,84", "JUV_A_INV": "00:30,39", "JUV_B_VER": "00:30,95", "JUV_B_INV": "00:31,50", "INF_A": "00:32,60", "INF_B": "00:33,43", "JUV_A_ZON": "00:31,22", "JUV_B_ZON": "00:32,05", "INF_A_ZON": "00:33,43", "INF_B_ZON": "00:34,81"}, "100_L": {"ABS": "00:59,64", "SEN": "01:00,83", "SUB21": "01:01,43", "JUN": "01:02,03", "JUN1": "01:03,22", "JUV_A_VER": "01:04,41", "JUV_A_INV": "01:05,60", "JUV_B_VER": "01:06,80", "JUV_B_INV": "01:07,99", "INF_A": "01:10,38", "INF_B": "01:12,16", "JUV_A_ZON": "01:07,39", "JUV_B_ZON": "01:09,18", "INF_A_ZON": "01:12,16", "INF_B_ZON": "01:15,15"}, "200_L": {"ABS": "02:08,20", "SEN": "02:10,76", "SUB21": "02:12,05", "JUN": "02:13,33", "JUN1": "02:15,89", "JUV_A_VER": "02:18,46", "JUV_A_INV": "02:21,02", "JUV_B_VER": "02:23,58", "JUV_B_INV": "02:26,15", "INF_A": "02:31,28", "INF_B": "02:35,12", "JUV_A_ZON": "02:24,87", "JUV_B_ZON": "02:28,71", "INF_A_ZON": "02:35,12", "INF_B_ZON": "02:41,53"}, "400_L": {"ABS": "04:28,98", "SEN": "04:34,36", "SUB21": "04:37,05", "JUN": "04:39,74", "JUN1": "04:45,12", "JUV_A_VER": "04:50,50", "JUV_A_INV": "04:55,88", "JUV_B_VER": "05:01,26", "JUV_B_INV": "05:06,64", "INF_A": "05:17,40", "INF_B": "05:25,47", "JUV_A_ZON": "05:03,95", "JUV_B_ZON": "05:12,02", "INF_A_ZON": "05:25,47", "INF_B_ZON": "05:38,91"}, "800_L": {"ABS": "09:04,25", "SEN": "09:15,14", "SUB21": "09:20,58", "JUN": "09:26,02", "JUN1": "09:36,91", "JUV_A_VER": "09:47,79", "JUV_A_INV": "09:58,68", "JUV_B_VER": "10:09,56", "JUV_B_INV": "10:20,44", "INF_A": "10:42,22", "INF_B": "10:58,54", "JUV_A_ZON": "10:15,00", "JUV_B_ZON": "10:31,33", "INF_A_ZON": "10:58,54", "INF_B_ZON": "11:25,76"}, "1500_L": {"ABS": "17:44,97", "SEN": "18:06,27", "SUB21": "18:16,92", "JUN": "18:27,57", "JUN1": "18:48,87", "JUV_A_VER": "19:10,17", "JUV_A_INV": "19:31,47", "JUV_B_VER": "19:52,77", "JUV_B_INV": "20:14,07", "INF_A": "20:56,66", "INF_B": "21:28,61", "JUV_A_ZON": "20:03,42", "JUV_B_ZON": "20:35,37", "INF_A_ZON": "21:28,61", "INF_B_ZON": "22:21,86"}, "50_C": {"ABS": "00:31,74", "SEN": "00:32,37", "SUB21": "00:32,69", "JUN": "00:33,01", "JUN1": "00:33,64", "JUV_A_VER": "00:34,28", "JUV_A_INV": "00:34,91", "JUV_B_VER": "00:35,55", "JUV_B_INV": "00:36,18", "INF_A": "00:37,45", "INF_B": "00:38,41", "JUV_A_ZON": "00:35,87", "JUV_B_ZON": "00:36,82", "INF_A_ZON": "00:38,41", "INF_B_ZON": "00:39,99"}, "100_C": {"ABS": "01:07,62", "SEN": "01:08,97", "SUB21": "01:09,65", "JUN": "01:10,32", "JUN1": "01:11,68", "JUV_A_VER": "01:13,03", "JUV_A_INV": "01:14,38", "JUV_B_VER": "01:15,73", "JUV_B_INV": "01:17,09", "INF_A": "01:19,79", "INF_B": "01:21,82", "JUV_A_ZON": "01:16,41", "JUV_B_ZON": "01:18,44", "INF_A_ZON": "01:21,82", "INF_B_ZON": "01:25,20"}, "200_C": {"ABS": "02:25,92", "SEN": "02:28,84", "SUB21": "02:30,30", "JUN": "02:31,76", "JUN1": "02:34,68", "JUV_A_VER": "02:37,59", "JUV_A_INV": "02:40,51", "JUV_B_VER": "02:43,43", "JUV_B_INV": "02:46,35", "INF_A": "02:52,19", "INF_B": "02:56,56", "JUV_A_ZON": "02:44,89", "JUV_B_ZON": "02:49,27", "INF_A_ZON": "02:56,56", "INF_B_ZON": "03:03,86"}, "50_B": {"ABS": "00:34,68", "SEN": "00:35,37", "SUB21": "00:35,72", "JUN": "00:36,07", "JUN1": "00:36,76", "JUV_A_VER": "00:37,45", "JUV_A_INV": "00:38,15", "JUV_B_VER": "00:38,84", "JUV_B_INV": "00:39,54", "INF_A": "00:40,92", "INF_B": "00:41,96", "JUV_A_ZON": "00:39,19", "JUV_B_ZON": "00:40,23", "INF_A_ZON": "00:41,96", "INF_B_ZON": "00:43,70"}, "100_B": {"ABS": "01:16,29", "SEN": "01:17,82", "SUB21": "01:18,58", "JUN": "01:19,34", "JUN1": "01:20,87", "JUV_A_VER": "01:22,39", "JUV_A_INV": "01:23,92", "JUV_B_VER": "01:25,44", "JUV_B_INV": "01:26,97", "INF_A": "01:30,02", "INF_B": "01:32,31", "JUV_A_ZON": "01:26,21", "JUV_B_ZON": "01:28,50", "INF_A_ZON": "01:32,31", "INF_B_ZON": "01:36,13"}, "200_B": {"ABS": "02:45,23", "SEN": "02:48,53", "SUB21": "02:50,19", "JUN": "02:51,84", "JUN1": "02:55,14", "JUV_A_VER": "02:58,45", "JUV_A_INV": "03:01,75", "JUV_B_VER": "03:05,06", "JUV_B_INV": "03:08,36", "INF_A": "03:14,97", "INF_B": "03:19,93", "JUV_A_ZON": "03:06,71", "JUV_B_ZON": "03:11,67", "INF_A_ZON": "03:19,93", "INF_B_ZON": "03:28,19"}, "50_M": {"ABS": "00:29,34", "SEN": "00:29,93", "SUB21": "00:30,22", "JUN": "00:30,51", "JUN1": "00:31,10", "JUV_A_VER": "00:31,69", "JUV_A_INV": "00:32,27", "JUV_B_VER": "00:32,86", "JUV_B_INV": "00:33,45", "INF_A": "00:34,62", "INF_B": "00:35,50", "JUV_A_ZON": "00:33,15", "JUV_B_ZON": "00:34,03", "INF_A_ZON": "00:35,50", "INF_B_ZON": "00:36,97"}, "100_M": {"ABS": "01:05,51", "SEN": "01:06,82", "SUB21": "01:07,48", "JUN": "01:08,13", "JUN1": "01:09,44", "JUV_A_VER": "01:10,75", "JUV_A_INV": "01:12,06", "JUV_B_VER": "01:13,37", "JUV_B_INV": "01:14,68", "INF_A": "01:17,30", "INF_B": "01:19,27", "JUV_A_ZON": "01:14,03", "JUV_B_ZON": "01:15,99", "INF_A_ZON": "01:19,27", "INF_B_ZON": "01:22,54"}, "200_M": {"ABS": "02:26,25", "SEN": "02:29,17", "SUB21": "02:30,64", "JUN": "02:32,10", "JUN1": "02:35,02", "JUV_A_VER": "02:37,95", "JUV_A_INV": "02:40,88", "JUV_B_VER": "02:43,80", "JUV_B_INV": "02:46,73", "INF_A": "02:52,57", "INF_B": "02:56,96", "JUV_A_ZON": "02:45,26", "JUV_B_ZON": "02:49,65", "INF_A_ZON": "02:56,96", "INF_B_ZON": "03:04,28"}, "200_E": {"ABS": "02:27,71", "SEN": "02:30,66", "SUB21": "02:32,14", "JUN": "02:33,62", "JUN1": "02:36,57", "JUV_A_VER": "02:39,53", "JUV_A_INV": "02:42,48", "JUV_B_VER": "02:45,44", "JUV_B_INV": "02:48,39", "INF_A": "02:54,30", "INF_B": "02:58,73", "JUV_A_ZON": "02:46,91", "JUV_B_ZON": "02:51,34", "INF_A_ZON": "02:58,73", "INF_B_ZON": "03:06,11"}, "400_E": {"ABS": "05:08,82", "SEN": "05:15,00", "SUB21": "05:18,08", "JUN": "05:21,17", "JUN1": "05:27,35", "JUV_A_VER": "05:33,53", "JUV_A_INV": "05:39,70", "JUV_B_VER": "05:45,88", "JUV_B_INV": "05:52,05", "INF_A": "06:04,41", "INF_B": "06:13,67", "JUV_A_ZON": "05:48,97", "JUV_B_ZON": "05:58,23", "INF_A_ZON": "06:13,67", "INF_B_ZON": "06:29,11"}, "4X100_L": {"ABS": "03:50,23", "SEN": "03:50,23", "SUB21": "04:14,55", "JUN": "04:17,03", "JUN1": "04:21,97", "JUV_A_VER": "04:26,91", "JUV_A_INV": "04:31,85", "JUV_B_VER": "04:36,80", "JUV_B_INV": "04:41,74", "INF_A": "04:51,63", "INF_B": "04:59,04", "JUV_A_ZON": "04:39,27", "JUV_B_ZON": "04:46,68", "INF_A_ZON": "04:59,04", "INF_B_ZON": "05:11,40"}, "4X200_L": {"ABS": "09:03,25", "SEN": "09:14,11", "SUB21": "09:19,55", "JUN": "09:24,98", "JUN1": "09:35,85", "JUV_A_VER": "09:46,71", "JUV_A_INV": "09:57,58", "JUV_B_VER": "10:08,44", "JUV_B_INV": "10:19,30", "INF_A": "10:41,03", "INF_B": "10:57,33", "JUV_A_ZON": "10:13,87", "JUV_B_ZON": "10:30,17", "INF_A_ZON": "10:57,33", "INF_B_ZON": "11:24,50"}, "4X100_E": {"ABS": "04:12,94", "SEN": "04:12,94", "SUB21": "04:42,22", "JUN": "04:31,27", "JUN1": "04:50,44", "JUV_A_VER": "04:55,92", "JUV_A_INV": "05:01,40", "JUV_B_VER": "05:06,88", "JUV_B_INV": "05:12,36", "INF_A": "05:23,32", "INF_B": "05:31,54", "JUV_A_ZON": "05:09,62", "JUV_B_ZON": "05:17,84", "INF_A_ZON": "05:31,54", "INF_B_ZON": "05:45,24"}, "4X50_E": {"ABS": "02:04,50", "SEN": "02:06,99", "SUB21": "02:08,23", "JUN": "02:09,48", "JUN1": "02:11,97", "JUV_A_VER": "02:14,46", "JUV_A_INV": "02:16,95", "JUV_B_VER": "02:19,44", "JUV_B_INV": "02:21,93", "INF_A": "02:26,91", "INF_B": "02:30,64", "JUV_A_ZON": "02:20,68", "JUV_B_ZON": "02:24,42", "INF_A_ZON": "02:30,64", "INF_B_ZON": "02:36,87"}, "4X50_L": {"ABS": "01:53,24", "SEN": "01:55,50", "SUB21": "01:56,64", "JUN": "01:57,77", "JUN1": "02:00,03", "JUV_A_VER": "02:02,30", "JUV_A_INV": "02:04,56", "JUV_B_VER": "02:06,83", "JUV_B_INV": "02:09,09", "INF_A": "02:13,62", "INF_B": "02:17,02", "JUV_A_ZON": "02:07,96", "JUV_B_ZON": "02:11,36", "INF_A_ZON": "02:17,02", "INF_B_ZON": "02:22,68"}}, "X": {"4X100_L_M": {"ABS": "03:52,31", "SEN": "03:56,96", "SUB21": "03:59,28", "JUN": "04:01,61", "JUN1": "04:08,58", "JUV_A_VER": "04:13,22", "JUV_A_INV": "04:17,87", "JUV_B_VER": "04:22,52", "JUV_B_INV": "04:27,16", "INF_A": "04:41,10", "INF_B": "04:50,39", "JUV_A_ZON": "04:24,84", "JUV_B_ZON": "04:31,81", "INF_A_ZON": "04:45,75", "INF_B_ZON": "04:59,69"}, "4X100_E_M": {"ABS": "04:17,82", "SEN": "04:22,98", "SUB21": "04:25,55", "JUN": "04:28,13", "JUN1": "04:35,87", "JUV_A_VER": "04:41,02", "JUV_A_INV": "04:46,18", "JUV_B_VER": "04:51,34", "JUV_B_INV": "04:56,49", "INF_A": "05:11,96", "INF_B": "05:22,27", "JUV_A_ZON": "04:53,91", "JUV_B_ZON": "05:01,65", "INF_A_ZON": "05:17,12", "INF_B_ZON": "05:32,59"}, "4X50_L_M": {"ABS": "01:46,22", "SEN": "01:48,35", "SUB21": "01:49,41", "JUN": "01:50,47", "JUN1": "01:53,66", "JUV_A_VER": "01:55,79", "JUV_A_INV": "01:57,91", "JUV_B_VER": "01:45,47", "JUV_B_INV": "01:45,47", "INF_A": "02:08,53", "INF_B": "02:12,78", "JUV_A_ZON": "02:01,10", "JUV_B_ZON": "02:04,28", "INF_A_ZON": "02:10,66", "INF_B_ZON": "02:17,03"}, "4X50_E_M": {"ABS": "01:57,45", "SEN": "01:59,80", "SUB21": "02:00,97", "JUN": "02:02,15", "JUN1": "02:05,67", "JUV_A_VER": "01:56,65", "JUV_A_INV": "02:10,37", "JUV_B_VER": "01:55,87", "JUV_B_INV": "01:55,87", "INF_A": "02:22,11", "INF_B": "02:26,81", "JUV_A_ZON": "02:13,89", "JUV_B_ZON": "02:17,42", "INF_A_ZON": "02:24,46", "INF_B_ZON": "02:31,51"}}}, "curta": {"M": {"50_L": {"ABS": "00:23,51", "SEN": "00:23,98", "SUB21": "00:24,22", "JUN": "00:24,45", "JUN1": "00:25,16", "JUV_A_VER": "00:25,63", "JUV_A_INV": "00:26,10", "JUV_B_VER": "00:26,80", "JUV_B_INV": "00:27,27", "INF_A": "00:28,92", "INF_B": "00:30,33", "JUV_A_ZON": "00:26,80", "JUV_B_ZON": "00:27,74", "INF_A_ZON": "00:29,15", "INF_B_ZON": "00:31,03"}, "100_L": {"ABS": "00:50,95", "SEN": "00:51,97", "SUB21": "00:52,48", "JUN": "00:52,99", "JUN1": "00:54,52", "JUV_A_VER": "00:55,54", "JUV_A_INV": "00:56,55", "JUV_B_VER": "00:58,08", "JUV_B_INV": "00:59,10", "INF_A": "01:02,67", "INF_B": "01:05,73", "JUV_A_ZON": "00:58,08", "JUV_B_ZON": "01:00,12", "INF_A_ZON": "01:03,18", "INF_B_ZON": "01:07,25"}, "200_L": {"ABS": "01:52,18", "SEN": "01:54,42", "SUB21": "01:55,55", "JUN": "01:56,67", "JUN1": "02:00,03", "JUV_A_VER": "02:02,28", "JUV_A_INV": "02:04,52", "JUV_B_VER": "02:07,89", "JUV_B_INV": "02:10,13", "INF_A": "02:17,98", "INF_B": "02:24,71", "JUV_A_ZON": "02:07,89", "JUV_B_ZON": "02:12,37", "INF_A_ZON": "02:19,10", "INF_B_ZON": "02:28,08"}, "400_L": {"ABS": "03:57,72", "SEN": "04:02,47", "SUB21": "04:04,85", "JUN": "04:07,23", "JUN1": "04:14,36", "JUV_A_VER": "04:19,11", "JUV_A_INV": "04:23,87", "JUV_B_VER": "04:31,00", "JUV_B_INV": "04:35,76", "INF_A": "04:52,40", "INF_B": "05:06,66", "JUV_A_ZON": "04:31,00", "JUV_B_ZON": "04:40,51", "INF_A_ZON": "04:54,77", "INF_B_ZON": "05:13,79"}, "800_L": {"ABS": "08:18,21", "SEN": "08:28,17", "SUB21": "08:33,16", "JUN": "08:38,14", "JUN1": "08:53,08", "JUV_A_VER": "09:03,05", "JUV_A_INV": "09:13,01", "JUV_B_VER": "09:27,96", "JUV_B_INV": "09:37,92", "INF_A": "10:12,80", "INF_B": "10:42,69", "JUV_A_ZON": "09:27,96", "JUV_B_ZON": "09:47,89", "INF_A_ZON": "10:17,78", "INF_B_ZON": "10:57,64"}, "1500_L": {"ABS": "15:41,66", "SEN": "16:00,49", "SUB21": "16:09,91", "JUN": "16:19,33", "JUN1": "16:47,58", "JUV_A_VER": "17:06,41", "JUV_A_INV": "17:25,24", "JUV_B_VER": "17:53,49", "JUV_B_INV": "18:12,33", "INF_A": "19:18,24", "INF_B": "20:14,74", "JUV_A_ZON": "17:53,49", "JUV_B_ZON": "18:31,16", "INF_A_ZON": "19:27,66", "INF_B_ZON": "20:42,99"}, "50_C": {"ABS": "00:26,46", "SEN": "00:26,99", "SUB21": "00:27,25", "JUN": "00:27,52", "JUN1": "00:28,31", "JUV_A_VER": "00:28,84", "JUV_A_INV": "00:29,37", "JUV_B_VER": "00:30,16", "JUV_B_INV": "00:30,69", "INF_A": "00:32,55", "INF_B": "00:34,13", "JUV_A_ZON": "00:30,16", "JUV_B_ZON": "00:31,22", "INF_A_ZON": "00:32,81", "INF_B_ZON": "00:34,93"}, "100_C": {"ABS": "00:57,00", "SEN": "00:58,14", "SUB21": "00:58,71", "JUN": "00:59,28", "JUN1": "01:00,99", "JUV_A_VER": "01:02,13", "JUV_A_INV": "01:03,27", "JUV_B_VER": "01:04,98", "JUV_B_INV": "01:06,12", "INF_A": "01:10,11", "INF_B": "01:13,53", "JUV_A_ZON": "01:04,98", "JUV_B_ZON": "01:07,26", "INF_A_ZON": "01:10,68", "INF_B_ZON": "01:15,24"}, "200_C": {"ABS": "02:04,67", "SEN": "02:07,16", "SUB21": "02:08,41", "JUN": "02:09,66", "JUN1": "02:13,40", "JUV_A_VER": "02:15,89", "JUV_A_INV": "02:18,38", "JUV_B_VER": "02:22,12", "JUV_B_INV": "02:24,62", "INF_A": "02:33,34", "INF_B": "02:40,82", "JUV_A_ZON": "02:22,12", "JUV_B_ZON": "02:27,11", "INF_A_ZON": "02:34,59", "INF_B_ZON": "02:44,56"}, "50_B": {"ABS": "00:29,83", "SEN": "00:30,43", "SUB21": "00:30,72", "JUN": "00:31,02", "JUN1": "00:31,92", "JUV_A_VER": "00:32,51", "JUV_A_INV": "00:33,11", "JUV_B_VER": "00:34,01", "JUV_B_INV": "00:34,60", "INF_A": "00:36,69", "INF_B": "00:38,48", "JUV_A_ZON": "00:34,01", "JUV_B_ZON": "00:35,20", "INF_A_ZON": "00:36,99", "INF_B_ZON": "00:39,38"}, "100_B": {"ABS": "01:04,54", "SEN": "01:05,83", "SUB21": "01:06,48", "JUN": "01:07,12", "JUN1": "01:09,06", "JUV_A_VER": "01:10,35", "JUV_A_INV": "01:11,64", "JUV_B_VER": "01:13,58", "JUV_B_INV": "01:14,87", "INF_A": "01:19,38", "INF_B": "01:23,26", "JUV_A_ZON": "01:13,58", "JUV_B_ZON": "01:16,16", "INF_A_ZON": "01:20,03", "INF_B_ZON": "01:25,19"}, "200_B": {"ABS": "02:21,85", "SEN": "02:24,69", "SUB21": "02:26,11", "JUN": "02:27,52", "JUN1": "02:31,78", "JUV_A_VER": "02:34,62", "JUV_A_INV": "02:37,45", "JUV_B_VER": "02:41,71", "JUV_B_INV": "02:44,55", "INF_A": "02:54,48", "INF_B": "03:02,99", "JUV_A_ZON": "02:41,71", "JUV_B_ZON": "02:47,38", "INF_A_ZON": "02:55,89", "INF_B_ZON": "03:07,24"}, "50_M": {"ABS": "00:25,25", "SEN": "00:25,76", "SUB21": "00:26,01", "JUN": "00:26,26", "JUN1": "00:27,02", "JUV_A_VER": "00:27,52", "JUV_A_INV": "00:28,03", "JUV_B_VER": "00:28,78", "JUV_B_INV": "00:29,29", "INF_A": "00:31,06", "INF_B": "00:32,57", "JUV_A_ZON": "00:28,78", "JUV_B_ZON": "00:29,80", "INF_A_ZON": "00:31,31", "INF_B_ZON": "00:33,33"}, "100_M": {"ABS": "00:55,82", "SEN": "00:56,94", "SUB21": "00:57,49", "JUN": "00:58,05", "JUN1": "00:59,73", "JUV_A_VER": "01:00,84", "JUV_A_INV": "01:01,96", "JUV_B_VER": "01:03,63", "JUV_B_INV": "01:04,75", "INF_A": "01:08,66", "INF_B": "01:12,01", "JUV_A_ZON": "01:03,63", "JUV_B_ZON": "01:05,87", "INF_A_ZON": "01:09,22", "INF_B_ZON": "01:13,68"}, "200_M": {"ABS": "02:05,98", "SEN": "02:08,50", "SUB21": "02:09,76", "JUN": "02:11,02", "JUN1": "02:14,80", "JUV_A_VER": "02:17,32", "JUV_A_INV": "02:19,84", "JUV_B_VER": "02:23,62", "JUV_B_INV": "02:26,14", "INF_A": "02:34,96", "INF_B": "02:42,51", "JUV_A_ZON": "02:23,62", "JUV_B_ZON": "02:28,66", "INF_A_ZON": "02:36,22", "INF_B_ZON": "02:46,29"}, "100_E": {"ABS": "00:58,80", "SEN": "00:59,98", "SUB21": "01:00,56", "JUN": "01:01,15", "JUN1": "00:56,89", "JUV_A_VER": "01:04,09", "JUV_A_INV": "01:05,27", "JUV_B_VER": "00:57,11", "JUV_B_INV": "00:57,11", "INF_A": "01:12,32", "INF_B": "01:15,85", "JUV_A_ZON": "01:07,03", "JUV_B_ZON": "01:09,38", "INF_A_ZON": "01:12,91", "INF_B_ZON": "01:17,62"}, "200_E": {"ABS": "02:06,27", "SEN": "02:08,80", "SUB21": "02:10,06", "JUN": "02:11,32", "JUN1": "02:15,11", "JUV_A_VER": "02:17,63", "JUV_A_INV": "02:20,16", "JUV_B_VER": "02:23,95", "JUV_B_INV": "02:26,47", "INF_A": "02:35,31", "INF_B": "02:42,89", "JUV_A_ZON": "02:23,95", "JUV_B_ZON": "02:29,00", "INF_A_ZON": "02:36,57", "INF_B_ZON": "02:46,68"}, "400_E": {"ABS": "04:30,16", "SEN": "04:35,56", "SUB21": "04:38,26", "JUN": "04:40,97", "JUN1": "04:49,07", "JUV_A_VER": "04:54,47", "JUV_A_INV": "04:59,88", "JUV_B_VER": "05:07,98", "JUV_B_INV": "05:13,39", "INF_A": "05:32,30", "INF_B": "05:48,51", "JUV_A_ZON": "05:07,98", "JUV_B_ZON": "05:18,79", "INF_A_ZON": "05:35,00", "INF_B_ZON": "05:56,61"}, "4X100_L": {"ABS": "03:26,28", "SEN": "03:30,41", "SUB21": "03:32,47", "JUN": "03:34,53", "JUN1": "03:40,72", "JUV_A_VER": "03:44,85", "JUV_A_INV": "03:48,97", "JUV_B_VER": "03:55,16", "JUV_B_INV": "03:59,28", "INF_A": "04:13,72", "INF_B": "04:26,10", "JUV_A_ZON": "03:55,16", "JUV_B_ZON": "04:03,41", "INF_A_ZON": "04:15,79", "INF_B_ZON": "04:32,29"}, "4X200_L": {"ABS": "07:39,90", "SEN": "07:49,10", "SUB21": "07:53,70", "JUN": "07:58,30", "JUN1": "08:12,09", "JUV_A_VER": "08:21,29", "JUV_A_INV": "08:30,49", "JUV_B_VER": "08:44,29", "JUV_B_INV": "08:53,48", "INF_A": "09:25,68", "INF_B": "09:53,27", "JUV_A_ZON": "08:44,29", "JUV_B_ZON": "09:02,68", "INF_A_ZON": "09:30,28", "INF_B_ZON": "10:07,07"}, "4X100_E": {"ABS": "03:43,98", "SEN": "03:48,46", "SUB21": "03:50,70", "JUN": "03:52,94", "JUN1": "03:59,66", "JUV_A_VER": "04:04,14", "JUV_A_INV": "04:08,62", "JUV_B_VER": "04:15,34", "JUV_B_INV": "04:19,82", "INF_A": "04:35,50", "INF_B": "04:48,93", "JUV_A_ZON": "04:15,34", "JUV_B_ZON": "04:24,30", "INF_A_ZON": "04:37,74", "INF_B_ZON": "04:55,65"}, "4X50_E": {"ABS": "01:44,91", "SEN": "01:47,01", "SUB21": "01:48,06", "JUN": "01:49,11", "JUN1": "01:52,25", "JUV_A_VER": "01:54,35", "JUV_A_INV": "01:56,45", "JUV_B_VER": "01:59,60", "JUV_B_INV": "02:01,70", "INF_A": "02:09,04", "INF_B": "02:15,33", "JUV_A_ZON": "01:59,60", "JUV_B_ZON": "02:03,79", "INF_A_ZON": "02:10,09", "INF_B_ZON": "02:18,48"}, "4X50_L": {"ABS": "01:36,08", "SEN": "01:38,00", "SUB21": "01:38,96", "JUN": "01:39,92", "JUN1": "01:42,81", "JUV_A_VER": "01:44,73", "JUV_A_INV": "01:46,65", "JUV_B_VER": "01:49,53", "JUV_B_INV": "01:51,45", "INF_A": "01:58,18", "INF_B": "02:03,94", "JUV_A_ZON": "01:49,53", "JUV_B_ZON": "01:53,37", "INF_A_ZON": "01:59,14", "INF_B_ZON": "02:06,83"}}, "F": {"50_L": {"ABS": "00:27,05", "SEN": "00:27,59", "SUB21": "00:27,86", "JUN": "00:28,13", "JUN1": "00:28,67", "JUV_A_VER": "00:29,21", "JUV_A_INV": "00:29,75", "JUV_B_VER": "00:30,30", "JUV_B_INV": "00:30,84", "INF_A": "00:31,92", "INF_B": "00:32,73", "JUV_A_ZON": "00:30,57", "JUV_B_ZON": "00:31,38", "INF_A_ZON": "00:32,73", "INF_B_ZON": "00:34,08"}, "100_L": {"ABS": "00:57,95", "SEN": "00:59,11", "SUB21": "00:59,69", "JUN": "01:00,27", "JUN1": "01:01,43", "JUV_A_VER": "01:02,59", "JUV_A_INV": "01:03,75", "JUV_B_VER": "01:04,90", "JUV_B_INV": "01:06,06", "INF_A": "01:08,38", "INF_B": "01:10,12", "JUV_A_ZON": "01:05,48", "JUV_B_ZON": "01:07,22", "INF_A_ZON": "01:10,12", "INF_B_ZON": "01:13,02"}, "200_L": {"ABS": "02:04,47", "SEN": "02:06,96", "SUB21": "02:08,20", "JUN": "02:09,45", "JUN1": "02:11,94", "JUV_A_VER": "02:14,43", "JUV_A_INV": "02:16,92", "JUV_B_VER": "02:19,41", "JUV_B_INV": "02:21,90", "INF_A": "02:26,87", "INF_B": "02:30,61", "JUV_A_ZON": "02:20,65", "JUV_B_ZON": "02:24,39", "INF_A_ZON": "02:30,61", "INF_B_ZON": "02:36,83"}, "400_L": {"ABS": "04:19,58", "SEN": "04:24,77", "SUB21": "04:27,37", "JUN": "04:29,96", "JUN1": "04:35,15", "JUV_A_VER": "04:40,35", "JUV_A_INV": "04:45,54", "JUV_B_VER": "04:50,73", "JUV_B_INV": "04:55,92", "INF_A": "05:06,30", "INF_B": "05:14,09", "JUV_A_ZON": "04:53,33", "JUV_B_ZON": "05:01,11", "INF_A_ZON": "05:14,09", "INF_B_ZON": "05:27,07"}, "800_L": {"ABS": "08:46,75", "SEN": "08:57,28", "SUB21": "09:02,55", "JUN": "09:07,82", "JUN1": "09:18,36", "JUV_A_VER": "09:28,89", "JUV_A_INV": "09:39,43", "JUV_B_VER": "09:49,96", "JUV_B_INV": "10:00,50", "INF_A": "10:21,57", "INF_B": "10:37,37", "JUV_A_ZON": "09:55,23", "JUV_B_ZON": "10:11,03", "INF_A_ZON": "10:37,37", "INF_B_ZON": "11:03,71"}, "1500_L": {"ABS": "17:18,56", "SEN": "17:39,33", "SUB21": "17:49,72", "JUN": "18:00,10", "JUN1": "18:20,87", "JUV_A_VER": "18:41,64", "JUV_A_INV": "19:02,42", "JUV_B_VER": "19:23,19", "JUV_B_INV": "19:43,96", "INF_A": "20:25,50", "INF_B": "20:56,66", "JUV_A_ZON": "19:33,57", "JUV_B_ZON": "20:04,73", "INF_A_ZON": "20:56,66", "INF_B_ZON": "21:48,59"}, "50_C": {"ABS": "00:30,45", "SEN": "00:31,06", "SUB21": "00:31,36", "JUN": "00:31,67", "JUN1": "00:32,28", "JUV_A_VER": "00:32,89", "JUV_A_INV": "00:33,49", "JUV_B_VER": "00:34,10", "JUV_B_INV": "00:34,71", "INF_A": "00:35,93", "INF_B": "00:36,84", "JUV_A_ZON": "00:34,41", "JUV_B_ZON": "00:35,32", "INF_A_ZON": "00:36,84", "INF_B_ZON": "00:38,37"}, "100_C": {"ABS": "01:04,97", "SEN": "01:06,27", "SUB21": "01:06,92", "JUN": "01:07,57", "JUN1": "01:08,87", "JUV_A_VER": "01:10,17", "JUV_A_INV": "01:11,47", "JUV_B_VER": "01:12,77", "JUV_B_INV": "01:14,07", "INF_A": "01:16,66", "INF_B": "01:18,61", "JUV_A_ZON": "01:13,42", "JUV_B_ZON": "01:15,37", "INF_A_ZON": "01:18,61", "INF_B_ZON": "01:21,86"}, "200_C": {"ABS": "02:20,72", "SEN": "02:23,53", "SUB21": "02:24,94", "JUN": "02:26,35", "JUN1": "02:29,16", "JUV_A_VER": "02:31,98", "JUV_A_INV": "02:34,79", "JUV_B_VER": "02:37,61", "JUV_B_INV": "02:40,42", "INF_A": "02:46,05", "INF_B": "02:50,27", "JUV_A_ZON": "02:39,01", "JUV_B_ZON": "02:43,24", "INF_A_ZON": "02:50,27", "INF_B_ZON": "02:57,31"}, "50_B": {"ABS": "00:34,28", "SEN": "00:34,97", "SUB21": "00:35,31", "JUN": "00:35,65", "JUN1": "00:36,34", "JUV_A_VER": "00:37,02", "JUV_A_INV": "00:37,71", "JUV_B_VER": "00:38,39", "JUV_B_INV": "00:39,08", "INF_A": "00:40,45", "INF_B": "00:41,48", "JUV_A_ZON": "00:38,74", "JUV_B_ZON": "00:39,76", "INF_A_ZON": "00:41,48", "INF_B_ZON": "00:43,19"}, "100_B": {"ABS": "01:13,91", "SEN": "01:15,39", "SUB21": "01:16,13", "JUN": "01:16,87", "JUN1": "01:18,34", "JUV_A_VER": "01:19,82", "JUV_A_INV": "01:21,30", "JUV_B_VER": "01:22,78", "JUV_B_INV": "01:24,26", "INF_A": "01:27,21", "INF_B": "01:29,43", "JUV_A_ZON": "01:23,52", "JUV_B_ZON": "01:25,74", "INF_A_ZON": "01:29,43", "INF_B_ZON": "01:33,13"}, "200_B": {"ABS": "02:37,74", "SEN": "02:40,89", "SUB21": "02:42,47", "JUN": "02:44,05", "JUN1": "02:47,20", "JUV_A_VER": "02:50,36", "JUV_A_INV": "02:53,51", "JUV_B_VER": "02:56,67", "JUV_B_INV": "02:59,82", "INF_A": "03:06,13", "INF_B": "03:10,87", "JUV_A_ZON": "02:58,25", "JUV_B_ZON": "03:02,98", "INF_A_ZON": "03:10,87", "INF_B_ZON": "03:18,75"}, "50_M": {"ABS": "00:29,04", "SEN": "00:29,62", "SUB21": "00:29,91", "JUN": "00:30,20", "JUN1": "00:30,78", "JUV_A_VER": "00:31,36", "JUV_A_INV": "00:31,94", "JUV_B_VER": "00:32,52", "JUV_B_INV": "00:33,11", "INF_A": "00:34,27", "INF_B": "00:35,14", "JUV_A_ZON": "00:32,82", "JUV_B_ZON": "00:33,69", "INF_A_ZON": "00:35,14", "INF_B_ZON": "00:36,59"}, "100_M": {"ABS": "01:04,65", "SEN": "01:05,94", "SUB21": "01:06,59", "JUN": "01:07,24", "JUN1": "01:08,53", "JUV_A_VER": "01:09,82", "JUV_A_INV": "01:11,12", "JUV_B_VER": "01:12,41", "JUV_B_INV": "01:13,70", "INF_A": "01:16,29", "INF_B": "01:18,23", "JUV_A_ZON": "01:13,05", "JUV_B_ZON": "01:14,99", "INF_A_ZON": "01:18,23", "INF_B_ZON": "01:21,46"}, "200_M": {"ABS": "02:21,94", "SEN": "02:24,78", "SUB21": "02:26,20", "JUN": "02:27,62", "JUN1": "02:30,46", "JUV_A_VER": "02:33,30", "JUV_A_INV": "02:36,13", "JUV_B_VER": "02:38,97", "JUV_B_INV": "02:41,81", "INF_A": "02:47,49", "INF_B": "02:51,75", "JUV_A_ZON": "02:40,39", "JUV_B_ZON": "02:44,65", "INF_A_ZON": "02:51,75", "INF_B_ZON": "02:58,84"}, "100_E": {"ABS": "01:06,89", "SEN": "01:08,23", "SUB21": "01:08,90", "JUN": "01:09,57", "JUN1": "01:10,90", "JUV_A_VER": "01:12,24", "JUV_A_INV": "01:13,58", "JUV_B_VER": "01:14,92", "JUV_B_INV": "01:16,25", "INF_A": "01:18,93", "INF_B": "01:20,94", "JUV_A_ZON": "01:15,59", "JUV_B_ZON": "01:17,59", "INF_A_ZON": "01:20,94", "INF_B_ZON": "01:24,28"}, "200_E": {"ABS": "02:22,41", "SEN": "02:25,26", "SUB21": "02:26,68", "JUN": "02:28,11", "JUN1": "02:30,95", "JUV_A_VER": "02:33,80", "JUV_A_INV": "02:36,65", "JUV_B_VER": "02:39,50", "JUV_B_INV": "02:42,35", "INF_A": "02:48,04", "INF_B": "02:52,32", "JUV_A_ZON": "02:40,92", "JUV_B_ZON": "02:45,20", "INF_A_ZON": "02:52,32", "INF_B_ZON": "02:59,44"}, "400_E": {"ABS": "04:58,69", "SEN": "05:04,66", "SUB21": "05:07,65", "JUN": "05:10,64", "JUN1": "05:16,61", "JUV_A_VER": "05:22,59", "JUV_A_INV": "05:28,56", "JUV_B_VER": "05:34,53", "JUV_B_INV": "05:40,51", "INF_A": "05:52,45", "INF_B": "06:01,41", "JUV_A_ZON": "05:37,52", "JUV_B_ZON": "05:46,48", "INF_A_ZON": "06:01,41", "INF_B_ZON": "06:16,35"}, "4X100_L": {"ABS": "03:55,67", "SEN": "04:00,38", "SUB21": "04:02,74", "JUN": "04:05,10", "JUN1": "04:09,81", "JUV_A_VER": "04:14,52", "JUV_A_INV": "04:19,24", "JUV_B_VER": "04:23,95", "JUV_B_INV": "04:28,66", "INF_A": "04:38,09", "INF_B": "04:45,16", "JUV_A_ZON": "04:26,31", "JUV_B_ZON": "04:33,38", "INF_A_ZON": "04:45,16", "INF_B_ZON": "04:56,94"}, "4X200_L": {"ABS": "08:33,27", "SEN": "08:43,54", "SUB21": "08:48,67", "JUN": "08:53,80", "JUN1": "09:04,07", "JUV_A_VER": "09:14,33", "JUV_A_INV": "09:24,60", "JUV_B_VER": "09:34,86", "JUV_B_INV": "09:45,13", "INF_A": "10:05,66", "INF_B": "10:21,06", "JUV_A_ZON": "09:40,00", "JUV_B_ZON": "09:55,39", "INF_A_ZON": "10:21,06", "INF_B_ZON": "10:46,72"}, "4X100_E": {"ABS": "04:19,35", "SEN": "04:24,54", "SUB21": "04:27,13", "JUN": "04:29,72", "JUN1": "04:34,91", "JUV_A_VER": "04:40,10", "JUV_A_INV": "04:45,28", "JUV_B_VER": "04:50,47", "JUV_B_INV": "04:55,66", "INF_A": "05:06,03", "INF_B": "05:13,81", "JUV_A_ZON": "04:53,07", "JUV_B_ZON": "05:00,85", "INF_A_ZON": "05:13,81", "INF_B_ZON": "05:26,78"}, "4X50_E": {"ABS": "02:00,48", "SEN": "02:02,89", "SUB21": "02:04,09", "JUN": "02:05,30", "JUN1": "02:07,71", "JUV_A_VER": "02:10,12", "JUV_A_INV": "02:12,53", "JUV_B_VER": "02:14,94", "JUV_B_INV": "02:17,35", "INF_A": "02:22,17", "INF_B": "02:25,78", "JUV_A_ZON": "02:16,14", "JUV_B_ZON": "02:19,76", "INF_A_ZON": "02:25,78", "INF_B_ZON": "02:31,80"}, "4X50_L": {"ABS": "01:50,35", "SEN": "01:52,56", "SUB21": "01:53,66", "JUN": "01:54,76", "JUN1": "01:56,97", "JUV_A_VER": "01:59,18", "JUV_A_INV": "02:01,39", "JUV_B_VER": "02:03,59", "JUV_B_INV": "02:05,80", "INF_A": "02:10,21", "INF_B": "02:13,52", "JUV_A_ZON": "02:04,70", "JUV_B_ZON": "02:08,01", "INF_A_ZON": "02:13,52", "INF_B_ZON": "02:19,04"}}, "X": {"4X100_L_M": {"ABS": "03:40,98", "SEN": "03:45,39", "SUB21": "03:47,60", "JUN": "03:49,81", "JUN1": "03:56,44", "JUV_A_VER": "04:00,86", "JUV_A_INV": "04:05,28", "JUV_B_VER": "04:09,70", "JUV_B_INV": "04:14,12", "INF_A": "04:27,38", "INF_B": "04:36,22", "JUV_A_ZON": "04:11,91", "JUV_B_ZON": "04:18,54", "INF_A_ZON": "04:31,80", "INF_B_ZON": "04:45,06"}, "4X100_E_M": {"ABS": "03:54,77", "SEN": "03:59,46", "SUB21": "04:01,81", "JUN": "04:04,16", "JUN1": "04:11,20", "JUV_A_VER": "04:15,90", "JUV_A_INV": "04:20,59", "JUV_B_VER": "04:25,29", "JUV_B_INV": "04:29,98", "INF_A": "04:44,07", "INF_B": "04:53,46", "JUV_A_ZON": "04:27,64", "JUV_B_ZON": "04:34,68", "INF_A_ZON": "04:48,77", "INF_B_ZON": "05:02,85"}, "4X50_L_M": {"ABS": "01:43,21", "SEN": "01:45,28", "SUB21": "01:46,31", "JUN": "01:47,34", "JUN1": "01:50,44", "JUV_A_VER": "01:52,50", "JUV_A_INV": "01:54,57", "JUV_B_VER": "01:56,63", "JUV_B_INV": "01:58,70", "INF_A": "02:04,89", "INF_B": "02:09,02", "JUV_A_ZON": "01:57,67", "JUV_B_ZON": "02:00,76", "INF_A_ZON": "02:06,95", "INF_B_ZON": "02:13,15"}, "4X50_E_M": {"ABS": "01:52,69", "SEN": "01:54,95", "SUB21": "01:56,08", "JUN": "01:57,20", "JUN1": "02:00,58", "JUV_A_VER": "02:02,84", "JUV_A_INV": "02:05,09", "JUV_B_VER": "02:07,35", "JUV_B_INV": "02:09,60", "INF_A": "02:16,36", "INF_B": "02:20,87", "JUV_A_ZON": "02:08,47", "JUV_B_ZON": "02:11,85", "INF_A_ZON": "02:18,61", "INF_B_ZON": "02:25,38"}}}};
+var tempos = {"longa": {"M": {"50_L": {"ABS": "00:24,26", "SEN": "00:24,75", "SUB21": "00:24,99", "JUN": "00:25,23", "JUN1": "00:25,96", "JUV_A_VER": "00:26,44", "JUV_A_INV": "00:26,93", "JUV_B_VER": "00:27,66", "JUV_B_INV": "00:28,14", "INF_A": "00:29,84", "INF_B": "00:31,30", "JUV_A_ZON": "00:27,66", "JUV_B_ZON": "00:28,63", "INF_A_ZON": "00:30,08", "INF_B_ZON": "00:32,02"}, "100_L": {"ABS": "00:52,80", "SEN": "00:53,86", "SUB21": "00:54,38", "JUN": "00:54,91", "JUN1": "00:56,50", "JUV_A_VER": "00:57,55", "JUV_A_INV": "00:58,61", "JUV_B_VER": "01:00,19", "JUV_B_INV": "01:01,25", "INF_A": "01:04,94", "INF_B": "01:08,11", "JUV_A_ZON": "01:00,19", "JUV_B_ZON": "01:02,30", "INF_A_ZON": "01:05,47", "INF_B_ZON": "01:09,70"}, "200_L": {"ABS": "01:56,36", "SEN": "01:58,69", "SUB21": "01:59,85", "JUN": "02:01,01", "JUN1": "02:04,51", "JUV_A_VER": "02:06,83", "JUV_A_INV": "02:09,16", "JUV_B_VER": "02:12,65", "JUV_B_INV": "02:14,98", "INF_A": "02:23,12", "INF_B": "02:30,10", "JUV_A_ZON": "02:12,65", "JUV_B_ZON": "02:17,30", "INF_A_ZON": "02:24,29", "INF_B_ZON": "02:33,60"}, "400_L": {"ABS": "04:06,04", "SEN": "04:10,96", "SUB21": "04:13,42", "JUN": "04:15,88", "JUN1": "04:23,26", "JUV_A_VER": "04:28,18", "JUV_A_INV": "04:33,10", "JUV_B_VER": "04:40,49", "JUV_B_INV": "04:45,41", "INF_A": "05:02,63", "INF_B": "05:17,39", "JUV_A_ZON": "04:40,49", "JUV_B_ZON": "04:50,33", "INF_A_ZON": "05:05,09", "INF_B_ZON": "05:24,77"}, "800_L": {"ABS": "08:32,14", "SEN": "08:42,38", "SUB21": "08:47,50", "JUN": "08:52,63", "JUN1": "09:07,99", "JUV_A_VER": "09:18,23", "JUV_A_INV": "09:28,48", "JUV_B_VER": "09:43,84", "JUV_B_INV": "09:54,08", "INF_A": "10:29,93", "INF_B": "11:00,66", "JUV_A_ZON": "09:43,84", "JUV_B_ZON": "10:04,33", "INF_A_ZON": "10:35,05", "INF_B_ZON": "11:16,02"}, "1500_L": {"ABS": "16:21,19", "SEN": "16:40,81", "SUB21": "16:50,63", "JUN": "17:00,44", "JUN1": "17:29,87", "JUV_A_VER": "17:49,50", "JUV_A_INV": "18:09,12", "JUV_B_VER": "18:38,56", "JUV_B_INV": "18:58,18", "INF_A": "20:06,86", "INF_B": "21:05,74", "JUV_A_ZON": "18:38,56", "JUV_B_ZON": "19:17,80", "INF_A_ZON": "20:16,68", "INF_B_ZON": "21:35,17"}, "50_C": {"ABS": "00:27,87", "SEN": "00:28,43", "SUB21": "00:28,71", "JUN": "00:28,98", "JUN1": "00:29,82", "JUV_A_VER": "00:30,38", "JUV_A_INV": "00:30,94", "JUV_B_VER": "00:31,77", "JUV_B_INV": "00:32,33", "INF_A": "00:34,28", "INF_B": "00:35,95", "JUV_A_ZON": "00:31,77", "JUV_B_ZON": "00:32,89", "INF_A_ZON": "00:34,56", "INF_B_ZON": "00:36,79"}, "100_C": {"ABS": "00:59,87", "SEN": "01:01,07", "SUB21": "01:01,67", "JUN": "01:02,26", "JUN1": "00:56,02", "JUV_A_VER": "01:05,26", "JUV_A_INV": "01:06,46", "JUV_B_VER": "01:08,25", "JUV_B_INV": "01:09,45", "INF_A": "01:13,64", "INF_B": "01:17,23", "JUV_A_ZON": "01:08,25", "JUV_B_ZON": "01:10,65", "INF_A_ZON": "01:14,24", "INF_B_ZON": "01:19,03"}, "200_C": {"ABS": "02:12,75", "SEN": "02:15,41", "SUB21": "02:16,73", "JUN": "02:18,06", "JUN1": "02:22,04", "JUV_A_VER": "02:24,70", "JUV_A_INV": "02:27,35", "JUV_B_VER": "02:31,33", "JUV_B_INV": "02:33,99", "INF_A": "02:43,28", "INF_B": "02:51,25", "JUV_A_ZON": "02:31,33", "JUV_B_ZON": "02:36,64", "INF_A_ZON": "02:44,61", "INF_B_ZON": "02:55,23"}, "50_B": {"ABS": "00:30,72", "SEN": "00:31,33", "SUB21": "00:31,64", "JUN": "00:31,95", "JUN1": "00:32,87", "JUV_A_VER": "00:33,48", "JUV_A_INV": "00:34,10", "JUV_B_VER": "00:35,02", "JUV_B_INV": "00:35,64", "INF_A": "00:37,79", "INF_B": "00:39,63", "JUV_A_ZON": "00:35,02", "JUV_B_ZON": "00:36,25", "INF_A_ZON": "00:38,09", "INF_B_ZON": "00:40,55"}, "100_B": {"ABS": "01:07,76", "SEN": "01:09,12", "SUB21": "01:09,79", "JUN": "01:10,47", "JUN1": "01:12,50", "JUV_A_VER": "01:13,86", "JUV_A_INV": "01:15,21", "JUV_B_VER": "01:17,25", "JUV_B_INV": "01:18,60", "INF_A": "01:23,34", "INF_B": "01:27,41", "JUV_A_ZON": "01:17,25", "JUV_B_ZON": "01:19,96", "INF_A_ZON": "01:24,02", "INF_B_ZON": "01:29,44"}, "200_B": {"ABS": "02:28,12", "SEN": "02:31,08", "SUB21": "02:32,56", "JUN": "02:34,04", "JUN1": "02:38,49", "JUV_A_VER": "02:41,45", "JUV_A_INV": "02:44,41", "JUV_B_VER": "02:48,86", "JUV_B_INV": "02:51,82", "INF_A": "03:02,19", "INF_B": "03:11,07", "JUV_A_ZON": "02:48,86", "JUV_B_ZON": "02:54,78", "INF_A_ZON": "03:03,67", "INF_B_ZON": "03:15,52"}, "50_M": {"ABS": "00:25,59", "SEN": "00:26,10", "SUB21": "00:26,36", "JUN": "00:26,61", "JUN1": "00:27,38", "JUV_A_VER": "00:27,89", "JUV_A_INV": "00:28,40", "JUV_B_VER": "00:29,17", "JUV_B_INV": "00:29,68", "INF_A": "00:31,48", "INF_B": "00:33,01", "JUV_A_ZON": "00:29,17", "JUV_B_ZON": "00:30,20", "INF_A_ZON": "00:31,73", "INF_B_ZON": "00:33,78"}, "100_M": {"ABS": "00:57,00", "SEN": "00:58,14", "SUB21": "00:58,71", "JUN": "00:59,28", "JUN1": "01:00,99", "JUV_A_VER": "01:02,13", "JUV_A_INV": "01:03,27", "JUV_B_VER": "01:04,98", "JUV_B_INV": "01:06,12", "INF_A": "01:10,11", "INF_B": "01:13,53", "JUV_A_ZON": "01:04,98", "JUV_B_ZON": "01:07,26", "INF_A_ZON": "01:10,68", "INF_B_ZON": "01:15,24"}, "200_M": {"ABS": "02:09,36", "SEN": "02:11,95", "SUB21": "02:13,24", "JUN": "02:14,53", "JUN1": "02:18,42", "JUV_A_VER": "02:21,00", "JUV_A_INV": "02:23,59", "JUV_B_VER": "02:27,47", "JUV_B_INV": "02:30,06", "INF_A": "02:39,11", "INF_B": "02:46,87", "JUV_A_ZON": "02:27,47", "JUV_B_ZON": "02:32,64", "INF_A_ZON": "02:40,41", "INF_B_ZON": "02:50,76"}, "200_E": {"ABS": "02:12,78", "SEN": "02:15,44", "SUB21": "02:16,76", "JUN": "02:18,09", "JUN1": "02:22,07", "JUV_A_VER": "02:24,73", "JUV_A_INV": "02:27,39", "JUV_B_VER": "02:31,37", "JUV_B_INV": "02:34,02", "INF_A": "02:43,32", "INF_B": "02:51,29", "JUV_A_ZON": "02:31,37", "JUV_B_ZON": "02:36,68", "INF_A_ZON": "02:44,65", "INF_B_ZON": "02:55,27"}, "400_E": {"ABS": "04:43,91", "SEN": "04:49,59", "SUB21": "04:52,43", "JUN": "04:55,27", "JUN1": "05:03,78", "JUV_A_VER": "05:09,46", "JUV_A_INV": "05:15,14", "JUV_B_VER": "05:23,66", "JUV_B_INV": "05:29,34", "INF_A": "05:49,21", "INF_B": "06:06,24", "JUV_A_ZON": "05:23,66", "JUV_B_ZON": "05:35,01", "INF_A_ZON": "05:52,05", "INF_B_ZON": "06:14,76"}, "4X100_L": {"ABS": "03:37,49", "SEN": "03:41,84", "SUB21": "03:44,01", "JUN": "03:46,19", "JUN1": "03:52,71", "JUV_A_VER": "03:57,06", "JUV_A_INV": "04:01,41", "JUV_B_VER": "04:07,94", "JUV_B_INV": "04:12,29", "INF_A": "04:27,51", "INF_B": "04:40,56", "JUV_A_ZON": "04:07,94", "JUV_B_ZON": "04:16,64", "INF_A_ZON": "04:29,69", "INF_B_ZON": "04:47,09"}, "4X200_L": {"ABS": "08:11,93", "SEN": "08:21,77", "SUB21": "08:26,69", "JUN": "08:31,61", "JUN1": "08:46,37", "JUV_A_VER": "08:56,20", "JUV_A_INV": "09:06,04", "JUV_B_VER": "09:20,80", "JUV_B_INV": "09:30,64", "INF_A": "10:05,07", "INF_B": "10:34,59", "JUV_A_ZON": "09:20,80", "JUV_B_ZON": "09:40,48", "INF_A_ZON": "10:09,99", "INF_B_ZON": "10:49,35"}, "4X100_E": {"ABS": "03:41,31", "SEN": "03:41,31", "SUB21": "04:08,89", "JUN": "04:11,31", "JUN1": "04:18,55", "JUV_A_VER": "04:23,39", "JUV_A_INV": "04:28,22", "JUV_B_VER": "04:35,47", "JUV_B_INV": "04:40,30", "INF_A": "04:57,22", "INF_B": "05:11,72", "JUV_A_ZON": "04:35,47", "JUV_B_ZON": "04:45,14", "INF_A_ZON": "04:59,63", "INF_B_ZON": "05:18,96"}, "4X50_E": {"ABS": "01:50,40", "SEN": "01:52,61", "SUB21": "01:53,71", "JUN": "01:54,82", "JUN1": "01:58,13", "JUV_A_VER": "02:00,34", "JUV_A_INV": "02:02,54", "JUV_B_VER": "02:05,86", "JUV_B_INV": "02:08,06", "INF_A": "02:15,79", "INF_B": "02:22,42", "JUV_A_ZON": "02:05,86", "JUV_B_ZON": "02:10,27", "INF_A_ZON": "02:16,90", "INF_B_ZON": "02:25,73"}, "4X50_L": {"ABS": "01:39,21", "SEN": "01:41,19", "SUB21": "01:42,19", "JUN": "01:43,18", "JUN1": "01:46,15", "JUV_A_VER": "01:48,14", "JUV_A_INV": "01:50,12", "JUV_B_VER": "01:53,10", "JUV_B_INV": "01:55,08", "INF_A": "02:02,03", "INF_B": "02:07,98", "JUV_A_ZON": "01:53,10", "JUV_B_ZON": "01:57,07", "INF_A_ZON": "02:03,02", "INF_B_ZON": "02:10,96"}}, "F": {"50_L": {"ABS": "00:27,63", "SEN": "00:28,18", "SUB21": "00:28,46", "JUN": "00:28,74", "JUN1": "00:25,96", "JUV_A_VER": "00:29,84", "JUV_A_INV": "00:30,39", "JUV_B_VER": "00:30,95", "JUV_B_INV": "00:31,50", "INF_A": "00:32,60", "INF_B": "00:33,43", "JUV_A_ZON": "00:31,22", "JUV_B_ZON": "00:32,05", "INF_A_ZON": "00:33,43", "INF_B_ZON": "00:34,81"}, "100_L": {"ABS": "00:59,64", "SEN": "01:00,83", "SUB21": "01:01,43", "JUN": "01:02,03", "JUN1": "01:03,22", "JUV_A_VER": "01:04,41", "JUV_A_INV": "01:05,60", "JUV_B_VER": "01:06,80", "JUV_B_INV": "01:07,99", "INF_A": "01:10,38", "INF_B": "01:12,16", "JUV_A_ZON": "01:07,39", "JUV_B_ZON": "01:09,18", "INF_A_ZON": "01:12,16", "INF_B_ZON": "01:15,15"}, "200_L": {"ABS": "02:08,20", "SEN": "02:10,76", "SUB21": "02:12,05", "JUN": "02:13,33", "JUN1": "02:15,89", "JUV_A_VER": "02:18,46", "JUV_A_INV": "02:21,02", "JUV_B_VER": "02:23,58", "JUV_B_INV": "02:26,15", "INF_A": "02:31,28", "INF_B": "02:35,12", "JUV_A_ZON": "02:24,87", "JUV_B_ZON": "02:28,71", "INF_A_ZON": "02:35,12", "INF_B_ZON": "02:41,53"}, "400_L": {"ABS": "04:28,98", "SEN": "04:34,36", "SUB21": "04:37,05", "JUN": "04:39,74", "JUN1": "04:45,12", "JUV_A_VER": "04:50,50", "JUV_A_INV": "04:55,88", "JUV_B_VER": "05:01,26", "JUV_B_INV": "05:06,64", "INF_A": "05:17,40", "INF_B": "05:25,47", "JUV_A_ZON": "05:03,95", "JUV_B_ZON": "05:12,02", "INF_A_ZON": "05:25,47", "INF_B_ZON": "05:38,91"}, "800_L": {"ABS": "09:04,25", "SEN": "09:15,14", "SUB21": "09:20,58", "JUN": "09:26,02", "JUN1": "09:36,91", "JUV_A_VER": "09:47,79", "JUV_A_INV": "09:58,68", "JUV_B_VER": "10:09,56", "JUV_B_INV": "10:20,44", "INF_A": "10:42,22", "INF_B": "10:58,54", "JUV_A_ZON": "10:15,00", "JUV_B_ZON": "10:31,33", "INF_A_ZON": "10:58,54", "INF_B_ZON": "11:25,76"}, "1500_L": {"ABS": "17:44,97", "SEN": "18:06,27", "SUB21": "18:16,92", "JUN": "18:27,57", "JUN1": "18:48,87", "JUV_A_VER": "19:10,17", "JUV_A_INV": "19:31,47", "JUV_B_VER": "19:52,77", "JUV_B_INV": "20:14,07", "INF_A": "20:56,66", "INF_B": "21:28,61", "JUV_A_ZON": "20:03,42", "JUV_B_ZON": "20:35,37", "INF_A_ZON": "21:28,61", "INF_B_ZON": "22:21,86"}, "50_C": {"ABS": "00:31,74", "SEN": "00:32,37", "SUB21": "00:32,69", "JUN": "00:33,01", "JUN1": "00:33,64", "JUV_A_VER": "00:34,28", "JUV_A_INV": "00:34,91", "JUV_B_VER": "00:35,55", "JUV_B_INV": "00:36,18", "INF_A": "00:37,45", "INF_B": "00:38,41", "JUV_A_ZON": "00:35,87", "JUV_B_ZON": "00:36,82", "INF_A_ZON": "00:38,41", "INF_B_ZON": "00:39,99"}, "100_C": {"ABS": "01:07,62", "SEN": "01:08,97", "SUB21": "01:09,65", "JUN": "01:10,32", "JUN1": "01:11,68", "JUV_A_VER": "01:13,03", "JUV_A_INV": "01:14,38", "JUV_B_VER": "01:15,73", "JUV_B_INV": "01:17,09", "INF_A": "01:19,79", "INF_B": "01:21,82", "JUV_A_ZON": "01:16,41", "JUV_B_ZON": "01:18,44", "INF_A_ZON": "01:21,82", "INF_B_ZON": "01:25,20"}, "200_C": {"ABS": "02:25,92", "SEN": "02:28,84", "SUB21": "02:30,30", "JUN": "02:31,76", "JUN1": "02:34,68", "JUV_A_VER": "02:37,59", "JUV_A_INV": "02:40,51", "JUV_B_VER": "02:43,43", "JUV_B_INV": "02:46,35", "INF_A": "02:52,19", "INF_B": "02:56,56", "JUV_A_ZON": "02:44,89", "JUV_B_ZON": "02:49,27", "INF_A_ZON": "02:56,56", "INF_B_ZON": "03:03,86"}, "50_B": {"ABS": "00:34,68", "SEN": "00:35,37", "SUB21": "00:35,72", "JUN": "00:36,07", "JUN1": "00:36,76", "JUV_A_VER": "00:37,45", "JUV_A_INV": "00:38,15", "JUV_B_VER": "00:38,84", "JUV_B_INV": "00:39,54", "INF_A": "00:40,92", "INF_B": "00:41,96", "JUV_A_ZON": "00:39,19", "JUV_B_ZON": "00:40,23", "INF_A_ZON": "00:41,96", "INF_B_ZON": "00:43,70"}, "100_B": {"ABS": "01:16,29", "SEN": "01:17,82", "SUB21": "01:18,58", "JUN": "01:19,34", "JUN1": "01:20,87", "JUV_A_VER": "01:22,39", "JUV_A_INV": "01:23,92", "JUV_B_VER": "01:25,44", "JUV_B_INV": "01:26,97", "INF_A": "01:30,02", "INF_B": "01:32,31", "JUV_A_ZON": "01:26,21", "JUV_B_ZON": "01:28,50", "INF_A_ZON": "01:32,31", "INF_B_ZON": "01:36,13"}, "200_B": {"ABS": "02:45,23", "SEN": "02:48,53", "SUB21": "02:50,19", "JUN": "02:51,84", "JUN1": "02:55,14", "JUV_A_VER": "02:58,45", "JUV_A_INV": "03:01,75", "JUV_B_VER": "03:05,06", "JUV_B_INV": "03:08,36", "INF_A": "03:14,97", "INF_B": "03:19,93", "JUV_A_ZON": "03:06,71", "JUV_B_ZON": "03:11,67", "INF_A_ZON": "03:19,93", "INF_B_ZON": "03:28,19"}, "50_M": {"ABS": "00:29,34", "SEN": "00:29,93", "SUB21": "00:30,22", "JUN": "00:30,51", "JUN1": "00:31,10", "JUV_A_VER": "00:31,69", "JUV_A_INV": "00:32,27", "JUV_B_VER": "00:32,86", "JUV_B_INV": "00:33,45", "INF_A": "00:34,62", "INF_B": "00:35,50", "JUV_A_ZON": "00:33,15", "JUV_B_ZON": "00:34,03", "INF_A_ZON": "00:35,50", "INF_B_ZON": "00:36,97"}, "100_M": {"ABS": "01:05,51", "SEN": "01:06,82", "SUB21": "01:07,48", "JUN": "01:08,13", "JUN1": "01:09,44", "JUV_A_VER": "01:10,75", "JUV_A_INV": "01:12,06", "JUV_B_VER": "01:13,37", "JUV_B_INV": "01:14,68", "INF_A": "01:17,30", "INF_B": "01:19,27", "JUV_A_ZON": "01:14,03", "JUV_B_ZON": "01:15,99", "INF_A_ZON": "01:19,27", "INF_B_ZON": "01:22,54"}, "200_M": {"ABS": "02:26,25", "SEN": "02:29,17", "SUB21": "02:30,64", "JUN": "02:32,10", "JUN1": "02:35,02", "JUV_A_VER": "02:37,95", "JUV_A_INV": "02:40,88", "JUV_B_VER": "02:43,80", "JUV_B_INV": "02:46,73", "INF_A": "02:52,57", "INF_B": "02:56,96", "JUV_A_ZON": "02:45,26", "JUV_B_ZON": "02:49,65", "INF_A_ZON": "02:56,96", "INF_B_ZON": "03:04,28"}, "200_E": {"ABS": "02:27,71", "SEN": "02:30,66", "SUB21": "02:32,14", "JUN": "02:33,62", "JUN1": "02:36,57", "JUV_A_VER": "02:39,53", "JUV_A_INV": "02:42,48", "JUV_B_VER": "02:45,44", "JUV_B_INV": "02:48,39", "INF_A": "02:54,30", "INF_B": "02:58,73", "JUV_A_ZON": "02:46,91", "JUV_B_ZON": "02:51,34", "INF_A_ZON": "02:58,73", "INF_B_ZON": "03:06,11"}, "400_E": {"ABS": "05:08,82", "SEN": "05:15,00", "SUB21": "05:18,08", "JUN": "05:21,17", "JUN1": "05:27,35", "JUV_A_VER": "05:33,53", "JUV_A_INV": "05:39,70", "JUV_B_VER": "05:45,88", "JUV_B_INV": "05:52,05", "INF_A": "06:04,41", "INF_B": "06:13,67", "JUV_A_ZON": "05:48,97", "JUV_B_ZON": "05:58,23", "INF_A_ZON": "06:13,67", "INF_B_ZON": "06:29,11"}, "4X100_L": {"ABS": "03:50,23", "SEN": "03:50,23", "SUB21": "04:14,55", "JUN": "04:17,03", "JUN1": "04:21,97", "JUV_A_VER": "04:26,91", "JUV_A_INV": "04:31,85", "JUV_B_VER": "04:36,80", "JUV_B_INV": "04:41,74", "INF_A": "04:51,63", "INF_B": "04:59,04", "JUV_A_ZON": "04:39,27", "JUV_B_ZON": "04:46,68", "INF_A_ZON": "04:59,04", "INF_B_ZON": "05:11,40"}, "4X200_L": {"ABS": "09:03,25", "SEN": "09:14,11", "SUB21": "09:19,55", "JUN": "09:24,98", "JUN1": "09:35,85", "JUV_A_VER": "09:46,71", "JUV_A_INV": "09:57,58", "JUV_B_VER": "10:08,44", "JUV_B_INV": "10:19,30", "INF_A": "10:41,03", "INF_B": "10:57,33", "JUV_A_ZON": "10:13,87", "JUV_B_ZON": "10:30,17", "INF_A_ZON": "10:57,33", "INF_B_ZON": "11:24,50"}, "4X100_E": {"ABS": "04:12,94", "SEN": "04:12,94", "SUB21": "04:42,22", "JUN": "04:31,27", "JUN1": "04:50,44", "JUV_A_VER": "04:55,92", "JUV_A_INV": "05:01,40", "JUV_B_VER": "05:06,88", "JUV_B_INV": "05:12,36", "INF_A": "05:23,32", "INF_B": "05:31,54", "JUV_A_ZON": "05:09,62", "JUV_B_ZON": "05:17,84", "INF_A_ZON": "05:31,54", "INF_B_ZON": "05:45,24"}, "4X50_E": {"ABS": "02:04,50", "SEN": "02:06,99", "SUB21": "02:08,23", "JUN": "02:09,48", "JUN1": "02:11,97", "JUV_A_VER": "02:14,46", "JUV_A_INV": "02:16,95", "JUV_B_VER": "02:19,44", "JUV_B_INV": "02:21,93", "INF_A": "02:26,91", "INF_B": "02:30,64", "JUV_A_ZON": "02:20,68", "JUV_B_ZON": "02:24,42", "INF_A_ZON": "02:30,64", "INF_B_ZON": "02:36,87"}, "4X50_L": {"ABS": "01:53,24", "SEN": "01:55,50", "SUB21": "01:56,64", "JUN": "01:57,77", "JUN1": "02:00,03", "JUV_A_VER": "02:02,30", "JUV_A_INV": "02:04,56", "JUV_B_VER": "02:06,83", "JUV_B_INV": "02:09,09", "INF_A": "02:13,62", "INF_B": "02:17,02", "JUV_A_ZON": "02:07,96", "JUV_B_ZON": "02:11,36", "INF_A_ZON": "02:17,02", "INF_B_ZON": "02:22,68"}}, "X": {"4X100_L_M": {"ABS": "03:52,31", "SEN": "03:56,96", "SUB21": "03:59,28", "JUN": "04:01,61", "JUN1": "04:08,58", "JUV_A_VER": "04:13,22", "JUV_A_INV": "04:17,87", "JUV_B_VER": "04:22,52", "JUV_B_INV": "04:27,16", "INF_A": "04:41,10", "INF_B": "04:50,39", "JUV_A_ZON": "04:24,84", "JUV_B_ZON": "04:31,81", "INF_A_ZON": "04:45,75", "INF_B_ZON": "04:59,69"}, "4X100_E_M": {"ABS": "04:17,82", "SEN": "04:22,98", "SUB21": "04:25,55", "JUN": "04:28,13", "JUN1": "04:35,87", "JUV_A_VER": "04:41,02", "JUV_A_INV": "04:46,18", "JUV_B_VER": "04:51,34", "JUV_B_INV": "04:56,49", "INF_A": "05:11,96", "INF_B": "05:22,27", "JUV_A_ZON": "04:53,91", "JUV_B_ZON": "05:01,65", "INF_A_ZON": "05:17,12", "INF_B_ZON": "05:32,59"}, "4X50_L_M": {"ABS": "01:46,22", "SEN": "01:48,35", "SUB21": "01:49,41", "JUN": "01:50,47", "JUN1": "01:53,66", "JUV_A_VER": "01:55,79", "JUV_A_INV": "01:57,91", "JUV_B_VER": "02:00,03", "JUV_B_INV": "02:02,16", "INF_A": "02:08,53", "INF_B": "02:12,78", "JUV_A_ZON": "02:01,10", "JUV_B_ZON": "02:04,28", "INF_A_ZON": "02:10,66", "INF_B_ZON": "02:17,03"}, "4X50_E_M": {"ABS": "01:57,45", "SEN": "01:59,80", "SUB21": "02:00,97", "JUN": "02:02,15", "JUN1": "02:05,67", "JUV_A_VER": "02:08,02", "JUV_A_INV": "02:10,37", "JUV_B_VER": "02:12,72", "JUV_B_INV": "02:15,07", "INF_A": "02:22,11", "INF_B": "02:26,81", "JUV_A_ZON": "02:13,89", "JUV_B_ZON": "02:17,42", "INF_A_ZON": "02:24,46", "INF_B_ZON": "02:31,51"}}}, "curta": {"M": {"50_L": {"ABS": "00:23,51", "SEN": "00:23,98", "SUB21": "00:24,22", "JUN": "00:24,45", "JUN1": "00:25,16", "JUV_A_VER": "00:25,63", "JUV_A_INV": "00:26,10", "JUV_B_VER": "00:26,80", "JUV_B_INV": "00:27,27", "INF_A": "00:28,92", "INF_B": "00:30,33", "JUV_A_ZON": "00:26,80", "JUV_B_ZON": "00:27,74", "INF_A_ZON": "00:29,15", "INF_B_ZON": "00:31,03"}, "100_L": {"ABS": "00:50,95", "SEN": "00:51,97", "SUB21": "00:52,48", "JUN": "00:52,99", "JUN1": "00:54,52", "JUV_A_VER": "00:55,54", "JUV_A_INV": "00:56,55", "JUV_B_VER": "00:58,08", "JUV_B_INV": "00:59,10", "INF_A": "01:02,67", "INF_B": "01:05,73", "JUV_A_ZON": "00:58,08", "JUV_B_ZON": "01:00,12", "INF_A_ZON": "01:03,18", "INF_B_ZON": "01:07,25"}, "200_L": {"ABS": "01:52,18", "SEN": "01:54,42", "SUB21": "01:55,55", "JUN": "01:56,67", "JUN1": "02:00,03", "JUV_A_VER": "02:02,28", "JUV_A_INV": "02:04,52", "JUV_B_VER": "02:07,89", "JUV_B_INV": "02:10,13", "INF_A": "02:17,98", "INF_B": "02:24,71", "JUV_A_ZON": "02:07,89", "JUV_B_ZON": "02:12,37", "INF_A_ZON": "02:19,10", "INF_B_ZON": "02:28,08"}, "400_L": {"ABS": "03:57,72", "SEN": "04:02,47", "SUB21": "04:04,85", "JUN": "04:07,23", "JUN1": "04:14,36", "JUV_A_VER": "04:19,11", "JUV_A_INV": "04:23,87", "JUV_B_VER": "04:31,00", "JUV_B_INV": "04:35,76", "INF_A": "04:52,40", "INF_B": "05:06,66", "JUV_A_ZON": "04:31,00", "JUV_B_ZON": "04:40,51", "INF_A_ZON": "04:54,77", "INF_B_ZON": "05:13,79"}, "800_L": {"ABS": "08:18,21", "SEN": "08:28,17", "SUB21": "08:33,16", "JUN": "08:38,14", "JUN1": "08:53,08", "JUV_A_VER": "09:03,05", "JUV_A_INV": "09:13,01", "JUV_B_VER": "09:27,96", "JUV_B_INV": "09:37,92", "INF_A": "10:12,80", "INF_B": "10:42,69", "JUV_A_ZON": "09:27,96", "JUV_B_ZON": "09:47,89", "INF_A_ZON": "10:17,78", "INF_B_ZON": "10:57,64"}, "1500_L": {"ABS": "15:41,66", "SEN": "16:00,49", "SUB21": "16:09,91", "JUN": "16:19,33", "JUN1": "16:47,58", "JUV_A_VER": "17:06,41", "JUV_A_INV": "17:25,24", "JUV_B_VER": "17:53,49", "JUV_B_INV": "18:12,33", "INF_A": "19:18,24", "INF_B": "20:14,74", "JUV_A_ZON": "17:53,49", "JUV_B_ZON": "18:31,16", "INF_A_ZON": "19:27,66", "INF_B_ZON": "20:42,99"}, "50_C": {"ABS": "00:26,46", "SEN": "00:26,99", "SUB21": "00:27,25", "JUN": "00:27,52", "JUN1": "00:28,31", "JUV_A_VER": "00:28,84", "JUV_A_INV": "00:29,37", "JUV_B_VER": "00:30,16", "JUV_B_INV": "00:30,69", "INF_A": "00:32,55", "INF_B": "00:34,13", "JUV_A_ZON": "00:30,16", "JUV_B_ZON": "00:31,22", "INF_A_ZON": "00:32,81", "INF_B_ZON": "00:34,93"}, "100_C": {"ABS": "00:57,00", "SEN": "00:58,14", "SUB21": "00:58,71", "JUN": "00:59,28", "JUN1": "01:00,99", "JUV_A_VER": "01:02,13", "JUV_A_INV": "01:03,27", "JUV_B_VER": "01:04,98", "JUV_B_INV": "01:06,12", "INF_A": "01:10,11", "INF_B": "01:13,53", "JUV_A_ZON": "01:04,98", "JUV_B_ZON": "01:07,26", "INF_A_ZON": "01:10,68", "INF_B_ZON": "01:15,24"}, "200_C": {"ABS": "02:04,67", "SEN": "02:07,16", "SUB21": "02:08,41", "JUN": "02:09,66", "JUN1": "02:13,40", "JUV_A_VER": "02:15,89", "JUV_A_INV": "02:18,38", "JUV_B_VER": "02:22,12", "JUV_B_INV": "02:24,62", "INF_A": "02:33,34", "INF_B": "02:40,82", "JUV_A_ZON": "02:22,12", "JUV_B_ZON": "02:27,11", "INF_A_ZON": "02:34,59", "INF_B_ZON": "02:44,56"}, "50_B": {"ABS": "00:29,83", "SEN": "00:30,43", "SUB21": "00:30,72", "JUN": "00:31,02", "JUN1": "00:31,92", "JUV_A_VER": "00:32,51", "JUV_A_INV": "00:33,11", "JUV_B_VER": "00:34,01", "JUV_B_INV": "00:34,60", "INF_A": "00:36,69", "INF_B": "00:38,48", "JUV_A_ZON": "00:34,01", "JUV_B_ZON": "00:35,20", "INF_A_ZON": "00:36,99", "INF_B_ZON": "00:39,38"}, "100_B": {"ABS": "01:04,54", "SEN": "01:05,83", "SUB21": "01:06,48", "JUN": "01:07,12", "JUN1": "01:09,06", "JUV_A_VER": "01:10,35", "JUV_A_INV": "01:11,64", "JUV_B_VER": "01:13,58", "JUV_B_INV": "01:14,87", "INF_A": "01:19,38", "INF_B": "01:23,26", "JUV_A_ZON": "01:13,58", "JUV_B_ZON": "01:16,16", "INF_A_ZON": "01:20,03", "INF_B_ZON": "01:25,19"}, "200_B": {"ABS": "02:21,85", "SEN": "02:24,69", "SUB21": "02:26,11", "JUN": "02:27,52", "JUN1": "02:31,78", "JUV_A_VER": "02:34,62", "JUV_A_INV": "02:37,45", "JUV_B_VER": "02:41,71", "JUV_B_INV": "02:44,55", "INF_A": "02:54,48", "INF_B": "03:02,99", "JUV_A_ZON": "02:41,71", "JUV_B_ZON": "02:47,38", "INF_A_ZON": "02:55,89", "INF_B_ZON": "03:07,24"}, "50_M": {"ABS": "00:25,25", "SEN": "00:25,76", "SUB21": "00:26,01", "JUN": "00:26,26", "JUN1": "00:27,02", "JUV_A_VER": "00:27,52", "JUV_A_INV": "00:28,03", "JUV_B_VER": "00:28,78", "JUV_B_INV": "00:29,29", "INF_A": "00:31,06", "INF_B": "00:32,57", "JUV_A_ZON": "00:28,78", "JUV_B_ZON": "00:29,80", "INF_A_ZON": "00:31,31", "INF_B_ZON": "00:33,33"}, "100_M": {"ABS": "00:55,82", "SEN": "00:56,94", "SUB21": "00:57,49", "JUN": "00:58,05", "JUN1": "00:59,73", "JUV_A_VER": "01:00,84", "JUV_A_INV": "01:01,96", "JUV_B_VER": "01:03,63", "JUV_B_INV": "01:04,75", "INF_A": "01:08,66", "INF_B": "01:12,01", "JUV_A_ZON": "01:03,63", "JUV_B_ZON": "01:05,87", "INF_A_ZON": "01:09,22", "INF_B_ZON": "01:13,68"}, "200_M": {"ABS": "02:05,98", "SEN": "02:08,50", "SUB21": "02:09,76", "JUN": "02:11,02", "JUN1": "02:14,80", "JUV_A_VER": "02:17,32", "JUV_A_INV": "02:19,84", "JUV_B_VER": "02:23,62", "JUV_B_INV": "02:26,14", "INF_A": "02:34,96", "INF_B": "02:42,51", "JUV_A_ZON": "02:23,62", "JUV_B_ZON": "02:28,66", "INF_A_ZON": "02:36,22", "INF_B_ZON": "02:46,29"}, "100_E": {"ABS": "00:58,80", "SEN": "00:59,98", "SUB21": "01:00,56", "JUN": "01:01,15", "JUN1": "01:02,92", "JUV_A_VER": "01:04,09", "JUV_A_INV": "01:05,27", "JUV_B_VER": "01:07,03", "JUV_B_INV": "01:08,21", "INF_A": "01:12,32", "INF_B": "01:15,85", "JUV_A_ZON": "01:07,03", "JUV_B_ZON": "01:09,38", "INF_A_ZON": "01:12,91", "INF_B_ZON": "01:17,62"}, "200_E": {"ABS": "02:06,27", "SEN": "02:08,80", "SUB21": "02:10,06", "JUN": "02:11,32", "JUN1": "02:15,11", "JUV_A_VER": "02:17,63", "JUV_A_INV": "02:20,16", "JUV_B_VER": "02:23,95", "JUV_B_INV": "02:26,47", "INF_A": "02:35,31", "INF_B": "02:42,89", "JUV_A_ZON": "02:23,95", "JUV_B_ZON": "02:29,00", "INF_A_ZON": "02:36,57", "INF_B_ZON": "02:46,68"}, "400_E": {"ABS": "04:30,16", "SEN": "04:35,56", "SUB21": "04:38,26", "JUN": "04:40,97", "JUN1": "04:49,07", "JUV_A_VER": "04:54,47", "JUV_A_INV": "04:59,88", "JUV_B_VER": "05:07,98", "JUV_B_INV": "05:13,39", "INF_A": "05:32,30", "INF_B": "05:48,51", "JUV_A_ZON": "05:07,98", "JUV_B_ZON": "05:18,79", "INF_A_ZON": "05:35,00", "INF_B_ZON": "05:56,61"}, "4X100_L": {"ABS": "03:26,28", "SEN": "03:30,41", "SUB21": "03:32,47", "JUN": "03:34,53", "JUN1": "03:40,72", "JUV_A_VER": "03:44,85", "JUV_A_INV": "03:48,97", "JUV_B_VER": "03:55,16", "JUV_B_INV": "03:59,28", "INF_A": "04:13,72", "INF_B": "04:26,10", "JUV_A_ZON": "03:55,16", "JUV_B_ZON": "04:03,41", "INF_A_ZON": "04:15,79", "INF_B_ZON": "04:32,29"}, "4X200_L": {"ABS": "07:39,90", "SEN": "07:49,10", "SUB21": "07:53,70", "JUN": "07:58,30", "JUN1": "08:12,09", "JUV_A_VER": "08:21,29", "JUV_A_INV": "08:30,49", "JUV_B_VER": "08:44,29", "JUV_B_INV": "08:53,48", "INF_A": "09:25,68", "INF_B": "09:53,27", "JUV_A_ZON": "08:44,29", "JUV_B_ZON": "09:02,68", "INF_A_ZON": "09:30,28", "INF_B_ZON": "10:07,07"}, "4X100_E": {"ABS": "03:43,98", "SEN": "03:48,46", "SUB21": "03:50,70", "JUN": "03:52,94", "JUN1": "03:59,66", "JUV_A_VER": "04:04,14", "JUV_A_INV": "04:08,62", "JUV_B_VER": "04:15,34", "JUV_B_INV": "04:19,82", "INF_A": "04:35,50", "INF_B": "04:48,93", "JUV_A_ZON": "04:15,34", "JUV_B_ZON": "04:24,30", "INF_A_ZON": "04:37,74", "INF_B_ZON": "04:55,65"}, "4X50_E": {"ABS": "01:44,91", "SEN": "01:47,01", "SUB21": "01:48,06", "JUN": "01:49,11", "JUN1": "01:52,25", "JUV_A_VER": "01:54,35", "JUV_A_INV": "01:56,45", "JUV_B_VER": "01:59,60", "JUV_B_INV": "02:01,70", "INF_A": "02:09,04", "INF_B": "02:15,33", "JUV_A_ZON": "01:59,60", "JUV_B_ZON": "02:03,79", "INF_A_ZON": "02:10,09", "INF_B_ZON": "02:18,48"}, "4X50_L": {"ABS": "01:36,08", "SEN": "01:38,00", "SUB21": "01:38,96", "JUN": "01:39,92", "JUN1": "01:42,81", "JUV_A_VER": "01:44,73", "JUV_A_INV": "01:46,65", "JUV_B_VER": "01:49,53", "JUV_B_INV": "01:51,45", "INF_A": "01:58,18", "INF_B": "02:03,94", "JUV_A_ZON": "01:49,53", "JUV_B_ZON": "01:53,37", "INF_A_ZON": "01:59,14", "INF_B_ZON": "02:06,83"}}, "F": {"50_L": {"ABS": "00:27,05", "SEN": "00:27,59", "SUB21": "00:27,86", "JUN": "00:28,13", "JUN1": "00:28,67", "JUV_A_VER": "00:29,21", "JUV_A_INV": "00:29,75", "JUV_B_VER": "00:30,30", "JUV_B_INV": "00:30,84", "INF_A": "00:31,92", "INF_B": "00:32,73", "JUV_A_ZON": "00:30,57", "JUV_B_ZON": "00:31,38", "INF_A_ZON": "00:32,73", "INF_B_ZON": "00:34,08"}, "100_L": {"ABS": "00:57,95", "SEN": "00:59,11", "SUB21": "00:59,69", "JUN": "01:00,27", "JUN1": "01:01,43", "JUV_A_VER": "01:02,59", "JUV_A_INV": "01:03,75", "JUV_B_VER": "01:04,90", "JUV_B_INV": "01:06,06", "INF_A": "01:08,38", "INF_B": "01:10,12", "JUV_A_ZON": "01:05,48", "JUV_B_ZON": "01:07,22", "INF_A_ZON": "01:10,12", "INF_B_ZON": "01:13,02"}, "200_L": {"ABS": "02:04,47", "SEN": "02:06,96", "SUB21": "02:08,20", "JUN": "02:09,45", "JUN1": "02:11,94", "JUV_A_VER": "02:14,43", "JUV_A_INV": "02:16,92", "JUV_B_VER": "02:19,41", "JUV_B_INV": "02:21,90", "INF_A": "02:26,87", "INF_B": "02:30,61", "JUV_A_ZON": "02:20,65", "JUV_B_ZON": "02:24,39", "INF_A_ZON": "02:30,61", "INF_B_ZON": "02:36,83"}, "400_L": {"ABS": "04:19,58", "SEN": "04:24,77", "SUB21": "04:27,37", "JUN": "04:29,96", "JUN1": "04:35,15", "JUV_A_VER": "04:40,35", "JUV_A_INV": "04:45,54", "JUV_B_VER": "04:50,73", "JUV_B_INV": "04:55,92", "INF_A": "05:06,30", "INF_B": "05:14,09", "JUV_A_ZON": "04:53,33", "JUV_B_ZON": "05:01,11", "INF_A_ZON": "05:14,09", "INF_B_ZON": "05:27,07"}, "800_L": {"ABS": "08:46,75", "SEN": "08:57,28", "SUB21": "09:02,55", "JUN": "09:07,82", "JUN1": "09:18,36", "JUV_A_VER": "09:28,89", "JUV_A_INV": "09:39,43", "JUV_B_VER": "09:49,96", "JUV_B_INV": "10:00,50", "INF_A": "10:21,57", "INF_B": "10:37,37", "JUV_A_ZON": "09:55,23", "JUV_B_ZON": "10:11,03", "INF_A_ZON": "10:37,37", "INF_B_ZON": "11:03,71"}, "1500_L": {"ABS": "17:18,56", "SEN": "17:39,33", "SUB21": "17:49,72", "JUN": "18:00,10", "JUN1": "18:20,87", "JUV_A_VER": "18:41,64", "JUV_A_INV": "19:02,42", "JUV_B_VER": "19:23,19", "JUV_B_INV": "19:43,96", "INF_A": "20:25,50", "INF_B": "20:56,66", "JUV_A_ZON": "19:33,57", "JUV_B_ZON": "20:04,73", "INF_A_ZON": "20:56,66", "INF_B_ZON": "21:48,59"}, "50_C": {"ABS": "00:30,45", "SEN": "00:31,06", "SUB21": "00:31,36", "JUN": "00:31,67", "JUN1": "00:32,28", "JUV_A_VER": "00:32,89", "JUV_A_INV": "00:33,49", "JUV_B_VER": "00:34,10", "JUV_B_INV": "00:34,71", "INF_A": "00:35,93", "INF_B": "00:36,84", "JUV_A_ZON": "00:34,41", "JUV_B_ZON": "00:35,32", "INF_A_ZON": "00:36,84", "INF_B_ZON": "00:38,37"}, "100_C": {"ABS": "01:04,97", "SEN": "01:06,27", "SUB21": "01:06,92", "JUN": "01:07,57", "JUN1": "01:08,87", "JUV_A_VER": "01:10,17", "JUV_A_INV": "01:11,47", "JUV_B_VER": "01:12,77", "JUV_B_INV": "01:14,07", "INF_A": "01:16,66", "INF_B": "01:18,61", "JUV_A_ZON": "01:13,42", "JUV_B_ZON": "01:15,37", "INF_A_ZON": "01:18,61", "INF_B_ZON": "01:21,86"}, "200_C": {"ABS": "02:20,72", "SEN": "02:23,53", "SUB21": "02:24,94", "JUN": "02:26,35", "JUN1": "02:29,16", "JUV_A_VER": "02:31,98", "JUV_A_INV": "02:34,79", "JUV_B_VER": "02:37,61", "JUV_B_INV": "02:40,42", "INF_A": "02:46,05", "INF_B": "02:50,27", "JUV_A_ZON": "02:39,01", "JUV_B_ZON": "02:43,24", "INF_A_ZON": "02:50,27", "INF_B_ZON": "02:57,31"}, "50_B": {"ABS": "00:34,28", "SEN": "00:34,97", "SUB21": "00:35,31", "JUN": "00:35,65", "JUN1": "00:36,34", "JUV_A_VER": "00:37,02", "JUV_A_INV": "00:37,71", "JUV_B_VER": "00:38,39", "JUV_B_INV": "00:39,08", "INF_A": "00:40,45", "INF_B": "00:41,48", "JUV_A_ZON": "00:38,74", "JUV_B_ZON": "00:39,76", "INF_A_ZON": "00:41,48", "INF_B_ZON": "00:43,19"}, "100_B": {"ABS": "01:13,91", "SEN": "01:15,39", "SUB21": "01:16,13", "JUN": "01:16,87", "JUN1": "01:18,34", "JUV_A_VER": "01:19,82", "JUV_A_INV": "01:21,30", "JUV_B_VER": "01:22,78", "JUV_B_INV": "01:24,26", "INF_A": "01:27,21", "INF_B": "01:29,43", "JUV_A_ZON": "01:23,52", "JUV_B_ZON": "01:25,74", "INF_A_ZON": "01:29,43", "INF_B_ZON": "01:33,13"}, "200_B": {"ABS": "02:37,74", "SEN": "02:40,89", "SUB21": "02:42,47", "JUN": "02:44,05", "JUN1": "02:47,20", "JUV_A_VER": "02:50,36", "JUV_A_INV": "02:53,51", "JUV_B_VER": "02:56,67", "JUV_B_INV": "02:59,82", "INF_A": "03:06,13", "INF_B": "03:10,87", "JUV_A_ZON": "02:58,25", "JUV_B_ZON": "03:02,98", "INF_A_ZON": "03:10,87", "INF_B_ZON": "03:18,75"}, "50_M": {"ABS": "00:29,04", "SEN": "00:29,62", "SUB21": "00:29,91", "JUN": "00:30,20", "JUN1": "00:30,78", "JUV_A_VER": "00:31,36", "JUV_A_INV": "00:31,94", "JUV_B_VER": "00:32,52", "JUV_B_INV": "00:33,11", "INF_A": "00:34,27", "INF_B": "00:35,14", "JUV_A_ZON": "00:32,82", "JUV_B_ZON": "00:33,69", "INF_A_ZON": "00:35,14", "INF_B_ZON": "00:36,59"}, "100_M": {"ABS": "01:04,65", "SEN": "01:05,94", "SUB21": "01:06,59", "JUN": "01:07,24", "JUN1": "01:08,53", "JUV_A_VER": "01:09,82", "JUV_A_INV": "01:11,12", "JUV_B_VER": "01:12,41", "JUV_B_INV": "01:13,70", "INF_A": "01:16,29", "INF_B": "01:18,23", "JUV_A_ZON": "01:13,05", "JUV_B_ZON": "01:14,99", "INF_A_ZON": "01:18,23", "INF_B_ZON": "01:21,46"}, "200_M": {"ABS": "02:21,94", "SEN": "02:24,78", "SUB21": "02:26,20", "JUN": "02:27,62", "JUN1": "02:30,46", "JUV_A_VER": "02:33,30", "JUV_A_INV": "02:36,13", "JUV_B_VER": "02:38,97", "JUV_B_INV": "02:41,81", "INF_A": "02:47,49", "INF_B": "02:51,75", "JUV_A_ZON": "02:40,39", "JUV_B_ZON": "02:44,65", "INF_A_ZON": "02:51,75", "INF_B_ZON": "02:58,84"}, "100_E": {"ABS": "01:06,89", "SEN": "01:08,23", "SUB21": "01:08,90", "JUN": "01:09,57", "JUN1": "01:10,90", "JUV_A_VER": "01:12,24", "JUV_A_INV": "01:13,58", "JUV_B_VER": "01:14,92", "JUV_B_INV": "01:16,25", "INF_A": "01:18,93", "INF_B": "01:20,94", "JUV_A_ZON": "01:15,59", "JUV_B_ZON": "01:17,59", "INF_A_ZON": "01:20,94", "INF_B_ZON": "01:24,28"}, "200_E": {"ABS": "02:22,41", "SEN": "02:25,26", "SUB21": "02:26,68", "JUN": "02:28,11", "JUN1": "02:30,95", "JUV_A_VER": "02:33,80", "JUV_A_INV": "02:36,65", "JUV_B_VER": "02:39,50", "JUV_B_INV": "02:42,35", "INF_A": "02:48,04", "INF_B": "02:52,32", "JUV_A_ZON": "02:40,92", "JUV_B_ZON": "02:45,20", "INF_A_ZON": "02:52,32", "INF_B_ZON": "02:59,44"}, "400_E": {"ABS": "04:58,69", "SEN": "05:04,66", "SUB21": "05:07,65", "JUN": "05:10,64", "JUN1": "05:16,61", "JUV_A_VER": "05:22,59", "JUV_A_INV": "05:28,56", "JUV_B_VER": "05:34,53", "JUV_B_INV": "05:40,51", "INF_A": "05:52,45", "INF_B": "06:01,41", "JUV_A_ZON": "05:37,52", "JUV_B_ZON": "05:46,48", "INF_A_ZON": "06:01,41", "INF_B_ZON": "06:16,35"}, "4X100_L": {"ABS": "03:55,67", "SEN": "04:00,38", "SUB21": "04:02,74", "JUN": "04:05,10", "JUN1": "04:09,81", "JUV_A_VER": "04:14,52", "JUV_A_INV": "04:19,24", "JUV_B_VER": "04:23,95", "JUV_B_INV": "04:28,66", "INF_A": "04:38,09", "INF_B": "04:45,16", "JUV_A_ZON": "04:26,31", "JUV_B_ZON": "04:33,38", "INF_A_ZON": "04:45,16", "INF_B_ZON": "04:56,94"}, "4X200_L": {"ABS": "08:33,27", "SEN": "08:43,54", "SUB21": "08:48,67", "JUN": "08:53,80", "JUN1": "09:04,07", "JUV_A_VER": "09:14,33", "JUV_A_INV": "09:24,60", "JUV_B_VER": "09:34,86", "JUV_B_INV": "09:45,13", "INF_A": "10:05,66", "INF_B": "10:21,06", "JUV_A_ZON": "09:40,00", "JUV_B_ZON": "09:55,39", "INF_A_ZON": "10:21,06", "INF_B_ZON": "10:46,72"}, "4X100_E": {"ABS": "04:19,35", "SEN": "04:24,54", "SUB21": "04:27,13", "JUN": "04:29,72", "JUN1": "04:34,91", "JUV_A_VER": "04:40,10", "JUV_A_INV": "04:45,28", "JUV_B_VER": "04:50,47", "JUV_B_INV": "04:55,66", "INF_A": "05:06,03", "INF_B": "05:13,81", "JUV_A_ZON": "04:53,07", "JUV_B_ZON": "05:00,85", "INF_A_ZON": "05:13,81", "INF_B_ZON": "05:26,78"}, "4X50_E": {"ABS": "02:00,48", "SEN": "02:02,89", "SUB21": "02:04,09", "JUN": "02:05,30", "JUN1": "02:07,71", "JUV_A_VER": "02:10,12", "JUV_A_INV": "02:12,53", "JUV_B_VER": "02:14,94", "JUV_B_INV": "02:17,35", "INF_A": "02:22,17", "INF_B": "02:25,78", "JUV_A_ZON": "02:16,14", "JUV_B_ZON": "02:19,76", "INF_A_ZON": "02:25,78", "INF_B_ZON": "02:31,80"}, "4X50_L": {"ABS": "01:50,35", "SEN": "01:52,56", "SUB21": "01:53,66", "JUN": "01:54,76", "JUN1": "01:56,97", "JUV_A_VER": "01:59,18", "JUV_A_INV": "02:01,39", "JUV_B_VER": "02:03,59", "JUV_B_INV": "02:05,80", "INF_A": "02:10,21", "INF_B": "02:13,52", "JUV_A_ZON": "02:04,70", "JUV_B_ZON": "02:08,01", "INF_A_ZON": "02:13,52", "INF_B_ZON": "02:19,04"}}, "X": {"4X100_L_M": {"ABS": "03:40,98", "SEN": "03:45,39", "SUB21": "03:47,60", "JUN": "03:49,81", "JUN1": "03:56,44", "JUV_A_VER": "04:00,86", "JUV_A_INV": "04:05,28", "JUV_B_VER": "04:09,70", "JUV_B_INV": "04:14,12", "INF_A": "04:27,38", "INF_B": "04:36,22", "JUV_A_ZON": "04:11,91", "JUV_B_ZON": "04:18,54", "INF_A_ZON": "04:31,80", "INF_B_ZON": "04:45,06"}, "4X100_E_M": {"ABS": "03:54,77", "SEN": "03:59,46", "SUB21": "04:01,81", "JUN": "04:04,16", "JUN1": "04:11,20", "JUV_A_VER": "04:15,90", "JUV_A_INV": "04:20,59", "JUV_B_VER": "04:25,29", "JUV_B_INV": "04:29,98", "INF_A": "04:44,07", "INF_B": "04:53,46", "JUV_A_ZON": "04:27,64", "JUV_B_ZON": "04:34,68", "INF_A_ZON": "04:48,77", "INF_B_ZON": "05:02,85"}, "4X50_L_M": {"ABS": "01:43,21", "SEN": "01:45,28", "SUB21": "01:46,31", "JUN": "01:47,34", "JUN1": "01:50,44", "JUV_A_VER": "01:52,50", "JUV_A_INV": "01:54,57", "JUV_B_VER": "01:56,63", "JUV_B_INV": "01:58,70", "INF_A": "02:04,89", "INF_B": "02:09,02", "JUV_A_ZON": "01:57,67", "JUV_B_ZON": "02:00,76", "INF_A_ZON": "02:06,95", "INF_B_ZON": "02:13,15"}, "4X50_E_M": {"ABS": "01:52,69", "SEN": "01:54,95", "SUB21": "01:56,08", "JUN": "01:57,20", "JUN1": "02:00,58", "JUV_A_VER": "02:02,84", "JUV_A_INV": "02:05,09", "JUV_B_VER": "02:07,35", "JUV_B_INV": "02:09,60", "INF_A": "02:16,36", "INF_B": "02:20,87", "JUV_A_ZON": "02:08,47", "JUV_B_ZON": "02:11,85", "INF_A_ZON": "02:18,61", "INF_B_ZON": "02:25,38"}}}};
 
 // ============================================================
 // RECORDES NACIONAIS (Open)
@@ -4771,11 +4760,11 @@ var recordesEstafetas = {
       },
       "15-16": {
         "50_L": {
-          "tempo": "1:45,84",
-          "clube": "Futebol Clube do Porto",
-          "data": "14/04/2024",
+          "tempo": "1:45,47",
+          "clube": "SCB",
+          "data": "12/04/2026",
           "local": "Felgueiras",
-          "nadadores": "Miguel Fragoso Medeiros · Beatriz Alves Ambrus · Duarte Santos Ferreira · Francisca Martingo Ricardo"
+          "nadadores": "Afonso Silva Cerqueira · Arseniy Vedkal · Mariana Mesquita Fernandes · Valeria Koslova"
         },
         "100_L": {
           "tempo": "3:50,57",
@@ -4785,11 +4774,11 @@ var recordesEstafetas = {
           "nadadores": "Rita Lucas Santos · Joao Nuno Gaspar · Leonor Nunes Cardeal · Tomas Rafael Pereira"
         },
         "50_E": {
-          "tempo": "1:57,50",
-          "clube": "Futebol Clube do Porto",
-          "data": "13/04/2024",
+          "tempo": "1:55,87",
+          "clube": "FOCA",
+          "data": "11/04/2026",
           "local": "Felgueiras",
-          "nadadores": "Francisca Martingo Ricardo · Miguel Fragoso Medeiros · Duarte Santos Ferreira · Beatriz Alves Ambrus"
+          "nadadores": "Mariana Fernandes Cunha · Rúben Gonçalo Alonso · Francisco Suzuki Teixeira · Isilda Raquel Gomes"
         }
       },
       "15": {
@@ -6778,7 +6767,7 @@ var recordesIdade = {
         "400_L": {tempo:"3:52,60", nome:"Pereira, Rui Silva", data:"14/12/2024", local:"Tomar"},
         "800_L": {tempo:"8:00,80", nome:"Santa, Gustavo Manuel", data:"06/12/2009", local:"Leiria"},
         "1500_L": {tempo:"15:05,57", nome:"Santa, Gustavo Manuel", data:"06/12/2009", local:"Leiria"},
-        "50_C": {tempo:"25,24", nome:"Oliveira, Miguel Reis", data:"14/11/2025", local:"Felgueiras"},
+        "50_C": {tempo:"24,65", nome:"Oliveira, Miguel Reis", data:"12/04/2026", local:"Felgueiras"},
         "100_C": {tempo:"53,79", nome:"Oliveira, Miguel Reis", data:"16/11/2025", local:"Quarteira"},
         "200_C": {tempo:"1:59,34", nome:"Niz, Adriano Miguel", data:"16/05/2003", local:"Alges"},
         "50_B": {tempo:"28,56", nome:"Agostinho, Pedro Miguel", data:"03/05/2009", local:"S. António Cavaleiros"},
@@ -6787,7 +6776,7 @@ var recordesIdade = {
         "50_M": {tempo:"24,49", nome:"Ribeiro, Diogo Matos", data:"23/12/2020", local:"Coimbra"},
         "100_M": {tempo:"53,97", nome:"Venancio, Tiago Andre", data:"15/02/2004", local:"Alapraia"},
         "200_M": {tempo:"1:59,93", nome:"Carvalho, Diogo Filipe", data:"05/03/2005", local:"Mealhada"},
-        "100_E": {tempo:"57,40", nome:"Carvalho, Diogo Filipe", data:"14/05/2005", local:"Aveiro"},
+        "100_E": {tempo:"56,89", nome:"Oliveira, Miguel Reis", data:"11/04/2026", local:"Felgueiras"},
         "200_E": {tempo:"2:02,96", nome:"Carvalho, Diogo Filipe", data:"06/03/2005", local:"Mealhada"},
         "400_E": {tempo:"4:21,93", nome:"Vital, Joao Alexandre", data:"19/12/2014", local:"Porto"}
       },
@@ -6812,22 +6801,22 @@ var recordesIdade = {
         "400_E": {tempo:"4:25,04", nome:"Vital, Joao Alexandre", data:"13/12/2013", local:"Tomar"}
       },
       "15": {
-        "50_L": {tempo:"23,41", nome:"Alecrim, Rodolfo Junior", data:"06/07/2025", local:"Leiria"},
+        "50_L": {tempo:"23,37", nome:"Almeida, Pedro Pereira", data:"11/04/2026", local:"Felgueiras"},
         "100_L": {tempo:"51,45", nome:"Alecrim, Rodolfo Junior", data:"15/03/2025", local:"Leiria"},
         "200_L": {tempo:"1:53,76", nome:"Ribeiro, Diogo Matos", data:"16/06/2019", local:"Coimbra"},
         "400_L": {tempo:"4:01,42", nome:"Pereira, Rui Silva", data:"15/01/2023", local:"Tomar"},
         "800_L": {tempo:"8:25,99", nome:"Pereira, Rui Silva", data:"14/01/2023", local:"Tomar"},
         "1500_L": {tempo:"15:55,78", nome:"Pereira, Rui Silva", data:"14/01/2023", local:"Tomar"},
-        "50_C": {tempo:"26,38", nome:"Oliveira, Miguel Reis", data:"14/04/2024", local:"Felgueiras"},
-        "100_C": {tempo:"57,20", nome:"Oliveira, Miguel Reis", data:"20/07/2019", local:"Felgueiras"},
+        "50_C": {tempo:"25,75", nome:"Almeida, Pedro Pereira", data:"12/04/2026", local:"Felgueiras"},
+        "100_C": {tempo:"55,91", nome:"Almeida, Pedro Pereira", data:"11/04/2026", local:"Felgueiras"},
         "200_C": {tempo:"2:04,99", nome:"Vital, Joao Alexandre", data:"09/03/2013", local:"Alapraia"},
         "50_B": {tempo:"30,36", nome:"Almeida, David Xavier", data:"05/07/2025", local:"Leiria"},
         "100_B": {tempo:"1:04,20", nome:"Mimoso, Rafael Miguel", data:"16/06/2022", local:"Algés"},
         "200_B": {tempo:"2:18,99", nome:"Mimoso, Rafael Miguel", data:"08/05/2022", local:"Felgueiras"},
-        "50_M": {tempo:"25,59", nome:"Alecrim, Rodolfo Junior", data:"16/03/2025", local:"Leiria"},
-        "100_M": {tempo:"56,68", nome:"Ribeiro, Diogo Matos", data:"23/06/2019", local:"Lousã"},
+        "50_M": {tempo:"25,49", nome:"Almeida, Pedro Pereira", data:"12/04/2026", local:"Felgueiras"},
+        "100_M": {tempo:"56,65", nome:"Almeida, Pedro Pereira", data:"12/04/2026", local:"Felgueiras"},
         "200_M": {tempo:"2:06,17", nome:"Ribeiro, Diogo Matos", data:"27/04/2019", local:"Felgueiras"},
-        "100_E": {tempo:"59,22", nome:"Alecrim, Rodolfo Junior", data:"16/03/2025", local:"Leiria"},
+        "100_E": {tempo:"57,11", nome:"Almeida, Pedro Pereira", data:"11/04/2026", local:"Felgueiras"},
         "200_E": {tempo:"2:08,27", nome:"Carvalho, Diogo Filipe", data:"10/05/2003", local:"Fafe"},
         "400_E": {tempo:"4:35,02", nome:"Carvalho, Diogo Filipe", data:"21/03/2003", local:"Braga"}
       },
@@ -6922,7 +6911,7 @@ var recordesIdade = {
         "1500_L": {tempo:"16:46,74", nome:"Andre, Angelica Maria", data:"12/05/2012", local:"Lousada"},
         "50_C": {tempo:"27,45", nome:"Azevedo, Rafaela Gomes", data:"21/12/2019", local:"Felgueiras"},
         "100_C": {tempo:"58,65", nome:"Azevedo, Rafaela Gomes", data:"22/12/2019", local:"Felgueiras"},
-        "200_C": {tempo:"2:10,31", nome:"Rebelo, Camila Rodrigues", data:"18/07/2021", local:"Gafanha da Nazare"},
+        "200_C": {tempo:"2:09,87", nome:"Neves, Maria Gomes", data:"11/04/2026", local:"Felgueiras"},
         "50_B": {tempo:"31,90", nome:"Pereira, Raquel Gomes", data:"10/12/2017", local:"Porto"},
         "100_B": {tempo:"1:07,37", nome:"Pereira, Raquel Gomes", data:"08/12/2017", local:"Porto"},
         "200_B": {tempo:"2:23,46", nome:"Pereira, Raquel Gomes", data:"09/12/2017", local:"Porto"},
@@ -6980,7 +6969,7 @@ var recordesIdade = {
         "400_L": {tempo:"4:18,39", nome:"Santos, Ana Claudia", data:"20/12/2004", local:"Cantanhede"},
         "800_L": {tempo:"8:46,74", nome:"Santos, Ana Claudia", data:"19/12/2004", local:"Cantanhede"},
         "1500_L": {tempo:"16:54,39", nome:"Holub, Tamila Hryhorivna", data:"16/03/2014", local:"Vila Praia Ancora"},
-        "50_C": {tempo:"29,44", nome:"Carvalho, Matilde Brandao", data:"12/04/2025", local:"Felgueiras"},
+        "50_C": {tempo:"29,16", nome:"Vieira, Frederica Vinhas", data:"11/04/2026", local:"Felgueiras"},
         "100_C": {tempo:"1:01,43", nome:"Fernandes, Ines Camacho", data:"17/12/2011", local:"Mealhada"},
         "200_C": {tempo:"2:14,11", nome:"Rebelo, Camila Rodrigues", data:"12/05/2018", local:"Condeixa"},
         "50_B": {tempo:"32,81", nome:"tempo limite", data:"", local:""},
@@ -7722,21 +7711,26 @@ function mostrarRecordeIdade() {
 
   var pisc = piscina === 'curta' ? 'curta' : 'longa';
   var ageKey = idade === 'open' ? 'open' : idade;
-  // dist is a relay if it starts with '4x' (e.g. '4x50L') or sexo is Misto
+  // Para estafetas, tentar chave exacta e depois intervalos (ex: "15" → "15-16")
+  var RELAY_AGE_MAP = {'13':['13'],'14':['14','13-14'],'15':['15'],'16':['16','15-16'],'17':['17'],'18':['18','17-18'],'19+':['19+']};
+  function getRelayRec(tab, pisc, sx, age, key) {
+    var keys = RELAY_AGE_MAP[age] || [age];
+    for (var ki=0; ki<keys.length; ki++) { try { var r=tab[pisc][sx][keys[ki]][key]; if(r) return r; } catch(e){} }
+    return null;
+  }
   var isRelayDist = dist.indexOf('4x') === 0;
   var isEstafeta = isRelayDist || sexo === 'X';
   var rec = null;
 
   if (isEstafeta) {
     var lookupSexo = sexo === 'X' ? 'X' : sexo;
-    // dist format: '4x50L' -> relayDist='50', relayEstilo='L'
     var relayStr = isRelayDist ? dist : ('4x' + dist + estilo);
     var relayMatch = relayStr.match(/^4x(\d+)([LE])$/);
     if (relayMatch) {
       var relayDist = relayMatch[1];
       var relayEstilo = relayMatch[2];
       var key = relayDist + '_' + relayEstilo;
-      try { rec = recordesEstafetas[pisc][lookupSexo][ageKey][key]; } catch(e) {}
+      rec = getRelayRec(recordesEstafetas, pisc, lookupSexo, ageKey, key);
     }
   } else {
     var key = dist + '_' + estilo;
@@ -8194,21 +8188,26 @@ function mostrarRecordeIdade() {
 
   var pisc = piscina === 'curta' ? 'curta' : 'longa';
   var ageKey = idade === 'open' ? 'open' : idade;
-  // dist is a relay if it starts with '4x' (e.g. '4x50L') or sexo is Misto
+  // Para estafetas, tentar chave exacta e depois intervalos (ex: "15" → "15-16")
+  var RELAY_AGE_MAP = {'13':['13'],'14':['14','13-14'],'15':['15'],'16':['16','15-16'],'17':['17'],'18':['18','17-18'],'19+':['19+']};
+  function getRelayRec(tab, pisc, sx, age, key) {
+    var keys = RELAY_AGE_MAP[age] || [age];
+    for (var ki=0; ki<keys.length; ki++) { try { var r=tab[pisc][sx][keys[ki]][key]; if(r) return r; } catch(e){} }
+    return null;
+  }
   var isRelayDist = dist.indexOf('4x') === 0;
   var isEstafeta = isRelayDist || sexo === 'X';
   var rec = null;
 
   if (isEstafeta) {
     var lookupSexo = sexo === 'X' ? 'X' : sexo;
-    // dist format: '4x50L' -> relayDist='50', relayEstilo='L'
     var relayStr = isRelayDist ? dist : ('4x' + dist + estilo);
     var relayMatch = relayStr.match(/^4x(\d+)([LE])$/);
     if (relayMatch) {
       var relayDist = relayMatch[1];
       var relayEstilo = relayMatch[2];
       var key = relayDist + '_' + relayEstilo;
-      try { rec = recordesEstafetas[pisc][lookupSexo][ageKey][key]; } catch(e) {}
+      rec = getRelayRec(recordesEstafetas, pisc, lookupSexo, ageKey, key);
     }
   } else {
     var key = dist + '_' + estilo;
@@ -8365,127 +8364,6 @@ function getColForComp(escalao, compId) {
   return null;
 }
 
-function onAtletaEscalaoChange() {
-  var escalao = document.getElementById('atleta-escalao').value;
-  var campos = document.getElementById('atleta-na-campos');
-  if (campos) campos.style.display = escalao === 'NA' ? 'block' : 'none';
-}
-
-// Mínimos Natação Adaptada — longa apenas (naTAC só tem longa)
-function getMinimoNA(sexo, naEscalao, naClasse, provaKey) {
-  try {
-    var dados = naTAC['50'][naEscalao][sexo][naClasse];
-    if (!dados) return null;
-    // Converter chave de prova: 50_L → L50, 100_C → C100, etc.
-    var parts = provaKey.split('_');
-    var dist = parts[0], estilo = parts[1];
-    var naKey = estilo + dist; // ex: L50, C100, B100, M50, E200
-    var val = dados[naKey];
-    if (!val || val === '' || val === '00:00,00') return null;
-    return parseAtletaMs(val);
-  } catch(e) { return null; }
-}
-
-// Provas disponíveis nos mínimos NA (longa 50m)
-var PROVAS_NA_LABEL = {
-  L50:'50m Livres', L100:'100m Livres', L200:'200m Livres', L400:'400m Livres', L800:'800m Livres',
-  C50:'50m Costas', C100:'100m Costas', C200:'200m Costas',
-  B50:'50m Bruços', B100:'100m Bruços', B200:'200m Bruços',
-  M50:'50m Mariposa', M100:'100m Mariposa', M200:'200m Mariposa',
-  E100:'100m Estilos', E150:'150m Estilos', E200:'200m Estilos', E400:'400m Estilos'
-};
-// Mapear chave prova app → chave NA
-var PROVA_APP_TO_NA = {
-  '50_L':'L50','100_L':'L100','200_L':'L200','400_L':'L400','800_L':'L800',
-  '50_C':'C50','100_C':'C100','200_C':'C200',
-  '50_B':'B50','100_B':'B100','200_B':'B200',
-  '50_M':'M50','100_M':'M100','200_M':'M200',
-  '100_E':'E100','200_E':'E200','400_E':'E400'
-};
-
-function renderAtletaMinimoNA(data) {
-  var el = document.getElementById('atleta-resultados');
-  if (!el) return;
-  var sexo = data.sexo;
-  var naEscalao = data.naEscalao;
-  var naClasse  = data.naClasse;
-  var tAtleta   = data.tempos || {};
-  var tL = tAtleta.longa || {};
-  var isLight = !document.documentElement.classList.contains('light-mode') ? false : true;
-  var isDark = !isLight;
-
-  var comMinimo = [], semMinimo = [], semTempo = [];
-
-  for (var appKey in PROVA_APP_TO_NA) {
-    var naKey = PROVA_APP_TO_NA[appKey];
-    var min = getMinimoNA(sexo, naEscalao, naClasse, appKey);
-    if (min === null) continue;
-    var tp = tL[appKey] || null;
-    if (tp === null) { semTempo.push({label:PROVAS_NA_LABEL[naKey]||appKey, key:appKey}); continue; }
-    if (tp <= min) comMinimo.push({label:PROVAS_NA_LABEL[naKey]||appKey, tempo:tp, minimo:min, diff:min-tp});
-    else           semMinimo.push({label:PROVAS_NA_LABEL[naKey]||appKey, tempo:tp, minimo:min, diff:tp-min});
-  }
-
-  var total = comMinimo.length + semMinimo.length;
-  var pct = total > 0 ? Math.round(comMinimo.length/total*100) : 0;
-  var sumBg  = isDark ? 'rgba(0,212,255,0.06)' : '#e8f4fb';
-  var sumTxt = isDark ? 'rgba(0,212,255,0.60)' : '#7ab8d4';
-  var sumNum = isDark ? '#e8f4ff' : 'var(--blue-deep)';
-  var barBg  = isDark ? 'rgba(255,255,255,0.10)' : '#c8dce8';
-  var passLabel  = isDark ? '#00e5a0' : '#1a7a3a';
-  var passDetail = isDark ? 'rgba(0,229,160,0.75)' : '#27ae60';
-  var failLabel  = isDark ? '#ff6b8a' : '#c0392b';
-  var failDetail = isDark ? 'rgba(255,107,138,0.75)' : '#e74c3c';
-  var divBorderPass = isDark ? 'rgba(0,229,160,0.15)' : '#e8f5e9';
-  var divBorderFail = isDark ? 'rgba(255,77,109,0.15)' : '#fde8e8';
-
-  var html = '<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Natação Adaptada · ' + naClasse + ' · ' + (naEscalao==='SEN'?'Seniores':'Esperanças') + ' · 50m longa</div>';
-
-  html += '<div style="background:'+sumBg+';border-radius:10px;padding:12px 14px;margin-bottom:14px;">';
-  html += '<div style="font-size:12px;color:'+sumTxt+';margin-bottom:4px;">Provas com mínimos atingidos</div>';
-  html += '<div style="font-size:28px;font-weight:700;color:'+sumNum+';">'+comMinimo.length+'<span style="font-size:16px;color:'+sumTxt+';"> / '+total+'</span></div>';
-  if (total > 0) {
-    html += '<div style="margin-top:8px;background:'+barBg+';border-radius:6px;height:8px;overflow:hidden;">';
-    html += '<div style="height:8px;border-radius:6px;background:var(--aqua);width:'+pct+'%;"></div></div>';
-  }
-  html += '</div>';
-
-  function rowNA(item, passed) {
-    var bg = passed ? divBorderPass : divBorderFail;
-    var lbl = passed ? passLabel : failLabel;
-    var det = passed ? passDetail : failDetail;
-    var icon = passed ? '✓' : '✗';
-    var r = '<div style="background:'+bg+';border-radius:8px;padding:10px 12px;margin-bottom:6px;">';
-    r += '<div style="display:flex;justify-content:space-between;align-items:center;">';
-    r += '<span style="font-size:13px;font-weight:600;color:var(--text);">'+item.label+'</span>';
-    r += '<span style="font-size:13px;font-weight:700;color:'+lbl+';">'+icon+' '+formatAtletaMs(item.tempo)+'</span>';
-    r += '</div>';
-    r += '<div style="display:flex;justify-content:space-between;margin-top:4px;">';
-    r += '<span style="font-size:11px;color:'+det+';">Mínimo: '+formatAtletaMs(item.minimo)+'</span>';
-    if (passed) r += '<span style="font-size:11px;color:'+det+';">−'+formatAtletaMs(item.diff)+'</span>';
-    else        r += '<span style="font-size:11px;color:'+det+';">Falta: +'+formatAtletaMs(item.diff)+'</span>';
-    r += '</div></div>';
-    return r;
-  }
-
-  if (comMinimo.length > 0) {
-    html += '<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:'+passLabel+';margin-bottom:6px;margin-top:4px;">Mínimos atingidos</div>';
-    comMinimo.forEach(function(i){ html += rowNA(i, true); });
-  }
-  if (semMinimo.length > 0) {
-    html += '<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:'+failLabel+';margin-bottom:6px;margin-top:10px;">Por atingir</div>';
-    semMinimo.forEach(function(i){ html += rowNA(i, false); });
-  }
-  if (semTempo.length > 0) {
-    html += '<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;margin-top:10px;">Sem tempo registado</div>';
-    semTempo.forEach(function(i){
-      html += '<div style="border-radius:8px;padding:8px 12px;margin-bottom:4px;background:rgba(128,128,128,0.06);">';
-      html += '<span style="font-size:13px;color:var(--muted);">'+i.label+'</span></div>';
-    });
-  }
-  el.innerHTML = html;
-}
-
 function getMinimoAtleta(piscina, sexo, escalao, compId, provaKey) {
   var col = getColForComp(escalao, compId);
   if (!col) return null;
@@ -8583,7 +8461,7 @@ function toggleAtleta() {
 
 var ATLETA_COMP_ATUAL = null;
 
-var ESC_LABEL = {'INF_B':'Infantil B','INF_A':'Infantil A','JUV_B':'Juvenil B','JUV_A':'Juvenil A','JUN1':'1º Júnior','JUN':'Júnior','SUB21':'Sub 21','SEN':'Sénior','ABS':'Absoluto','NA':'Natação Adaptada'};
+var ESC_LABEL = {'INF_B':'Infantil B','INF_A':'Infantil A','JUV_B':'Juvenil B','JUV_A':'Juvenil A','JUN1':'1º Júnior','JUN':'Júnior','SUB21':'Sub 21','SEN':'Sénior','ABS':'Absoluto'};
 
 function iniciarAtleta() {
   // Migrate legacy single profile to multi-profile system
@@ -8634,19 +8512,15 @@ function mostrarPerfilAtivo() {
     var p = profiles[ids[i]];
     var opt = document.createElement('option');
     opt.value = ids[i];
-    var pEscLabel = ESC_LABEL[p.escalao] || p.escalao;
-    if (p.escalao === 'NA' && p.naClasse) pEscLabel = 'NA · ' + p.naClasse;
-    opt.textContent = (p.nome || 'Nadador') + ' · ' + pEscLabel;
+    opt.textContent = (p.nome || 'Nadador') + ' · ' + (ESC_LABEL[p.escalao] || p.escalao);
     if (ids[i] === activeId) opt.selected = true;
     sel.appendChild(opt);
   }
   document.getElementById('atleta-delete-btn').style.display = ids.length > 1 ? 'block' : 'none';
 
-  var escLabelStr = ESC_LABEL[data.escalao] || data.escalao;
-  if (data.escalao === 'NA' && data.naClasse) escLabelStr = 'Nat. Adaptada · ' + data.naClasse;
   document.getElementById('atleta-saved-summary').innerHTML =
     '<div class="atleta-summary">' +
-    '<strong>' + (data.nome || 'Nadador') + '</strong> · ' + escLabelStr + '</div>';
+    '<strong>' + (data.nome || 'Nadador') + '</strong> · ' + (ESC_LABEL[data.escalao] || data.escalao) + '</div>';
 
   ATLETA_COMP_ATUAL = null;
 
@@ -8700,14 +8574,8 @@ function eliminarPerfilAtleta() {
 var REBUILDING_SELECT = false;
 
 function renderCompButtons(data) {
-  var selectorEl = document.getElementById('atleta-comp-selector');
-  // Natação Adaptada — não usa o seletor de competições, usa o próprio renderizador
-  if (data.escalao === 'NA') {
-    if (selectorEl) selectorEl.style.display = 'none';
-    if (_atletaActiveTab === 'minimos') renderAtletaMinimoNA(data);
-    return;
-  }
   var comps = COMP_POR_ESCALAO[data.escalao] || [];
+  var selectorEl = document.getElementById('atleta-comp-selector');
   var selectEl = document.getElementById('atleta-comp-select');
   if (comps.length === 0) { if (selectorEl) selectorEl.style.display = 'none'; return; }
   if (!ATLETA_COMP_ATUAL) ATLETA_COMP_ATUAL = comps[0].id;
@@ -8721,6 +8589,7 @@ function renderCompButtons(data) {
     selectEl.appendChild(opt);
   }
   REBUILDING_SELECT = false;
+  // Só renderiza resultados se o tab mínimos estiver activo
   if (_atletaActiveTab === 'minimos') {
     if (selectorEl) selectorEl.style.display = 'block';
     renderAtletaResultados(data, ATLETA_COMP_ATUAL);
@@ -8760,18 +8629,11 @@ function atletaSwitchTab(tab) {
     tM.style.background = activeBg; tM.style.color = activeColor;
     tT.style.background = inactiveBg; tT.style.color = inactiveColor;
     pM.style.display = 'block'; pT.style.display = 'none';
+    var compSel = document.getElementById('atleta-comp-selector');
+    if (compSel) compSel.style.display = 'block';
     var activeId = getActiveProfileId();
     var data = activeId ? (getAllProfiles()[activeId] || null) : loadAtleta();
-    if (!data) return;
-    if (data.escalao === 'NA') {
-      var selectorEl = document.getElementById('atleta-comp-selector');
-      if (selectorEl) selectorEl.style.display = 'none';
-      renderAtletaMinimoNA(data);
-    } else {
-      var compSel = document.getElementById('atleta-comp-selector');
-      if (compSel) compSel.style.display = 'block';
-      if (data && ATLETA_COMP_ATUAL) renderAtletaResultados(data, ATLETA_COMP_ATUAL);
-    }
+    if (data && ATLETA_COMP_ATUAL) renderAtletaResultados(data, ATLETA_COMP_ATUAL);
   }
 }
 
@@ -8897,10 +8759,6 @@ function mostrarFormulario() {
     document.getElementById('atleta-nome').value = data.nome || '';
     document.getElementById('atleta-escalao').value = data.escalao || '';
     document.getElementById('atleta-sexo').value = data.sexo || '';
-    // NA fields
-    onAtletaEscalaoChange();
-    if (data.naEscalao) document.getElementById('atleta-na-escalao').value = data.naEscalao;
-    if (data.naClasse)  document.getElementById('atleta-na-classe').value  = data.naClasse;
     // Pré-visualizar cartão FPN se existir
     var cartaoEdit = null;
     try { cartaoEdit = localStorage.getItem('cartaoFPN_' + activeId); } catch(e) {}
@@ -8918,9 +8776,6 @@ function mostrarFormulario() {
     document.getElementById('atleta-nome').value = '';
     document.getElementById('atleta-escalao').value = '';
     document.getElementById('atleta-sexo').value = '';
-    onAtletaEscalaoChange();
-    document.getElementById('atleta-na-escalao').value = '';
-    document.getElementById('atleta-na-classe').value = '';
     window._cartaoFPNAtivo = null;
     window._cartaoFPNData = null;
     document.getElementById('cartao-preview-img').src = '';
@@ -9049,12 +8904,6 @@ function guardarAtleta() {
   var escalao = document.getElementById('atleta-escalao').value;
   var sexo = document.getElementById('atleta-sexo').value;
   if (!escalao || !sexo) { alert('Por favor seleciona o escalao e o sexo.'); return; }
-  var naEscalao = null, naClasse = null;
-  if (escalao === 'NA') {
-    naEscalao = document.getElementById('atleta-na-escalao').value;
-    naClasse  = document.getElementById('atleta-na-classe').value;
-    if (!naEscalao || !naClasse) { alert('Por favor seleciona o escalão e a classe de Natação Adaptada.'); return; }
-  }
   var ts = {curta:{}, longa:{}};
   for (var i = 0; i < PROVAS_INDIVIDUAIS_CURTA.length; i++) {
     var key = PROVAS_INDIVIDUAIS_CURTA[i].key;
@@ -9086,8 +8935,6 @@ function guardarAtleta() {
     window._cartaoFPNAtivo = c || null;
   }
   var data = {id:activeId, nome:nome, escalao:escalao, sexo:sexo, tempos:ts};
-  if (naEscalao) data.naEscalao = naEscalao;
-  if (naClasse)  data.naClasse  = naClasse;
   saveProfile(activeId, data);
   saveAtleta(data);
   ATLETA_COMP_ATUAL = null;
@@ -9109,7 +8956,6 @@ function guardarAtleta() {
 }
 
 function renderAtletaResultados(data, compId) {
-  if (data.escalao === 'NA') { renderAtletaMinimoNA(data); return; }
   var escalao = data.escalao;
   var sexo = data.sexo;
   var tAtleta = data.tempos || {};
@@ -10849,35 +10695,20 @@ var _cronoActiveTab = 'parciais';
 
 function cronoSwitchTab(tab) {
   _cronoActiveTab = tab;
-  var tPar  = document.getElementById('crono-tab-parciais');
-  var tCro  = document.getElementById('crono-tab-cronos');
-  var tSwf  = document.getElementById('crono-tab-swolf');
-  var cPar  = document.getElementById('crono-content');
-  var cCro  = document.getElementById('crono-cronos-content');
-  var cSwf  = document.getElementById('crono-swolf-content');
+  var tPar = document.getElementById('crono-tab-parciais');
+  var tCro = document.getElementById('crono-tab-cronos');
+  var cPar = document.getElementById('crono-content');
+  var cCro = document.getElementById('crono-cronos-content');
   if (!tPar || !tCro || !cPar || !cCro) return;
-
-  var activeStyle  = { bg: 'var(--blue-deep)', color: '#fff' };
-  var inactiveStyle = { bg: '#f0f7ff', color: '#1a3a4a' };
-
-  [tPar, tCro, tSwf].forEach(function(t) {
-    if (!t) return;
-    t.style.background = inactiveStyle.bg; t.style.color = inactiveStyle.color;
-  });
-  cPar.style.display = 'none';
-  cCro.style.display = 'none';
-  if (cSwf) cSwf.style.display = 'none';
-
   if (tab === 'parciais') {
-    tPar.style.background = activeStyle.bg; tPar.style.color = activeStyle.color;
-    cPar.style.display = 'block';
-  } else if (tab === 'cronos') {
-    tCro.style.background = activeStyle.bg; tCro.style.color = activeStyle.color;
-    cCro.style.display = 'block';
+    tPar.style.background = 'var(--blue-deep)'; tPar.style.color = '#fff';
+    tCro.style.background = '#f0f7ff'; tCro.style.color = '#1a3a4a';
+    cPar.style.display = 'block'; cCro.style.display = 'none';
+  } else {
+    tCro.style.background = 'var(--blue-deep)'; tCro.style.color = '#fff';
+    tPar.style.background = '#f0f7ff'; tPar.style.color = '#1a3a4a';
+    cPar.style.display = 'none'; cCro.style.display = 'block';
     swInit();
-  } else if (tab === 'swolf') {
-    if (tSwf) { tSwf.style.background = activeStyle.bg; tSwf.style.color = activeStyle.color; }
-    if (cSwf) { cSwf.style.display = 'block'; swolfInit(); }
   }
 }
 
@@ -11897,9 +11728,6 @@ function swRender() {
 
   html += '</div>';
 
-  // Botão ecrã grande
-  html += '<button onclick="swModoGrande()" style="width:100%;padding:10px;border-radius:10px;background:transparent;border:1.5px solid var(--aqua);color:var(--aqua);font-size:13px;font-weight:600;cursor:pointer;font-family:\'DM Sans\',sans-serif;margin-top:8px;">⛶ Modo ecrã grande</button>';
-
   // Export buttons if any splits exist
   var hasSplits = swState.cronos.slice(0, swState.nCronos).some(function(c){return c.splits.length > 0;});
   if (hasSplits) {
@@ -11920,80 +11748,6 @@ function swRender() {
     if (swState.cronos[ri].running) swTickStart(ri);
   }
 }
-
-function swModoGrande() {
-  var existing = document.getElementById('sw-overlay');
-  if (existing) existing.remove();
-  var isLight = document.documentElement.classList.contains('light-mode');
-  var overlay = document.createElement('div');
-  overlay.id = 'sw-overlay';
-  overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:'+(isLight?'#f0f7ff':'#001a2e')+';z-index:9999;display:flex;flex-direction:column;overflow-y:auto;padding:16px;box-sizing:border-box;';
-  document.body.appendChild(overlay);
-  swOverlayRender();
-  // Ticker
-  if (window.swOverlayInterval) clearInterval(window.swOverlayInterval);
-  window.swOverlayInterval = setInterval(function() {
-    if (!document.getElementById('sw-overlay')) { clearInterval(window.swOverlayInterval); return; }
-    for (var i = 0; i < swState.nCronos; i++) {
-      if (swState.cronos[i].running) {
-        var d = document.getElementById('sw-ov-display-'+i);
-        if (d) d.textContent = swFmt(swState.cronos[i].elapsed);
-      }
-    }
-  }, 30);
-}
-
-function swOverlayRender() {
-  var ov = document.getElementById('sw-overlay');
-  if (!ov) return;
-  var isLight = document.documentElement.classList.contains('light-mode');
-  var n = swState.nCronos;
-  var h = '';
-
-  // Título + fechar
-  h += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">';
-  h += '<div style="font-size:16px;font-weight:700;color:var(--text);">'+(swState.eventoNome||'Cronómetros')+'</div>';
-  h += '<button onclick="document.getElementById(\'sw-overlay\').remove();clearInterval(window.swOverlayInterval);swRender();" style="background:transparent;border:1.5px solid rgba(128,128,128,0.3);color:var(--muted);border-radius:10px;padding:8px 16px;font-size:13px;cursor:pointer;font-family:\'DM Sans\',sans-serif;">✕ Fechar</button>';
-  h += '</div>';
-
-  // Arrancar todos se > 1 e todos parados
-  if (n > 1) {
-    var allStopped = swState.cronos.slice(0,n).every(function(c){return !c.running;});
-    h += '<div style="display:flex;gap:8px;margin-bottom:16px;">';
-    if (allStopped) h += '<button onclick="swStartAll();swOverlayRender()" style="flex:1;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,#00a896,#00c4cc);color:#fff;font-size:16px;font-weight:700;cursor:pointer;">Arrancar todos</button>';
-    h += '<button onclick="swSplitAll();swOverlayRender()" style="flex:1;padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--blue-deep),var(--blue-mid));color:#fff;font-size:16px;font-weight:700;cursor:pointer;">Split todos</button>';
-    h += '<button onclick="swResetAll();swOverlayRender()" style="flex:1;padding:14px;border-radius:12px;border:none;background:rgba(128,128,128,0.15);color:var(--text);font-size:16px;font-weight:700;cursor:pointer;">Reset todos</button>';
-    h += '</div>';
-  }
-
-  // Cronómetros
-  for (var ci = 0; ci < n; ci++) {
-    var c = swState.cronos[ci];
-    var cardBg = isLight ? '#fff' : 'rgba(0,196,204,0.06)';
-    h += '<div style="background:'+cardBg+';border-radius:16px;padding:16px;margin-bottom:12px;border:1.5px solid rgba(0,196,204,0.15);">';
-    h += '<div style="font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">Crono '+(ci+1)+'</div>';
-    h += '<div id="sw-ov-display-'+ci+'" style="font-family:\'Bebas Neue\',sans-serif;font-size:72px;color:var(--aqua);letter-spacing:3px;line-height:1;margin-bottom:12px;">'+swFmt(c.elapsed)+'</div>';
-    h += '<div style="display:flex;gap:8px;margin-bottom:8px;">';
-    if (c.running) {
-      h += '<button onclick="swStop('+ci+');swOverlayRender()" style="flex:2;padding:18px;border-radius:12px;border:none;background:#e74c3c;color:#fff;font-size:18px;font-weight:700;cursor:pointer;">Stop</button>';
-    } else {
-      h += '<button onclick="swStart('+ci+');swOverlayRender()" style="flex:2;padding:18px;border-radius:12px;border:none;background:var(--aqua);color:#001f3a;font-size:18px;font-weight:700;cursor:pointer;">Start</button>';
-    }
-    h += '<button onclick="swSplit('+ci+');swOverlayRender()" style="flex:1;padding:18px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--blue-deep),var(--blue-mid));color:#fff;font-size:16px;font-weight:700;cursor:pointer;">Split</button>';
-    h += '<button onclick="swReset('+ci+');swOverlayRender()" style="flex:1;padding:18px;border-radius:12px;border:none;background:rgba(128,128,128,0.15);color:var(--text);font-size:16px;font-weight:700;cursor:pointer;">Reset</button>';
-    h += '</div>';
-    // Splits compactos
-    if (c.splits && c.splits.length > 0) {
-      h += '<div style="font-size:12px;color:var(--muted);line-height:1.8;">';
-      var acum = 0;
-      c.splits.forEach(function(s,i){ acum+=s; h += '<span style="margin-right:10px;">S'+(i+1)+': '+swFmt(s)+' ('+swFmt(acum)+')</span>'; });
-      h += '</div>';
-    }
-    h += '</div>';
-  }
-  ov.innerHTML = h;
-}
-
 
 function swSplitsHtml(splits) {
   if (!splits || splits.length === 0) return '<div style="font-size:11px;color:var(--muted);text-align:center;padding:4px;">—</div>';
@@ -14570,590 +14324,6 @@ function ocrReset() {
   document.getElementById('ocr-reset-wrap').style.display = 'none';
 }
 </script>
-
-<script>
-/* ===== SWOLF ===== */
-
-var SWOLF_KEY = 'swimmin_swolf_v1';
-
-function swolfLoadDB() {
-  try { var r = _lsGet(SWOLF_KEY); return r ? JSON.parse(r) : {}; } catch(e) { return {}; }
-}
-function swolfSaveDB(db) {
-  _lsSet(SWOLF_KEY, JSON.stringify(db));
-  window._swolfMemDB = db; // sempre atualiza — incluindo quando está vazio
-}
-function swolfGetDB() {
-  // Prioritiza sempre o localStorage; só usa memória se LS nunca foi escrito
-  var r = null;
-  try { r = _lsGet(SWOLF_KEY); } catch(e) {}
-  if (r !== null && r !== undefined) {
-    try { return JSON.parse(r); } catch(e) {}
-  }
-  return window._swolfMemDB || {};
-}
-
-var swolfTecLabels = { L:'Livres', C:'Costas', B:'Bruços', M:'Mariposa' };
-var swolfDistLabels = { '25':'25m Técnica (SWOLF)', '50':'50m · Velocidade', '100':'100m · Ritmo padrão', '200':'200m · Consistência' };
-
-function swolfNumViragensIntermediarias() {
-  return Math.max(0, (swolf.distancia / swolf.piscina) - 1);
-}
-
-var swolf = { phase:'menu', nadador:null, piscina:null, distancia:null, tecnica:null, reps:null, repAtual:0, bracadasAtual:0, viragensFeitas:0, parado:false, breakoutMs:null, viragensMs:[], breakoutsViragem:[], aguardaBreakoutViragem:false, cronoRunning:false, cronoStart:null, cronoElapsed:0, cronoInterval:null, repsData:[], sessaoData:null };
-
-function swolfInit() {
-  clearInterval(swolf.cronoInterval);
-  swolf = { phase:'menu', nadador:null, piscina:null, distancia:null, tecnica:null, reps:null, repAtual:0, bracadasAtual:0, viragensFeitas:0, parado:false, breakoutMs:null, viragensMs:[], breakoutsViragem:[], aguardaBreakoutViragem:false, cronoRunning:false, cronoStart:null, cronoElapsed:0, cronoInterval:null, repsData:[], sessaoData:null };
-  swolfRender();
-}
-
-function swolfRender() {
-  var el = document.getElementById('crono-swolf-content');
-  if (!el) return;
-  var p = swolf.phase;
-  if (p==='menu') swolfRenderMenu(el);
-  else if (p==='config') swolfRenderConfig(el);
-  else if (p==='sessao') swolfRenderSessao(el);
-  else if (p==='resultado') swolfRenderResultado(el);
-  else if (p==='historico') swolfRenderHistorico(el);
-}
-
-function swolfRenderMenu(el) {
-  var db = swolfGetDB();
-  var nadadores = Object.keys(db).sort();
-  var isLight = document.documentElement.classList.contains('light-mode');
-  var html = '<div style="background:rgba(0,196,204,0.07);border-radius:12px;padding:12px 14px;margin-bottom:16px;border-left:3px solid var(--aqua);"><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;">O que é o SWOLF?</div><div style="font-size:12px;color:var(--muted);line-height:1.6;">Métrica de eficiência de nado que combina o <strong>tempo</strong> de cada repetição com o <strong>número de braçadas</strong>. SWOLF = tempo (seg) + braçadas. Quanto mais baixo, mais eficiente é o nadador.</div></div>';
-  html += '<div style="margin-bottom:14px;"><div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Novo registo</div>';
-  html += '<input type="text" id="swolf-nome-input" placeholder="Nome do nadador" style="width:100%;padding:11px;border-radius:10px;border:1.5px solid #c0d8ee;background:#f5faff;font-size:15px;box-sizing:border-box;font-family:\'DM Sans\',sans-serif;color:var(--text);margin-bottom:8px;">';
-  html += '<button onclick="swolfIniciarConfig()" style="width:100%;padding:12px;border-radius:10px;background:var(--aqua);color:#001f3a;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;">Iniciar sessão</button></div>';
-  if (nadadores.length > 0) {
-    html += '<div style="border-top:1px solid rgba(128,128,128,0.15);padding-top:14px;"><div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Histórico</div>';
-    nadadores.forEach(function(n) {
-      var sess = db[n] ? db[n].length : 0;
-      html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:10px;background:'+(isLight?'#f0f7ff':'rgba(0,144,224,0.08)')+';margin-bottom:6px;cursor:pointer;" onclick="swolfVerHistorico(\''+n.replace(/'/g,"\\'")+'\')"><div><div style="font-size:14px;font-weight:700;color:var(--text);">'+n+'</div><div style="font-size:11px;color:var(--muted);">'+sess+' sess'+(sess!==1?'ões':'ão')+'</div></div><div style="font-size:20px;color:var(--muted);">›</div></div>';
-    });
-    html += '</div>';
-  }
-  el.innerHTML = html;
-}
-
-function swolfIniciarConfig() {
-  var nome = ((document.getElementById('swolf-nome-input')||{}).value||'').trim();
-  if (!nome) { alert('Introduz o nome do nadador.'); return; }
-  swolf.nadador = nome; swolf.phase = 'config'; swolfRender();
-}
-
-function swolfRenderConfig(el) {
-  var on  = 'background:var(--blue-deep);color:#fff;border-color:var(--blue-deep);';
-  var off = 'background:#e8f4fd;color:#1a5a8a;border-color:#b0d4ee;';
-  function btn(val, cur, label, extra) { return '<button style="flex:1;padding:11px 4px;border-radius:10px;border:1.5px solid #b0d4ee;font-size:13px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;'+(val===cur?on:off)+(extra||'')+'" onclick="swolfSet(\''+typeof val+'\',\''+val+'\')">'+label+'</button>'; }
-  function grp(label,inner) { return '<div style="margin-bottom:14px;"><div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">'+label+'</div>'+inner+'</div>'; }
-
-  var html = '<div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:14px;">'+swolf.nadador+'</div>';
-
-  // Piscina
-  html += grp('Piscina', '<div style="display:flex;gap:6px;">'
-    +'<button style="flex:1;padding:12px;border-radius:10px;border:1.5px solid #b0d4ee;font-size:15px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;'+(swolf.piscina===25?on:off)+'" onclick="swolfSetN(\'piscina\',25)">25m</button>'
-    +'<button style="flex:1;padding:12px;border-radius:10px;border:1.5px solid #b0d4ee;font-size:15px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;'+(swolf.piscina===50?on:off)+'" onclick="swolfSetN(\'piscina\',50)">50m</button>'
-    +'</div>');
-
-  // Distância
-  html += grp('Distância', '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">'
-    +[25,50,100,200].map(function(d){return '<button style="padding:11px 4px;border-radius:10px;border:1.5px solid #b0d4ee;font-size:12px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;'+(swolf.distancia===d?on:off)+'" onclick="swolfSetN(\'distancia\','+d+')">'+swolfDistLabels[String(d)]+'</button>';}).join('')
-    +'</div>');
-
-  // Técnica
-  html += grp('Técnica', '<div style="display:flex;gap:6px;">'
-    +['L','C','B','M'].map(function(t){return '<button style="flex:1;padding:11px 4px;border-radius:10px;border:1.5px solid #b0d4ee;font-size:13px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;'+(swolf.tecnica===t?on:off)+'" onclick="swolfSetS(\'tecnica\',\''+t+'\')">'+swolfTecLabels[t]+'</button>';}).join('')
-    +'</div>');
-
-  // Reps
-  html += grp('Repetições', '<div style="display:flex;flex-wrap:wrap;gap:6px;">'
-    +[1,2,3,4,5,6,8,10].map(function(r){return '<button style="width:42px;height:42px;border-radius:10px;border:1.5px solid #b0d4ee;font-size:14px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;'+(swolf.reps===r?on:off)+'" onclick="swolfSetN(\'reps\','+r+')">'+r+'</button>';}).join('')
-    +'</div>');
-
-  html += '<button onclick="swolfIniciarSessao()" style="width:100%;padding:13px;border-radius:10px;background:var(--aqua);color:#001f3a;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;">Iniciar</button>';
-  html += '<button onclick="swolfInit()" style="margin-top:8px;width:100%;padding:10px;border-radius:10px;background:transparent;border:1.5px solid #b0d4ee;color:#1a5a8a;font-size:13px;cursor:pointer;font-family:\'DM Sans\',sans-serif;">← Voltar</button>';
-  el.innerHTML = html;
-}
-
-function swolfSetN(key, val) { swolf[key] = val; swolfRender(); }
-function swolfSetS(key, val) { swolf[key] = val; swolfRender(); }
-
-function swolfIniciarSessao() {
-  if (!swolf.piscina || !swolf.distancia || !swolf.tecnica || !swolf.reps) { alert('Preenche todos os campos.'); return; }
-  swolf.repAtual=0; swolf.repsData=[]; swolf.bracadasAtual=0; swolf.viragensFeitas=0; swolf.parado=false; swolf.breakoutMs=null; swolf.viragensMs=[]; swolf.breakoutsViragem=[]; swolf.aguardaBreakoutViragem=false; swolf.cronoElapsed=0; swolf.cronoRunning=false;
-  swolf.sessaoData = { data:new Date().toLocaleDateString('pt-PT'), piscina:swolf.piscina, distancia:swolf.distancia, tecnica:swolf.tecnica, reps:swolf.reps, repsData:[], mediaSwolf:0 };
-  swolf.phase='sessao'; swolfRender();
-}
-
-function swolfRenderSessao(el) {
-  var isLight = document.documentElement.classList.contains('light-mode');
-  var rep = swolf.repAtual+1, total = swolf.reps;
-  var nViragInt = swolfNumViragensIntermediarias();
-  var eUltimaViragem = swolf.viragensFeitas >= nViragInt;
-  var temViragem = nViragInt > 0;
-
-  // SWOLF provisório em tempo real
-  var tAtual = swolf.cronoElapsed / 1000;
-  var swolfAtual = swolf.bracadasAtual > 0 ? Math.round(tAtual) + swolf.bracadasAtual : null;
-
-  var html = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">';
-  html += '<div><div style="font-size:14px;font-weight:700;color:var(--text);">'+swolf.nadador+'</div>';
-  html += '<div style="font-size:11px;color:var(--muted);">'+swolf.distancia+'m '+swolfTecLabels[swolf.tecnica]+' · '+swolf.piscina+'m · Rep '+rep+'/'+total+'</div></div>';
-  html += '<div style="font-size:13px;font-weight:700;color:var(--muted);">'+swolf.repsData.length+'/'+total+' feitas</div></div>';
-
-  // Crono
-  html += '<div style="text-align:center;font-family:\'Bebas Neue\',sans-serif;font-size:64px;letter-spacing:2px;color:var(--aqua);line-height:1;margin-bottom:2px;" id="swolf-display">'+tAtual.toFixed(2)+'</div>';
-
-  // Sub com SWOLF provisório quando parado
-  if (swolf.parado && swolfAtual !== null) {
-    html += '<div style="text-align:center;font-size:13px;color:var(--muted);margin-bottom:14px;">SWOLF provisório: <strong style="color:var(--aqua);font-size:16px;">'+swolfAtual+'</strong> · ajusta as braçadas se necessário</div>';
-  } else {
-    var subLabel = !swolf.cronoRunning && !swolf.parado ? 'Pronto para rep '+rep : (temViragem && !eUltimaViragem ? 'Viragem '+(swolf.viragensFeitas+1)+'/'+nViragInt+' — depois Parar' : 'A correr...');
-    html += '<div style="text-align:center;font-size:12px;color:var(--muted);margin-bottom:14px;" id="swolf-sub">'+subLabel+'</div>';
-  }
-
-  // Botões principais — sempre UM de cada vez
-  if (!swolf.cronoRunning && !swolf.parado) {
-    html += '<button onclick="swolfCronoIniciar()" style="width:100%;padding:18px;border-radius:12px;background:var(--aqua);color:#001f3a;border:none;font-size:16px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;margin-bottom:14px;">Iniciar</button>';
-  } else if (swolf.cronoRunning) {
-    // Botão Breakout — só aparece se ainda não foi registado
-    if (swolf.breakoutMs === null) {
-      html += '<button onclick="swolfBreakout()" id="swolf-btn-breakout" style="width:100%;padding:14px;border-radius:12px;background:#f39c12;color:#fff;border:none;font-size:15px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;margin-bottom:8px;">Breakout</button>';
-    } else {
-      html += '<div style="text-align:center;font-size:12px;color:#27ae60;font-weight:700;margin-bottom:8px;">✓ Breakout: '+(swolf.breakoutMs/1000).toFixed(2)+'s</div>';
-    }
-    if (temViragem && !eUltimaViragem) {
-      html += '<button onclick="swolfViragem()" style="width:100%;padding:18px;border-radius:12px;background:#005fa3;color:#fff;border:none;font-size:16px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;margin-bottom:14px;">Viragem '+(swolf.viragensFeitas+1)+'/'+nViragInt+'</button>';
-    } else {
-      html += '<button onclick="swolfParar()" style="width:100%;padding:18px;border-radius:12px;background:#e74c3c;color:#fff;border:none;font-size:16px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;margin-bottom:14px;">Parar</button>';
-    }
-  }
-
-  // Contador braçadas
-  if (swolf.cronoRunning || swolf.parado) {
-    // Se aguarda breakout de viragem, o botão +1 fica laranja com label diferente
-    var btnBgBrac = swolf.aguardaBreakoutViragem ? '#f39c12' : 'var(--aqua)';
-    var btnLabelBrac = swolf.aguardaBreakoutViragem ? '+1<br><span style="font-size:11px;line-height:1;">Breakout<br>Viragem</span>' : '+1';
-    var labelBracadas = swolf.aguardaBreakoutViragem
-      ? '<div style="font-size:11px;color:#f39c12;font-weight:700;margin-bottom:2px;">→ 1ª braçada após viragem</div>'
-      : '<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">Braçadas</div>';
-    // Mostrar breakouts de viragem já registados
-    var bvHtml = '';
-    if (swolf.breakoutsViragem.length > 0) {
-      bvHtml = '<div style="font-size:11px;color:#f39c12;margin-top:2px;">';
-      swolf.breakoutsViragem.forEach(function(bv,i){ bvHtml += 'V'+(i+1)+': '+bv.toFixed(2)+'s '; });
-      bvHtml += '</div>';
-    }
-    html += '<div style="display:flex;align-items:center;justify-content:space-between;background:' + (isLight?'#f0f7ff':'rgba(0,144,224,0.08)') + ';border-radius:14px;padding:12px 16px;margin-bottom:' + (swolf.parado?'10px':'14px') + ';">';
-    html += '<div>';
-    html += labelBracadas;
-    html += '<div id="swolf-bracadas-n" style="font-family:\'Bebas Neue\',sans-serif;font-size:52px;color:var(--aqua);letter-spacing:2px;line-height:1;">'+swolf.bracadasAtual+'</div>';
-    html += bvHtml;
-    html += '</div>';
-    html += '<button onclick="swolfBracada()" id="swolf-btn-bracada" style="width:80px;height:80px;border-radius:50%;border:none;background:'+btnBgBrac+';font-size:22px;font-weight:700;cursor:pointer;color:#001f3a;font-family:\'DM Sans\',sans-serif;box-shadow:0 4px 16px rgba(0,196,204,0.35);flex-shrink:0;line-height:1.2;">'+btnLabelBrac+'</button>';
-    html += '</div>';
-
-    // Modo ecrã grande
-    html += '<button onclick="swolfModoGrande()" style="width:100%;padding:10px;border-radius:10px;background:transparent;border:1.5px solid var(--aqua);color:var(--aqua);font-size:13px;font-weight:600;cursor:pointer;font-family:\'DM Sans\',sans-serif;margin-bottom:10px;">⛶ Modo ecrã grande</button>';
-
-    // Quando parado: botão confirmar rep
-    if (swolf.parado) {
-      html += '<button onclick="swolfConfirmarRep()" style="width:100%;padding:13px;border-radius:10px;background:var(--blue-deep);color:#fff;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;margin-bottom:8px;">✓ Guardar rep '+rep+(swolfAtual?' · SWOLF '+swolfAtual:'')+'</button>';
-    }
-  }
-
-  // Reps já feitas
-  if (swolf.repsData.length > 0) {
-    html += '<div style="border-top:1px solid rgba(128,128,128,0.15);padding-top:10px;margin-top:4px;"><div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Concluídas</div>';
-    swolf.repsData.forEach(function(r,i){
-      html += '<div style="padding:6px 0;border-bottom:1px solid rgba(128,128,128,0.08);">';
-      html += '<div style="display:flex;justify-content:space-between;align-items:center;">';
-      html += '<span style="font-size:12px;color:var(--muted);">Rep '+(i+1)+'</span>';
-      html += '<span style="font-size:13px;color:var(--text);">'+r.tempo.toFixed(2)+'s · '+r.bracadas+'b</span>';
-      html += '<span style="font-size:14px;font-weight:700;color:var(--aqua);">SWOLF '+r.swolf+'</span>';
-      html += '</div>';
-      if (r.breakout !== undefined) {
-        html += '<div style="font-size:11px;color:#f39c12;margin-top:2px;">⬆ Partida: '+r.breakout.toFixed(2)+'s';
-        if (r.breakoutsViragem && r.breakoutsViragem.length > 0) {
-          r.breakoutsViragem.forEach(function(bv,j){ html += ' · V'+(j+1)+': '+bv.toFixed(2)+'s'; });
-        }
-        html += '</div>';
-      }
-      html += '</div>';
-    });
-    html += '</div>';
-  }
-  html += '<button onclick="swolfInit()" style="margin-top:10px;width:100%;padding:10px;border-radius:10px;background:transparent;border:1.5px solid #b0d4ee;color:#1a5a8a;font-size:13px;cursor:pointer;font-family:\'DM Sans\',sans-serif;">← Cancelar</button>';
-  el.innerHTML = html;
-}
-
-function swolfCronoIniciar() {
-  swolf.viragensFeitas = 0;
-  swolf.bracadasAtual = 0;
-  swolf.parado = false;
-  swolf.breakoutMs = null;
-  swolf.viragensMs = [];
-  swolf.breakoutsViragem = [];
-  swolf.aguardaBreakoutViragem = false;
-  swolf.cronoRunning = true;
-  swolf.cronoStart = Date.now();
-  swolf.cronoElapsed = 0;
-  swolf.cronoInterval = setInterval(function() {
-    swolf.cronoElapsed = Date.now() - swolf.cronoStart;
-    var d = document.getElementById('swolf-display');
-    if (d) d.textContent = (swolf.cronoElapsed/1000).toFixed(2);
-  }, 50);
-  swolfRender();
-}
-
-function swolfBreakout() {
-  if (swolf.breakoutMs !== null) return; // só uma vez por rep
-  swolf.breakoutMs = swolf.cronoElapsed;
-  // Feedback visual rápido
-  var btn = document.getElementById('swolf-btn-breakout');
-  if (btn) {
-    btn.textContent = '✓ ' + (swolf.breakoutMs/1000).toFixed(2) + 's';
-    btn.style.background = '#27ae60';
-    btn.style.color = '#fff';
-    btn.disabled = true;
-  }
-}
-
-function swolfViragem() {
-  swolf.viragensMs.push(swolf.cronoElapsed); // regista o instante da viragem
-  swolf.aguardaBreakoutViragem = true;        // próximo +1 será o breakout de viragem
-  swolf.viragensFeitas++;
-  swolfRender();
-}
-
-function swolfParar() {
-  clearInterval(swolf.cronoInterval);
-  swolf.cronoRunning = false;
-  swolf.parado = true;
-  // Mostra resultado provisório e mantém +1 Braçada ativo
-  swolfRender();
-}
-
-function swolfBracada() {
-  swolf.bracadasAtual++;
-
-  // Se é a primeira braçada após uma viragem → regista breakout de viragem
-  if (swolf.aguardaBreakoutViragem && swolf.viragensMs.length > 0) {
-    var idxViragem = swolf.breakoutsViragem.length; // índice desta viragem
-    if (idxViragem < swolf.viragensMs.length) {
-      var tempoSubaq = (swolf.cronoElapsed - swolf.viragensMs[idxViragem]) / 1000;
-      swolf.breakoutsViragem.push(tempoSubaq);
-    }
-    swolf.aguardaBreakoutViragem = false;
-    // Re-render para mostrar confirmação visual
-    swolfRender();
-    return;
-  }
-
-  // Atualiza contadores em todos os contextos
-  var el = document.getElementById('swolf-bracadas-n');
-  if (el) el.textContent = swolf.bracadasAtual;
-  var elOv = document.getElementById('swolf-ov-brac');
-  if (elOv) elOv.textContent = swolf.bracadasAtual;
-  // Atualiza SWOLF provisório e botão guardar
-  if (swolf.parado) {
-    var tAtual = swolf.cronoElapsed / 1000;
-    var swolfAtual = Math.round(tAtual) + swolf.bracadasAtual;
-    var subDivs = document.querySelectorAll('#crono-swolf-content div');
-    for (var i=0; i<subDivs.length; i++) {
-      if (subDivs[i].textContent.indexOf('SWOLF provisório') !== -1) {
-        subDivs[i].innerHTML = 'SWOLF provisório: <strong style="color:var(--aqua);font-size:16px;">'+swolfAtual+'</strong> · ajusta as braçadas se necessário';
-        break;
-      }
-    }
-  }
-}
-
-
-function swolfModoGrande() {
-  var isLight = document.documentElement.classList.contains('light-mode');
-  var existing = document.getElementById('swolf-overlay');
-  if (existing) existing.remove();
-
-  var overlay = document.createElement('div');
-  overlay.id = 'swolf-overlay';
-  overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:'+(isLight?'#f0f7ff':'#001a2e')+';z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:space-around;padding:24px 20px;box-sizing:border-box;';
-  document.body.appendChild(overlay);
-  swolfOverlayUpdate();
-
-  // Crono ticker no overlay
-  if (window.swolfOverlayInterval) clearInterval(window.swolfOverlayInterval);
-  window.swolfOverlayInterval = setInterval(function() {
-    if (!document.getElementById('swolf-overlay')) { clearInterval(window.swolfOverlayInterval); return; }
-    if (swolf.cronoRunning) {
-      var d = document.getElementById('swolf-ov-display');
-      if (d) d.textContent = (swolf.cronoElapsed/1000).toFixed(2);
-    }
-  }, 50);
-
-}
-
-function swolfOverlayUpdate() {
-  var ov = document.getElementById('swolf-overlay');
-  if (!ov) return;
-  var isLight = document.documentElement.classList.contains('light-mode');
-  var tAtual = (swolf.cronoElapsed/1000).toFixed(2);
-  var swolfVal = swolf.bracadasAtual > 0 ? Math.round(swolf.cronoElapsed/1000) + swolf.bracadasAtual : null;
-  var rep = swolf.repAtual + 1;
-  var nViragInt = swolfNumViragensIntermediarias();
-  var aqua = 'var(--aqua)';
-
-  var h = '';
-  // Info topo
-  h += '<div style="text-align:center;">';
-  h += '<div style="font-size:14px;color:var(--muted);">'+swolf.nadador+' · '+swolf.distancia+'m '+swolfTecLabels[swolf.tecnica]+' · Rep '+rep+'/'+swolf.reps+'</div>';
-  h += '<div id="swolf-ov-display" style="font-family:\'Bebas Neue\',sans-serif;font-size:88px;color:'+aqua+';letter-spacing:3px;line-height:1;">'+tAtual+'</div>';
-  h += '<div style="font-size:13px;color:var(--muted);">'+(swolf.cronoRunning?'A correr...':(swolf.parado?'Parado · ajusta braçadas':'Pronto'))+'</div>';
-  h += '</div>';
-  // Braçadas
-  h += '<div style="text-align:center;">';
-  h += '<div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">Braçadas</div>';
-  h += '<div id="swolf-ov-brac" style="font-family:\'Bebas Neue\',sans-serif;font-size:96px;color:'+aqua+';letter-spacing:3px;line-height:1;">'+swolf.bracadasAtual+'</div>';
-  if (swolfVal) h += '<div style="font-size:18px;color:var(--muted);margin-top:6px;">SWOLF <strong style="color:'+aqua+';">'+swolfVal+'</strong></div>';
-  h += '</div>';
-  // Botões — apenas UM de cada vez
-  h += '<div style="width:100%;display:flex;flex-direction:column;gap:10px;">';
-  if (!swolf.cronoRunning && !swolf.parado) {
-    h += '<button onclick="swolfCronoIniciar();swolfOverlayUpdate()" style="width:100%;padding:22px;border-radius:16px;background:'+aqua+';color:#001f3a;border:none;font-size:22px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;">Iniciar</button>';
-  } else if (swolf.cronoRunning) {
-    // Breakout — só antes de ser registado
-    if (swolf.breakoutMs === null) {
-      h += '<button onclick="swolfBreakout();swolfOverlayUpdate()" style="width:100%;padding:18px;border-radius:16px;background:#f39c12;color:#fff;border:none;font-size:20px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;">Breakout</button>';
-    } else {
-      h += '<div style="text-align:center;font-size:14px;color:#27ae60;font-weight:700;padding:6px 0;">✓ Breakout: '+(swolf.breakoutMs/1000).toFixed(2)+'s</div>';
-    }
-    if (nViragInt > 0 && swolf.viragensFeitas < nViragInt) {
-      h += '<button onclick="swolfViragem();swolfOverlayUpdate()" style="width:100%;padding:22px;border-radius:16px;background:#005fa3;color:#fff;border:none;font-size:22px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;">Viragem '+(swolf.viragensFeitas+1)+'/'+nViragInt+'</button>';
-    } else {
-      h += '<button onclick="swolfParar();swolfOverlayUpdate()" style="width:100%;padding:22px;border-radius:16px;background:#e74c3c;color:#fff;border:none;font-size:22px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;">Parar</button>';
-    }
-  }
-  // +1 Braçada — sempre visível quando crono corre ou parou
-  if (swolf.cronoRunning || swolf.parado) {
-    h += '<button onclick="swolfBracada();swolfOverlayUpdate()" style="width:100%;padding:22px;border-radius:16px;background:'+aqua+';color:#001f3a;border:none;font-size:22px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;">+1 Braçada</button>';
-  }
-  if (swolf.parado && swolfVal) {
-    h += '<button onclick="swolfConfirmarRep();document.getElementById(\'swolf-overlay\').remove();clearInterval(window.swolfOverlayInterval);" style="width:100%;padding:20px;border-radius:16px;background:var(--blue-deep);color:#fff;border:none;font-size:19px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;">✓ Guardar rep '+rep+' · SWOLF '+swolfVal+'</button>';
-  }
-  h += '</div>';
-  // Fechar
-  h += '<button onclick="document.getElementById(\'swolf-overlay\').remove();clearInterval(window.swolfOverlayInterval);swolfRender();" style="background:transparent;border:1.5px solid rgba(128,128,128,0.3);color:var(--muted);border-radius:10px;padding:10px 24px;font-size:13px;cursor:pointer;font-family:\'DM Sans\',sans-serif;">✕ Fechar ecrã grande</button>';
-
-  ov.innerHTML = h;
-}
-
-
-function swolfConfirmarRep() {
-  var t = swolf.cronoElapsed / 1000;
-  var b = swolf.bracadasAtual;
-  var s = Math.round(t) + b;
-  var rep = { tempo: t, bracadas: b, swolf: s };
-  if (swolf.breakoutMs !== null) rep.breakout = swolf.breakoutMs / 1000;
-  if (swolf.breakoutsViragem.length > 0) rep.breakoutsViragem = swolf.breakoutsViragem.slice();
-  swolf.repsData.push(rep);
-  swolf.repAtual++;
-  swolf.bracadasAtual = 0;
-  swolf.viragensFeitas = 0;
-  swolf.parado = false;
-  swolf.breakoutMs = null;
-  swolf.viragensMs = [];
-  swolf.breakoutsViragem = [];
-  swolf.aguardaBreakoutViragem = false;
-  swolf.cronoElapsed = 0;
-  clearInterval(swolf.cronoInterval);
-  swolf.cronoRunning = false;
-  if (swolf.repAtual >= swolf.reps) {
-    swolf.sessaoData.repsData = swolf.repsData;
-    swolf.sessaoData.mediaSwolf = Math.round(swolf.repsData.reduce(function(acc,r){return acc+r.swolf;},0) / swolf.repsData.length);
-    var db = swolfGetDB();
-    if (!db[swolf.nadador]) db[swolf.nadador] = [];
-    db[swolf.nadador].push(swolf.sessaoData);
-    swolfSaveDB(db);
-    swolf.phase = 'resultado';
-  }
-  swolfRender();
-}
-
-function swolfRenderResultado(el) {
-  var isLight=document.documentElement.classList.contains('light-mode');
-  var reps=swolf.repsData, media=swolf.sessaoData.mediaSwolf;
-  var mn=Math.min.apply(null,reps.map(function(r){return r.swolf;}));
-  var mx=Math.max.apply(null,reps.map(function(r){return r.swolf;}));
-  var html='<div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:2px;">'+swolf.nadador+'</div>';
-  html+='<div style="font-size:11px;color:var(--muted);margin-bottom:14px;">'+swolf.distancia+'m '+swolfTecLabels[swolf.tecnica]+' · '+swolf.piscina+'m · '+swolf.sessaoData.data+'</div>';
-  html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;">';
-  html+=swolfStatBox('Média',media,true,isLight)+swolfStatBox('Melhor',mn,false,isLight)+swolfStatBox('Pior',mx,false,isLight);
-  html+='</div>';
-  reps.forEach(function(r,i){
-    var pct=mn===mx?75:Math.round(50+(1-(r.swolf-mn)/(mx-mn))*50);
-    var cor=r.swolf===mn?'#00c4cc':(r.swolf===mx?'#e74c3c':(isLight?'var(--blue-mid)':'var(--blue-bright)'));
-    html+='<div style="margin-bottom:8px;">';
-    html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;"><div style="font-size:11px;font-weight:700;color:var(--muted);width:32px;">Rep '+(i+1)+'</div><div style="flex:1;background:rgba(128,128,128,0.1);border-radius:6px;height:24px;overflow:hidden;"><div style="height:24px;border-radius:6px;background:'+cor+';width:'+pct+'%;display:flex;align-items:center;padding-left:8px;"><span style="font-size:12px;font-weight:700;color:#fff;white-space:nowrap;">'+r.swolf+'</span></div></div><div style="font-size:11px;color:var(--muted);width:58px;text-align:right;">'+r.tempo.toFixed(1)+'s/'+r.bracadas+'b</div></div>';
-    if (r.breakout !== undefined) {
-      var tempoNado = r.tempo - r.breakout;
-      var pctBreakout = Math.round((r.breakout/r.tempo)*100);
-      html += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-left:40px;">';
-      html += '<span style="font-size:11px;background:rgba(243,156,18,0.15);color:#f39c12;border-radius:6px;padding:2px 7px;font-weight:600;">⬆ Partida '+r.breakout.toFixed(2)+'s ('+pctBreakout+'%)</span>';
-      if (r.breakoutsViragem && r.breakoutsViragem.length > 0) {
-        r.breakoutsViragem.forEach(function(bv,j){
-          html += '<span style="font-size:11px;background:rgba(243,156,18,0.1);color:#f39c12;border-radius:6px;padding:2px 7px;font-weight:600;">↩ V'+(j+1)+' '+bv.toFixed(2)+'s</span>';
-        });
-      }
-      html += '<span style="font-size:11px;background:rgba(0,196,204,0.1);color:var(--aqua);border-radius:6px;padding:2px 7px;font-weight:600;">~ Nado '+tempoNado.toFixed(2)+'s</span>';
-      html += '</div>';
-    }
-    html+='</div>';
-  });
-
-  // Análise de breakout se houver dados
-  var repsComBreakout = reps.filter(function(r){return r.breakout !== undefined;});
-  if (repsComBreakout.length > 0) {
-    var mediaBreakoutPartida = repsComBreakout.reduce(function(s,r){return s+r.breakout;},0)/repsComBreakout.length;
-    var mediaNado = repsComBreakout.reduce(function(s,r){return s+(r.tempo-r.breakout);},0)/repsComBreakout.length;
-    // Breakouts de viragem — calcular média se existirem
-    var todasBV = [];
-    repsComBreakout.forEach(function(r){ if(r.breakoutsViragem) r.breakoutsViragem.forEach(function(bv){todasBV.push(bv);}); });
-    var mediaBV = todasBV.length > 0 ? todasBV.reduce(function(s,v){return s+v;},0)/todasBV.length : null;
-
-    html += '<div style="background:'+(isLight?'#fff8e1':'rgba(243,156,18,0.08)')+';border-radius:12px;padding:12px 14px;margin-bottom:12px;border-left:3px solid #f39c12;">';
-    html += '<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#f39c12;margin-bottom:8px;">Análise Subaquática</div>';
-    var ncols = mediaBV !== null ? 3 : 2;
-    html += '<div style="display:grid;grid-template-columns:repeat('+ncols+',1fr);gap:8px;margin-bottom:10px;">';
-    html += '<div style="text-align:center;"><div style="font-size:10px;color:var(--muted);margin-bottom:2px;">⬆ Partida</div><div style="font-size:22px;font-weight:700;font-family:\'Bebas Neue\',sans-serif;color:#f39c12;">'+mediaBreakoutPartida.toFixed(2)+'s</div></div>';
-    if (mediaBV !== null) {
-      html += '<div style="text-align:center;"><div style="font-size:10px;color:var(--muted);margin-bottom:2px;">↩ Viragem</div><div style="font-size:22px;font-weight:700;font-family:\'Bebas Neue\',sans-serif;color:#f39c12;">'+mediaBV.toFixed(2)+'s</div></div>';
-    }
-    html += '<div style="text-align:center;"><div style="font-size:10px;color:var(--muted);margin-bottom:2px;">~ Nado</div><div style="font-size:22px;font-weight:700;font-family:\'Bebas Neue\',sans-serif;color:var(--aqua);">'+mediaNado.toFixed(2)+'s</div></div>';
-    html += '</div>';
-    if (repsComBreakout.length > 1) {
-      html += swolfGraficoLinha(repsComBreakout.map(function(r){return parseFloat(r.breakout.toFixed(2));}), repsComBreakout.map(function(r,i){return 'R'+(i+1);}), isLight, 'Subaquático partida por rep');
-    }
-    html += '</div>';
-  }
-  if(reps.length>1)html+=swolfGraficoLinha(reps.map(function(r){return r.swolf;}),reps.map(function(r,i){return 'R'+(i+1);}),isLight,'SWOLF por repetição');
-  html+='<div style="display:flex;gap:8px;margin-top:12px;">';
-  html+='<button onclick="swolfNovaSessaoMesmoNadador()" style="flex:1;padding:12px;border-radius:10px;background:var(--aqua);color:#001f3a;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;">Nova sessão</button>';
-  html+='<button onclick="swolfVerHistorico(\''+swolf.nadador.replace(/'/g,"\\'")+'\''+')" style="flex:1;padding:12px;border-radius:10px;background:transparent;border:1.5px solid #b0d4ee;color:#1a5a8a;font-size:13px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;">Ver histórico</button>';
-  html+='</div>';
-  el.innerHTML=html;
-}
-
-function swolfStatBox(label,val,destaque,isLight){
-  var bg=destaque?(isLight?'#e8f4fb':'rgba(0,196,204,0.1)'):(isLight?'#f5faff':'rgba(128,128,128,0.08)');
-  var cor=destaque?'var(--aqua)':'var(--text)';
-  return '<div style="background:'+bg+';border-radius:12px;padding:12px 8px;text-align:center;"><div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">'+label+'</div><div style="font-size:28px;font-weight:700;font-family:\'Bebas Neue\',sans-serif;color:'+cor+';letter-spacing:1px;">'+val+'</div></div>';
-}
-
-function swolfVerHistorico(nome){swolf.nadador=nome;swolf.phase='historico';swolfRender();}
-
-function swolfRenderHistorico(el){
-  var db=swolfGetDB(), todasSessoes=(db[swolf.nadador]||[]);
-  var isLight=document.documentElement.classList.contains('light-mode');
-  var html='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><div style="font-size:16px;font-weight:700;color:var(--text);">'+swolf.nadador+'</div><button onclick="swolfInit()" style="padding:7px 14px;border-radius:20px;border:1.5px solid #b0d4ee;background:transparent;color:#1a5a8a;font-size:12px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;">← Voltar</button></div>';
-
-  if (todasSessoes.length===0) {
-    html+='<div style="text-align:center;color:var(--muted);padding:20px;">Sem sessões.</div>';
-  } else {
-    // Agrupar: 1º por técnica, 2º por distância+piscina
-    var grupos = {}; // {tec: { 'dist_pisc': [sessoes] }}
-    todasSessoes.forEach(function(s) {
-      var tec = s.tecnica||'?';
-      var sub = s.distancia+'m_'+s.piscina+'m';
-      if (!grupos[tec]) grupos[tec] = {};
-      if (!grupos[tec][sub]) grupos[tec][sub] = [];
-      grupos[tec][sub].push(s);
-    });
-
-    var tecOrdem = ['L','C','B','M'];
-    var detIdx = 0;
-    tecOrdem.forEach(function(tec) {
-      if (!grupos[tec]) return;
-      html += '<div style="margin-bottom:20px;">';
-      html += '<div style="font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--aqua);margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid rgba(0,196,204,0.3);">'+swolfTecLabels[tec]+'</div>';
-
-      // Subgrupos por distância + piscina
-      var subKeys = Object.keys(grupos[tec]).sort();
-      subKeys.forEach(function(sub) {
-        var sessoes = grupos[tec][sub].slice().reverse();
-        var partes = sub.split('_');
-        var subLabel = partes[0]+' · piscina '+partes[1];
-
-        html += '<div style="margin-bottom:16px;">';
-        html += '<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">'+subLabel+'</div>';
-
-        // Gráfico se ≥ 2 sessões
-        if (sessoes.length >= 2) {
-          var medias = sessoes.slice().reverse().map(function(s){return s.mediaSwolf;});
-          var datas  = sessoes.slice().reverse().map(function(s){return s.data.split('/').slice(0,2).join('/');});
-          html += swolfGraficoLinha(medias, datas, isLight, 'Evolução SWOLF · '+partes[0]+' · '+partes[1]);
-          html += '<div style="margin-bottom:8px;"></div>';
-        }
-
-        sessoes.forEach(function(s) {
-          var uid = 'h'+(detIdx++);
-          html += '<div style="background:'+(isLight?'#f0f7ff':'rgba(0,144,224,0.06)')+';border-radius:12px;padding:12px 14px;margin-bottom:6px;">';
-          html += '<div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="swolfToggleDet(\''+uid+'\')">';
-          html += '<div><div style="font-size:13px;font-weight:700;color:var(--text);">'+s.data+'</div>';
-          html += '<div style="font-size:11px;color:var(--muted);">'+s.repsData.length+' rep'+(s.repsData.length!==1?'s':'')+'</div></div>';
-          html += '<div style="font-size:24px;font-weight:700;font-family:\'Bebas Neue\',sans-serif;color:var(--aqua);">'+s.mediaSwolf+'</div></div>';
-          html += '<div id="swolf-det-'+uid+'" style="display:none;margin-top:10px;border-top:1px solid rgba(128,128,128,0.12);padding-top:8px;">';
-          s.repsData.forEach(function(r,j){
-            html += '<div style="padding:4px 0;font-size:12px;border-bottom:1px solid rgba(128,128,128,0.06);">';
-            html += '<div style="display:flex;justify-content:space-between;">';
-            html += '<span style="color:var(--muted);">Rep '+(j+1)+'</span>';
-            html += '<span style="color:var(--text);">'+r.tempo.toFixed(2)+'s · '+r.bracadas+'b</span>';
-            html += '<span style="font-weight:700;color:var(--aqua);">SWOLF '+r.swolf+'</span></div>';
-            if (r.breakout !== undefined) {
-              html += '<div style="font-size:11px;color:#f39c12;margin-top:1px;">⬆ Partida '+r.breakout.toFixed(2)+'s';
-              if (r.breakoutsViragem && r.breakoutsViragem.length > 0) {
-                r.breakoutsViragem.forEach(function(bv,j){ html += ' · ↩ V'+(j+1)+' '+bv.toFixed(2)+'s'; });
-              }
-              html += ' · Nado '+(r.tempo-r.breakout).toFixed(2)+'s</div>';
-            }
-            html += '</div>';
-          });
-          html += '</div></div>';
-        });
-        html += '</div>';
-      });
-      html += '</div>';
-    });
-
-    html += '<button onclick="swolfEliminarNadador()" style="margin-top:4px;width:100%;padding:10px;border-radius:10px;background:transparent;border:1.5px solid #e74c3c;color:#e74c3c;font-size:12px;font-weight:600;cursor:pointer;font-family:\'DM Sans\',sans-serif;">Eliminar dados de '+swolf.nadador+'</button>';
-  }
-  html += '<button onclick="swolfNovaSessaoMesmoNadador()" style="margin-top:8px;width:100%;padding:12px;border-radius:10px;background:var(--aqua);color:#001f3a;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;">+ Nova sessão</button>';
-  el.innerHTML = html;
-}
-
-function swolfToggleDet(uid){var d=document.getElementById('swolf-det-'+uid);if(d)d.style.display=d.style.display==='none'?'block':'none';}
-function swolfNovaSessaoMesmoNadador(){clearInterval(swolf.cronoInterval);var nome=swolf.nadador;swolf={phase:'config',nadador:nome,piscina:null,distancia:null,tecnica:null,reps:null,repAtual:0,bracadasAtual:0,viragensFeitas:0,parado:false,breakoutMs:null,cronoRunning:false,cronoStart:null,cronoElapsed:0,cronoInterval:null,repsData:[],sessaoData:null};swolfRender();}
-function swolfEliminarNadador(){if(!confirm('Eliminar todos os dados de '+swolf.nadador+'?'))return;var db=swolfGetDB();delete db[swolf.nadador];swolfSaveDB(db);swolfInit();}
-
-function swolfGraficoLinha(vals,labels,isLight,titulo){
-  var W=280,H=90,pad=22,n=vals.length;
-  var mn=Math.min.apply(null,vals),mx=Math.max.apply(null,vals),range=mx-mn||1;
-  var pts=vals.map(function(v,i){return{x:pad+(i/(n-1))*(W-2*pad),y:pad+(1-(v-mn)/range)*(H-2*pad),v:v};});
-  var stroke=isLight?'#0090e0':'#00c4cc',gridCol=isLight?'rgba(0,0,0,0.07)':'rgba(255,255,255,0.07)';
-  var polyline=pts.map(function(p){return p.x+','+p.y;}).join(' ');
-  var area='M'+pts[0].x+','+pts[0].y+pts.map(function(p){return ' L'+p.x+','+p.y;}).join('')+' L'+pts[n-1].x+','+(H-pad)+' L'+pts[0].x+','+(H-pad)+' Z';
-  var svg='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;display:block;">';
-  [0,0.5,1].forEach(function(f){var y=pad+f*(H-2*pad);svg+='<line x1="'+pad+'" y1="'+y+'" x2="'+(W-pad)+'" y2="'+y+'" stroke="'+gridCol+'" stroke-width="1"/><text x="'+(pad-2)+'" y="'+(y+4)+'" font-size="9" fill="currentColor" opacity="0.35" text-anchor="end">'+Math.round(mx-f*range)+'</text>';});
-  svg+='<path d="'+area+'" fill="'+stroke+'" opacity="0.1"/><polyline points="'+polyline+'" fill="none" stroke="'+stroke+'" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
-  pts.forEach(function(p,i){svg+='<circle cx="'+p.x+'" cy="'+p.y+'" r="4" fill="'+stroke+'" stroke="#fff" stroke-width="1.5"/><text x="'+p.x+'" y="'+(p.y-8)+'" font-size="10" font-weight="700" fill="'+stroke+'" text-anchor="middle">'+p.v+'</text><text x="'+p.x+'" y="'+(H-2)+'" font-size="8" fill="currentColor" opacity="0.4" text-anchor="middle">'+(labels[i]||'')+'</text>';});
-  svg+='</svg>';
-  return '<div style="background:rgba(128,128,128,0.05);border-radius:12px;padding:12px 8px 4px;margin-bottom:4px;"><div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;text-align:center;">'+titulo+'</div>'+svg+'</div>';
-}
-</script>
-
-
 
 <script>
 /* ===== SWIMMIN — ANALYTICS DE USO ===== */
