@@ -3026,9 +3026,11 @@ document.addEventListener("click", function(e) {
     <div style="display:flex;gap:0;margin-bottom:20px;border-radius:12px;overflow:hidden;border:1.5px solid #d0e4f0;">
       <button id="crono-tab-parciais" onclick="cronoSwitchTab('parciais')" style="flex:1;padding:10px;border:none;background:var(--blue-deep);color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;">Parciais</button>
       <button id="crono-tab-cronos" onclick="cronoSwitchTab('cronos')" style="flex:1;padding:10px;border:none;background:#f0f7ff;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;">Cronómetros</button>
+      <button id="crono-tab-swolf" onclick="cronoSwitchTab('swolf')" style="flex:1;padding:10px;border:none;background:#f0f7ff;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;">SWOLF</button>
     </div>
     <div id="crono-content"></div>
     <div id="crono-cronos-content" style="display:none;"></div>
+    <div id="crono-swolf-content" style="display:none;"></div>
   </div>
 </div>
 
@@ -7322,10 +7324,10 @@ function toggleFPN() {
   if (section.style.display === 'none') {
     section.style.display = 'block';
     section.scrollIntoView({behavior:'smooth', block:'start'});
-    btn.textContent = 'Fechar Pontos FPN';
+    btn.textContent = 'Fechar Pontos FPN/FINA';
   } else {
     section.style.display = 'none';
-    btn.textContent = 'Calcular Pontos FPN';
+    btn.textContent = 'Calcular Pontos FINA/FPN';
   }
 }
 
@@ -7807,433 +7809,6 @@ var COMP_DATES = {
   'OLI':        'Jogos Olímpicos 2028 · Los Angeles 2028'
 };
 
-// Estilo map
-var ESTILO_LABELS = {L:'Livres', C:'Costas', B:'Bruços', M:'Mariposa', E:'Estilos', X:'Estafetas'};
-var ESTILO_PROVAS_LONGA = {
-  L:['50','100','200','400','800','1500'], C:['50','100','200'],
-  B:['50','100','200'], M:['50','100','200'], E:['200','400'], X:['4x50L','4x100L','4x50E','4x100E']
-};
-var ESTILO_PROVAS_CURTA = {
-  L:['50','100','200','400','800','1500'], C:['50','100','200'],
-  B:['50','100','200'], M:['50','100','200'], E:['100','200','400'], X:['4x50L','4x100L','4x50E','4x100E']
-};
-
-// ============================================================
-// MAIN CALCULATOR
-// ============================================================
-function onGeneroChange() {
-  var genero = document.getElementById('genero').value;
-  var estilo = document.getElementById('estilo').value;
-  var dist = document.getElementById('distancia').value;
-  popularEstilos();
-  if (estilo && document.getElementById('estilo').querySelector('option[value="' + estilo + '"]')) {
-    document.getElementById('estilo').value = estilo;
-    popularDistanciasPorEstilo();
-    if (dist && document.getElementById('distancia').querySelector('option[value="' + dist + '"]')) {
-      document.getElementById('distancia').value = dist;
-    }
-  }
-  calcular();
-}
-
-function onEscalaoChange() {
-  var escalao = document.getElementById('escalao').value;
-  var compEl = document.getElementById('competicao');
-  var prevComp = compEl.value;
-  compEl.innerHTML = '<option value="">Selecionar</option>';
-  if (escalao && COMPS[escalao]) {
-    var comps = COMPS[escalao];
-    var pisc = document.getElementById('piscina').value;
-    var intlComps = ['EUR_JUN','EUR_SUB23','EUR','OLI'];
-    for (var i = 0; i < comps.length; i++) {
-      if (pisc === 'curta' && intlComps.indexOf(comps[i].v) >= 0) continue;
-      var opt = document.createElement('option');
-      opt.value = comps[i].v;
-      opt.textContent = comps[i].l;
-      compEl.appendChild(opt);
-    }
-    // Restore if still valid
-    if (compEl.querySelector('option[value="' + prevComp + '"]')) {
-      compEl.value = prevComp;
-    }
-  }
-  popularEstilos();
-  calcular();
-}
-
-function popularEstilos() {
-  var genero = document.getElementById('genero').value;
-  var piscina = document.getElementById('piscina').value;
-  var estiloEl = document.getElementById('estilo');
-  var prevEstilo = estiloEl.value;
-  estiloEl.innerHTML = '<option value="">Selecionar</option>';
-  if (!genero || !piscina) { popularDistanciasPorEstilo(); return; }
-  
-  var estilos = genero === 'X' ? ['X'] : (piscina === 'longa' 
-    ? Object.keys(ESTILO_PROVAS_LONGA).filter(function(e){ return e !== 'X'; })
-    : Object.keys(ESTILO_PROVAS_CURTA).filter(function(e){ return e !== 'X'; }));
-  if (genero === 'X') estilos = ['X'];
-
-  for (var i = 0; i < estilos.length; i++) {
-    var opt = document.createElement('option');
-    opt.value = estilos[i];
-    opt.textContent = ESTILO_LABELS[estilos[i]];
-    estiloEl.appendChild(opt);
-  }
-  if (estiloEl.querySelector('option[value="' + prevEstilo + '"]')) {
-    estiloEl.value = prevEstilo;
-  }
-  popularDistanciasPorEstilo();
-}
-
-function updateDistanciasPorEstilo() { popularDistanciasPorEstilo(); }
-
-function popularDistanciasPorEstilo() {
-  var piscina = document.getElementById('piscina').value;
-  var estilo = document.getElementById('estilo').value;
-  var distEl = document.getElementById('distancia');
-  var prevDist = distEl.value;
-  distEl.innerHTML = '<option value="">Selecionar</option>';
-  if (!piscina || !estilo) return;
-  var provas = piscina === 'longa' ? ESTILO_PROVAS_LONGA[estilo] : ESTILO_PROVAS_CURTA[estilo];
-  if (!provas) return;
-  for (var i = 0; i < provas.length; i++) {
-    var opt = document.createElement('option');
-    opt.value = provas[i];
-    opt.textContent = provas[i] + 'm';
-    distEl.appendChild(opt);
-  }
-  if (distEl.querySelector('option[value="' + prevDist + '"]')) {
-    distEl.value = prevDist;
-  }
-}
-
-function getTempo(piscina, genero, dist, estilo, col) {
-  // International competitions have their own data table
-  var intlKey = null;
-  if (col === 'OLI') intlKey = 'olimpicos';
-  else if (col === 'EUR') intlKey = 'europeus';
-  else if (col === 'EUR_JUN') intlKey = 'europeus_jun';
-  else if (col === 'EUR_SUB23') intlKey = 'europeus_sub23';
-  if (intlKey) {
-    try {
-      var key = dist + '_' + estilo;
-      var val = dadosInternacionais[intlKey][genero][key];
-      return (val && val !== '') ? val : null;
-    } catch(e) { return '[erro:' + e.message + ']'; }
-  }
-  // National competitions from tempos table
-  try {
-    var key = dist + '_' + estilo;
-    var val = tempos[piscina][genero][key][col];
-    return (val && val !== '') ? val : null;
-  } catch(e) { return null; }
-}
-
-function calcular() {
-  var piscina = document.getElementById('piscina').value;
-  var genero = document.getElementById('genero').value;
-  var escalao = document.getElementById('escalao').value;
-  var comp = document.getElementById('competicao').value;
-  var estilo = document.getElementById('estilo').value;
-  var dist = document.getElementById('distancia').value;
-  var resultEl = document.getElementById('result');
-
-  if (!piscina || !genero || !escalao || !comp || !estilo || !dist) {
-    resultEl.innerHTML = '<div class="result-empty"><span class="icon"></span>Preenche os campos acima para ver o tempo mínimo de qualificação.</div>';
-    return;
-  }
-
-  var col = COL_MAP[comp];
-  var g = (genero === 'X') ? 'M' : genero; // estafetas usam M como base
-  var tempo = getTempo(piscina, g, dist, estilo, col);
-
-  if (!tempo) {
-    resultEl.innerHTML = '<div class="result-empty"><span class="icon"></span>Sem mínimo definido para esta combinação.</div>';
-    return;
-  }
-
-  var datesInfo = COMP_DATES[comp] || '';
-  var isIntl = (comp === 'EUR' || comp === 'EUR_JUN' || comp === 'EUR_SUB23' || comp === 'OLI');
-
-  var html = '<div class="result-box">';
-  html += '<div class="result-label">Tempo mínimo de qualificação</div>';
-  html += '<div class="result-time">' + tempo + '</div>';
-
-  if (datesInfo || isIntl) {
-    html += '<div class="result-dates">';
-    if (datesInfo) {
-      var lines = datesInfo.split(' · ');
-      if (lines.length >= 1) html += '<div class="result-dates-title">' + lines[0] + '</div>';
-      for (var di = 1; di < lines.length; di++) {
-        html += '<div class="result-dates-item">' + lines[di] + '</div>';
-      }
-    }
-    html += '</div>';
-  }
-  // Personal time input - inside the blue result box
-  html += '<div class="personal-wrap">';
-  html += '<div class="personal-label">O teu tempo</div>';
-  html += '<div class="personal-input-row">';
-  html += '<input type="tel" id="personal-time" class="personal-input" placeholder="ex: 10543" oninput="calcularDiff()" maxlength="7" autocomplete="off">';
-  html += '<div id="personal-time-preview" style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:rgba(255,255,255,0.90);letter-spacing:2px;min-width:70px;"></div>';
-  html += '</div>';
-  html += '</div>';
-  html += '<div id="diff-result"></div>';
-  html += '</div>';
-
-  resultEl.innerHTML = html;
-}
-
-function calcularDiff() {
-  var input = document.getElementById('personal-time');
-  var preview = document.getElementById('personal-time-preview');
-  var diffEl = document.getElementById('diff-result');
-  var raw = input.value.replace(/\D/g,'');
-  if (!raw) { preview.textContent = ''; diffEl.innerHTML = ''; return; }
-
-  // Parse digits: up to 7 digits = m:ss,cc or ss,cc
-  var padded = raw.padStart(6, '0');
-  var cc = parseInt(padded.slice(-2));
-  var ss = parseInt(padded.slice(-4,-2));
-  var mm = parseInt(padded.slice(0,-4)) || 0;
-  var totalMs = (mm*60+ss)*100+cc;
-  var formatted = mm > 0 ? mm+':'+('0'+ss).slice(-2)+','+('0'+cc).slice(-2) : ss+','+('0'+cc).slice(-2);
-  preview.textContent = formatted;
-
-  // Get minimo
-  var piscina = document.getElementById('piscina').value;
-  var genero = document.getElementById('genero').value;
-  var escalao = document.getElementById('escalao').value;
-  var comp = document.getElementById('competicao').value;
-  var estilo = document.getElementById('estilo').value;
-  var dist = document.getElementById('distancia').value;
-  var col = COL_MAP[comp];
-  var g = genero === 'X' ? 'M' : genero;
-  var minimoStr = getTempo(piscina, g, dist, estilo, col);
-  if (!minimoStr) return;
-
-  // Parse minimo
-  var mStr = minimoStr.replace(',','.');
-  var mParts = mStr.match(/^(?:(\d+):)?(\d+)\.(\d+)$/);
-  if (!mParts) return;
-  var mMs = ((parseInt(mParts[1]||0)*60)+parseInt(mParts[2]))*100+parseInt(mParts[3]);
-  var diff = totalMs - mMs;
-
-  if (diff <= 0) {
-    var absDiff = Math.abs(diff);
-    var dcc = absDiff%100, dss = Math.floor(absDiff/100)%60, dmm = Math.floor(absDiff/6000);
-    var dFmt = (dmm>0?dmm+':':'')+(dmm>0?('0'+dss).slice(-2):dss)+','+('0'+dcc).slice(-2);
-    diffEl.innerHTML = '<div class="diff-result passa">'
-      + '<div class="diff-time">-' + dFmt + '</div>'
-      + '<div class="diff-msg">Parabéns! Tens o mínimo</div>'
-      + '</div>';
-  } else {
-    var dcc = diff%100, dss = Math.floor(diff/100)%60, dmm = Math.floor(diff/6000);
-    var dFmt = (dmm>0?dmm+':':'')+(dmm>0?('0'+dss).slice(-2):dss)+','+('0'+dcc).slice(-2);
-    var pct = Math.round(mMs/totalMs*100);
-    diffEl.innerHTML = '<div class="diff-result falta">'
-      + '<div class="diff-time">+' + dFmt + '</div>'
-      + '<div class="diff-msg">Ainda precisas de baixar este tempo</div>'
-      + '</div>'
-      + '<div class="progress-wrap">'
-      + '<div class="progress-bar-bg"><div class="progress-bar-fill" style="width:' + Math.min(pct,100) + '%;background:' + (pct>=90?'#34A0A4':'rgba(52,160,164,0.55)') + ';"></div></div>'
-      + '<div class="progress-pct">' + pct + '% do objetivo</div>'
-      + '</div>';
-  }
-}
-
-// ============================================================
-// TOGGLE SECTIONS
-// ============================================================
-function toggleFPN() {
-  var section = document.getElementById('fpn-section');
-  var btn = document.getElementById('fpn-btn');
-  if (section.style.display === 'none') {
-    section.style.display = 'block';
-    section.scrollIntoView({behavior:'smooth', block:'start'});
-    btn.textContent = 'Fechar Pontos FPN';
-  } else {
-    section.style.display = 'none';
-    btn.textContent = 'Calcular Pontos FPN';
-  }
-}
-
-// ============================================================
-// PONTOS FPN
-// ============================================================
-function fpnUpdateEstilos() {
-  var piscina = document.getElementById('fpn-piscina').value;
-  var sexo = document.getElementById('fpn-sexo').value;
-  var estiloEl = document.getElementById('fpn-estilo');
-  var prevE = estiloEl.value;
-  estiloEl.innerHTML = '<option value="">Selecionar</option>';
-  if (!piscina || !sexo) return;
-  var estilos = piscina === 'longa'
-    ? ['L','C','B','M','E']
-    : ['L','C','B','M','E'];
-  for (var i = 0; i < estilos.length; i++) {
-    var opt = document.createElement('option');
-    opt.value = estilos[i];
-    opt.textContent = ESTILO_LABELS[estilos[i]];
-    estiloEl.appendChild(opt);
-  }
-  if (estiloEl.querySelector('option[value="' + prevE + '"]')) estiloEl.value = prevE;
-  fpnUpdateDistancias();
-}
-
-function fpnUpdateDistancias() {
-  var piscina = document.getElementById('fpn-piscina').value;
-  var estilo = document.getElementById('fpn-estilo').value;
-  var distEl = document.getElementById('fpn-distancia');
-  var prevD = distEl.value;
-  distEl.innerHTML = '<option value="">Selecionar</option>';
-  if (!piscina || !estilo) return;
-  var provas = piscina === 'longa' ? ESTILO_PROVAS_LONGA[estilo] : ESTILO_PROVAS_CURTA[estilo];
-  if (!provas) return;
-  for (var i = 0; i < provas.length; i++) {
-    var opt = document.createElement('option');
-    opt.value = provas[i];
-    opt.textContent = provas[i] + 'm';
-    distEl.appendChild(opt);
-  }
-  if (distEl.querySelector('option[value="' + prevD + '"]')) distEl.value = prevD;
-}
-
-
-// ===== RECORDES MUNDIAIS (FINA/WORLD AQUATICS) =====
-// ===== FIM RECORDES MUNDIAIS =====
-
-
-function fpnOnTempoInput(event) {
-  var raw = event.target.value.replace(/\D/g,'');
-  event.target.value = raw;
-  var prev = document.getElementById('fpn-tempo-preview');
-  if (!raw) { prev.textContent = ''; return; }
-  var padded = raw.padStart(6,'0');
-  var cc = parseInt(padded.slice(-2));
-  var ss = parseInt(padded.slice(-4,-2));
-  var mm = parseInt(padded.slice(0,-4)) || 0;
-  var fmt = mm > 0 ? mm+':'+('0'+ss).slice(-2)+','+('0'+cc).slice(-2) : ss+','+('0'+cc).slice(-2);
-  prev.textContent = fmt;
-  document.getElementById('fpn-result').innerHTML = '';
-}
-
-
-
-// ============================================================
-// RECORDES POR IDADE
-// ============================================================
-function idadeUpdateEstilos() {
-  var piscina = document.getElementById('id-piscina').value;
-  var sexo = document.getElementById('id-sexo').value;
-  var estiloEl = document.getElementById('id-estilo');
-  var prevE = estiloEl.value;
-  estiloEl.innerHTML = '<option value="">Selecionar</option>';
-  if (!piscina || !sexo) return;
-  var estilos = sexo === 'X' ? ['L','E'] : ['L','C','B','M','E'];
-  for (var i = 0; i < estilos.length; i++) {
-    var opt = document.createElement('option');
-    opt.value = estilos[i];
-    opt.textContent = ESTILO_LABELS[estilos[i]];
-    estiloEl.appendChild(opt);
-  }
-  if (estiloEl.querySelector('option[value="' + prevE + '"]')) estiloEl.value = prevE;
-  idadeUpdateDistancias();
-}
-
-function idadeUpdateDistancias() {
-  var piscina = document.getElementById('id-piscina').value;
-  var sexo = document.getElementById('id-sexo').value;
-  var estilo = document.getElementById('id-estilo').value;
-  var distEl = document.getElementById('id-distancia');
-  var prevD = distEl.value;
-  distEl.innerHTML = '<option value="">Selecionar</option>';
-  if (!piscina || !estilo) return;
-  var provas;
-  if (sexo === 'X') {
-    // Misto: only relay distances
-    provas = estilo === 'L' ? ['4x50L','4x100L'] : ['4x50E','4x100E'];
-  } else {
-    // M/F: normal distances
-    provas = piscina === 'longa' ? ESTILO_PROVAS_LONGA[estilo] : ESTILO_PROVAS_CURTA[estilo];
-    // Append relay distances for L and E
-    if (estilo === 'L') provas = provas.concat(['4x50L','4x100L','4x200L']);
-    if (estilo === 'E') provas = provas.concat(['4x50E','4x100E']);
-  }
-  if (!provas) return;
-  for (var i = 0; i < provas.length; i++) {
-    var opt = document.createElement('option');
-    var isRelay = provas[i].indexOf('4x') === 0;
-    opt.value = provas[i];
-    opt.textContent = isRelay ? provas[i].replace('L','').replace('E','') + 'm estafeta' : provas[i] + 'm';
-    distEl.appendChild(opt);
-  }
-  if (distEl.querySelector('option[value="' + prevD + '"]')) distEl.value = prevD;
-  mostrarRecordeIdade();
-}
-
-function mostrarRecordeIdade() {
-  var piscina = document.getElementById('id-piscina').value;
-  var sexo = document.getElementById('id-sexo').value;
-  var estilo = document.getElementById('id-estilo').value;
-  var dist = document.getElementById('id-distancia').value;
-  var idade = document.getElementById('id-idade').value;
-  var resultEl = document.getElementById('id-result');
-
-  if (!piscina || !sexo || !estilo || !dist || !idade) {
-    resultEl.innerHTML = '';
-    return;
-  }
-
-  var pisc = piscina === 'curta' ? 'curta' : 'longa';
-  var ageKey = idade === 'open' ? 'open' : idade;
-  // Para estafetas, tentar chave exacta e depois intervalos (ex: "15" → "15-16")
-  var RELAY_AGE_MAP = {'13':['13'],'14':['14','13-14'],'15':['15'],'16':['16','15-16'],'17':['17'],'18':['18','17-18'],'19+':['19+']};
-  function getRelayRec(tab, pisc, sx, age, key) {
-    var keys = RELAY_AGE_MAP[age] || [age];
-    for (var ki=0; ki<keys.length; ki++) { try { var r=tab[pisc][sx][keys[ki]][key]; if(r) return r; } catch(e){} }
-    return null;
-  }
-  var isRelayDist = dist.indexOf('4x') === 0;
-  var isEstafeta = isRelayDist || sexo === 'X';
-  var rec = null;
-
-  if (isEstafeta) {
-    var lookupSexo = sexo === 'X' ? 'X' : sexo;
-    var relayStr = isRelayDist ? dist : ('4x' + dist + estilo);
-    var relayMatch = relayStr.match(/^4x(\d+)([LE])$/);
-    if (relayMatch) {
-      var relayDist = relayMatch[1];
-      var relayEstilo = relayMatch[2];
-      var key = relayDist + '_' + relayEstilo;
-      rec = getRelayRec(recordesEstafetas, pisc, lookupSexo, ageKey, key);
-    }
-  } else {
-    var key = dist + '_' + estilo;
-    try { rec = recordesIdade[pisc][sexo][ageKey][key]; } catch(e) {}
-  }
-
-  if (!rec) {
-    resultEl.innerHTML = '<div class="fpn-result-box" style="margin-top:12px;">'
-      + '<div class="fpn-pontos-label" style="font-size:16px;color:var(--aqua);">Sem registo</div>'
-      + '</div>';
-    return;
-  }
-
-  var html = '<div class="fpn-result-box" style="margin-top:12px;">';
-  html += '<div class="fpn-pontos">' + rec.tempo + '</div>';
-  html += '<div class="fpn-divider"></div>';
-  if (isEstafeta) {
-    html += '<div class="fpn-rn-nome">' + rec.clube + '</div>';
-    if (rec.nadadores) html += '<div class="fpn-rn-info" style="margin-bottom:4px;">' + rec.nadadores + '</div>';
-  } else {
-    html += '<div class="fpn-rn-nome">' + rec.nome + '</div>';
-  }
-  html += '<div class="fpn-rn-info">' + rec.data + ' · ' + rec.local + '</div>';
-  html += '</div>';
-  resultEl.innerHTML = html;
-}
 
 
 
@@ -10676,6 +10251,26 @@ var cronoPhase = 'config'; // 'config' | 'arranque' | 'active' | 'summary'
 var cronoLastTouch = null; // {grupoIdx, nadadorIdx} para undo global
 var cronoLongPressTimer = null;
 
+// Calcula se o texto deve ser escuro ou claro com base na cor de fundo
+function cronoTextColor(hex) {
+  hex = hex.replace('#','');
+  if (hex.length === 3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+  var r = parseInt(hex.substr(0,2),16);
+  var g = parseInt(hex.substr(2,2),16);
+  var b = parseInt(hex.substr(4,2),16);
+  // luminosidade relativa
+  var lum = (0.299*r + 0.587*g + 0.114*b) / 255;
+  return lum > 0.55 ? '#1a3a4a' : '#ffffff';
+}
+function cronoTextColorSub(hex) {
+  var c = cronoTextColor(hex);
+  return c === '#ffffff' ? 'rgba(255,255,255,0.88)' : 'rgba(26,58,74,0.75)';
+}
+function cronoShadow(hex) {
+  var c = cronoTextColor(hex);
+  return c === '#ffffff' ? '0 1px 3px rgba(0,0,0,0.3)' : '0 1px 2px rgba(255,255,255,0.4)';
+}
+
 function toggleCrono() {
   var s = document.getElementById('crono-section');
   var btn = document.getElementById('crono-btn');
@@ -10697,18 +10292,26 @@ function cronoSwitchTab(tab) {
   _cronoActiveTab = tab;
   var tPar = document.getElementById('crono-tab-parciais');
   var tCro = document.getElementById('crono-tab-cronos');
+  var tSwf = document.getElementById('crono-tab-swolf');
   var cPar = document.getElementById('crono-content');
   var cCro = document.getElementById('crono-cronos-content');
-  if (!tPar || !tCro || !cPar || !cCro) return;
+  var cSwf = document.getElementById('crono-swolf-content');
+  var bgOn = 'var(--blue-deep)', fgOn = '#fff', bgOff = '#f0f7ff', fgOff = '#1a3a4a';
+  if (tPar) { tPar.style.background = bgOff; tPar.style.color = fgOff; }
+  if (tCro) { tCro.style.background = bgOff; tCro.style.color = fgOff; }
+  if (tSwf) { tSwf.style.background = bgOff; tSwf.style.color = fgOff; }
+  if (cPar) cPar.style.display = 'none';
+  if (cCro) cCro.style.display = 'none';
+  if (cSwf) cSwf.style.display = 'none';
   if (tab === 'parciais') {
-    tPar.style.background = 'var(--blue-deep)'; tPar.style.color = '#fff';
-    tCro.style.background = '#f0f7ff'; tCro.style.color = '#1a3a4a';
-    cPar.style.display = 'block'; cCro.style.display = 'none';
-  } else {
-    tCro.style.background = 'var(--blue-deep)'; tCro.style.color = '#fff';
-    tPar.style.background = '#f0f7ff'; tPar.style.color = '#1a3a4a';
-    cPar.style.display = 'none'; cCro.style.display = 'block';
-    swInit();
+    if (tPar) { tPar.style.background = bgOn; tPar.style.color = fgOn; }
+    if (cPar) cPar.style.display = 'block';
+  } else if (tab === 'cronos') {
+    if (tCro) { tCro.style.background = bgOn; tCro.style.color = fgOn; }
+    if (cCro) { cCro.style.display = 'block'; swInit(); }
+  } else if (tab === 'swolf') {
+    if (tSwf) { tSwf.style.background = bgOn; tSwf.style.color = fgOn; }
+    if (cSwf) { cSwf.style.display = 'block'; swolfInit(); }
   }
 }
 
@@ -10974,11 +10577,12 @@ function cronoGoActive() {
 }
 
 function cronoVoltarConfig() {
-  if (!confirm('Voltar à configuração? O progresso atual perde-se.')) return;
-  cronoSession = null;
-  cronoPhase = 'config';
-  try { localStorage.removeItem(CRONO_SESSION_KEY); } catch(e) {}
-  cronoRenderConfig();
+  cronoShowUndoPanel('Voltar à configuração? O progresso atual perde-se.', function() {
+    cronoSession = null;
+    cronoPhase = 'config';
+    try { localStorage.removeItem(CRONO_SESSION_KEY); } catch(e) {}
+    cronoRenderConfig();
+  });
 }
 
 // ===== FASE 3: ATIVO =====
@@ -11044,21 +10648,25 @@ function cronoRenderActive() {
       }
 
       var btnClass = 'crono-swimmer-btn' + (n.finished ? ' finished' : (!g.started ? ' waiting' : ''));
-      var btnStyle = 'background:' + (n.finished ? '#b0b8c1' : n.cor) + ';';
+      var cardBg = n.finished ? '#b0b8c1' : n.cor;
+      var txtColor = cronoTextColor(cardBg);
+      var txtColorSub = cronoTextColorSub(cardBg);
+      var txtShadow = cronoShadow(cardBg);
+      var btnStyle = 'background:' + cardBg + ';';
 
       var innerHtml = '';
       if (n.finished) {
-        innerHtml = '<div class="crono-btn-name">' + n.nome + '</div>' +
-          '<div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.9);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Terminado</div>' +
-          '<div class="crono-btn-info"><strong>' + cronoFmtTotal(n) + '</strong><br>Média 100: ' + mediaStr + '</div>';
+        innerHtml = '<div class="crono-btn-name" style="color:' + txtColor + ';text-shadow:' + txtShadow + ';">' + n.nome + '</div>' +
+          '<div style="font-size:10px;font-weight:700;color:' + txtColorSub + ';text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Terminado</div>' +
+          '<div class="crono-btn-info" style="color:' + txtColorSub + ';"><strong>' + cronoFmtTotal(n) + '</strong><br>Média 100: ' + mediaStr + '</div>';
       } else if (isLast) {
         innerHtml = '<div class="crono-btn-finish-label">Terminar</div>' +
-          '<div class="crono-btn-name">' + n.nome + '</div>' +
-          '<div class="crono-btn-info"><strong>' + distPerc + 'm</strong><br>Média 100: ' + mediaStr + '<br>' + parcialLabel + lastSplit + '</div>';
+          '<div class="crono-btn-name" style="color:' + txtColor + ';text-shadow:' + txtShadow + ';">' + n.nome + '</div>' +
+          '<div class="crono-btn-info" style="color:' + txtColorSub + ';"><strong>' + distPerc + 'm</strong><br>Média 100: ' + mediaStr + '<br>' + parcialLabel + lastSplit + '</div>';
       } else {
         var parcialLabel = (parseInt(cronoSession.distPorToque) < 100) ? 'Parcial 50m: ' : 'Parcial: ';
-        innerHtml = '<div class="crono-btn-name">' + n.nome + '</div>' +
-          '<div class="crono-btn-info"><strong>' + distPerc + 'm</strong><br>Média 100: ' + mediaStr + '<br>' + parcialLabel + lastSplit + '</div>';
+        innerHtml = '<div class="crono-btn-name" style="color:' + txtColor + ';text-shadow:' + txtShadow + ';">' + n.nome + '</div>' +
+          '<div class="crono-btn-info" style="color:' + txtColorSub + ';"><strong>' + distPerc + 'm</strong><br>Média 100: ' + mediaStr + '<br>' + parcialLabel + lastSplit + '</div>';
       }
 
       swimHtml += '<div class="' + btnClass + '" style="' + btnStyle + '" ' +
@@ -14267,8 +13875,6 @@ function ocrEnviar(base64, mediaType, idx) {
   });
 }
 
-}
-
 function ocrAplicar(dados, idx) {
   var statusEl  = document.getElementById('ocr-status');
   var countNova = 0;
@@ -14418,6 +14024,429 @@ function ocrReset() {
   };
 
 })();
+
+var SWOLF_KEY = 'swimmin_swolf_v1';
+
+function swolfLoadDB() {
+  var r = null;
+  try { r = _lsGet(SWOLF_KEY); } catch(e) {}
+  if (r) { try { return JSON.parse(r); } catch(e) {} }
+  return window._swolfMemDB || {};
+}
+function swolfSaveDB(db) {
+  _lsSet(SWOLF_KEY, JSON.stringify(db));
+  window._swolfMemDB = db;
+}
+function swolfGetDB() { return swolfLoadDB(); }
+
+var swolfTecLabels = { L:'Livres', C:'Costas', B:'Bruços', M:'Mariposa' };
+var swolfDistLabels = { '25':'25m · Técnica','50':'50m · Velocidade','100':'100m · Ritmo','200':'200m · Consistência' };
+
+function swolfNumViragensIntermediarias() {
+  if (!swolf.piscina || !swolf.distancia) return 0;
+  return Math.max(0, (swolf.distancia / swolf.piscina) - 1);
+}
+
+var swolf = { phase:'menu', nadador:null, piscina:null, distancia:null, tecnica:null, reps:null,
+  repAtual:0, bracadasAtual:0, viragensFeitas:0, parado:false,
+  breakoutMs:null, viragensMs:[], breakoutsViragem:[], aguardaBreakoutViragem:false,
+  cronoRunning:false, cronoStart:null, cronoElapsed:0, cronoInterval:null,
+  repsData:[], sessaoData:null };
+
+function swolfInit() {
+  clearInterval(swolf.cronoInterval);
+  swolf = { phase:'menu', nadador:null, piscina:null, distancia:null, tecnica:null, reps:null,
+    repAtual:0, bracadasAtual:0, viragensFeitas:0, parado:false,
+    breakoutMs:null, viragensMs:[], breakoutsViragem:[], aguardaBreakoutViragem:false,
+    cronoRunning:false, cronoStart:null, cronoElapsed:0, cronoInterval:null,
+    repsData:[], sessaoData:null };
+  swolfRender();
+}
+
+function swolfRender() {
+  var el = document.getElementById('crono-swolf-content');
+  if (!el) return;
+  var ph = swolf.phase;
+  if (ph==='menu') swolfRenderMenu(el);
+  else if (ph==='config') swolfRenderConfig(el);
+  else if (ph==='sessao') swolfRenderSessao(el);
+  else if (ph==='resultado') swolfRenderResultado(el);
+  else if (ph==='historico') swolfRenderHistorico(el);
+}
+
+// ─── MENU ───
+function swolfRenderMenu(el) {
+  var db = swolfGetDB();
+  var nadadores = Object.keys(db).sort();
+  var isLight = document.documentElement.classList.contains('light-mode');
+  var html = '<div style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.6;">SWOLF = tempo (seg) + braçadas. Quanto mais baixo, mais eficiente.</div>';
+  html += '<div style="margin-bottom:14px;">';
+  html += '<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Novo registo</div>';
+  html += '<input type="text" id="swolf-nome-input" placeholder="Nome do nadador" style="width:100%;padding:11px;border-radius:10px;border:1.5px solid #c0d8ee;background:#f5faff;font-size:15px;box-sizing:border-box;font-family:\'DM Sans\',sans-serif;color:var(--text);margin-bottom:8px;">';
+  html += '<button onclick="swolfIniciarConfig()" style="width:100%;padding:12px;border-radius:10px;background:var(--aqua);color:#001f3a;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;">Iniciar sessão</button>';
+  html += '</div>';
+  if (nadadores.length > 0) {
+    html += '<div style="border-top:1px solid rgba(128,128,128,0.15);padding-top:14px;">';
+    html += '<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Histórico</div>';
+    nadadores.forEach(function(n) {
+      var sess = db[n] ? db[n].length : 0;
+      html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:10px;background:'+(isLight?'#f0f7ff':'rgba(0,144,224,0.08)')+';margin-bottom:6px;cursor:pointer;" onclick="swolfVerHistorico(\''+n.replace(/'/g,"\\'")+'\')">';
+      html += '<div><div style="font-size:14px;font-weight:700;color:var(--text);">'+n+'</div>';
+      html += '<div style="font-size:11px;color:var(--muted);">'+sess+' sessão'+(sess!==1?'ões':'')+'</div></div>';
+      html += '<div style="font-size:20px;color:var(--muted);">›</div></div>';
+    });
+    html += '</div>';
+  }
+  el.innerHTML = html;
+}
+
+function swolfIniciarConfig() {
+  var nome = ((document.getElementById('swolf-nome-input')||{}).value||'').trim();
+  if (!nome) { alert('Introduz o nome do nadador.'); return; }
+  swolf.nadador = nome; swolf.phase = 'config'; swolfRender();
+}
+
+// ─── CONFIG ───
+function swolfRenderConfig(el) {
+  var on='background:var(--blue-deep);color:#fff;border-color:var(--blue-deep);';
+  var off='background:#e8f4fd;color:#1a5a8a;border-color:#b0d4ee;';
+  function bs(v,c){return 'flex:1;padding:11px 4px;border-radius:10px;border:1.5px solid #b0d4ee;font-size:13px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;'+(v===c?on:off);}
+  var html = '<div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:14px;">Sessão · '+swolf.nadador+'</div>';
+  html += swolfCG('Piscina','<div style="display:flex;gap:6px;"><button style="'+bs(25,swolf.piscina)+'" onclick="swolfSet(\'piscina\',25)">25m</button><button style="'+bs(50,swolf.piscina)+'" onclick="swolfSet(\'piscina\',50)">50m</button></div>');
+  html += swolfCG('Distância','<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">'+['25','50','100','200'].map(function(d){return '<button style="'+bs(parseInt(d),swolf.distancia)+'" onclick="swolfSet(\'distancia\','+d+')">'+swolfDistLabels[d]+'</button>';}).join('')+'</div>');
+  html += swolfCG('Técnica','<div style="display:flex;gap:6px;">'+['L','C','B','M'].map(function(t){return '<button style="'+bs(t,swolf.tecnica)+'" onclick="swolfSet(\'tecnica\',\''+t+'\')">'+swolfTecLabels[t]+'</button>';}).join('')+'</div>');
+  html += swolfCG('Repetições','<div style="display:flex;flex-wrap:wrap;gap:6px;">'+[1,2,3,4,5,6,8,10].map(function(r){return '<button style="'+bs(r,swolf.reps)+';flex:none;padding:10px 12px;" onclick="swolfSet(\'reps\','+r+')">'+r+'</button>';}).join('')+'</div>');
+  html += '<button onclick="swolfIniciarSessao()" style="width:100%;padding:13px;border-radius:10px;background:var(--aqua);color:#001f3a;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;margin-top:4px;">Iniciar</button>';
+  html += '<button onclick="swolfInit()" style="margin-top:8px;width:100%;padding:10px;border-radius:10px;background:transparent;border:1.5px solid #b0d4ee;color:#1a5a8a;font-size:13px;cursor:pointer;font-family:\'DM Sans\',sans-serif;">← Voltar</button>';
+  el.innerHTML = html;
+}
+function swolfCG(label,inner){return '<div style="margin-bottom:14px;"><div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">'+label+'</div>'+inner+'</div>';}
+function swolfSet(k,v){swolf[k]=v;swolfRender();}
+
+function swolfIniciarSessao() {
+  if (!swolf.piscina||!swolf.distancia||!swolf.tecnica||!swolf.reps){alert('Preenche todos os campos.');return;}
+  swolf.repAtual=0; swolf.repsData=[]; swolf.bracadasAtual=0; swolf.viragensFeitas=0;
+  swolf.parado=false; swolf.breakoutMs=null; swolf.viragensMs=[]; swolf.breakoutsViragem=[]; swolf.aguardaBreakoutViragem=false;
+  swolf.cronoElapsed=0; swolf.cronoRunning=false;
+  swolf.sessaoData={data:new Date().toLocaleDateString('pt-PT'),piscina:swolf.piscina,distancia:swolf.distancia,tecnica:swolf.tecnica,reps:swolf.reps,repsData:[],mediaSwolf:0};
+  swolf.phase='sessao'; swolfRender();
+}
+
+// ─── SESSÃO ───
+function swolfRenderSessao(el) {
+  var isLight = document.documentElement.classList.contains('light-mode');
+  var rep = swolf.repAtual+1;
+  var nViragInt = swolfNumViragensIntermediarias();
+  var eUltimaViragem = swolf.viragensFeitas >= nViragInt;
+  var temViragem = nViragInt > 0;
+  var tAtual = swolf.cronoElapsed/1000;
+  var swolfAtual = (swolf.parado && swolf.bracadasAtual>0) ? Math.round(tAtual)+swolf.bracadasAtual : null;
+
+  var html = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">';
+  html += '<div><div style="font-size:14px;font-weight:700;color:var(--text);">'+swolf.nadador+'</div>';
+  html += '<div style="font-size:11px;color:var(--muted);">'+swolf.distancia+'m '+swolfTecLabels[swolf.tecnica]+' · '+swolf.piscina+'m · Rep '+rep+'/'+swolf.reps+'</div></div>';
+  html += '<div style="font-size:13px;font-weight:700;color:var(--muted);">'+swolf.repsData.length+'/'+swolf.reps+' feitas</div></div>';
+
+  // Cronómetro
+  html += '<div style="text-align:center;font-family:\'Bebas Neue\',sans-serif;font-size:64px;letter-spacing:2px;color:var(--aqua);line-height:1;margin-bottom:4px;" id="swolf-display">'+tAtual.toFixed(2)+'</div>';
+  var subLabel = swolf.cronoRunning ? (temViragem && !eUltimaViragem ? 'Viragem '+(swolf.viragensFeitas+1)+'/'+nViragInt+' — depois Parar' : 'A correr...') : (swolf.parado ? 'Parado · ajusta braçadas' : 'Pronto');
+  html += '<div style="text-align:center;font-size:12px;color:var(--muted);margin-bottom:12px;" id="swolf-sub">'+subLabel+'</div>';
+
+  // Botão Breakout (após Iniciar, antes do primeiro +1)
+  if (swolf.cronoRunning) {
+    if (swolf.breakoutMs === null) {
+      html += '<button onclick="swolfBreakout()" id="swolf-btn-breakout" style="width:100%;padding:14px;border-radius:12px;background:#f39c12;color:#fff;border:none;font-size:15px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;margin-bottom:8px;">Breakout</button>';
+    } else {
+      html += '<div style="text-align:center;font-size:12px;color:#27ae60;font-weight:700;margin-bottom:8px;">✓ Breakout: '+(swolf.breakoutMs/1000).toFixed(2)+'s</div>';
+    }
+  }
+
+  // Botão de acção principal — um de cada vez
+  if (!swolf.cronoRunning && !swolf.parado) {
+    html += '<button onclick="swolfCronoIniciar()" style="width:100%;padding:18px;border-radius:12px;background:var(--aqua);color:#001f3a;border:none;font-size:16px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;margin-bottom:14px;">Iniciar</button>';
+  } else if (swolf.cronoRunning) {
+    if (temViragem && !eUltimaViragem) {
+      html += '<button onclick="swolfViragem()" style="width:100%;padding:18px;border-radius:12px;background:#005fa3;color:#fff;border:none;font-size:16px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;margin-bottom:14px;">Viragem '+(swolf.viragensFeitas+1)+'/'+nViragInt+'</button>';
+    } else {
+      html += '<button onclick="swolfParar()" style="width:100%;padding:18px;border-radius:12px;background:#e74c3c;color:#fff;border:none;font-size:16px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;margin-bottom:14px;">Parar</button>';
+    }
+  }
+
+  // Contador braçadas
+  if (swolf.cronoRunning || swolf.parado) {
+    var btnBg = swolf.aguardaBreakoutViragem ? '#f39c12' : 'var(--aqua)';
+    var btnLbl = swolf.aguardaBreakoutViragem ? '+1<br><span style="font-size:11px;line-height:1;">Breakout<br>Viragem</span>' : '+1';
+    var lbl = swolf.aguardaBreakoutViragem ? '<div style="font-size:11px;color:#f39c12;font-weight:700;margin-bottom:2px;">→ 1ª braçada após viragem</div>' : '<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">Braçadas</div>';
+    var bvHtml = '';
+    if (swolf.breakoutsViragem.length>0) { bvHtml='<div style="font-size:11px;color:#f39c12;margin-top:2px;">'; swolf.breakoutsViragem.forEach(function(bv,i){bvHtml+='V'+(i+1)+': '+bv.toFixed(2)+'s ';}); bvHtml+='</div>'; }
+    html += '<div style="display:flex;align-items:center;justify-content:space-between;background:'+(isLight?'#f0f7ff':'rgba(0,144,224,0.08)')+';border-radius:14px;padding:12px 16px;margin-bottom:'+(swolf.parado?'10px':'14px')+' ;">';
+    html += '<div>'+lbl+'<div id="swolf-bracadas-n" style="font-family:\'Bebas Neue\',sans-serif;font-size:52px;color:var(--aqua);letter-spacing:2px;line-height:1;">'+swolf.bracadasAtual+'</div>'+bvHtml+'</div>';
+    html += '<button onclick="swolfBracada()" style="width:80px;height:80px;border-radius:50%;border:none;background:'+btnBg+';font-size:22px;font-weight:700;cursor:pointer;color:#001f3a;font-family:\'DM Sans\',sans-serif;box-shadow:0 4px 16px rgba(0,196,204,0.35);flex-shrink:0;line-height:1.2;">'+btnLbl+'</button>';
+    html += '</div>';
+
+    // Modo ecrã grande
+    html += '<button onclick="swolfModoGrande()" style="width:100%;padding:10px;border-radius:10px;background:transparent;border:1.5px solid var(--aqua);color:var(--aqua);font-size:13px;font-weight:600;cursor:pointer;font-family:\'DM Sans\',sans-serif;margin-bottom:10px;">⛶ Modo ecrã grande</button>';
+
+    if (swolf.parado) {
+      html += '<button onclick="swolfConfirmarRep()" style="width:100%;padding:13px;border-radius:10px;background:var(--blue-deep);color:#fff;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;margin-bottom:8px;">✓ Guardar rep '+rep+(swolfAtual?' · SWOLF '+swolfAtual:'')+'</button>';
+    }
+  }
+
+  // Reps concluídas
+  if (swolf.repsData.length>0) {
+    html += '<div style="border-top:1px solid rgba(128,128,128,0.15);padding-top:10px;margin-top:4px;"><div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Concluídas</div>';
+    swolf.repsData.forEach(function(r,i){
+      html += '<div style="padding:6px 0;border-bottom:1px solid rgba(128,128,128,0.08);"><div style="display:flex;justify-content:space-between;align-items:center;">';
+      html += '<span style="font-size:12px;color:var(--muted);">Rep '+(i+1)+'</span>';
+      html += '<span style="font-size:13px;color:var(--text);">'+r.tempo.toFixed(2)+'s · '+r.bracadas+'b</span>';
+      html += '<span style="font-size:14px;font-weight:700;color:var(--aqua);">SWOLF '+r.swolf+'</span></div>';
+      if (r.breakout!==undefined) {
+        html += '<div style="font-size:11px;color:#f39c12;margin-top:2px;">⬆ Partida: '+r.breakout.toFixed(2)+'s';
+        if (r.breakoutsViragem) r.breakoutsViragem.forEach(function(bv,j){html+=' · V'+(j+1)+': '+bv.toFixed(2)+'s';});
+        html += '</div>';
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+  html += '<button onclick="swolfInit()" style="margin-top:10px;width:100%;padding:10px;border-radius:10px;background:transparent;border:1.5px solid #b0d4ee;color:#1a5a8a;font-size:13px;cursor:pointer;font-family:\'DM Sans\',sans-serif;">← Cancelar</button>';
+  el.innerHTML = html;
+}
+
+function swolfCronoIniciar() {
+  swolf.viragensFeitas=0; swolf.bracadasAtual=0; swolf.parado=false;
+  swolf.breakoutMs=null; swolf.viragensMs=[]; swolf.breakoutsViragem=[]; swolf.aguardaBreakoutViragem=false;
+  swolf.cronoRunning=true; swolf.cronoStart=Date.now(); swolf.cronoElapsed=0;
+  swolf.cronoInterval=setInterval(function(){
+    swolf.cronoElapsed=Date.now()-swolf.cronoStart;
+    var d=document.getElementById('swolf-display');
+    if(d) d.textContent=(swolf.cronoElapsed/1000).toFixed(2);
+  },50);
+  swolfRender();
+}
+
+function swolfBreakout() {
+  if (swolf.breakoutMs!==null) return;
+  swolf.breakoutMs=swolf.cronoElapsed;
+  var btn=document.getElementById('swolf-btn-breakout');
+  if(btn){btn.textContent='✓ '+(swolf.breakoutMs/1000).toFixed(2)+'s';btn.style.background='#27ae60';btn.disabled=true;}
+}
+
+function swolfViragem() {
+  swolf.viragensMs.push(swolf.cronoElapsed);
+  swolf.aguardaBreakoutViragem=true;
+  swolf.viragensFeitas++;
+  swolfRender();
+}
+
+function swolfParar() {
+  clearInterval(swolf.cronoInterval);
+  swolf.cronoRunning=false; swolf.parado=true;
+  swolfRender();
+}
+
+function swolfBracada() {
+  swolf.bracadasAtual++;
+  // Primeiro +1 após viragem = breakout de viragem
+  if (swolf.aguardaBreakoutViragem && swolf.viragensMs.length>0) {
+    var idx=swolf.breakoutsViragem.length;
+    if (idx<swolf.viragensMs.length) swolf.breakoutsViragem.push((swolf.cronoElapsed-swolf.viragensMs[idx])/1000);
+    swolf.aguardaBreakoutViragem=false;
+    swolfRender(); return;
+  }
+  var el=document.getElementById('swolf-bracadas-n');
+  if(el) el.textContent=swolf.bracadasAtual;
+  var elOv=document.getElementById('swolf-ov-brac');
+  if(elOv) elOv.textContent=swolf.bracadasAtual;
+}
+
+function swolfConfirmarRep() {
+  var t=swolf.cronoElapsed/1000, b=swolf.bracadasAtual, s=Math.round(t)+b;
+  var rep={tempo:t,bracadas:b,swolf:s};
+  if(swolf.breakoutMs!==null) rep.breakout=swolf.breakoutMs/1000;
+  if(swolf.breakoutsViragem.length>0) rep.breakoutsViragem=swolf.breakoutsViragem.slice();
+  swolf.repsData.push(rep);
+  swolf.repAtual++;
+  swolf.bracadasAtual=0; swolf.viragensFeitas=0; swolf.parado=false;
+  swolf.breakoutMs=null; swolf.viragensMs=[]; swolf.breakoutsViragem=[]; swolf.aguardaBreakoutViragem=false;
+  swolf.cronoElapsed=0; clearInterval(swolf.cronoInterval); swolf.cronoRunning=false;
+  if (swolf.repAtual>=swolf.reps) {
+    swolf.sessaoData.repsData=swolf.repsData;
+    swolf.sessaoData.mediaSwolf=Math.round(swolf.repsData.reduce(function(s,r){return s+r.swolf;},0)/swolf.repsData.length);
+    var db=swolfGetDB(); if(!db[swolf.nadador]) db[swolf.nadador]=[];
+    db[swolf.nadador].push(swolf.sessaoData); swolfSaveDB(db);
+    swolf.phase='resultado';
+  }
+  swolfRender();
+}
+
+// ─── MODO ECRÃ GRANDE ───
+var swolfVolumeListener=null;
+function swolfModoGrande() {
+  var ex=document.getElementById('swolf-overlay'); if(ex) ex.remove();
+  var isLight=document.documentElement.classList.contains('light-mode');
+  var ov=document.createElement('div');
+  ov.id='swolf-overlay';
+  ov.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;background:'+(isLight?'#f0f7ff':'#001a2e')+';z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:space-around;padding:24px 20px;box-sizing:border-box;';
+  document.body.appendChild(ov);
+  swolfOverlayUpdate();
+  if(window.swolfOverlayInterval) clearInterval(window.swolfOverlayInterval);
+  window.swolfOverlayInterval=setInterval(function(){
+    if(!document.getElementById('swolf-overlay')){clearInterval(window.swolfOverlayInterval);return;}
+    if(swolf.cronoRunning){var d=document.getElementById('swolf-ov-display');if(d) d.textContent=(swolf.cronoElapsed/1000).toFixed(2);}
+  },50);
+}
+
+function swolfOverlayUpdate() {
+  var ov=document.getElementById('swolf-overlay'); if(!ov) return;
+  var isLight=document.documentElement.classList.contains('light-mode');
+  ov.style.background=isLight?'#f0f7ff':'#001a2e';
+  var t=(swolf.cronoElapsed/1000).toFixed(2);
+  var sv=swolf.bracadasAtual>0?Math.round(swolf.cronoElapsed/1000)+swolf.bracadasAtual:null;
+  var rep=swolf.repAtual+1, nVi=swolfNumViragensIntermediarias(), aq='var(--aqua)';
+  var h='<div style="text-align:center;">';
+  h+='<div style="font-size:14px;color:var(--muted);">'+swolf.nadador+' · '+swolf.distancia+'m '+swolfTecLabels[swolf.tecnica]+' · Rep '+rep+'/'+swolf.reps+'</div>';
+  h+='<div id="swolf-ov-display" style="font-family:\'Bebas Neue\',sans-serif;font-size:88px;color:'+aq+';letter-spacing:3px;line-height:1;">'+t+'</div>';
+  h+='<div style="font-size:13px;color:var(--muted);">'+(swolf.cronoRunning?'A correr...':(swolf.parado?'Parado':'Pronto'))+'</div></div>';
+  h+='<div style="text-align:center;"><div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">Braçadas</div>';
+  h+='<div id="swolf-ov-brac" style="font-family:\'Bebas Neue\',sans-serif;font-size:96px;color:'+aq+';letter-spacing:3px;line-height:1;">'+swolf.bracadasAtual+'</div>';
+  if(sv) h+='<div style="font-size:18px;color:var(--muted);margin-top:6px;">SWOLF <strong style="color:'+aq+';">'+sv+'</strong></div>';
+  h+='</div>';
+  h+='<div style="width:100%;display:flex;flex-direction:column;gap:10px;">';
+  if(!swolf.cronoRunning&&!swolf.parado) {
+    h+='<button onclick="swolfCronoIniciar();swolfOverlayUpdate()" style="width:100%;padding:22px;border-radius:16px;background:'+aq+';color:#001f3a;border:none;font-size:22px;font-weight:700;cursor:pointer;">Iniciar</button>';
+  } else if(swolf.cronoRunning) {
+    if(swolf.breakoutMs===null) h+='<button onclick="swolfBreakout();swolfOverlayUpdate()" style="width:100%;padding:18px;border-radius:16px;background:#f39c12;color:#fff;border:none;font-size:20px;font-weight:700;cursor:pointer;">Breakout</button>';
+    else h+='<div style="text-align:center;font-size:14px;color:#27ae60;font-weight:700;padding:6px 0;">✓ Breakout: '+(swolf.breakoutMs/1000).toFixed(2)+'s</div>';
+    if(nVi>0&&swolf.viragensFeitas<nVi) h+='<button onclick="swolfViragem();swolfOverlayUpdate()" style="width:100%;padding:22px;border-radius:16px;background:#005fa3;color:#fff;border:none;font-size:22px;font-weight:700;cursor:pointer;">Viragem '+(swolf.viragensFeitas+1)+'/'+nVi+'</button>';
+    else h+='<button onclick="swolfParar();swolfOverlayUpdate()" style="width:100%;padding:22px;border-radius:16px;background:#e74c3c;color:#fff;border:none;font-size:22px;font-weight:700;cursor:pointer;">Parar</button>';
+  }
+  if(swolf.cronoRunning||swolf.parado) h+='<button onclick="swolfBracada();swolfOverlayUpdate()" style="width:100%;padding:22px;border-radius:16px;background:'+aq+';color:#001f3a;border:none;font-size:22px;font-weight:700;cursor:pointer;">+1 Braçada</button>';
+  if(swolf.parado&&sv) h+='<button onclick="swolfConfirmarRep();document.getElementById(\'swolf-overlay\').remove();clearInterval(window.swolfOverlayInterval);" style="width:100%;padding:20px;border-radius:16px;background:var(--blue-deep);color:#fff;border:none;font-size:19px;font-weight:700;cursor:pointer;">✓ Guardar rep '+rep+' · SWOLF '+sv+'</button>';
+  h+='</div>';
+  h+='<button onclick="document.getElementById(\'swolf-overlay\').remove();clearInterval(window.swolfOverlayInterval);swolfRender();" style="background:transparent;border:1.5px solid rgba(128,128,128,0.3);color:var(--muted);border-radius:10px;padding:10px 24px;font-size:13px;cursor:pointer;">✕ Fechar ecrã grande</button>';
+  ov.innerHTML=h;
+}
+
+// ─── RESULTADO ───
+function swolfRenderResultado(el) {
+  var isLight=document.documentElement.classList.contains('light-mode');
+  var reps=swolf.repsData, media=swolf.sessaoData.mediaSwolf;
+  var mn=Math.min.apply(null,reps.map(function(r){return r.swolf;}));
+  var mx=Math.max.apply(null,reps.map(function(r){return r.swolf;}));
+  var html='<div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px;">'+swolf.nadador+'</div>';
+  html+='<div style="font-size:12px;color:var(--muted);margin-bottom:14px;">'+swolf.distancia+'m '+swolfTecLabels[swolf.tecnica]+' · '+swolf.piscina+'m · '+swolf.sessaoData.data+'</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;">';
+  function sb(l,v,d){var bg=d?(isLight?'#e8f4fb':'rgba(0,196,204,0.1)'):(isLight?'#f5faff':'rgba(128,128,128,0.08)');var c=d?'var(--aqua)':'var(--text)';return '<div style="background:'+bg+';border-radius:12px;padding:12px 8px;text-align:center;"><div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">'+l+'</div><div style="font-size:28px;font-weight:700;font-family:\'Bebas Neue\',sans-serif;color:'+c+';letter-spacing:1px;">'+v+'</div></div>';}
+  html+=sb('Média',media,true)+sb('Melhor',mn,false)+sb('Pior',mx,false)+'</div>';
+  reps.forEach(function(r,i){
+    var pct=mn===mx?80:Math.round(50+(1-(r.swolf-mn)/(mx-mn))*50);
+    var cor=r.swolf===mn?'#00c4cc':(r.swolf===mx?'#e74c3c':(isLight?'var(--blue-mid)':'var(--blue-bright)'));
+    html+='<div style="margin-bottom:8px;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;"><div style="font-size:11px;font-weight:700;color:var(--muted);width:32px;">Rep '+(i+1)+'</div><div style="flex:1;background:rgba(128,128,128,0.1);border-radius:6px;height:24px;overflow:hidden;"><div style="height:24px;border-radius:6px;background:'+cor+';width:'+pct+'%;display:flex;align-items:center;padding-left:8px;"><span style="font-size:12px;font-weight:700;color:#fff;white-space:nowrap;">'+r.swolf+'</span></div></div><div style="font-size:11px;color:var(--muted);width:58px;text-align:right;">'+r.tempo.toFixed(1)+'s/'+r.bracadas+'b</div></div>';
+    if(r.breakout!==undefined){
+      var tn=r.tempo-r.breakout, pb=Math.round((r.breakout/r.tempo)*100);
+      html+='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-left:40px;">';
+      html+='<span style="font-size:11px;background:rgba(243,156,18,0.15);color:#f39c12;border-radius:6px;padding:2px 7px;font-weight:600;">⬆ Partida '+r.breakout.toFixed(2)+'s ('+pb+'%)</span>';
+      if(r.breakoutsViragem) r.breakoutsViragem.forEach(function(bv,j){html+='<span style="font-size:11px;background:rgba(243,156,18,0.1);color:#f39c12;border-radius:6px;padding:2px 7px;font-weight:600;">↩ V'+(j+1)+' '+bv.toFixed(2)+'s</span>';});
+      html+='<span style="font-size:11px;background:rgba(0,196,204,0.1);color:var(--aqua);border-radius:6px;padding:2px 7px;font-weight:600;">~ Nado '+tn.toFixed(2)+'s</span></div>';
+    }
+    html+='</div>';
+  });
+  // Análise subaquática
+  var rbc=reps.filter(function(r){return r.breakout!==undefined;});
+  if(rbc.length>0){
+    var mp=rbc.reduce(function(s,r){return s+r.breakout;},0)/rbc.length;
+    var mn2=rbc.reduce(function(s,r){return s+(r.tempo-r.breakout);},0)/rbc.length;
+    var bvAll=[]; rbc.forEach(function(r){if(r.breakoutsViragem) r.breakoutsViragem.forEach(function(bv){bvAll.push(bv);});});
+    var mbv=bvAll.length>0?bvAll.reduce(function(s,v){return s+v;},0)/bvAll.length:null;
+    html+='<div style="background:'+(isLight?'#fff8e1':'rgba(243,156,18,0.08)')+';border-radius:12px;padding:12px 14px;margin-bottom:12px;border-left:3px solid #f39c12;">';
+    html+='<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#f39c12;margin-bottom:8px;">Análise Subaquática</div>';
+    var nc=mbv!==null?3:2;
+    html+='<div style="display:grid;grid-template-columns:repeat('+nc+',1fr);gap:8px;margin-bottom:10px;">';
+    html+='<div style="text-align:center;"><div style="font-size:10px;color:var(--muted);margin-bottom:2px;">⬆ Partida</div><div style="font-size:22px;font-weight:700;font-family:\'Bebas Neue\',sans-serif;color:#f39c12;">'+mp.toFixed(2)+'s</div></div>';
+    if(mbv!==null) html+='<div style="text-align:center;"><div style="font-size:10px;color:var(--muted);margin-bottom:2px;">↩ Viragem</div><div style="font-size:22px;font-weight:700;font-family:\'Bebas Neue\',sans-serif;color:#f39c12;">'+mbv.toFixed(2)+'s</div></div>';
+    html+='<div style="text-align:center;"><div style="font-size:10px;color:var(--muted);margin-bottom:2px;">~ Nado</div><div style="font-size:22px;font-weight:700;font-family:\'Bebas Neue\',sans-serif;color:var(--aqua);">'+mn2.toFixed(2)+'s</div></div>';
+    html+='</div>';
+    if(rbc.length>1) html+=swolfGL(rbc.map(function(r){return parseFloat(r.breakout.toFixed(2));}),rbc.map(function(r,i){return 'R'+(i+1);}),isLight,'Subaquático partida por rep');
+    html+='</div>';
+  }
+  if(reps.length>1) html+=swolfGL(reps.map(function(r){return r.swolf;}),reps.map(function(r,i){return 'R'+(i+1);}),isLight,'SWOLF por repetição');
+  html+='<div style="display:flex;gap:8px;margin-top:12px;">';
+  html+='<button onclick="swolfNovaSessaoMesmoNadador()" style="flex:1;padding:12px;border-radius:10px;background:var(--aqua);color:#001f3a;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;">Nova sessão</button>';
+  html+='<button onclick="swolfVerHistorico(\''+swolf.nadador.replace(/'/g,"\\'")+'\''+')" style="flex:1;padding:12px;border-radius:10px;background:transparent;border:1.5px solid #b0d4ee;color:#1a5a8a;font-size:13px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;">Ver histórico</button>';
+  html+='</div>';
+  el.innerHTML=html;
+}
+
+// ─── HISTÓRICO ───
+function swolfVerHistorico(nome){swolf.nadador=nome;swolf.phase='historico';swolfRender();}
+
+function swolfRenderHistorico(el) {
+  var db=swolfGetDB(), sessoes=(db[swolf.nadador]||[]).slice().reverse();
+  var isLight=document.documentElement.classList.contains('light-mode');
+  var html='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">';
+  html+='<div style="font-size:16px;font-weight:700;color:var(--text);">'+swolf.nadador+'</div>';
+  html+='<button onclick="swolfInit()" style="padding:7px 14px;border-radius:20px;border:1.5px solid #b0d4ee;background:transparent;color:#1a5a8a;font-size:12px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;">← Voltar</button></div>';
+  if(sessoes.length===0){html+='<div style="text-align:center;color:var(--muted);padding:20px;">Sem sessões registadas.</div>';}
+  else {
+    if(sessoes.length>=2){
+      var ms=sessoes.slice().reverse().map(function(s){return s.mediaSwolf;});
+      var ds=sessoes.slice().reverse().map(function(s){return s.data.split('/').slice(0,2).join('/');});
+      html+=swolfGL(ms,ds,isLight,'Evolução SWOLF médio')+'<div style="margin-bottom:14px;"></div>';
+    }
+    html+='<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Sessões</div>';
+    sessoes.forEach(function(s,i){
+      html+='<div style="background:'+(isLight?'#f0f7ff':'rgba(0,144,224,0.06)')+';border-radius:12px;padding:12px 14px;margin-bottom:8px;">';
+      html+='<div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="swolfToggleDet('+i+')">';
+      html+='<div><div style="font-size:13px;font-weight:700;color:var(--text);">'+s.data+' · '+s.distancia+'m '+(swolfTecLabels[s.tecnica]||s.tecnica)+' · '+s.piscina+'m</div>';
+      html+='<div style="font-size:11px;color:var(--muted);">'+s.repsData.length+' rep'+(s.repsData.length!==1?'s':'')+'</div></div>';
+      html+='<div style="font-size:24px;font-weight:700;font-family:\'Bebas Neue\',sans-serif;color:var(--aqua);">'+s.mediaSwolf+'</div></div>';
+      html+='<div id="swolf-det-'+i+'" style="display:none;margin-top:10px;border-top:1px solid rgba(128,128,128,0.12);padding-top:8px;">';
+      s.repsData.forEach(function(r,j){
+        html+='<div style="padding:4px 0;font-size:12px;border-bottom:1px solid rgba(128,128,128,0.06);"><div style="display:flex;justify-content:space-between;">';
+        html+='<span style="color:var(--muted);">Rep '+(j+1)+'</span><span style="color:var(--text);">'+r.tempo.toFixed(2)+'s · '+r.bracadas+'b</span>';
+        html+='<span style="font-weight:700;color:var(--aqua);">SWOLF '+r.swolf+'</span></div>';
+        if(r.breakout!==undefined){
+          html+='<div style="font-size:11px;color:#f39c12;margin-top:1px;">⬆ Partida '+r.breakout.toFixed(2)+'s';
+          if(r.breakoutsViragem) r.breakoutsViragem.forEach(function(bv,k){html+=' · ↩ V'+(k+1)+' '+bv.toFixed(2)+'s';});
+          html+=' · Nado '+(r.tempo-r.breakout).toFixed(2)+'s</div>';
+        }
+        html+='</div>';
+      });
+      html+='</div></div>';
+    });
+    html+='<button onclick="swolfEliminarNadador()" style="margin-top:4px;width:100%;padding:10px;border-radius:10px;background:transparent;border:1.5px solid #e74c3c;color:#e74c3c;font-size:12px;font-weight:600;cursor:pointer;font-family:\'DM Sans\',sans-serif;">Eliminar dados de '+swolf.nadador+'</button>';
+  }
+  html+='<button onclick="swolfNovaSessaoMesmoNadador()" style="margin-top:8px;width:100%;padding:12px;border-radius:10px;background:var(--aqua);color:#001f3a;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;">+ Nova sessão</button>';
+  el.innerHTML=html;
+}
+
+function swolfToggleDet(i){var d=document.getElementById('swolf-det-'+i);if(d) d.style.display=d.style.display==='none'?'block':'none';}
+function swolfNovaSessaoMesmoNadador(){clearInterval(swolf.cronoInterval);var n=swolf.nadador;swolf={phase:'config',nadador:n,piscina:null,distancia:null,tecnica:null,reps:null,repAtual:0,bracadasAtual:0,viragensFeitas:0,parado:false,breakoutMs:null,viragensMs:[],breakoutsViragem:[],aguardaBreakoutViragem:false,cronoRunning:false,cronoStart:null,cronoElapsed:0,cronoInterval:null,repsData:[],sessaoData:null};swolfRender();}
+function swolfEliminarNadador(){if(!confirm('Eliminar todos os dados de '+swolf.nadador+'?'))return;var db=swolfGetDB();delete db[swolf.nadador];swolfSaveDB(db);swolfInit();}
+
+// ─── GRÁFICO ───
+function swolfGL(vals,labels,isLight,titulo){
+  var W=280,H=90,pad=22,n=vals.length;
+  if(n<2) return '';
+  var mn=Math.min.apply(null,vals),mx=Math.max.apply(null,vals),range=mx-mn||1;
+  var pts=vals.map(function(v,i){return{x:pad+(i/(n-1))*(W-2*pad),y:pad+(1-(v-mn)/range)*(H-2*pad),v:v};});
+  var st=isLight?'#0090e0':'#00c4cc',gc=isLight?'rgba(0,0,0,0.07)':'rgba(255,255,255,0.07)';
+  var pl=pts.map(function(p){return p.x+','+p.y;}).join(' ');
+  var area='M'+pts[0].x+','+pts[0].y+pts.map(function(p){return ' L'+p.x+','+p.y;}).join('')+' L'+pts[n-1].x+','+(H-pad)+' L'+pts[0].x+','+(H-pad)+' Z';
+  var svg='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;display:block;">';
+  [0,0.5,1].forEach(function(f){var y=pad+f*(H-2*pad);svg+='<line x1="'+pad+'" y1="'+y+'" x2="'+(W-pad)+'" y2="'+y+'" stroke="'+gc+'" stroke-width="1"/><text x="'+(pad-2)+'" y="'+(y+4)+'" font-size="9" fill="currentColor" opacity="0.35" text-anchor="end">'+Math.round(mx-f*range)+'</text>';});
+  svg+='<path d="'+area+'" fill="'+st+'" opacity="0.1"/>';
+  svg+='<polyline points="'+pl+'" fill="none" stroke="'+st+'" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
+  pts.forEach(function(p,i){
+    svg+='<circle cx="'+p.x+'" cy="'+p.y+'" r="4" fill="'+st+'" stroke="#fff" stroke-width="1.5"/>';
+    svg+='<text x="'+p.x+'" y="'+(p.y-8)+'" font-size="10" font-weight="700" fill="'+st+'" text-anchor="middle">'+p.v+'</text>';
+    svg+='<text x="'+p.x+'" y="'+(H-2)+'" font-size="8" fill="currentColor" opacity="0.4" text-anchor="middle">'+(labels[i]||'')+'</text>';
+  });
+  svg+='</svg>';
+  return '<div style="background:rgba(128,128,128,0.05);border-radius:12px;padding:12px 8px 4px;margin-bottom:10px;"><div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;text-align:center;">'+titulo+'</div>'+svg+'</div>';
+}
+
 </script>
 </body>
 </html>
