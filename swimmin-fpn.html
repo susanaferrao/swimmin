@@ -6481,7 +6481,7 @@ var recordesIdade = {
         "50_B": {tempo:"29,72", nome:"Almeida, David Xavier", data:"20-23/03/2026", local:"Coimbra"},
         "100_B": {tempo:"1:03,71", nome:"Mimoso, Rafael Miguel", data:"28/07/2023", local:"Maribor (SLO)"},
         "200_B": {tempo:"2:15,98", nome:"Mimoso, Rafael Miguel", data:"24/07/2023", local:"Maribor (SLO)"},
-        "50_M": {tempo:"25,35", nome:"Ferreira, Duarte Santos", data:"12/07/2024", local:"Oeiras"},
+        "50_M": {tempo:"25,31", nome:"Alecrim, Rodolfo Júnior", data:"03/05/2026", local:"Bratislava"},
         "100_M": {tempo:"56,05", nome:"Vakulyuk, Paulo", data:"03/08/2019", local:"Funchal"},
         "200_M": {tempo:"2:03,76", nome:"Oliveira, Pedro Diogo", data:"31/07/2004", local:"Lisboa"},
         "200_E": {tempo:"2:08,11", nome:"Almeida, Carlos Esteves", data:"31/07/2004", local:"Lisboa"},
@@ -6513,7 +6513,7 @@ var recordesIdade = {
         "400_L": {tempo:"4:15,99", nome:"Oliveira, Pedro Fontoura", data:"11/07/2004", local:"Badajoz (ESP)"},
         "800_L": {tempo:"8:54,25", nome:"Oliveira, Pedro Fontoura", data:"29/05/2004", local:"Lisboa"},
         "1500_L": {tempo:"16:43,48", nome:"Oliveira, Pedro Fontoura", data:"19/06/2004", local:"Rio Maior"},
-        "50_C": {tempo:"29,62", nome:"Almeida, Pedro Pereira", data:"18/07/2025", local:"Loulé"},
+        "50_C": {tempo:"29,54", nome:"Santos, João Daniel", data:"18/04/2026", local:"Coimbra"},
         "100_C": {tempo:"1:01,39", nome:"Ribas, Alexandre Lages", data:"22/07/2011", local:"Lisboa"},
         "200_C": {tempo:"2:14,56", nome:"Ribas, Alexandre Lages", data:"23/07/2011", local:"Lisboa"},
         "50_B": {tempo:"30,39", nome:"tempo limite", data:"", local:""},
@@ -10638,14 +10638,12 @@ function cronoRenderActive() {
       var isLast = (toques === totalToques - 1) && !n.finished;
       var distPerc = toques * cronoSession.distPorToque;
       var mediaStr = cronoCalcMedia(n);
-      // Parcial aos 100m:
-      // piscina 25m (50m/toque): mostrar nos toques pares = soma dos 2 ultimos toques
-      // piscina 50m (100m/toque): mostrar sempre = ultimo toque
       var lastSplit = '—';
       if (toques > 0) {
-        // Parcial = sempre o tempo do ultimo toque
         lastSplit = cronoFmtMs(n.splits[toques-1]);
       }
+      // Tempo total acumulado até agora
+      var acumStr = toques > 0 ? cronoFmtMs(n.splits.reduce(function(a,b){return a+b;},0)) : '—';
 
       var btnClass = 'crono-swimmer-btn' + (n.finished ? ' finished' : (!g.started ? ' waiting' : ''));
       var cardBg = n.finished ? '#b0b8c1' : n.cor;
@@ -10654,6 +10652,7 @@ function cronoRenderActive() {
       var txtShadow = cronoShadow(cardBg);
       var btnStyle = 'background:' + cardBg + ';';
 
+      var parcialLabel = (parseInt(cronoSession.distPorToque) < 100) ? 'Parcial 50m: ' : 'Parcial: ';
       var innerHtml = '';
       if (n.finished) {
         innerHtml = '<div class="crono-btn-name" style="color:' + txtColor + ';text-shadow:' + txtShadow + ';">' + n.nome + '</div>' +
@@ -10662,11 +10661,10 @@ function cronoRenderActive() {
       } else if (isLast) {
         innerHtml = '<div class="crono-btn-finish-label">Terminar</div>' +
           '<div class="crono-btn-name" style="color:' + txtColor + ';text-shadow:' + txtShadow + ';">' + n.nome + '</div>' +
-          '<div class="crono-btn-info" style="color:' + txtColorSub + ';"><strong>' + distPerc + 'm</strong><br>Média 100: ' + mediaStr + '<br>' + parcialLabel + lastSplit + '</div>';
+          '<div class="crono-btn-info" style="color:' + txtColorSub + ';"><strong>' + distPerc + 'm</strong><br>Acum: ' + acumStr + '<br>Média 100: ' + mediaStr + '<br>' + parcialLabel + lastSplit + '</div>';
       } else {
-        var parcialLabel = (parseInt(cronoSession.distPorToque) < 100) ? 'Parcial 50m: ' : 'Parcial: ';
         innerHtml = '<div class="crono-btn-name" style="color:' + txtColor + ';text-shadow:' + txtShadow + ';">' + n.nome + '</div>' +
-          '<div class="crono-btn-info" style="color:' + txtColorSub + ';"><strong>' + distPerc + 'm</strong><br>Média 100: ' + mediaStr + '<br>' + parcialLabel + lastSplit + '</div>';
+          '<div class="crono-btn-info" style="color:' + txtColorSub + ';"><strong>' + distPerc + 'm</strong><br>Acum: ' + acumStr + '<br>Média 100: ' + mediaStr + '<br>' + parcialLabel + lastSplit + '</div>';
       }
 
       swimHtml += '<div class="' + btnClass + '" style="' + btnStyle + '" ' +
@@ -10928,7 +10926,9 @@ function cronoExportCSV() {
   rows.push(['Piscina', cronoSession.piscina + 'm', 'Distância', cronoSession.distancia + 'm']);
   rows.push([]);
   rows.push(['Grupo', 'Nadador', 'Tempo Total', 'Média/100m'].concat(
-    Array.from({length: cronoSession.totalToques}, function(_,i){ return 'Parcial ' + (i+1); })
+    Array.from({length: cronoSession.totalToques}, function(_,i){
+      return ['Parcial ' + (i+1), 'Acumulado ' + (i+1)];
+    }).reduce(function(a,b){return a.concat(b);}, [])
   ));
 
   for (var gi = 0; gi < cronoSession.grupos.length; gi++) {
@@ -10936,8 +10936,11 @@ function cronoExportCSV() {
     for (var ni = 0; ni < g.nadadores.length; ni++) {
       var n = g.nadadores[ni];
       var row = [g.nome, n.nome, cronoFmtTotal(n), cronoCalcMedia(n)];
+      var acum = 0;
       for (var si = 0; si < n.splits.length; si++) {
+        acum += n.splits[si];
         row.push(cronoFmtMs(n.splits[si]));
+        row.push(cronoFmtMs(acum));
       }
       rows.push(row);
     }
@@ -11008,61 +11011,82 @@ function cronoExportPDF() {
   var dateStr = d.toLocaleDateString('pt-PT') + ' ' + d.toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'});
   var distPorToque = parseInt(cronoSession.distPorToque) || 50;
 
+  // Build rows — each nadador gets a block with name/total/media + splits grid below
   var rows = '';
   for (var gi = 0; gi < cronoSession.grupos.length; gi++) {
     var g = cronoSession.grupos[gi];
     if (cronoSession.grupos.length > 1) {
-      rows += '<tr><td colspan="' + (4 + cronoSession.totalToques) + '" style="background:#e8f0fa;font-weight:700;padding:8px 12px;font-size:13px;color:#003d6b;">' + g.nome + '</td></tr>';
+      rows += '<tr><td colspan="4" style="background:#e8f0fa;font-weight:700;padding:8px 12px;font-size:13px;color:#003d6b;">' + g.nome + '</td></tr>';
     }
     for (var ni = 0; ni < g.nadadores.length; ni++) {
       var n = g.nadadores[ni];
-      var splits = '';
-      for (var si = 0; si < cronoSession.totalToques; si++) {
-        splits += '<td style="padding:6px 10px;border-bottom:1px solid #e0edf5;text-align:center;">' + (n.splits[si] ? cronoFmtMs(n.splits[si]) : '—') + '</td>';
-      }
       var totalMs = n.splits.reduce(function(a,b){return a+b;},0);
       var distPerc = n.splits.length * distPorToque;
       var media = distPerc >= 100 ? cronoFmtMs(Math.round((totalMs/distPerc)*100)) : '—';
-      rows += '<tr>' +
-        '<td style="padding:6px 12px;border-bottom:1px solid #e0edf5;">' +
-          '<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:' + n.cor + ';margin-right:6px;vertical-align:middle;"></span>' + n.nome +
-        '</td>' +
-        '<td style="padding:6px 10px;border-bottom:1px solid #e0edf5;text-align:center;">' + (n.finished ? cronoFmtMs(n.totalTime) : '—') + '</td>' +
-        '<td style="padding:6px 10px;border-bottom:1px solid #e0edf5;text-align:center;">' + media + '</td>' +
-        splits +
-      '</tr>';
-    }
-  }
 
-  var splitHeaders = '';
-  for (var i = 0; i < cronoSession.totalToques; i++) {
-    var label = distPorToque < 100 ? (distPorToque * (i+1)) + 'm' : (distPorToque * (i+1)) + 'm';
-    splitHeaders += '<th style="padding:8px 10px;background:#003d6b;color:#fff;text-align:center;font-weight:600;">' + label + '</th>';
+      // Header row for this swimmer
+      rows += '<tr style="border-top:2px solid #003d6b;">' +
+        '<td style="padding:6px 12px;font-weight:700;background:#f4f9fd;" colspan="4">' +
+          '<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:' + n.cor + ';margin-right:6px;vertical-align:middle;"></span>' +
+          n.nome +
+          '<span style="font-weight:400;color:#6b8fa8;margin-left:16px;">Total: <strong>' + (n.finished ? cronoFmtMs(n.totalTime) : '—') + '</strong></span>' +
+          '<span style="font-weight:400;color:#6b8fa8;margin-left:16px;">Média/100m: <strong>' + media + '</strong></span>' +
+        '</td>' +
+      '</tr>';
+
+      // Splits in a wrapped flex grid — groups of 4 parcial+acum pairs per visual row
+      var splitsHtml = '<div class="split-grid" style="display:flex;flex-wrap:wrap;gap:4px;padding:6px 12px 10px;background:#fff;">';
+      var acumMs2 = 0;
+      for (var si = 0; si < cronoSession.totalToques; si++) {
+        var splitMs = n.splits[si] || 0;
+        acumMs2 += splitMs;
+        var distLabel = distPorToque * (si + 1);
+        splitsHtml += '<div class="split-card">' +
+          '<div class="split-dist">' + distLabel + 'm</div>' +
+          '<div class="split-parcial">' + (splitMs ? cronoFmtMs(splitMs) : '—') + '</div>' +
+          '<div class="split-acum">' + (splitMs ? cronoFmtMs(acumMs2) : '—') + '</div>' +
+        '</div>';
+      }
+      splitsHtml += '</div>';
+
+      rows += '<tr><td colspan="4" style="padding:0;">' + splitsHtml + '</td></tr>';
+    }
   }
 
   var html = '<!DOCTYPE html><html lang="pt"><head><meta charset="UTF-8">' +
     '<title>SwimMin — Sessão de Treino</title>' +
     '<style>' +
-      'body{font-family:Arial,sans-serif;margin:32px;color:#1a2a3a;}' +
-      'h1{color:#003d6b;font-size:22px;margin-bottom:4px;}' +
-      '.meta{font-size:13px;color:#6b8fa8;margin-bottom:24px;}' +
-      'table{width:100%;border-collapse:collapse;font-size:13px;}' +
-      'th{background:#003d6b;color:#fff;padding:8px 12px;text-align:left;font-weight:600;}' +
-      'tr:hover td{background:#f4f9fd;}' +
-      '@media print{body{margin:16px;}button{display:none!important;}}' +
+      'body{font-family:Arial,sans-serif;margin:16px;color:#1a2a3a;}' +
+      'h1{color:#003d6b;font-size:18px;margin-bottom:4px;}' +
+      '.meta{font-size:11px;color:#6b8fa8;margin-bottom:16px;}' +
+      'table{width:100%;border-collapse:collapse;font-size:12px;}' +
+      'th{background:#003d6b;color:#fff;padding:6px 12px;text-align:left;font-weight:600;}' +
+      '.split-card{min-width:76px;flex:0 0 auto;border:1px solid #d0e4f0;border-radius:6px;padding:3px 6px;text-align:center;background:#f9fcff;}' +
+      '.split-dist{font-size:9px;color:#6b8fa8;font-weight:700;}' +
+      '.split-parcial{font-size:12px;font-weight:700;color:#1a3a4a;}' +
+      '.split-acum{font-size:10px;color:#1a6fdb;font-weight:600;}' +
+      '.tip{background:#fff8e1;border:1px solid #f0c040;border-radius:6px;padding:8px 12px;font-size:11px;color:#7a6000;margin-bottom:14px;}' +
+      '@media print{' +
+        'body{margin:8px;}' +
+        'button{display:none!important;}' +
+        '.tip{display:none!important;}' +
+        'tr{page-break-inside:avoid;}' +
+        '.split-grid{page-break-inside:avoid;}' +
+      '}' +
+      '@media print and (orientation:landscape){' +
+        '.split-card{min-width:68px;}' +
+      '}' +
     '</style></head><body>' +
+    '<div class="tip">💡 Para melhor resultado com muitos parciais: antes de imprimir escolhe <strong>Horizontal</strong> em Opções de Página, e em Escala escolhe <strong>Ajustar à página</strong>.</div>' +
     '<h1>SwimMin — Sessão de Treino</h1>' +
     '<div class="meta">Data: ' + dateStr + ' &nbsp;|&nbsp; Piscina: ' + cronoSession.piscina + 'm &nbsp;|&nbsp; Distância: ' + cronoSession.distancia + 'm &nbsp;|&nbsp; ' + distPorToque + 'm por toque</div>' +
     '<table><thead><tr>' +
-      '<th>Nadador</th>' +
-      '<th style="text-align:center;">Total</th>' +
-      '<th style="text-align:center;">Média/100m</th>' +
-      splitHeaders +
+      '<th colspan="4">Nadadores</th>' +
     '</tr></thead><tbody>' + rows + '</tbody></table>' +
-    '<div style="margin-top:32px;text-align:center;">' +
+    '<div style="margin-top:24px;text-align:center;">' +
       '<button onclick="window.print()" style="padding:12px 32px;background:#003d6b;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;">Imprimir / Guardar como PDF</button>' +
     '</div>' +
-    '<div style="margin-top:24px;font-size:11px;color:#aaa;text-align:center;">SwimMin · swimmin.app@gmail.com</div>' +
+    '<div style="margin-top:16px;font-size:11px;color:#aaa;text-align:center;">SwimMin · swimmin.app@gmail.com</div>' +
     '</body></html>';
 
   var win = window.open('', '_blank');
@@ -11083,38 +11107,52 @@ function cronoVerHistoria(idx) {
   var label = d.toLocaleDateString('pt-PT') + ' ' + d.toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'});
   var distPorToque = parseInt(h.session.distPorToque) || 50;
 
+  var isLight = document.documentElement.classList.contains('light-mode');
+  var panelBg  = isLight ? '#ffffff' : '#0d2233';
+  var cardBg2  = isLight ? '#f4f8fb' : 'rgba(0,144,224,0.08)';
+  var headCol  = isLight ? '#003d6b' : '#e8f4ff';
+  var mutedCol = isLight ? '#6b8fa8' : 'rgba(180,210,240,0.6)';
+  var textCol  = isLight ? '#1a3a4a' : '#e8f4ff';
+  var borderCol= isLight ? '#e0edf5' : 'rgba(0,196,204,0.15)';
+  var acumCol  = isLight ? '#1a6fdb' : '#00c4cc';
+
   var html = '<div style="position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:7000;overflow-y:auto;padding:20px;" onclick="if(event.target===this)this.remove();">' +
-    '<div style="background:#fff;border-radius:20px;padding:24px;max-width:500px;margin:0 auto;">' +
+    '<div style="background:' + panelBg + ';border-radius:20px;padding:24px;max-width:500px;margin:0 auto;">' +
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">' +
         '<div>' +
-          '<div style="font-family:sans-serif;font-size:22px;font-weight:700;color:#003d6b;letter-spacing:2px;">Parciais</div>' +
-          '<div style="font-size:12px;color:#6b8fa8;">Piscina ' + h.piscina + 'm · ' + h.distancia + 'm · ' + label + '</div>' +
+          '<div style="font-family:sans-serif;font-size:22px;font-weight:700;color:' + headCol + ';letter-spacing:2px;">Parciais</div>' +
+          '<div style="font-size:12px;color:' + mutedCol + ';">Piscina ' + h.piscina + 'm · ' + h.distancia + 'm · ' + label + '</div>' +
         '</div>' +
-        '<button onclick="closeHistView()" style="background:#f0f7ff;border:none;border-radius:50%;width:32px;height:32px;font-size:18px;cursor:pointer;color:#1a3a4a;">×</button>' +
+        '<button onclick="closeHistView()" style="background:rgba(128,128,128,0.15);border:none;border-radius:50%;width:32px;height:32px;font-size:18px;cursor:pointer;color:' + textCol + ';">×</button>' +
       '</div>';
 
   for (var gi = 0; gi < h.session.grupos.length; gi++) {
     var g = h.session.grupos[gi];
     if (h.session.grupos.length > 1) {
-      html += '<div style="font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#6b8fa8;margin:12px 0 6px;">' + g.nome + '</div>';
+      html += '<div style="font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:' + mutedCol + ';margin:12px 0 6px;">' + g.nome + '</div>';
     }
     for (var ni = 0; ni < g.nadadores.length; ni++) {
       var n = g.nadadores[ni];
       var totalMs = n.splits.reduce(function(a,b){return a+b;}, 0);
       var distPerc = n.splits.length * distPorToque;
       var media = distPerc >= 100 ? cronoFmtMs(Math.round((totalMs/distPerc)*100)) : '—';
-      html += '<div style="background:#f4f8fb;border-radius:12px;padding:12px 14px;margin-bottom:8px;">' +
+      html += '<div style="background:' + cardBg2 + ';border-radius:12px;padding:12px 14px;margin-bottom:8px;">' +
         '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">' +
           '<div style="width:10px;height:10px;border-radius:50%;background:' + n.cor + ';flex-shrink:0;"></div>' +
-          '<span style="font-weight:700;font-size:14px;color:#003d6b;">' + n.nome + '</span>' +
-          (n.finished ? '<span style="font-size:12px;color:#6b8fa8;margin-left:auto;">Total: ' + cronoFmtMs(n.totalTime) + ' · Média: ' + media + '</span>' : '<span style="font-size:11px;color:#e67e22;margin-left:auto;">Incompleto</span>') +
+          '<span style="font-weight:700;font-size:14px;color:' + headCol + ';">' + n.nome + '</span>' +
+          (n.finished ? '<span style="font-size:12px;color:' + mutedCol + ';margin-left:auto;">Total: ' + cronoFmtMs(n.totalTime) + ' · Média: ' + media + '</span>' : '<span style="font-size:11px;color:#e67e22;margin-left:auto;">Incompleto</span>') +
         '</div>';
       if (n.splits.length > 0) {
         html += '<div style="font-size:11px;">';
+        var acumMs = 0;
         for (var si = 0; si < n.splits.length; si++) {
-          html += '<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #e0edf5;">' +
-            '<span style="color:#6b8fa8;">' + (si+1) + '</span>' +
-            '<span>' + cronoFmtMs(n.splits[si]) + '</span>' +
+          acumMs += n.splits[si];
+          var distLabel = distPorToque * (si + 1);
+          html += '<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid ' + borderCol + ';color:' + textCol + ';">' +
+            '<span style="color:' + mutedCol + ';min-width:24px;">' + (si+1) + '</span>' +
+            '<span style="color:' + mutedCol + ';min-width:36px;">' + distLabel + 'm</span>' +
+            '<span style="font-weight:600;color:' + textCol + ';">' + cronoFmtMs(n.splits[si]) + '</span>' +
+            '<span style="color:' + acumCol + ';font-weight:600;">' + cronoFmtMs(acumMs) + '</span>' +
           '</div>';
         }
         html += '</div>';
