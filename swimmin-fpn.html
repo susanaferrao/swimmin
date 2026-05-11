@@ -2754,6 +2754,13 @@ document.addEventListener("click", function(e) {
 
   <!-- Estado: autenticado -->
   <div id="auth-logged-in" style="display:none;">
+    <div class="fpn-title">Conta</div>
+    <div id="auth-user-info" style="font-size:13px;color:var(--muted);margin-bottom:14px;"></div>
+    <button onclick="syncToFirebase()" id="btn-sync-cloud" style="width:100%;padding:13px;border-radius:10px;background:linear-gradient(135deg,#0090e0,#00c4cc);color:#fff;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:8px;">
+      ☁ Atualizar na nuvem
+    </button>
+    <div id="sync-status" style="text-align:center;font-size:12px;margin-bottom:10px;min-height:18px;"></div>
+    <button id="btn-logout" style="width:100%;padding:11px;border-radius:10px;background:transparent;border:1.5px solid #e74c3c;color:#e74c3c;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">Terminar sessão</button>
   </div>
 
 </div>
@@ -10102,21 +10109,17 @@ function showAuthToast(msg, success=true) {
 onAuthStateChanged(auth, async (user) => {
   window.currentFirebaseUser = user || null;
   const loggedOut = document.getElementById('auth-logged-out');
-  const loggedIn = document.getElementById('auth-logged-in');
-  const userEmail = document.getElementById('auth-user-email');
+  const loggedIn  = document.getElementById('auth-logged-in');
   const authSection = document.getElementById('auth-section');
-  const authBadge = document.getElementById('auth-badge');
-  if (loggedOut && loggedIn) {
-    loggedOut.style.display = user ? 'none' : 'block';
-    loggedIn.style.display = 'none';
-  }
-  if (authSection) authSection.style.display = user ? 'none' : 'block';
+  const authBadge   = document.getElementById('auth-badge');
+
+  if (loggedOut) loggedOut.style.display = user ? 'none' : 'block';
+  if (loggedIn)  loggedIn.style.display  = user ? 'block' : 'none';
   if (authBadge) authBadge.style.display = user ? 'flex' : 'none';
-  if (userEmail) userEmail.textContent = user ? user.email : '';
-  if (user) {
-    const section = document.getElementById('auth-section');
-    if (section) setTimeout(() => section.scrollIntoView({ behavior: 'smooth', block: 'center' }), 200);
-  }
+
+  // Mostrar email do utilizador
+  var userInfo = document.getElementById('auth-user-info');
+  if (userInfo) userInfo.textContent = user ? ('Sessão iniciada como ' + user.email) : '';
 
   if (user) {
     try {
@@ -10228,6 +10231,58 @@ onAuthStateChanged(auth, async (user) => {
     }
   }
 });
+
+// ===== SINCRONIZAÇÃO MANUAL =====
+window.syncToFirebase = async function() {
+  if (!window.currentFirebaseUser) {
+    var st = document.getElementById('sync-status');
+    if (st) { st.textContent = 'Tens de fazer login primeiro.'; st.style.color = '#e74c3c'; }
+    return;
+  }
+  var btn = document.getElementById('btn-sync-cloud');
+  var st  = document.getElementById('sync-status');
+  if (btn) { btn.textContent = '⏳ A guardar...'; btn.disabled = true; }
+  if (st)  { st.textContent = ''; }
+
+  try {
+    var promises = [];
+    // Perfis de nadadores
+    var profiles = null;
+    try { profiles = JSON.parse(localStorage.getItem('swimmin_profiles_v1') || 'null'); } catch(e) {}
+    if (profiles && window.firebaseSaveAtletaProfiles) promises.push(window.firebaseSaveAtletaProfiles(profiles));
+    // SWOLF
+    var swolfData = null;
+    try { swolfData = JSON.parse(localStorage.getItem('swimmin_swolf_v1') || 'null'); } catch(e) {}
+    if (swolfData && window.firebaseSaveSwolf) promises.push(window.firebaseSaveSwolf(swolfData));
+    // Parciais
+    var parciaisData = null;
+    try { parciaisData = JSON.parse(localStorage.getItem('swimmin_crono_history_v1') || 'null'); } catch(e) {}
+    if (parciaisData && window.firebaseSaveParciais) promises.push(window.firebaseSaveParciais(parciaisData));
+    // Calendário
+    var calData = null;
+    var CAL_KEY_LOCAL = 'swimmin_calendar_v1';
+    try { calData = JSON.parse(localStorage.getItem(CAL_KEY_LOCAL) || 'null'); } catch(e) {}
+    if (calData && window.firebaseSaveCalendario) promises.push(window.firebaseSaveCalendario(calData));
+    // Dados de treinador
+    var coachName = localStorage.getItem('coachTeamName') || '';
+    var coachAths = null;
+    try { coachAths = JSON.parse(localStorage.getItem('coachAthletes') || '[]'); } catch(e) { coachAths = []; }
+    if (window.firebaseSaveCoachData) promises.push(window.firebaseSaveCoachData(coachName, coachAths));
+
+    await Promise.all(promises);
+
+    if (btn) { btn.textContent = '✓ Atualizado na nuvem'; btn.disabled = false; }
+    if (st)  { st.textContent = new Date().toLocaleTimeString('pt-PT', {hour:'2-digit',minute:'2-digit'}); st.style.color = '#27ae60'; }
+    setTimeout(function() {
+      if (btn) btn.textContent = '☁ Atualizar na nuvem';
+      if (st) st.textContent = '';
+    }, 3000);
+  } catch(e) {
+    if (btn) { btn.textContent = '☁ Atualizar na nuvem'; btn.disabled = false; }
+    if (st)  { st.textContent = 'Erro ao guardar. Tenta de novo.'; st.style.color = '#e74c3c'; }
+    console.error('Sync error:', e);
+  }
+};
 
 // ===== FIM MÓDULO FIREBASE =====
 </script>
@@ -11129,6 +11184,8 @@ function cronoSaveToHistory() {
     try { window.firebaseSaveParciais(history); } catch(e) {}
   }
 }
+
+function cronoPurgeOldHistory() {
   var history = [];
   try { history = JSON.parse(localStorage.getItem(CRONO_HISTORY_KEY)) || []; } catch(e) {}
   var cutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;
@@ -11146,9 +11203,9 @@ function cronoHistoryHtml() {
     var d = new Date(h.data);
     var label = d.toLocaleDateString('pt-PT') + ' ' + d.toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'});
     var idx = i;
-    var html = '<div class="crono-history-item">' +
+    html += '<div class="crono-history-item">' +
       '<div>' +
-        '<div class="crono-history-info">' + (h.session.eventoNome ? '<strong>' + h.session.eventoNome + '</strong> · ' : '') + 'Piscina ' + h.piscina + 'm · ' + h.distancia + 'm</div>' +
+        '<div class="crono-history-info">' + (h.session && h.session.eventoNome ? '<strong>' + h.session.eventoNome + '</strong> · ' : '') + 'Piscina ' + h.piscina + 'm · ' + h.distancia + 'm</div>' +
         '<div class="crono-history-date">' + label + '</div>' +
       '</div>' +
       '<div style="display:flex;gap:6px;">' +
