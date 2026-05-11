@@ -7889,6 +7889,7 @@ function saveProfile(id, data) {
   profiles[id] = data;
   _memProfiles = profiles;
   _lsSet(PROFILES_KEY, JSON.stringify(profiles));
+  try { localStorage.setItem('swimmin_profiles_ts', Date.now().toString()); } catch(e) {}
 }
 function deleteProfile(id) {
   var profiles = getAllProfiles();
@@ -8742,7 +8743,7 @@ function calLoad() {
 }
 function calSave(events) {
   try { localStorage.setItem(CAL_KEY, JSON.stringify(events)); } catch(e) {}
-  // Sincronizar com Firebase se utilizador com sessão iniciada
+  try { localStorage.setItem('swimmin_cal_ts', Date.now().toString()); } catch(e) {}
   if (window.currentFirebaseUser && window.firebaseSaveCalendario) {
     try { window.firebaseSaveCalendario(events); } catch(e) {}
   }
@@ -9995,42 +9996,41 @@ async function loadUserDoc(path) {
 }
 
 window.firebaseSaveAtletaProfiles = async function(profiles) {
-  return saveUserDoc('atletaProfiles', { profiles: profiles || {} });
+  return saveUserDoc('atletaProfiles', { profiles: profiles || {}, updatedAt: Date.now() });
 }
 window.firebaseLoadAtletaProfiles = async function() {
   const data = await loadUserDoc('atletaProfiles');
-  return data && data.profiles ? data.profiles : null;
+  return data && data.profiles ? data : null;
 }
 window.firebaseSaveCoachData = async function(teamName, athletes) {
-  return saveUserDoc('coachData', { teamName: teamName || '', athletes: athletes || [] });
+  return saveUserDoc('coachData', { teamName: teamName || '', athletes: athletes || [], updatedAt: Date.now() });
 }
 window.firebaseLoadCoachData = async function() {
-  const data = await loadUserDoc('coachData');
-  return data || null;
+  return loadUserDoc('coachData');
 }
 window.firebaseSaveSwolf = async function(db_data) {
-  return saveUserDoc('swolfData', { data: JSON.stringify(db_data) });
+  return saveUserDoc('swolfData', { data: JSON.stringify(db_data), updatedAt: Date.now() });
 }
 window.firebaseLoadSwolf = async function() {
   const d = await loadUserDoc('swolfData');
   if (!d || !d.data) return null;
-  try { return JSON.parse(d.data); } catch(e) { return null; }
+  try { return { data: JSON.parse(d.data), updatedAt: d.updatedAt || 0 }; } catch(e) { return null; }
 }
 window.firebaseSaveParciais = async function(history) {
-  return saveUserDoc('parciaisHistory', { data: JSON.stringify(history) });
+  return saveUserDoc('parciaisHistory', { data: JSON.stringify(history), updatedAt: Date.now() });
 }
 window.firebaseLoadParciais = async function() {
   const d = await loadUserDoc('parciaisHistory');
   if (!d || !d.data) return null;
-  try { return JSON.parse(d.data); } catch(e) { return null; }
+  try { return { data: JSON.parse(d.data), updatedAt: d.updatedAt || 0 }; } catch(e) { return null; }
 }
 window.firebaseSaveCalendario = async function(cal) {
-  return saveUserDoc('calendario', { data: JSON.stringify(cal) });
+  return saveUserDoc('calendario', { data: JSON.stringify(cal), updatedAt: Date.now() });
 }
 window.firebaseLoadCalendario = async function() {
   const d = await loadUserDoc('calendario');
   if (!d || !d.data) return null;
-  try { return JSON.parse(d.data); } catch(e) { return null; }
+  try { return { data: JSON.parse(d.data), updatedAt: d.updatedAt || 0 }; } catch(e) { return null; }
 }
 
 function showAuthToast(msg, success=true) {
@@ -10111,37 +10111,96 @@ onAuthStateChanged(auth, async (user) => {
 
   if (user) {
     try {
+      // Helper: usar dados mais recentes (Firebase vs localStorage)
+      function mergeByTimestamp(fbResult, lsKey, lsTimestampKey) {
+        var lsData = null;
+        var lsTs = 0;
+        try { lsData = localStorage.getItem(lsKey); } catch(e) {}
+        try { lsTs = parseInt(localStorage.getItem(lsTimestampKey) || '0'); } catch(e) {}
+        var fbTs = fbResult ? (fbResult.updatedAt || 0) : 0;
+        // Se Firebase é mais recente, usar Firebase
+        if (fbResult && fbTs >= lsTs) return { data: fbResult.data || fbResult.profiles || fbResult, fromFB: true };
+        // Se local é mais recente, guardar no Firebase e usar local
+        return { data: lsData, fromFB: false };
+      }
+
       const coach = await window.firebaseLoadCoachData();
       if (coach) {
-        localStorage.setItem('coachTeamName', typeof coach.teamName === 'string' ? coach.teamName : '');
-        localStorage.setItem('coachAthletes', JSON.stringify(coach.athletes || []));
+        var lsCoachTs = 0;
+        try { lsCoachTs = parseInt(localStorage.getItem('coachDataTs') || '0'); } catch(e) {}
+        if ((coach.updatedAt || 0) >= lsCoachTs) {
+          localStorage.setItem('coachTeamName', typeof coach.teamName === 'string' ? coach.teamName : '');
+          localStorage.setItem('coachAthletes', JSON.stringify(coach.athletes || []));
+        }
       }
-      const atletaProfiles = await window.firebaseLoadAtletaProfiles();
-      if (atletaProfiles) {
-        localStorage.setItem('swimmin_profiles_v1', JSON.stringify(atletaProfiles));
-        var activeId = localStorage.getItem('swimmin_active_profile_v1');
-        if (!activeId) {
-          var ids = Object.keys(atletaProfiles);
-          if (ids.length > 0) localStorage.setItem('swimmin_active_profile_v1', ids[0]);
+
+      const atletaFb = await window.firebaseLoadAtletaProfiles();
+      if (atletaFb) {
+        var lsProfilesTs = 0;
+        try { lsProfilesTs = parseInt(localStorage.getItem('swimmin_profiles_ts') || '0'); } catch(e) {}
+        var fbProfiles = atletaFb.profiles;
+        var fbTs = atletaFb.updatedAt || 0;
+        if (fbTs >= lsProfilesTs && fbProfiles) {
+          localStorage.setItem('swimmin_profiles_v1', JSON.stringify(fbProfiles));
+          var activeId = localStorage.getItem('swimmin_active_profile_v1');
+          if (!activeId) {
+            var ids = Object.keys(fbProfiles);
+            if (ids.length > 0) localStorage.setItem('swimmin_active_profile_v1', ids[0]);
+          }
+        } else {
+          // Local é mais recente — sincronizar com Firebase
+          var localProfiles = null;
+          try { localProfiles = JSON.parse(localStorage.getItem('swimmin_profiles_v1') || 'null'); } catch(e) {}
+          if (localProfiles && window.firebaseSaveAtletaProfiles) {
+            window.firebaseSaveAtletaProfiles(localProfiles);
+          }
         }
         if (typeof mostrarPerfilAtivo === 'function') mostrarPerfilAtivo();
       }
-      // Carregar SWOLF
-      const swolfData = await window.firebaseLoadSwolf();
-      if (swolfData) {
-        try { localStorage.setItem('swimmin_swolf_v1', JSON.stringify(swolfData)); } catch(e) {}
+
+      // SWOLF
+      const swolfFb = await window.firebaseLoadSwolf();
+      if (swolfFb) {
+        var lsSwolfTs = 0;
+        try { lsSwolfTs = parseInt(localStorage.getItem('swimmin_swolf_ts') || '0'); } catch(e) {}
+        if ((swolfFb.updatedAt || 0) >= lsSwolfTs) {
+          try { localStorage.setItem('swimmin_swolf_v1', JSON.stringify(swolfFb.data)); } catch(e) {}
+        } else {
+          var localSwolf = null;
+          try { localSwolf = JSON.parse(localStorage.getItem('swimmin_swolf_v1') || 'null'); } catch(e) {}
+          if (localSwolf && window.firebaseSaveSwolf) window.firebaseSaveSwolf(localSwolf);
+        }
       }
-      // Carregar histórico de parciais
-      const parciaisData = await window.firebaseLoadParciais();
-      if (parciaisData) {
-        try { localStorage.setItem('swimmin_crono_history_v1', JSON.stringify(parciaisData)); } catch(e) {}
+
+      // Parciais
+      const parcFb = await window.firebaseLoadParciais();
+      if (parcFb) {
+        var lsParcTs = 0;
+        try { lsParcTs = parseInt(localStorage.getItem('swimmin_crono_ts') || '0'); } catch(e) {}
+        if ((parcFb.updatedAt || 0) >= lsParcTs) {
+          try { localStorage.setItem('swimmin_crono_history_v1', JSON.stringify(parcFb.data)); } catch(e) {}
+        } else {
+          var localParc = null;
+          try { localParc = JSON.parse(localStorage.getItem('swimmin_crono_history_v1') || 'null'); } catch(e) {}
+          if (localParc && window.firebaseSaveParciais) window.firebaseSaveParciais(localParc);
+        }
       }
-      // Carregar calendário
-      const calData = await window.firebaseLoadCalendario();
-      if (calData) {
-        try { localStorage.setItem(CAL_KEY, JSON.stringify(calData)); } catch(e) {}
-        if (typeof calRender === 'function') calRender();
+
+      // Calendário
+      const calFb = await window.firebaseLoadCalendario();
+      if (calFb) {
+        var lsCalTs = 0;
+        try { lsCalTs = parseInt(localStorage.getItem('swimmin_cal_ts') || '0'); } catch(e) {}
+        if ((calFb.updatedAt || 0) >= lsCalTs) {
+          try { localStorage.setItem(CAL_KEY, JSON.stringify(calFb.data)); } catch(e) {}
+          if (typeof calRender === 'function') calRender();
+        } else {
+          var localCal = null;
+          try { localCal = JSON.parse(localStorage.getItem(CAL_KEY) || 'null'); } catch(e) {}
+          if (localCal && window.firebaseSaveCalendario) window.firebaseSaveCalendario(localCal);
+        }
       }
+
       if (typeof coachAthletes !== 'undefined') {
         try { coachAthletes = JSON.parse(localStorage.getItem('coachAthletes') || '[]'); } catch(e) {}
         if (typeof renderAthletes === 'function') renderAthletes();
@@ -11056,7 +11115,7 @@ function cronoSaveToHistory() {
   // Manter apenas 10
   history = history.slice(0, 10);
   try { localStorage.setItem(CRONO_HISTORY_KEY, JSON.stringify(history)); } catch(e) {}
-  // Sincronizar com Firebase se utilizador com sessão iniciada
+  try { localStorage.setItem('swimmin_crono_ts', Date.now().toString()); } catch(e) {}
   if (window.currentFirebaseUser && window.firebaseSaveParciais) {
     try { window.firebaseSaveParciais(history); } catch(e) {}
   }
@@ -14178,7 +14237,7 @@ function swolfLoadDB() {
 function swolfSaveDB(db) {
   _lsSet(SWOLF_KEY, JSON.stringify(db));
   window._swolfMemDB = db;
-  // Sincronizar com Firebase se utilizador com sessão iniciada
+  try { localStorage.setItem('swimmin_swolf_ts', Date.now().toString()); } catch(e) {}
   if (window.currentFirebaseUser && window.firebaseSaveSwolf) {
     try { window.firebaseSaveSwolf(db); } catch(e) {}
   }
