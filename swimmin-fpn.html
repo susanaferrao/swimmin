@@ -2530,13 +2530,20 @@ html.light-mode #sw-hist-view > div, html.light-mode #crono-hist-view > div {
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 </head>
 <body>
-<div id="auth-badge" style="display:none;position:fixed;top:14px;left:14px;z-index:9000;">
-  <button onclick="toggleAuthBadge()" style="background:#00c98d;border:none;border-radius:50%;width:38px;height:38px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,201,141,0.5);padding:0;" title="Sessão iniciada">
+<div id="auth-badge" style="display:none;position:fixed;top:14px;left:14px;z-index:9000;display:flex;gap:8px;align-items:center;">
+  <!-- Ícone login (pessoa) -->
+  <button onclick="toggleAuthBadge()" style="background:#00c98d;border:none;border-radius:50%;width:38px;height:38px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,201,141,0.5);padding:0;" title="Conta">
     <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
   </button>
+  <!-- Ícone nuvem (sincronizar) -->
+  <button onclick="syncToFirebase()" id="btn-sync-cloud" style="background:#0090e0;border:none;border-radius:50%;width:38px;height:38px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,144,224,0.5);padding:0;" title="Atualizar na nuvem">
+    <svg id="sync-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+  </button>
+  <!-- Menu dropdown -->
   <div id="auth-badge-menu" style="display:none;position:absolute;top:46px;left:0;background:#fff;border-radius:14px;padding:16px;min-width:210px;box-shadow:0 8px 28px rgba(0,0,0,0.15);border:1px solid #e0edf5;">
     <div style="font-size:10px;font-weight:700;color:#6b8fa8;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">Sessão ativa</div>
     <div id="auth-user-email" style="font-size:13px;color:#003d6b;font-weight:600;margin-bottom:12px;word-break:break-all;"></div>
+    <div id="sync-status" style="font-size:12px;min-height:16px;margin-bottom:8px;color:#27ae60;"></div>
     <button id="btn-logout" style="width:100%;padding:9px;border-radius:9px;border:1.5px solid #e0edf5;background:#f4f8fb;color:#1a3a4a;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;">Terminar sessão</button>
   </div>
 </div>
@@ -2752,16 +2759,8 @@ document.addEventListener("click", function(e) {
     <div id="auth-msg" style="margin-top:8px;font-size:13px;color:#d9f6ff;text-align:center;"></div>
   </div>
 
-  <!-- Estado: autenticado -->
-  <div id="auth-logged-in" style="display:none;">
-    <div class="fpn-title">Conta</div>
-    <div id="auth-user-info" style="font-size:13px;color:var(--muted);margin-bottom:14px;"></div>
-    <button onclick="syncToFirebase()" id="btn-sync-cloud" style="width:100%;padding:13px;border-radius:10px;background:linear-gradient(135deg,#0090e0,#00c4cc);color:#fff;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:8px;">
-      ☁ Atualizar na nuvem
-    </button>
-    <div id="sync-status" style="text-align:center;font-size:12px;margin-bottom:10px;min-height:18px;"></div>
-    <button id="btn-logout" style="width:100%;padding:11px;border-radius:10px;background:transparent;border:1.5px solid #e74c3c;color:#e74c3c;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">Terminar sessão</button>
-  </div>
+  <!-- Estado: autenticado — secção oculta, tudo via ícones no topo -->
+  <div id="auth-logged-in" style="display:none;"></div>
 
 </div>
 
@@ -10114,12 +10113,14 @@ onAuthStateChanged(auth, async (user) => {
   const authBadge   = document.getElementById('auth-badge');
 
   if (loggedOut) loggedOut.style.display = user ? 'none' : 'block';
-  if (loggedIn)  loggedIn.style.display  = user ? 'block' : 'none';
-  if (authBadge) authBadge.style.display = user ? 'flex' : 'none';
+  if (loggedIn)  loggedIn.style.display  = 'none';
+  // Esconder toda a secção quando autenticado
+  if (authSection) authSection.style.display = user ? 'none' : 'block';
+  if (authBadge)   authBadge.style.display   = user ? 'flex' : 'none';
 
-  // Mostrar email do utilizador
-  var userInfo = document.getElementById('auth-user-info');
-  if (userInfo) userInfo.textContent = user ? ('Sessão iniciada como ' + user.email) : '';
+  // Mostrar email no dropdown
+  var userEmail = document.getElementById('auth-user-email');
+  if (userEmail) userEmail.textContent = user ? user.email : '';
 
   if (user) {
     try {
@@ -10241,8 +10242,8 @@ window.syncToFirebase = async function() {
   }
   var btn = document.getElementById('btn-sync-cloud');
   var st  = document.getElementById('sync-status');
-  if (btn) { btn.textContent = '⏳ A guardar...'; btn.disabled = true; }
-  if (st)  { st.textContent = ''; }
+  if (btn) { btn.style.background = '#0070b0'; btn.disabled = true; }
+  if (st)  { st.textContent = 'A atualizar...'; st.style.color = '#6b8fa8'; }
 
   try {
     var promises = [];
@@ -10271,15 +10272,14 @@ window.syncToFirebase = async function() {
 
     await Promise.all(promises);
 
-    if (btn) { btn.textContent = '✓ Atualizado na nuvem'; btn.disabled = false; }
-    if (st)  { st.textContent = new Date().toLocaleTimeString('pt-PT', {hour:'2-digit',minute:'2-digit'}); st.style.color = '#27ae60'; }
+    if (btn) { btn.style.background = '#0090e0'; btn.disabled = false; }
+    if (st)  { st.textContent = '✓ ' + new Date().toLocaleTimeString('pt-PT', {hour:'2-digit',minute:'2-digit'}); st.style.color = '#27ae60'; }
     setTimeout(function() {
-      if (btn) btn.textContent = '☁ Atualizar na nuvem';
       if (st) st.textContent = '';
     }, 3000);
   } catch(e) {
-    if (btn) { btn.textContent = '☁ Atualizar na nuvem'; btn.disabled = false; }
-    if (st)  { st.textContent = 'Erro ao guardar. Tenta de novo.'; st.style.color = '#e74c3c'; }
+    if (btn) { btn.style.background = '#0090e0'; btn.disabled = false; }
+    if (st)  { st.textContent = 'Erro. Tenta de novo.'; st.style.color = '#e74c3c'; }
     console.error('Sync error:', e);
   }
 };
@@ -10408,11 +10408,11 @@ function fecharCartaoFPN() {
   </div>
 </div>
   <!-- Footer -->
-  <div style="text-align:center; padding: 18px 0 6px 0; font-size: 0.78em; color: #888; letter-spacing: 0.01em;">
+  <div style="position:relative;z-index:1;text-align:center; padding: 18px 0 6px 0; font-size: 0.78em; color: #888; letter-spacing: 0.01em;">
     © SwimMin, todos os direitos reservados
   </div>
-  <div style="text-align:center; padding: 0 20px 18px 20px; font-size: 0.78em; color: #888; letter-spacing: 0.01em;">
-    SwimMin está em fase beta. Encontraste um problema ou tens uma sugestão? Envia-nos um e-mail para <a href="/cdn-cgi/l/email-protection#f281859b9f9f9b9cdc938282b2959f939b9edc919d9f" style="color:#00c4cc;text-decoration:none;"><span class="__cf_email__" data-cfemail="f784809e9a9a9e99d9968787b7909a969e9bd994989a">[email&#160;protected]</span></a>.
+  <div style="position:relative;z-index:1;text-align:center; padding: 0 20px 18px 20px; font-size: 0.78em; color: #888; letter-spacing: 0.01em;">
+    SwimMin está em fase beta. Encontraste um problema ou tens uma sugestão? Envia-nos um e-mail para <a href="mailto:info@swimmin.pt" style="color:#00c4cc;text-decoration:none;">info@swimmin.pt</a>.
   </div>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
@@ -11300,7 +11300,7 @@ function cronoExportPDF() {
     '<div style="margin-top:24px;text-align:center;">' +
       '<button onclick="window.print()" style="padding:12px 32px;background:#003d6b;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;">Imprimir / Guardar como PDF</button>' +
     '</div>' +
-    '<div style="margin-top:16px;font-size:11px;color:#aaa;text-align:center;">SwimMin · swimmin.app@gmail.com</div>' +
+    '<div style="margin-top:16px;font-size:11px;color:#aaa;text-align:center;">SwimMin · info@swimmin.pt</div>' +
     '</body></html>';
 
   var win = window.open('', '_blank');
