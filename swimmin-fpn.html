@@ -8742,6 +8742,10 @@ function calLoad() {
 }
 function calSave(events) {
   try { localStorage.setItem(CAL_KEY, JSON.stringify(events)); } catch(e) {}
+  // Sincronizar com Firebase se utilizador com sessão iniciada
+  if (window.currentFirebaseUser && window.firebaseSaveCalendario) {
+    try { window.firebaseSaveCalendario(events); } catch(e) {}
+  }
 }
 function calLoadRejected() {
   try { return JSON.parse(localStorage.getItem(CAL_REJECTED_KEY) || '[]'); } catch(e) { return []; }
@@ -10004,6 +10008,30 @@ window.firebaseLoadCoachData = async function() {
   const data = await loadUserDoc('coachData');
   return data || null;
 }
+window.firebaseSaveSwolf = async function(db_data) {
+  return saveUserDoc('swolfData', { data: JSON.stringify(db_data) });
+}
+window.firebaseLoadSwolf = async function() {
+  const d = await loadUserDoc('swolfData');
+  if (!d || !d.data) return null;
+  try { return JSON.parse(d.data); } catch(e) { return null; }
+}
+window.firebaseSaveParciais = async function(history) {
+  return saveUserDoc('parciaisHistory', { data: JSON.stringify(history) });
+}
+window.firebaseLoadParciais = async function() {
+  const d = await loadUserDoc('parciaisHistory');
+  if (!d || !d.data) return null;
+  try { return JSON.parse(d.data); } catch(e) { return null; }
+}
+window.firebaseSaveCalendario = async function(cal) {
+  return saveUserDoc('calendario', { data: JSON.stringify(cal) });
+}
+window.firebaseLoadCalendario = async function() {
+  const d = await loadUserDoc('calendario');
+  if (!d || !d.data) return null;
+  try { return JSON.parse(d.data); } catch(e) { return null; }
+}
 
 function showAuthToast(msg, success=true) {
   const t = document.getElementById('auth-toast');
@@ -10091,13 +10119,28 @@ onAuthStateChanged(auth, async (user) => {
       const atletaProfiles = await window.firebaseLoadAtletaProfiles();
       if (atletaProfiles) {
         localStorage.setItem('swimmin_profiles_v1', JSON.stringify(atletaProfiles));
-        // Definir perfil ativo se não existir
         var activeId = localStorage.getItem('swimmin_active_profile_v1');
         if (!activeId) {
           var ids = Object.keys(atletaProfiles);
           if (ids.length > 0) localStorage.setItem('swimmin_active_profile_v1', ids[0]);
         }
         if (typeof mostrarPerfilAtivo === 'function') mostrarPerfilAtivo();
+      }
+      // Carregar SWOLF
+      const swolfData = await window.firebaseLoadSwolf();
+      if (swolfData) {
+        try { localStorage.setItem('swimmin_swolf_v1', JSON.stringify(swolfData)); } catch(e) {}
+      }
+      // Carregar histórico de parciais
+      const parciaisData = await window.firebaseLoadParciais();
+      if (parciaisData) {
+        try { localStorage.setItem('swimmin_crono_history_v1', JSON.stringify(parciaisData)); } catch(e) {}
+      }
+      // Carregar calendário
+      const calData = await window.firebaseLoadCalendario();
+      if (calData) {
+        try { localStorage.setItem(CAL_KEY, JSON.stringify(calData)); } catch(e) {}
+        if (typeof calRender === 'function') calRender();
       }
       if (typeof coachAthletes !== 'undefined') {
         try { coachAthletes = JSON.parse(localStorage.getItem('coachAthletes') || '[]'); } catch(e) {}
@@ -10107,7 +10150,6 @@ onAuthStateChanged(auth, async (user) => {
         if (teamInput) teamInput.value = localStorage.getItem('coachTeamName') || '';
       }
       if (typeof renderProfileBar === 'function') renderProfileBar();
-      // Force UI refresh with retry in case DOM not ready
       setTimeout(function() {
         if (typeof mostrarPerfilAtivo === 'function') mostrarPerfilAtivo();
         if (typeof renderProfileBar === 'function') renderProfileBar();
@@ -11014,9 +11056,11 @@ function cronoSaveToHistory() {
   // Manter apenas 10
   history = history.slice(0, 10);
   try { localStorage.setItem(CRONO_HISTORY_KEY, JSON.stringify(history)); } catch(e) {}
+  // Sincronizar com Firebase se utilizador com sessão iniciada
+  if (window.currentFirebaseUser && window.firebaseSaveParciais) {
+    try { window.firebaseSaveParciais(history); } catch(e) {}
+  }
 }
-
-function cronoPurgeOldHistory() {
   var history = [];
   try { history = JSON.parse(localStorage.getItem(CRONO_HISTORY_KEY)) || []; } catch(e) {}
   var cutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;
@@ -14134,6 +14178,10 @@ function swolfLoadDB() {
 function swolfSaveDB(db) {
   _lsSet(SWOLF_KEY, JSON.stringify(db));
   window._swolfMemDB = db;
+  // Sincronizar com Firebase se utilizador com sessão iniciada
+  if (window.currentFirebaseUser && window.firebaseSaveSwolf) {
+    try { window.firebaseSaveSwolf(db); } catch(e) {}
+  }
 }
 function swolfGetDB() { return swolfLoadDB(); }
 
