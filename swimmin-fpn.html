@@ -8625,22 +8625,26 @@ function renderAtletaResultados(data, compId) {
       if (getMinimoAtleta(piscinasValidas[pi], sexo, escalao, comp.id, provaKey) !== null) { hasAnyMinimo = true; break; }
     }
     if (!hasAnyMinimo) continue;
-    var atingiu = false;
-    var melhorTempo = null, melhorPisc = null, melhorMin = null, melhorDiff = null;
+
+    // Mostrar uma entrada por piscina que tenha mínimo definido
+    var temQualquer = false;
     for (var pi = 0; pi < piscinasValidas.length; pi++) {
       var pisc = piscinasValidas[pi];
-      var tp = tAtleta[pisc] && tAtleta[pisc][provaKey] ? tAtleta[pisc][provaKey] : null;
       var min = getMinimoAtleta(pisc, sexo, escalao, comp.id, provaKey);
       if (!min) continue;
-      if (tp !== null) {
-        var diff = tp - min;
-        if (tp <= min && !atingiu) { atingiu = true; melhorTempo = tp; melhorPisc = pisc; melhorMin = min; melhorDiff = min - tp; }
-        if (!atingiu && (melhorDiff === null || diff < melhorDiff)) { melhorDiff = diff; melhorTempo = tp; melhorPisc = pisc; melhorMin = min; }
+      var tp = tAtleta[pisc] && tAtleta[pisc][provaKey] ? tAtleta[pisc][provaKey] : null;
+      temQualquer = true;
+      var entry = {label: provaLabel, key: provaKey, pisc: pisc, minimo: min, tempo: tp};
+      if (tp === null) {
+        semTempo.push(entry);
+      } else if (tp <= min) {
+        entry.diff = min - tp;
+        comMinimo.push(entry);
+      } else {
+        entry.diff = tp - min;
+        semMinimo.push(entry);
       }
     }
-    if (melhorTempo === null) semTempo.push({label:provaLabel, key:provaKey});
-    else if (atingiu) comMinimo.push({label:provaLabel, tempo:melhorTempo, pisc:melhorPisc, minimo:melhorMin, diff:melhorMin-melhorTempo});
-    else semMinimo.push({label:provaLabel, tempo:melhorTempo, pisc:melhorPisc, minimo:melhorMin, diff:melhorDiff});
   }
 
   var html = '';
@@ -8693,8 +8697,19 @@ function renderAtletaResultados(data, compId) {
     html += '<div style="font-size:12px;color:' + minColor + ';text-align:right;">min<br>' + formatAtletaMs(e.minimo) + '</div></div>';
   }
   if (semTempo.length > 0 && total > 0) {
-    var labs = []; for (var i=0;i<semTempo.length;i++) labs.push(semTempo[i].label);
-    html += '<div style="font-size:12px;color:' + noTempo + ';margin-top:8px;">Sem tempo: ' + labs.join(' · ') + '</div>';
+    html += '<div style="font-size:12px;color:' + noTempo + ';margin-top:8px;">';
+    html += 'Sem tempo: ';
+    var semTempoLabels = [];
+    var seen = {};
+    for (var i = 0; i < semTempo.length; i++) {
+      var st = semTempo[i];
+      var k = st.key + '_' + st.pisc;
+      if (!seen[k]) {
+        seen[k] = true;
+        semTempoLabels.push(st.label + ' (' + (st.pisc==='curta'?'25m':'50m') + ')');
+      }
+    }
+    html += semTempoLabels.join(' · ') + '</div>';
   }
 
   document.getElementById('atleta-resultados').innerHTML = html;
@@ -10448,7 +10463,55 @@ function closeSyncPopup() {
   if (popup)   { popup.style.opacity = '0';   setTimeout(function(){ if(popup.parentNode)   popup.remove();   }, 200); }
 }
 
-// ===== FIM MÓDULO FIREBASE =====
+// ===== POP-UP NOVIDADES (mostrar apenas uma vez) =====
+function showNovidadesPopup() {
+  try { if (localStorage.getItem('swimmin_novidades_v1')) return; } catch(e) {}
+  var isLight = document.documentElement.classList.contains('light-mode');
+  var popup = document.createElement('div');
+  popup.id = 'novidades-popup';
+  popup.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:99999;background:'+(isLight?'#fff':'#0d2233')+';border-radius:18px;padding:28px 26px;max-width:340px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,0.3);font-family:\'DM Sans\',sans-serif;border-top:4px solid #00c4cc;';
+
+  var svgPessoa = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+  var svgUp = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>';
+  var svgDown = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>';
+
+  var textColor = isLight ? '#1a3a4a' : '#e8f4ff';
+  var mutedColor = isLight ? '#6b8fa8' : 'rgba(180,210,240,0.7)';
+
+  function iconRow(svgBg, svg, text) {
+    return '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">' +
+      '<div style="width:36px;height:36px;border-radius:50%;background:'+svgBg+';display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;">'+svg+'</div>' +
+      '<div style="font-size:13px;color:'+textColor+';">'+text+'</div>' +
+    '</div>';
+  }
+
+  popup.innerHTML =
+    '<div style="font-size:18px;font-weight:700;color:'+textColor+';margin-bottom:6px;">🆕 Novidades SwimMin</div>' +
+    '<div style="font-size:13px;color:'+mutedColor+';margin-bottom:18px;line-height:1.5;">A SwimMin tem agora um sistema de conta que te permite aceder aos teus dados em qualquer dispositivo.</div>' +
+    '<div style="font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:'+mutedColor+';margin-bottom:12px;">Depois de entrares, aparecem no canto superior esquerdo:</div>' +
+    iconRow('#00c98d', svgPessoa, '<strong>Entrar / sair da conta</strong>') +
+    iconRow('#0090e0', svgUp,     '<strong>Enviar</strong> os dados deste dispositivo para a nuvem') +
+    iconRow('#27ae60', svgDown,   '<strong>Receber</strong> os dados da nuvem para este dispositivo') +
+    '<div style="font-size:12px;color:'+mutedColor+';line-height:1.5;margin-bottom:20px;padding-top:12px;border-top:1px solid rgba(128,128,128,0.15);">Pedimos desculpa se perdeste dados com a recente atualização — estamos a trabalhar para melhorar a SwimMin e garantir que isto não volta a acontecer.</div>' +
+    '<button onclick="closeNovidadesPopup()" style="width:100%;padding:13px;border-radius:10px;background:#00c4cc;color:#001f3a;border:none;font-size:15px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;">OK</button>';
+
+  var overlay = document.createElement('div');
+  overlay.id = 'novidades-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:99998;';
+  document.body.appendChild(overlay);
+  document.body.appendChild(popup);
+}
+
+function closeNovidadesPopup() {
+  try { localStorage.setItem('swimmin_novidades_v1', '1'); } catch(e) {}
+  var p = document.getElementById('novidades-popup');
+  var o = document.getElementById('novidades-overlay');
+  if (p) p.remove();
+  if (o) o.remove();
+}
+
+// Mostrar após 1 segundo para deixar a app carregar
+setTimeout(showNovidadesPopup, 1000);
 
 </script>
 
