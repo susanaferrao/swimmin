@@ -10006,61 +10006,68 @@ function showAuthToast(msg, success=true) {
 }
 
 // Ligar botões de autenticação
+function waitForFirebase(fn) {
+  if (window._firebaseReady) { fn(); return; }
+  document.addEventListener('firebase-ready', function() { fn(); }, { once: true });
+}
+
 function initAuthButtons() {
   var btnLogin    = document.getElementById('btn-login');
   var btnRegister = document.getElementById('btn-register');
   var btnForgot   = document.getElementById('btn-forgot');
   var btnLogout   = document.getElementById('btn-logout');
 
-  if (btnLogin) btnLogin.onclick = async function() {
+  if (btnLogin) btnLogin.onclick = function() {
     var email    = (document.getElementById('auth-email').value || '').trim();
     var password = document.getElementById('auth-password').value || '';
     if (!email || !password) { showAuthToast('Preenche email e palavra-passe.', false); return; }
-    if (!window._fbSignIn) { var t=0; while(!window._fbSignIn&&t<50){await new Promise(function(r){setTimeout(r,100);});t++;} }
-    if (!window._fbSignIn) { showAuthToast('Erro ao carregar. Recarrega a página.', false); return; }
-    try {
-      await window._fbSignIn(email, password);
-      showAuthToast('✅ Sessão iniciada com sucesso!');
-    } catch(e) {
-      var msg = (e.code==='auth/wrong-password'||e.code==='auth/invalid-credential') ? 'Email ou palavra-passe incorrectos.' :
-                e.code==='auth/user-not-found' ? 'Conta não encontrada.' :
-                e.code==='auth/too-many-requests' ? 'Demasiadas tentativas. Tenta mais tarde.' :
-                'Erro: ' + (e.message || e);
-      showAuthToast(msg, false);
-    }
+    waitForFirebase(async function() {
+      try {
+        await window._fbSignIn(email, password);
+        showAuthToast('✅ Sessão iniciada com sucesso!');
+      } catch(e) {
+        var msg = (e.code==='auth/wrong-password'||e.code==='auth/invalid-credential') ? 'Email ou palavra-passe incorrectos.' :
+                  e.code==='auth/user-not-found' ? 'Conta não encontrada.' :
+                  e.code==='auth/too-many-requests' ? 'Demasiadas tentativas. Tenta mais tarde.' :
+                  'Erro: ' + (e.message || e);
+        showAuthToast(msg, false);
+      }
+    });
   };
 
-  if (btnRegister) btnRegister.onclick = async function() {
+  if (btnRegister) btnRegister.onclick = function() {
     var email    = (document.getElementById('auth-email').value || '').trim();
     var password = document.getElementById('auth-password').value || '';
     if (!email || !password) { showAuthToast('Preenche email e palavra-passe.', false); return; }
-    if (!window._fbRegister) { var t=0; while(!window._fbRegister&&t<50){await new Promise(function(r){setTimeout(r,100);});t++;} }
-    if (!window._fbRegister) { showAuthToast('Erro ao carregar. Recarrega a página.', false); return; }
-    try {
-      await window._fbRegister(email, password);
-      showAuthToast('✅ Conta criada com sucesso!');
-    } catch(e) {
-      var msg = e.code==='auth/email-already-in-use' ? 'Este email já tem conta. Usa "Entrar".' :
-                e.code==='auth/weak-password' ? 'Palavra-passe fraca (mínimo 6 caracteres).' :
-                'Erro: ' + (e.message || e);
-      showAuthToast(msg, false);
-    }
+    waitForFirebase(async function() {
+      try {
+        await window._fbRegister(email, password);
+        showAuthToast('✅ Conta criada com sucesso!');
+      } catch(e) {
+        var msg = e.code==='auth/email-already-in-use' ? 'Este email já tem conta. Usa "Entrar".' :
+                  e.code==='auth/weak-password' ? 'Palavra-passe fraca (mínimo 6 caracteres).' :
+                  'Erro: ' + (e.message || e);
+        showAuthToast(msg, false);
+      }
+    });
   };
 
-  if (btnForgot) btnForgot.onclick = async function() {
+  if (btnForgot) btnForgot.onclick = function() {
     var email = (document.getElementById('auth-email').value || '').trim();
     if (!email) { showAuthToast('Escreve o teu email primeiro.', false); return; }
-    if (!window._fbForgot) { var t=0; while(!window._fbForgot&&t<50){await new Promise(function(r){setTimeout(r,100);});t++;} }
-    if (!window._fbForgot) { showAuthToast('Erro ao carregar. Recarrega a página.', false); return; }
-    try {
-      await window._fbForgot(email);
-      showAuthToast('✅ Email enviado para ' + email + '!');
-    } catch(e) { showAuthToast('Erro: ' + (e.message || e), false); }
+    waitForFirebase(async function() {
+      try {
+        await window._fbForgot(email);
+        showAuthToast('✅ Email enviado para ' + email + '!');
+      } catch(e) { showAuthToast('Erro: ' + (e.message || e), false); }
+    });
   };
 
-  if (btnLogout) btnLogout.onclick = async function() {
-    if (window._fbSignOut) await window._fbSignOut();
-    showAuthToast('Sessão terminada.', true);
+  if (btnLogout) btnLogout.onclick = function() {
+    waitForFirebase(async function() {
+      if (window._fbSignOut) await window._fbSignOut();
+      showAuthToast('Sessão terminada.', true);
+    });
   };
 }
 
@@ -10098,6 +10105,10 @@ const db = getFirestore(app);
 window.firebaseAuth = auth;
 window.firebaseDb = db;
 window.currentFirebaseUser = null;
+
+// Sinalizar que o módulo Firebase está pronto
+window._firebaseReady = true;
+document.dispatchEvent(new CustomEvent('firebase-ready'));
 
 async function saveUserDoc(path, data) {
   if (!auth.currentUser) return false;
