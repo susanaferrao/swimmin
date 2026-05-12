@@ -10236,53 +10236,98 @@ onAuthStateChanged(auth, async (user) => {
 // ===== SINCRONIZAÇÃO MANUAL =====
 window.syncToFirebase = async function() {
   if (!window.currentFirebaseUser) {
-    var st = document.getElementById('sync-status');
-    if (st) { st.textContent = 'Tens de fazer login primeiro.'; st.style.color = '#e74c3c'; }
+    showSyncPopup('error', 'Tens de fazer login primeiro.');
     return;
   }
-  var btn = document.getElementById('btn-sync-cloud');
-  var st  = document.getElementById('sync-status');
-  if (btn) { btn.style.background = '#0070b0'; btn.disabled = true; }
-  if (st)  { st.textContent = 'A atualizar...'; st.style.color = '#6b8fa8'; }
+
+  showSyncPopup('loading', 'A sincronizar...');
 
   try {
-    var promises = [];
-    // Perfis de nadadores
-    var profiles = null;
-    try { profiles = JSON.parse(localStorage.getItem('swimmin_profiles_v1') || 'null'); } catch(e) {}
-    if (profiles && window.firebaseSaveAtletaProfiles) promises.push(window.firebaseSaveAtletaProfiles(profiles));
-    // SWOLF
-    var swolfData = null;
-    try { swolfData = JSON.parse(localStorage.getItem('swimmin_swolf_v1') || 'null'); } catch(e) {}
-    if (swolfData && window.firebaseSaveSwolf) promises.push(window.firebaseSaveSwolf(swolfData));
-    // Parciais
-    var parciaisData = null;
-    try { parciaisData = JSON.parse(localStorage.getItem('swimmin_crono_history_v1') || 'null'); } catch(e) {}
-    if (parciaisData && window.firebaseSaveParciais) promises.push(window.firebaseSaveParciais(parciaisData));
-    // Calendário
-    var calData = null;
-    var CAL_KEY_LOCAL = 'swimmin_calendar_v1';
-    try { calData = JSON.parse(localStorage.getItem(CAL_KEY_LOCAL) || 'null'); } catch(e) {}
-    if (calData && window.firebaseSaveCalendario) promises.push(window.firebaseSaveCalendario(calData));
+    var steps = [
+      { label: 'Perfis de nadadores', key: 'swimmin_profiles_v1', fn: function(d) { return window.firebaseSaveAtletaProfiles && window.firebaseSaveAtletaProfiles(d); } },
+      { label: 'SWOLF', key: 'swimmin_swolf_v1', fn: function(d) { return window.firebaseSaveSwolf && window.firebaseSaveSwolf(d); } },
+      { label: 'Histórico parciais', key: 'swimmin_crono_history_v1', fn: function(d) { return window.firebaseSaveParciais && window.firebaseSaveParciais(d); } },
+      { label: 'Calendário', key: 'swimmin_calendar_v1', fn: function(d) { return window.firebaseSaveCalendario && window.firebaseSaveCalendario(d); } },
+    ];
+
+    var done = 0;
+    var total = steps.length + 1; // +1 para dados de treinador
+
+    for (var i = 0; i < steps.length; i++) {
+      var step = steps[i];
+      updateSyncPopup(Math.round((done/total)*100), step.label + '...');
+      var data = null;
+      try { data = JSON.parse(localStorage.getItem(step.key) || 'null'); } catch(e) {}
+      if (data) await step.fn(data);
+      done++;
+    }
+
     // Dados de treinador
+    updateSyncPopup(Math.round((done/total)*100), 'Dados de treinador...');
     var coachName = localStorage.getItem('coachTeamName') || '';
-    var coachAths = null;
-    try { coachAths = JSON.parse(localStorage.getItem('coachAthletes') || '[]'); } catch(e) { coachAths = []; }
-    if (window.firebaseSaveCoachData) promises.push(window.firebaseSaveCoachData(coachName, coachAths));
+    var coachAths = [];
+    try { coachAths = JSON.parse(localStorage.getItem('coachAthletes') || '[]'); } catch(e) {}
+    if (window.firebaseSaveCoachData) await window.firebaseSaveCoachData(coachName, coachAths);
 
-    await Promise.all(promises);
+    var hora = new Date().toLocaleTimeString('pt-PT', {hour:'2-digit',minute:'2-digit'});
+    showSyncPopup('success', 'Sincronizado com sucesso!\n' + hora);
+    setTimeout(closeSyncPopup, 2500);
 
-    if (btn) { btn.style.background = '#0090e0'; btn.disabled = false; }
-    if (st)  { st.textContent = '✓ ' + new Date().toLocaleTimeString('pt-PT', {hour:'2-digit',minute:'2-digit'}); st.style.color = '#27ae60'; }
-    setTimeout(function() {
-      if (st) st.textContent = '';
-    }, 3000);
   } catch(e) {
-    if (btn) { btn.style.background = '#0090e0'; btn.disabled = false; }
-    if (st)  { st.textContent = 'Erro. Tenta de novo.'; st.style.color = '#e74c3c'; }
+    showSyncPopup('error', 'Erro ao sincronizar.\nVerifica a ligação e tenta novamente.');
     console.error('Sync error:', e);
   }
 };
+
+function showSyncPopup(type, msg) {
+  var existing = document.getElementById('sync-popup');
+  if (existing) existing.remove();
+
+  var colors = { loading: '#0090e0', success: '#27ae60', error: '#e74c3c' };
+  var icons  = { loading: '⟳', success: '✓', error: '✗' };
+  var color  = colors[type] || '#0090e0';
+
+  var popup = document.createElement('div');
+  popup.id = 'sync-popup';
+  popup.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:99999;background:#fff;border-radius:16px;padding:28px 32px;min-width:240px;max-width:320px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,0.25);border-top:4px solid ' + color + ';font-family:\'DM Sans\',sans-serif;';
+
+  popup.innerHTML =
+    '<div id="sync-popup-icon" style="font-size:36px;margin-bottom:12px;color:' + color + (type==='loading'?';animation:spin 1s linear infinite':'')+'">' + icons[type] + '</div>' +
+    '<div id="sync-popup-msg" style="font-size:15px;font-weight:600;color:#1a3a4a;white-space:pre-line;">' + msg + '</div>' +
+    '<div id="sync-popup-bar-wrap" style="margin-top:14px;background:#e8f0f8;border-radius:8px;height:8px;overflow:hidden;' + (type!=='loading'?'display:none':'') + '">' +
+      '<div id="sync-popup-bar" style="height:8px;border-radius:8px;background:' + color + ';width:5%;transition:width 0.3s;"></div>' +
+    '</div>' +
+    (type!=='loading' ? '<button onclick="closeSyncPopup()" style="margin-top:16px;padding:8px 24px;border-radius:8px;border:none;background:' + color + ';color:#fff;font-size:14px;font-weight:700;cursor:pointer;">OK</button>' : '');
+
+  // Overlay escuro
+  var overlay = document.createElement('div');
+  overlay.id = 'sync-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:99998;';
+  document.body.appendChild(overlay);
+  document.body.appendChild(popup);
+
+  // Adicionar CSS de animação se não existir
+  if (!document.getElementById('sync-spin-style')) {
+    var style = document.createElement('style');
+    style.id = 'sync-spin-style';
+    style.textContent = '@keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }';
+    document.head.appendChild(style);
+  }
+}
+
+function updateSyncPopup(pct, msg) {
+  var bar = document.getElementById('sync-popup-bar');
+  var msgEl = document.getElementById('sync-popup-msg');
+  if (bar) bar.style.width = Math.max(5, pct) + '%';
+  if (msgEl) msgEl.textContent = msg;
+}
+
+function closeSyncPopup() {
+  var popup = document.getElementById('sync-popup');
+  var overlay = document.getElementById('sync-overlay');
+  if (popup) popup.remove();
+  if (overlay) overlay.remove();
+}
 
 // ===== FIM MÓDULO FIREBASE =====
 </script>
