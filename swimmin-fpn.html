@@ -10302,7 +10302,9 @@ function showSyncPopup(type, msg) {
   // Overlay escuro
   var overlay = document.createElement('div');
   overlay.id = 'sync-overlay';
-  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:99998;';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:99998;transition:opacity 0.2s;';
+  overlay.onclick = closeSyncPopup;
+  popup.style.cssText += 'transition:opacity 0.2s;';
   document.body.appendChild(overlay);
   document.body.appendChild(popup);
 
@@ -10325,8 +10327,8 @@ function updateSyncPopup(pct, msg) {
 function closeSyncPopup() {
   var popup = document.getElementById('sync-popup');
   var overlay = document.getElementById('sync-overlay');
-  if (popup) popup.remove();
-  if (overlay) overlay.remove();
+  if (overlay) { overlay.style.opacity = '0'; setTimeout(function(){ if(overlay.parentNode) overlay.remove(); }, 200); }
+  if (popup)   { popup.style.opacity = '0';   setTimeout(function(){ if(popup.parentNode)   popup.remove();   }, 200); }
 }
 
 // ===== FIM MÓDULO FIREBASE =====
