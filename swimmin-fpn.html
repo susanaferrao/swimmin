@@ -2530,7 +2530,7 @@ html.light-mode #sw-hist-view > div, html.light-mode #crono-hist-view > div {
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 </head>
 <body>
-<div id="auth-badge" style="display:none;position:fixed;top:14px;left:14px;z-index:9000;display:flex;gap:8px;align-items:center;">
+<div id="auth-badge" style="display:none;position:fixed;top:14px;left:14px;z-index:9000;gap:8px;align-items:center;">
   <!-- Ícone login (pessoa) -->
   <button onclick="toggleAuthBadge()" style="background:#00c98d;border:none;border-radius:50%;width:38px;height:38px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,201,141,0.5);padding:0;" title="Conta">
     <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -10125,8 +10125,8 @@ onAuthStateChanged(auth, async (user) => {
 
   if (loggedOut) loggedOut.style.display = user ? 'none' : 'block';
   if (loggedIn)  loggedIn.style.display  = 'none';
-  // Esconder toda a secção quando autenticado
   if (authSection) authSection.style.display = user ? 'none' : 'block';
+  if (authBadge)   authBadge.style.display   = user ? 'flex' : 'none';
   var syncBtn  = document.getElementById('btn-sync-cloud');
   var loadBtn  = document.getElementById('btn-load-cloud');
   if (syncBtn) syncBtn.style.display = user ? 'flex' : 'none';
