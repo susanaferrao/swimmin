@@ -10295,14 +10295,27 @@ window.loadFromFirebase = async function() {
     updateSyncPopup(Math.round((done/total)*100), 'Perfis de nadadores...');
     var atletaFb = await window.firebaseLoadAtletaProfiles();
     if (atletaFb && atletaFb.profiles) {
-      localStorage.setItem(PROFILES_KEY, JSON.stringify(atletaFb.profiles));
+      var fbProfiles = atletaFb.profiles;
+      localStorage.setItem(PROFILES_KEY, JSON.stringify(fbProfiles));
       localStorage.setItem('swimmin_profiles_ts', (atletaFb.updatedAt || Date.now()).toString());
-      var ids = Object.keys(atletaFb.profiles);
-      if (ids.length > 0 && !localStorage.getItem(ACTIVE_PROFILE_KEY)) {
-        localStorage.setItem(ACTIVE_PROFILE_KEY, ids[0]);
+      _memProfiles = fbProfiles;
+      // Verificar se o perfil activo existe nos dados recebidos
+      var currentActiveId = localStorage.getItem(ACTIVE_PROFILE_KEY);
+      var ids = Object.keys(fbProfiles);
+      if (ids.length > 0) {
+        if (!currentActiveId || !fbProfiles[currentActiveId]) {
+          localStorage.setItem(ACTIVE_PROFILE_KEY, ids[0]);
+          _memActiveId = ids[0];
+        }
       }
-      _memProfiles = atletaFb.profiles;
-      if (typeof mostrarPerfilAtivo === 'function') setTimeout(mostrarPerfilAtivo, 100);
+      // Forçar reload completo — garantir que UI lê os novos dados
+      if (typeof mostrarPerfilAtivo === 'function') {
+        // Pequeno delay para garantir que localStorage está persistido
+        setTimeout(function() {
+          _memProfiles = null; // limpar cache de memória para forçar releitura do localStorage
+          mostrarPerfilAtivo();
+        }, 200);
+      }
     }
     done++;
 
