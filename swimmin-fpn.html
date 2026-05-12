@@ -10074,47 +10074,53 @@ function showAuthToast(msg, success=true) {
   }, 3500);
 }
 
-// Módulo é defer por definição, DOM já está pronto
-(function() {
-  document.getElementById('btn-login').addEventListener('click', async () => {
+// Ligar botões de autenticação
+function initAuthButtons() {
+  var btnLogin = document.getElementById('btn-login');
+  var btnRegister = document.getElementById('btn-register');
+  var btnForgot = document.getElementById('btn-forgot');
+  var btnLogout = document.getElementById('btn-logout');
+
+  if (btnLogin) btnLogin.onclick = async function() {
     const email = document.getElementById('auth-email').value.trim();
     const password = document.getElementById('auth-password').value;
+    if (!email || !password) { showAuthToast('Preenche email e palavra-passe.', false); return; }
     try {
       await signInWithEmailAndPassword(auth, email, password);
       showAuthToast('✅ Sessão iniciada com sucesso!');
-    } catch (e) { showAuthToast('Erro no login: ' + (e.message || e), false); }
-  });
+    } catch(e) { showAuthToast('Erro: ' + (e.message || e), false); }
+  };
 
-  document.getElementById('btn-register').addEventListener('click', async () => {
+  if (btnRegister) btnRegister.onclick = async function() {
     const email = document.getElementById('auth-email').value.trim();
     const password = document.getElementById('auth-password').value;
+    if (!email || !password) { showAuthToast('Preenche email e palavra-passe.', false); return; }
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       showAuthToast('✅ Conta criada com sucesso!');
-    } catch (e) { showAuthToast('Erro ao criar conta: ' + (e.message || e), false); }
-  });
+    } catch(e) { showAuthToast('Erro: ' + (e.message || e), false); }
+  };
 
-  document.getElementById('btn-forgot').addEventListener('click', async () => {
+  if (btnForgot) btnForgot.onclick = async function() {
     const email = document.getElementById('auth-email').value.trim();
-    if (!email) {
-      showAuthToast('Escreve o teu email primeiro.', false);
-      return;
-    }
+    if (!email) { showAuthToast('Escreve o teu email primeiro.', false); return; }
     try {
       await sendPasswordResetEmail(auth, email);
-      showAuthToast('✅ Email enviado para ' + email + '! Verifica a caixa de entrada.');
-    } catch(e) {
-      console.error('Reset error:', e);
-      showAuthToast('Erro: ' + (e.message || e), false);
-    }
-  });
+      showAuthToast('✅ Email enviado para ' + email + '!');
+    } catch(e) { showAuthToast('Erro: ' + (e.message || e), false); }
+  };
 
-  const btnLogout = document.getElementById('btn-logout');
-  if (btnLogout) btnLogout.addEventListener('click', async () => {
+  if (btnLogout) btnLogout.onclick = async function() {
     await signOut(auth);
     showAuthToast('Sessão terminada.', true);
-  });
-})();
+  };
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initAuthButtons);
+} else {
+  initAuthButtons();
+}
 
 onAuthStateChanged(auth, async (user) => {
   window.currentFirebaseUser = user || null;
