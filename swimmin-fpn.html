@@ -9989,179 +9989,115 @@ function getBestEstilosMisto(males, females, dist, poolKey, topN, useConv) {
 
 
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
-function showAuthToast(msg, success=true) {
-  const t = document.getElementById('auth-toast');
-  if (!t) return;
+/* ===== FIREBASE AUTH ===== */
+
+function showAuthToast(msg, success) {
+  var t = document.getElementById('auth-toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'auth-toast';
+    t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);padding:12px 22px;border-radius:10px;font-size:14px;font-weight:600;z-index:9999;max-width:320px;text-align:center;transition:opacity 0.4s;font-family:DM Sans,sans-serif;';
+    document.body.appendChild(t);
+  }
   t.textContent = msg;
-  t.style.background = success ? '#00c98d' : '#e74c3c';
+  t.style.background = (success === false) ? '#e74c3c' : '#27ae60';
   t.style.color = '#fff';
-  t.style.display = 'block';
   t.style.opacity = '1';
-  clearTimeout(window._toastTimer);
-  window._toastTimer = setTimeout(() => {
-    t.style.opacity = '0';
-    setTimeout(() => { t.style.display = 'none'; }, 400);
-  }, 3500);
+  t.style.display = 'block';
+  clearTimeout(t._to);
+  t._to = setTimeout(function(){ t.style.opacity='0'; setTimeout(function(){ t.style.display='none'; }, 400); }, 3500);
 }
 
-// Ligar botões de autenticação
-function waitForFirebase(fn) {
-  if (window._firebaseReady) { fn(); return; }
-  document.addEventListener('firebase-ready', function() { fn(); }, { once: true });
+const _fbConfig = {
+  apiKey: "AIzaSyDBludqJvuUW3nBI4hyrXN3a-71h7yU4lU",
+  authDomain: "swimmin-34ff7.firebaseapp.com",
+  projectId: "swimmin-34ff7",
+  storageBucket: "swimmin-34ff7.firebasestorage.app",
+  messagingSenderId: "749731552528",
+  appId: "1:749731552528:web:2c4a5c9e8f1b3d2e4f5a6b"
+};
+firebase.initializeApp(_fbConfig);
+const _auth = firebase.auth();
+const _db   = firebase.firestore();
+window.currentFirebaseUser = null;
+
+// Save/load helpers exposed globally
+async function saveUserDoc(path, data) {
+  if (!_auth.currentUser) return false;
+  await _db.collection('users').doc(_auth.currentUser.uid).collection('app').doc(path).set(data, { merge: true });
+  return true;
+}
+async function loadUserDoc(path) {
+  if (!_auth.currentUser) return null;
+  const snap = await _db.collection('users').doc(_auth.currentUser.uid).collection('app').doc(path).get();
+  return snap.exists ? snap.data() : null;
 }
 
-function initAuthButtons() {
+window.firebaseSaveAtletaProfiles = function(p){ return saveUserDoc('atletaProfiles',{profiles:p||{},updatedAt:Date.now()}); };
+window.firebaseLoadAtletaProfiles = function(){ return loadUserDoc('atletaProfiles'); };
+window.firebaseSaveCoachData = function(n,a){ return saveUserDoc('coachData',{teamName:n||'',athletes:a||[],updatedAt:Date.now()}); };
+window.firebaseLoadCoachData = function(){ return loadUserDoc('coachData'); };
+window.firebaseSaveSwolf = function(d){ return saveUserDoc('swolfData',{data:JSON.stringify(d),updatedAt:Date.now()}); };
+window.firebaseLoadSwolf = async function(){ var d=await loadUserDoc('swolfData'); if(!d||!d.data)return null; try{return{data:JSON.parse(d.data),updatedAt:d.updatedAt||0};}catch(e){return null;} };
+window.firebaseSaveParciais = function(h){ return saveUserDoc('parciaisHistory',{data:JSON.stringify(h),updatedAt:Date.now()}); };
+window.firebaseLoadParciais = async function(){ var d=await loadUserDoc('parciaisHistory'); if(!d||!d.data)return null; try{return{data:JSON.parse(d.data),updatedAt:d.updatedAt||0};}catch(e){return null;} };
+window.firebaseSaveCalendario = function(c){ return saveUserDoc('calendario',{data:JSON.stringify(c),updatedAt:Date.now()}); };
+window.firebaseLoadCalendario = async function(){ var d=await loadUserDoc('calendario'); if(!d||!d.data)return null; try{return{data:JSON.parse(d.data),updatedAt:d.updatedAt||0};}catch(e){return null;} };
+
+// Auth buttons — ligados directamente ao compat SDK
+document.addEventListener('DOMContentLoaded', function() {
   var btnLogin    = document.getElementById('btn-login');
   var btnRegister = document.getElementById('btn-register');
   var btnForgot   = document.getElementById('btn-forgot');
   var btnLogout   = document.getElementById('btn-logout');
 
   if (btnLogin) btnLogin.onclick = function() {
-    var email    = (document.getElementById('auth-email').value || '').trim();
-    var password = document.getElementById('auth-password').value || '';
-    if (!email || !password) { showAuthToast('Preenche email e palavra-passe.', false); return; }
-    waitForFirebase(async function() {
-      try {
-        await window._fbSignIn(email, password);
-        showAuthToast('✅ Sessão iniciada com sucesso!');
-      } catch(e) {
-        var msg = (e.code==='auth/wrong-password'||e.code==='auth/invalid-credential') ? 'Email ou palavra-passe incorrectos.' :
-                  e.code==='auth/user-not-found' ? 'Conta não encontrada.' :
-                  e.code==='auth/too-many-requests' ? 'Demasiadas tentativas. Tenta mais tarde.' :
-                  'Erro: ' + (e.message || e);
-        showAuthToast(msg, false);
-      }
-    });
+    var email = (document.getElementById('auth-email').value||'').trim();
+    var pw    = document.getElementById('auth-password').value||'';
+    if (!email||!pw){ showAuthToast('Preenche email e palavra-passe.',false); return; }
+    _auth.signInWithEmailAndPassword(email, pw)
+      .then(function(){ showAuthToast('✅ Sessão iniciada!'); })
+      .catch(function(e){
+        var m = (e.code==='auth/wrong-password'||e.code==='auth/invalid-credential') ? 'Email ou palavra-passe incorrectos.' :
+                 e.code==='auth/user-not-found' ? 'Conta não encontrada.' :
+                 e.code==='auth/too-many-requests' ? 'Demasiadas tentativas. Tenta mais tarde.' :
+                 'Erro: '+(e.message||e);
+        showAuthToast(m, false);
+      });
   };
 
   if (btnRegister) btnRegister.onclick = function() {
-    var email    = (document.getElementById('auth-email').value || '').trim();
-    var password = document.getElementById('auth-password').value || '';
-    if (!email || !password) { showAuthToast('Preenche email e palavra-passe.', false); return; }
-    waitForFirebase(async function() {
-      try {
-        await window._fbRegister(email, password);
-        showAuthToast('✅ Conta criada com sucesso!');
-      } catch(e) {
-        var msg = e.code==='auth/email-already-in-use' ? 'Este email já tem conta. Usa "Entrar".' :
-                  e.code==='auth/weak-password' ? 'Palavra-passe fraca (mínimo 6 caracteres).' :
-                  'Erro: ' + (e.message || e);
-        showAuthToast(msg, false);
-      }
-    });
+    var email = (document.getElementById('auth-email').value||'').trim();
+    var pw    = document.getElementById('auth-password').value||'';
+    if (!email||!pw){ showAuthToast('Preenche email e palavra-passe.',false); return; }
+    _auth.createUserWithEmailAndPassword(email, pw)
+      .then(function(){ showAuthToast('✅ Conta criada!'); })
+      .catch(function(e){
+        var m = e.code==='auth/email-already-in-use' ? 'Este email já tem conta. Usa "Entrar".' :
+                 e.code==='auth/weak-password' ? 'Palavra-passe fraca (mínimo 6 caracteres).' :
+                 'Erro: '+(e.message||e);
+        showAuthToast(m, false);
+      });
   };
 
   if (btnForgot) btnForgot.onclick = function() {
-    var email = (document.getElementById('auth-email').value || '').trim();
-    if (!email) { showAuthToast('Escreve o teu email primeiro.', false); return; }
-    waitForFirebase(async function() {
-      try {
-        await window._fbForgot(email);
-        showAuthToast('✅ Email enviado para ' + email + '!');
-      } catch(e) { showAuthToast('Erro: ' + (e.message || e), false); }
-    });
+    var email = (document.getElementById('auth-email').value||'').trim();
+    if (!email){ showAuthToast('Escreve o teu email primeiro.',false); return; }
+    _auth.sendPasswordResetEmail(email)
+      .then(function(){ showAuthToast('✅ Email enviado para '+email+'!'); })
+      .catch(function(e){ showAuthToast('Erro: '+(e.message||e), false); });
   };
 
   if (btnLogout) btnLogout.onclick = function() {
-    waitForFirebase(async function() {
-      if (window._fbSignOut) await window._fbSignOut();
-      showAuthToast('Sessão terminada.', true);
-    });
+    _auth.signOut().then(function(){ showAuthToast('Sessão terminada.'); });
   };
-}
+});
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initAuthButtons);
-} else {
-  initAuthButtons();
-}
-
-</script>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDBludqJvuUW3nBI4hyrXN3a-71h7yU4lU",
-  authDomain: "swimmin-34ff7.firebaseapp.com",
-  projectId: "swimmin-34ff7",
-  storageBucket: "swimmin-34ff7.firebasestorage.app",
-  messagingSenderId: "955483049347",
-  appId: "1:955483049347:web:d0f1bb8e2bf7a8d26dfab6"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-// Expor funções de auth ao scope global
-window._fbSignIn = (e,p) => signInWithEmailAndPassword(auth, e, p);
-window._fbRegister = (e,p) => createUserWithEmailAndPassword(auth, e, p);
-window._fbForgot = (e) => sendPasswordResetEmail(auth, e);
-window._fbSignOut = () => signOut(auth);
-const db = getFirestore(app);
-window.firebaseAuth = auth;
-window.firebaseDb = db;
-window.currentFirebaseUser = null;
-
-// Sinalizar que o módulo Firebase está pronto
-window._firebaseReady = true;
-document.dispatchEvent(new CustomEvent('firebase-ready'));
-
-async function saveUserDoc(path, data) {
-  if (!auth.currentUser) return false;
-  await setDoc(doc(db, 'users', auth.currentUser.uid, 'app', path), data, { merge: true });
-  return true;
-}
-
-async function loadUserDoc(path) {
-  if (!auth.currentUser) return null;
-  const snap = await getDoc(doc(db, 'users', auth.currentUser.uid, 'app', path));
-  return snap.exists() ? snap.data() : null;
-}
-
-window.firebaseSaveAtletaProfiles = async function(profiles) {
-  return saveUserDoc('atletaProfiles', { profiles: profiles || {}, updatedAt: Date.now() });
-}
-window.firebaseLoadAtletaProfiles = async function() {
-  const data = await loadUserDoc('atletaProfiles');
-  return data && data.profiles ? data : null;
-}
-window.firebaseSaveCoachData = async function(teamName, athletes) {
-  return saveUserDoc('coachData', { teamName: teamName || '', athletes: athletes || [], updatedAt: Date.now() });
-}
-window.firebaseLoadCoachData = async function() {
-  return loadUserDoc('coachData');
-}
-window.firebaseSaveSwolf = async function(db_data) {
-  return saveUserDoc('swolfData', { data: JSON.stringify(db_data), updatedAt: Date.now() });
-}
-window.firebaseLoadSwolf = async function() {
-  const d = await loadUserDoc('swolfData');
-  if (!d || !d.data) return null;
-  try { return { data: JSON.parse(d.data), updatedAt: d.updatedAt || 0 }; } catch(e) { return null; }
-}
-window.firebaseSaveParciais = async function(history) {
-  return saveUserDoc('parciaisHistory', { data: JSON.stringify(history), updatedAt: Date.now() });
-}
-window.firebaseLoadParciais = async function() {
-  const d = await loadUserDoc('parciaisHistory');
-  if (!d || !d.data) return null;
-  try { return { data: JSON.parse(d.data), updatedAt: d.updatedAt || 0 }; } catch(e) { return null; }
-}
-window.firebaseSaveCalendario = async function(cal) {
-  return saveUserDoc('calendario', { data: JSON.stringify(cal), updatedAt: Date.now() });
-}
-window.firebaseLoadCalendario = async function() {
-  const d = await loadUserDoc('calendario');
-  if (!d || !d.data) return null;
-  try { return { data: JSON.parse(d.data), updatedAt: d.updatedAt || 0 }; } catch(e) { return null; }
-}
-
-
-onAuthStateChanged(auth, async (user) => {
+_auth.onAuthStateChanged( async (user) => {
   window.currentFirebaseUser = user || null;
   const loggedOut = document.getElementById('auth-logged-out');
   const loggedIn  = document.getElementById('auth-logged-in');
@@ -10452,6 +10388,37 @@ window.loadFromFirebase = async function() {
     style.textContent = '@keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }';
     document.head.appendChild(style);
   }
+
+function showSyncPopup(type, msg) {
+  var existing = document.getElementById('sync-popup');
+  if (existing) existing.remove();
+  var ov = document.getElementById('sync-overlay');
+  if (ov) ov.remove();
+  var colors = { loading: '#0090e0', success: '#27ae60', error: '#e74c3c' };
+  var icons  = { loading: '⟳', success: '✓', error: '✗' };
+  var color  = colors[type] || '#0090e0';
+  var popup = document.createElement('div');
+  popup.id = 'sync-popup';
+  popup.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:99999;background:#fff;border-radius:16px;padding:28px 32px;min-width:240px;max-width:320px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,0.25);border-top:4px solid '+color+';font-family:\'DM Sans\',sans-serif;transition:opacity 0.2s;';
+  popup.innerHTML =
+    '<div style="font-size:36px;margin-bottom:12px;color:'+color+(type==='loading'?';animation:spin 1s linear infinite':'')+'">' + icons[type] + '</div>' +
+    '<div id="sync-popup-msg" style="font-size:15px;font-weight:600;color:#1a3a4a;white-space:pre-line;">' + msg + '</div>' +
+    '<div id="sync-popup-bar-wrap" style="margin-top:14px;background:#e8f0f8;border-radius:8px;height:8px;overflow:hidden;' + (type!=='loading'?'display:none':'') + '">' +
+      '<div id="sync-popup-bar" style="height:8px;border-radius:8px;background:'+color+';width:5%;transition:width 0.3s;"></div>' +
+    '</div>' +
+    (type!=='loading' ? '<button onclick="closeSyncPopup()" style="margin-top:16px;padding:8px 24px;border-radius:8px;border:none;background:'+color+';color:#fff;font-size:14px;font-weight:700;cursor:pointer;">OK</button>' : '');
+  var overlay = document.createElement('div');
+  overlay.id = 'sync-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:99998;transition:opacity 0.2s;';
+  overlay.onclick = closeSyncPopup;
+  document.body.appendChild(overlay);
+  document.body.appendChild(popup);
+  if (!document.getElementById('sync-spin-style')) {
+    var style = document.createElement('style');
+    style.id = 'sync-spin-style';
+    style.textContent = '@keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }';
+    document.head.appendChild(style);
+  }
 }
 
 function updateSyncPopup(pct, msg) {
@@ -10469,6 +10436,7 @@ function closeSyncPopup() {
 }
 
 // ===== FIM MÓDULO FIREBASE =====
+
 </script>
 
 <!-- ===== CARTÃO FPN — script global (fora do módulo para acesso via onclick) ===== -->
