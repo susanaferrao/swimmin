@@ -8625,26 +8625,22 @@ function renderAtletaResultados(data, compId) {
       if (getMinimoAtleta(piscinasValidas[pi], sexo, escalao, comp.id, provaKey) !== null) { hasAnyMinimo = true; break; }
     }
     if (!hasAnyMinimo) continue;
-
-    // Mostrar uma entrada por piscina que tenha mínimo definido
-    var temQualquer = false;
+    var atingiu = false;
+    var melhorTempo = null, melhorPisc = null, melhorMin = null, melhorDiff = null;
     for (var pi = 0; pi < piscinasValidas.length; pi++) {
       var pisc = piscinasValidas[pi];
+      var tp = tAtleta[pisc] && tAtleta[pisc][provaKey] ? tAtleta[pisc][provaKey] : null;
       var min = getMinimoAtleta(pisc, sexo, escalao, comp.id, provaKey);
       if (!min) continue;
-      var tp = tAtleta[pisc] && tAtleta[pisc][provaKey] ? tAtleta[pisc][provaKey] : null;
-      temQualquer = true;
-      var entry = {label: provaLabel, key: provaKey, pisc: pisc, minimo: min, tempo: tp};
-      if (tp === null) {
-        semTempo.push(entry);
-      } else if (tp <= min) {
-        entry.diff = min - tp;
-        comMinimo.push(entry);
-      } else {
-        entry.diff = tp - min;
-        semMinimo.push(entry);
+      if (tp !== null) {
+        var diff = tp - min;
+        if (tp <= min && !atingiu) { atingiu = true; melhorTempo = tp; melhorPisc = pisc; melhorMin = min; melhorDiff = min - tp; }
+        if (!atingiu && (melhorDiff === null || diff < melhorDiff)) { melhorDiff = diff; melhorTempo = tp; melhorPisc = pisc; melhorMin = min; }
       }
     }
+    if (melhorTempo === null) semTempo.push({label:provaLabel, key:provaKey});
+    else if (atingiu) comMinimo.push({label:provaLabel, tempo:melhorTempo, pisc:melhorPisc, minimo:melhorMin, diff:melhorMin-melhorTempo});
+    else semMinimo.push({label:provaLabel, tempo:melhorTempo, pisc:melhorPisc, minimo:melhorMin, diff:melhorDiff});
   }
 
   var html = '';
@@ -8697,19 +8693,8 @@ function renderAtletaResultados(data, compId) {
     html += '<div style="font-size:12px;color:' + minColor + ';text-align:right;">min<br>' + formatAtletaMs(e.minimo) + '</div></div>';
   }
   if (semTempo.length > 0 && total > 0) {
-    html += '<div style="font-size:12px;color:' + noTempo + ';margin-top:8px;">';
-    html += 'Sem tempo: ';
-    var semTempoLabels = [];
-    var seen = {};
-    for (var i = 0; i < semTempo.length; i++) {
-      var st = semTempo[i];
-      var k = st.key + '_' + st.pisc;
-      if (!seen[k]) {
-        seen[k] = true;
-        semTempoLabels.push(st.label + ' (' + (st.pisc==='curta'?'25m':'50m') + ')');
-      }
-    }
-    html += semTempoLabels.join(' · ') + '</div>';
+    var labs = []; for (var i=0;i<semTempo.length;i++) labs.push(semTempo[i].label);
+    html += '<div style="font-size:12px;color:' + noTempo + ';margin-top:8px;">Sem tempo: ' + labs.join(' · ') + '</div>';
   }
 
   document.getElementById('atleta-resultados').innerHTML = html;
@@ -10510,8 +10495,12 @@ function closeNovidadesPopup() {
   if (o) o.remove();
 }
 
-// Mostrar após 1 segundo para deixar a app carregar
-setTimeout(showNovidadesPopup, 1000);
+// Mostrar após DOM carregar
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', function() { setTimeout(showNovidadesPopup, 1000); });
+} else {
+  setTimeout(showNovidadesPopup, 1000);
+}
 
 </script>
 
