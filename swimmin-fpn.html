@@ -2535,9 +2535,13 @@ html.light-mode #sw-hist-view > div, html.light-mode #crono-hist-view > div {
   <button onclick="toggleAuthBadge()" style="background:#00c98d;border:none;border-radius:50%;width:38px;height:38px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,201,141,0.5);padding:0;" title="Conta">
     <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
   </button>
-  <!-- Ícone nuvem (sincronizar) -->
-  <button onclick="syncToFirebase()" id="btn-sync-cloud" style="background:#0090e0;border:none;border-radius:50%;width:38px;height:38px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,144,224,0.5);padding:0;" title="Atualizar na nuvem">
-    <svg id="sync-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+  <!-- Ícone enviar para nuvem (seta cima) -->
+  <button onclick="syncToFirebase()" id="btn-sync-cloud" style="background:#0090e0;border:none;border-radius:50%;width:38px;height:38px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,144,224,0.5);padding:0;" title="Enviar para a nuvem">
+    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+  </button>
+  <!-- Ícone receber da nuvem (seta baixo) -->
+  <button onclick="loadFromFirebase()" id="btn-load-cloud" style="background:#27ae60;border:none;border-radius:50%;width:38px;height:38px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(39,174,96,0.5);padding:0;" title="Receber da nuvem">
+    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
   </button>
   <!-- Menu dropdown -->
   <div id="auth-badge-menu" style="display:none;position:absolute;top:46px;left:0;background:#fff;border-radius:14px;padding:16px;min-width:210px;box-shadow:0 8px 28px rgba(0,0,0,0.15);border:1px solid #e0edf5;">
@@ -10123,7 +10127,10 @@ onAuthStateChanged(auth, async (user) => {
   if (loggedIn)  loggedIn.style.display  = 'none';
   // Esconder toda a secção quando autenticado
   if (authSection) authSection.style.display = user ? 'none' : 'block';
-  if (authBadge)   authBadge.style.display   = user ? 'flex' : 'none';
+  var syncBtn  = document.getElementById('btn-sync-cloud');
+  var loadBtn  = document.getElementById('btn-load-cloud');
+  if (syncBtn) syncBtn.style.display = user ? 'flex' : 'none';
+  if (loadBtn) loadBtn.style.display = user ? 'flex' : 'none';
 
   // Mostrar email no dropdown
   var userEmail = document.getElementById('auth-user-email');
@@ -10155,22 +10162,28 @@ onAuthStateChanged(auth, async (user) => {
       }
 
       const atletaFb = await window.firebaseLoadAtletaProfiles();
-      if (atletaFb) {
-        var lsProfilesTs = 0;
-        try { lsProfilesTs = parseInt(localStorage.getItem('swimmin_profiles_ts') || '0'); } catch(e) {}
+      if (atletaFb && atletaFb.profiles) {
         var fbProfiles = atletaFb.profiles;
         var fbTs = atletaFb.updatedAt || 0;
-        if (fbTs >= lsProfilesTs && fbProfiles) {
-          localStorage.setItem('swimmin_profiles_v1', JSON.stringify(fbProfiles));
-          var activeId = localStorage.getItem('swimmin_active_profile_v1');
-          if (!activeId) {
+        var lsProfilesTs = 0;
+        try { lsProfilesTs = parseInt(localStorage.getItem('swimmin_profiles_ts') || '0'); } catch(e) {}
+
+        // No novo dispositivo lsProfilesTs=0, usar sempre Firebase
+        // No mesmo dispositivo, usar o mais recente
+        if (fbTs >= lsProfilesTs) {
+          localStorage.setItem(PROFILES_KEY, JSON.stringify(fbProfiles));
+          localStorage.setItem('swimmin_profiles_ts', fbTs.toString());
+          // Definir perfil activo se não existir
+          var activeId = localStorage.getItem(ACTIVE_PROFILE_KEY);
+          if (!activeId || !fbProfiles[activeId]) {
             var ids = Object.keys(fbProfiles);
-            if (ids.length > 0) localStorage.setItem('swimmin_active_profile_v1', ids[0]);
+            if (ids.length > 0) localStorage.setItem(ACTIVE_PROFILE_KEY, ids[0]);
           }
+          _memProfiles = fbProfiles;
         } else {
           // Local é mais recente — sincronizar com Firebase
           var localProfiles = null;
-          try { localProfiles = JSON.parse(localStorage.getItem('swimmin_profiles_v1') || 'null'); } catch(e) {}
+          try { localProfiles = JSON.parse(localStorage.getItem(PROFILES_KEY) || 'null'); } catch(e) {}
           if (localProfiles && window.firebaseSaveAtletaProfiles) {
             window.firebaseSaveAtletaProfiles(localProfiles);
           }
@@ -10286,7 +10299,79 @@ window.syncToFirebase = async function() {
   }
 };
 
-function showSyncPopup(type, msg) {
+window.loadFromFirebase = async function() {
+  if (!window.currentFirebaseUser) {
+    showSyncPopup('error', 'Tens de fazer login primeiro.');
+    return;
+  }
+
+  showSyncPopup('loading', 'A receber da nuvem...');
+
+  try {
+    var done = 0, total = 5;
+
+    // Perfis de nadadores
+    updateSyncPopup(Math.round((done/total)*100), 'Perfis de nadadores...');
+    var atletaFb = await window.firebaseLoadAtletaProfiles();
+    if (atletaFb && atletaFb.profiles) {
+      localStorage.setItem(PROFILES_KEY, JSON.stringify(atletaFb.profiles));
+      localStorage.setItem('swimmin_profiles_ts', (atletaFb.updatedAt || Date.now()).toString());
+      var ids = Object.keys(atletaFb.profiles);
+      if (ids.length > 0 && !localStorage.getItem(ACTIVE_PROFILE_KEY)) {
+        localStorage.setItem(ACTIVE_PROFILE_KEY, ids[0]);
+      }
+      _memProfiles = atletaFb.profiles;
+      if (typeof mostrarPerfilAtivo === 'function') setTimeout(mostrarPerfilAtivo, 100);
+    }
+    done++;
+
+    // SWOLF
+    updateSyncPopup(Math.round((done/total)*100), 'SWOLF...');
+    var swolfFb = await window.firebaseLoadSwolf();
+    if (swolfFb && swolfFb.data) {
+      localStorage.setItem('swimmin_swolf_v1', JSON.stringify(swolfFb.data));
+      localStorage.setItem('swimmin_swolf_ts', (swolfFb.updatedAt || Date.now()).toString());
+    }
+    done++;
+
+    // Parciais
+    updateSyncPopup(Math.round((done/total)*100), 'Histórico parciais...');
+    var parcFb = await window.firebaseLoadParciais();
+    if (parcFb && parcFb.data) {
+      localStorage.setItem('swimmin_crono_history_v1', JSON.stringify(parcFb.data));
+      localStorage.setItem('swimmin_crono_ts', (parcFb.updatedAt || Date.now()).toString());
+    }
+    done++;
+
+    // Calendário
+    updateSyncPopup(Math.round((done/total)*100), 'Calendário...');
+    var calFb = await window.firebaseLoadCalendario();
+    if (calFb && calFb.data) {
+      localStorage.setItem(CAL_KEY, JSON.stringify(calFb.data));
+      localStorage.setItem('swimmin_cal_ts', (calFb.updatedAt || Date.now()).toString());
+      if (typeof calRender === 'function') setTimeout(calRender, 100);
+    }
+    done++;
+
+    // Dados de treinador
+    updateSyncPopup(Math.round((done/total)*100), 'Dados de treinador...');
+    var coachFb = await window.firebaseLoadCoachData();
+    if (coachFb) {
+      if (coachFb.teamName !== undefined) localStorage.setItem('coachTeamName', coachFb.teamName);
+      if (coachFb.athletes) localStorage.setItem('coachAthletes', JSON.stringify(coachFb.athletes));
+      try { coachAthletes = coachFb.athletes || []; } catch(e) {}
+      if (typeof renderAthletes === 'function') setTimeout(renderAthletes, 100);
+    }
+
+    var hora = new Date().toLocaleTimeString('pt-PT', {hour:'2-digit',minute:'2-digit'});
+    showSyncPopup('success', 'Dados recebidos com sucesso!\n' + hora);
+    setTimeout(closeSyncPopup, 2500);
+
+  } catch(e) {
+    showSyncPopup('error', 'Erro ao receber dados.\nVerifica a ligação e tenta novamente.');
+    console.error('Load error:', e);
+  }
+};
   var existing = document.getElementById('sync-popup');
   if (existing) existing.remove();
 
