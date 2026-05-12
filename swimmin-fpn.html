@@ -8565,11 +8565,18 @@ function guardarAtleta() {
     window._cartaoFPNAtivo = c || null;
   }
   var data = {id:activeId, nome:nome, escalao:escalao, sexo:sexo, tempos:ts};
+  if (naEscalao) data.naEscalao = naEscalao;
+  if (naClasse)  data.naClasse  = naClasse;
   saveProfile(activeId, data);
   saveAtleta(data);
   ATLETA_COMP_ATUAL = null;
+  // Sincronizar com Firebase — ler directamente do localStorage para garantir dados actualizados
   if (window.currentFirebaseUser && window.firebaseSaveAtletaProfiles) {
-    try { window.firebaseSaveAtletaProfiles(getAllProfiles()); } catch(e) {}
+    try {
+      var freshProfiles = null;
+      try { freshProfiles = JSON.parse(localStorage.getItem(PROFILES_KEY) || 'null'); } catch(e) {}
+      window.firebaseSaveAtletaProfiles(freshProfiles || getAllProfiles());
+    } catch(e) {}
   }
   mostrarPerfilAtivo();
   // Mostrar botão cartão e fazer scroll — usa _cartaoFPNAtivo já definido acima
@@ -10244,7 +10251,7 @@ window.syncToFirebase = async function() {
 
   try {
     var steps = [
-      { label: 'Perfis de nadadores', key: 'swimmin_profiles_v1', fn: function(d) { return window.firebaseSaveAtletaProfiles && window.firebaseSaveAtletaProfiles(d); } },
+      { label: 'Perfis de nadadores', key: PROFILES_KEY || 'swimmin_profiles_v1', fn: function(d) { return window.firebaseSaveAtletaProfiles && window.firebaseSaveAtletaProfiles(d); } },
       { label: 'SWOLF', key: 'swimmin_swolf_v1', fn: function(d) { return window.firebaseSaveSwolf && window.firebaseSaveSwolf(d); } },
       { label: 'Histórico parciais', key: 'swimmin_crono_history_v1', fn: function(d) { return window.firebaseSaveParciais && window.firebaseSaveParciais(d); } },
       { label: 'Calendário', key: 'swimmin_calendar_v1', fn: function(d) { return window.firebaseSaveCalendario && window.firebaseSaveCalendario(d); } },
