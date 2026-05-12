@@ -10004,6 +10004,12 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+
+// Expor funções de auth ao scope global
+window._fbSignIn = (e,p) => signInWithEmailAndPassword(auth, e, p);
+window._fbRegister = (e,p) => createUserWithEmailAndPassword(auth, e, p);
+window._fbForgot = (e) => sendPasswordResetEmail(auth, e);
+window._fbSignOut = () => signOut(auth);
 const db = getFirestore(app);
 window.firebaseAuth = auth;
 window.firebaseDb = db;
@@ -10076,42 +10082,45 @@ function showAuthToast(msg, success=true) {
 
 // Ligar botões de autenticação
 function initAuthButtons() {
-  var btnLogin = document.getElementById('btn-login');
+  var btnLogin    = document.getElementById('btn-login');
   var btnRegister = document.getElementById('btn-register');
-  var btnForgot = document.getElementById('btn-forgot');
-  var btnLogout = document.getElementById('btn-logout');
+  var btnForgot   = document.getElementById('btn-forgot');
+  var btnLogout   = document.getElementById('btn-logout');
 
   if (btnLogin) btnLogin.onclick = async function() {
-    const email = document.getElementById('auth-email').value.trim();
-    const password = document.getElementById('auth-password').value;
+    var email    = (document.getElementById('auth-email').value || '').trim();
+    var password = document.getElementById('auth-password').value || '';
     if (!email || !password) { showAuthToast('Preenche email e palavra-passe.', false); return; }
+    if (!window._fbSignIn) { showAuthToast('A carregar... tenta de novo.', false); return; }
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      await window._fbSignIn(email, password);
       showAuthToast('✅ Sessão iniciada com sucesso!');
     } catch(e) { showAuthToast('Erro: ' + (e.message || e), false); }
   };
 
   if (btnRegister) btnRegister.onclick = async function() {
-    const email = document.getElementById('auth-email').value.trim();
-    const password = document.getElementById('auth-password').value;
+    var email    = (document.getElementById('auth-email').value || '').trim();
+    var password = document.getElementById('auth-password').value || '';
     if (!email || !password) { showAuthToast('Preenche email e palavra-passe.', false); return; }
+    if (!window._fbRegister) { showAuthToast('A carregar... tenta de novo.', false); return; }
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      await window._fbRegister(email, password);
       showAuthToast('✅ Conta criada com sucesso!');
     } catch(e) { showAuthToast('Erro: ' + (e.message || e), false); }
   };
 
   if (btnForgot) btnForgot.onclick = async function() {
-    const email = document.getElementById('auth-email').value.trim();
+    var email = (document.getElementById('auth-email').value || '').trim();
     if (!email) { showAuthToast('Escreve o teu email primeiro.', false); return; }
+    if (!window._fbForgot) { showAuthToast('A carregar... tenta de novo.', false); return; }
     try {
-      await sendPasswordResetEmail(auth, email);
+      await window._fbForgot(email);
       showAuthToast('✅ Email enviado para ' + email + '!');
     } catch(e) { showAuthToast('Erro: ' + (e.message || e), false); }
   };
 
   if (btnLogout) btnLogout.onclick = async function() {
-    await signOut(auth);
+    if (window._fbSignOut) await window._fbSignOut();
     showAuthToast('Sessão terminada.', true);
   };
 }
