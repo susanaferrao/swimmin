@@ -9988,6 +9988,76 @@ function getBestEstilosMisto(males, females, dist, poolKey, topN, useConv) {
 
 
 
+
+<script>
+function showAuthToast(msg, success=true) {
+  const t = document.getElementById('auth-toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.style.background = success ? '#00c98d' : '#e74c3c';
+  t.style.color = '#fff';
+  t.style.display = 'block';
+  t.style.opacity = '1';
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => {
+    t.style.opacity = '0';
+    setTimeout(() => { t.style.display = 'none'; }, 400);
+  }, 3500);
+}
+
+// Ligar botões de autenticação
+function initAuthButtons() {
+  var btnLogin    = document.getElementById('btn-login');
+  var btnRegister = document.getElementById('btn-register');
+  var btnForgot   = document.getElementById('btn-forgot');
+  var btnLogout   = document.getElementById('btn-logout');
+
+  if (btnLogin) btnLogin.onclick = async function() {
+    var email    = (document.getElementById('auth-email').value || '').trim();
+    var password = document.getElementById('auth-password').value || '';
+    if (!email || !password) { showAuthToast('Preenche email e palavra-passe.', false); return; }
+    if (!window._fbSignIn) { showAuthToast('A carregar... tenta de novo.', false); return; }
+    try {
+      await window._fbSignIn(email, password);
+      showAuthToast('✅ Sessão iniciada com sucesso!');
+    } catch(e) { showAuthToast('Erro: ' + (e.message || e), false); }
+  };
+
+  if (btnRegister) btnRegister.onclick = async function() {
+    var email    = (document.getElementById('auth-email').value || '').trim();
+    var password = document.getElementById('auth-password').value || '';
+    if (!email || !password) { showAuthToast('Preenche email e palavra-passe.', false); return; }
+    if (!window._fbRegister) { showAuthToast('A carregar... tenta de novo.', false); return; }
+    try {
+      await window._fbRegister(email, password);
+      showAuthToast('✅ Conta criada com sucesso!');
+    } catch(e) { showAuthToast('Erro: ' + (e.message || e), false); }
+  };
+
+  if (btnForgot) btnForgot.onclick = async function() {
+    var email = (document.getElementById('auth-email').value || '').trim();
+    if (!email) { showAuthToast('Escreve o teu email primeiro.', false); return; }
+    if (!window._fbForgot) { showAuthToast('A carregar... tenta de novo.', false); return; }
+    try {
+      await window._fbForgot(email);
+      showAuthToast('✅ Email enviado para ' + email + '!');
+    } catch(e) { showAuthToast('Erro: ' + (e.message || e), false); }
+  };
+
+  if (btnLogout) btnLogout.onclick = async function() {
+    if (window._fbSignOut) await window._fbSignOut();
+    showAuthToast('Sessão terminada.', true);
+  };
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initAuthButtons);
+} else {
+  initAuthButtons();
+}
+
+</script>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -10065,71 +10135,6 @@ window.firebaseLoadCalendario = async function() {
   try { return { data: JSON.parse(d.data), updatedAt: d.updatedAt || 0 }; } catch(e) { return null; }
 }
 
-function showAuthToast(msg, success=true) {
-  const t = document.getElementById('auth-toast');
-  if (!t) return;
-  t.textContent = msg;
-  t.style.background = success ? '#00c98d' : '#e74c3c';
-  t.style.color = '#fff';
-  t.style.display = 'block';
-  t.style.opacity = '1';
-  clearTimeout(window._toastTimer);
-  window._toastTimer = setTimeout(() => {
-    t.style.opacity = '0';
-    setTimeout(() => { t.style.display = 'none'; }, 400);
-  }, 3500);
-}
-
-// Ligar botões de autenticação
-function initAuthButtons() {
-  var btnLogin    = document.getElementById('btn-login');
-  var btnRegister = document.getElementById('btn-register');
-  var btnForgot   = document.getElementById('btn-forgot');
-  var btnLogout   = document.getElementById('btn-logout');
-
-  if (btnLogin) btnLogin.onclick = async function() {
-    var email    = (document.getElementById('auth-email').value || '').trim();
-    var password = document.getElementById('auth-password').value || '';
-    if (!email || !password) { showAuthToast('Preenche email e palavra-passe.', false); return; }
-    if (!window._fbSignIn) { showAuthToast('A carregar... tenta de novo.', false); return; }
-    try {
-      await window._fbSignIn(email, password);
-      showAuthToast('✅ Sessão iniciada com sucesso!');
-    } catch(e) { showAuthToast('Erro: ' + (e.message || e), false); }
-  };
-
-  if (btnRegister) btnRegister.onclick = async function() {
-    var email    = (document.getElementById('auth-email').value || '').trim();
-    var password = document.getElementById('auth-password').value || '';
-    if (!email || !password) { showAuthToast('Preenche email e palavra-passe.', false); return; }
-    if (!window._fbRegister) { showAuthToast('A carregar... tenta de novo.', false); return; }
-    try {
-      await window._fbRegister(email, password);
-      showAuthToast('✅ Conta criada com sucesso!');
-    } catch(e) { showAuthToast('Erro: ' + (e.message || e), false); }
-  };
-
-  if (btnForgot) btnForgot.onclick = async function() {
-    var email = (document.getElementById('auth-email').value || '').trim();
-    if (!email) { showAuthToast('Escreve o teu email primeiro.', false); return; }
-    if (!window._fbForgot) { showAuthToast('A carregar... tenta de novo.', false); return; }
-    try {
-      await window._fbForgot(email);
-      showAuthToast('✅ Email enviado para ' + email + '!');
-    } catch(e) { showAuthToast('Erro: ' + (e.message || e), false); }
-  };
-
-  if (btnLogout) btnLogout.onclick = async function() {
-    if (window._fbSignOut) await window._fbSignOut();
-    showAuthToast('Sessão terminada.', true);
-  };
-}
-
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initAuthButtons);
-} else {
-  initAuthButtons();
-}
 
 onAuthStateChanged(auth, async (user) => {
   window.currentFirebaseUser = user || null;
