@@ -10450,7 +10450,7 @@ function closeSyncPopup() {
 
 // ===== POP-UP NOVIDADES (mostrar apenas uma vez) =====
 function showNovidadesPopup() {
-  try { if (localStorage.getItem('swimmin_novidades_v1')) return; } catch(e) {}
+  try { if (localStorage.getItem('swimmin_novidades_v2')) return; } catch(e) {}
   var isLight = document.documentElement.classList.contains('light-mode');
   var popup = document.createElement('div');
   popup.id = 'novidades-popup';
@@ -10488,7 +10488,7 @@ function showNovidadesPopup() {
 }
 
 function closeNovidadesPopup() {
-  try { localStorage.setItem('swimmin_novidades_v1', '1'); } catch(e) {}
+  try { localStorage.setItem('swimmin_novidades_v2', '1'); } catch(e) {}
   var p = document.getElementById('novidades-popup');
   var o = document.getElementById('novidades-overlay');
   if (p) p.remove();
@@ -10496,7 +10496,8 @@ function closeNovidadesPopup() {
 }
 
 // Mostrar após página carregar completamente
-window.addEventListener('load', function() { setTimeout(showNovidadesPopup, 1000); });</script>
+window.addEventListener('load', function() { setTimeout(showNovidadesPopup, 1500); });
+</script>
 
 <!-- ===== CARTÃO FPN — script global (fora do módulo para acesso via onclick) ===== -->
 <script>
