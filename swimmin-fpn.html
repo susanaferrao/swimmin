@@ -8537,7 +8537,12 @@ function guardarAtleta() {
   var nome = document.getElementById('atleta-nome').value.trim();
   var escalao = document.getElementById('atleta-escalao').value;
   var sexo = document.getElementById('atleta-sexo').value;
-  if (!escalao || !sexo) { alert('Por favor seleciona o escalao e o sexo.'); return; }
+  if (!escalao || !sexo) {
+    var msgEl = document.getElementById('atleta-save-msg');
+    if (msgEl) { msgEl.textContent = 'Por favor seleciona o escalão e o sexo.'; msgEl.style.display='block'; setTimeout(function(){msgEl.style.display='none';},3000); }
+    else { showAuthToast('Por favor seleciona o escalão e o sexo.', false); }
+    return;
+  }
   var ts = {curta:{}, longa:{}};
   for (var i = 0; i < PROVAS_INDIVIDUAIS_CURTA.length; i++) {
     var key = PROVAS_INDIVIDUAIS_CURTA[i].key;
@@ -8569,8 +8574,8 @@ function guardarAtleta() {
     window._cartaoFPNAtivo = c || null;
   }
   var data = {id:activeId, nome:nome, escalao:escalao, sexo:sexo, tempos:ts};
-  if (naEscalao) data.naEscalao = naEscalao;
-  if (naClasse)  data.naClasse  = naClasse;
+  try { if (typeof naEscalao !== 'undefined' && naEscalao) data.naEscalao = naEscalao; } catch(e) {}
+  try { if (typeof naClasse !== 'undefined' && naClasse) data.naClasse = naClasse; } catch(e) {}
   saveProfile(activeId, data);
   saveAtleta(data);
   ATLETA_COMP_ATUAL = null;
