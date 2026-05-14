@@ -8534,6 +8534,7 @@ function renderFormProvas(data) {
 }
 
 function guardarAtleta() {
+  try {
   var nome = document.getElementById('atleta-nome').value.trim();
   var escalao = document.getElementById('atleta-escalao').value;
   var sexo = document.getElementById('atleta-sexo').value;
@@ -8599,6 +8600,10 @@ function guardarAtleta() {
     var el = document.getElementById('atleta-comp-selector');
     if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
   }, 100);
+  } catch(e) {
+    showAuthToast('Erro ao guardar: ' + (e.message || e), false);
+    console.error('guardarAtleta error:', e);
+  }
 }
 
 function renderAtletaResultados(data, compId) {
