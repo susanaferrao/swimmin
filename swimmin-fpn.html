@@ -6513,7 +6513,7 @@ var recordesIdade = {
         "400_L": {tempo:"4:06,22", nome:"Costa, Rui Filipe", data:"29/07/2006", local:"Coimbra"},
         "800_L": {tempo:"8:32,97", nome:"Pereira, Rui Silva", data:"28/05/2023", local:"Coimbra"},
         "1500_L": {tempo:"16:11,75", nome:"Pereira, Rui Silva", data:"27/05/2023", local:"Coimbra"},
-        "50_C": {tempo:"27,25", nome:"Almeida, Pedro", data:"22/05/2026", local:"Villa de Gijón (ESP)"}},
+        "50_C": {tempo:"27,25", nome:"Almeida, Pedro", data:"22/05/2026", local:"Villa de Gijón (ESP)"},
         "100_C": {tempo:"59,34", nome:"Oliveira, Miguel Reis", data:"04/04/2024", local:"Coimbra"},
         "200_C": {tempo:"2:06,44", nome:"Vital, Joao Alexandre", data:"17/07/2013", local:"Utrecht (NED)"},
         "50_B": {tempo:"30,57", nome:"tempo limite", data:"", local:""},
@@ -6817,7 +6817,7 @@ var recordesIdade = {
         "50_M": {tempo:"25,01", nome:"Ferreira, Duarte Santos", data:"20/07/2024", local:"Porto"},
         "100_M": {tempo:"55,48", nome:"Ferreira, Duarte Santos", data:"21/07/2024", local:"Porto"},
         "200_M": {tempo:"2:03,38", nome:"Silva, Diogo Parrilha da", data:"13/06/2009", local:"Alcobaça"},
-        "100_E": {tempo:"59,06", nome:"Mendonça, Alexandre", data:"17/05/2026", local:"Lagoa"}},
+        "100_E": {tempo:"59,06", nome:"Mendonça, Alexandre", data:"17/05/2026", local:"Lagoa"},
         "200_E": {tempo:"2:05,34", nome:"Carvalho, Diogo Filipe", data:"15/05/2004", local:"Aveiro"},
         "400_E": {tempo:"4:25,04", nome:"Vital, Joao Alexandre", data:"13/12/2013", local:"Tomar"}
       },
@@ -14377,177 +14377,62 @@ function ocrReset() {
 
 <script>
 /* ===== SWIMMIN — ANALYTICS DE USO ===== */
-(function() {
+window.addEventListener('load', function() {
   function track(event_name, params) {
     if (typeof gtag !== 'function') return;
     gtag('event', event_name, params || {});
   }
 
-  /* --- Mínimos --- */
-  var _calcularOrig = window.calcular;
-  window.calcular = function() {
-    track('calcular_minimos', { feature: 'minimos' });
-    return _calcularOrig.apply(this, arguments);
-  };
+  function safeWrap(fnName, eventName, params) {
+    var orig = window[fnName];
+    if (typeof orig !== 'function') return;
+    window[fnName] = function() {
+      track(eventName, params || {});
+      return orig.apply(this, arguments);
+    };
+  }
 
-  /* --- Calendário: ver época completa --- */
-  var _calOpenFullOrig = window.calOpenFull;
-  window.calOpenFull = function() {
-    track('calendario_ver_epoca', { feature: 'calendario' });
-    return _calOpenFullOrig.apply(this, arguments);
-  };
+  safeWrap('calcular',          'calcular_minimos',        { feature: 'minimos' });
+  safeWrap('calOpenFull',       'calendario_ver_epoca',    { feature: 'calendario' });
+  safeWrap('calOpenEdit',       'calendario_editar',       { feature: 'calendario' });
+  safeWrap('calShowEventPopup', 'calendario_popup_prova',  { feature: 'calendario' });
+  safeWrap('calAddEvent',       'calendario_adicionar',    { feature: 'calendario' });
+  safeWrap('toggleAtleta',      'abrir_zona_nadador',      { feature: 'zona_nadador' });
+  safeWrap('abrirCartaoFPN',    'ver_cartao_fpn',          { feature: 'zona_nadador' });
+  safeWrap('guardarAtleta',     'guardar_nadador',         { feature: 'zona_nadador' });
+  safeWrap('toggleCrono',       'abrir_zona_treinador',    { feature: 'zona_treinador' });
+  safeWrap('toggleFPN',         'abrir_pontos_wa',         { feature: 'pontos_wa' });
+  safeWrap('fpnUpdate',         'calcular_pontos_wa',      { feature: 'pontos_wa' });
+  safeWrap('toggleIdades',      'abrir_recordes_nacionais',{ feature: 'recordes_nacionais' });
+  safeWrap('toggleMundiais',    'abrir_recordes_mundiais', { feature: 'recordes_mundiais' });
+  safeWrap('toggleNA',          'abrir_minimos_adaptada',  { feature: 'minimos_adaptada' });
+  safeWrap('convCalcular',      'usar_conversor',          { feature: 'conversor' });
+  safeWrap('cronoExportPDF',    'export_pdf',              { feature: 'parciais' });
+  safeWrap('cronoExportCSV',    'export_csv',              { feature: 'parciais' });
+  safeWrap('syncToFirebase',    'sync_upload',             { feature: 'conta' });
+  safeWrap('loadFromFirebase',  'sync_download',           { feature: 'conta' });
 
-  /* --- Calendário: editar --- */
-  var _calOpenEditOrig = window.calOpenEdit;
-  window.calOpenEdit = function() {
-    track('calendario_editar', { feature: 'calendario' });
-    return _calOpenEditOrig.apply(this, arguments);
-  };
-
-  /* --- Calendário: abrir popup de prova --- */
-  var _calShowEventPopupOrig = window.calShowEventPopup;
-  window.calShowEventPopup = function(id) {
-    track('calendario_popup_prova', { feature: 'calendario' });
-    return _calShowEventPopupOrig.apply(this, arguments);
-  };
-
-  /* --- Zona do Nadador --- */
-  var _toggleAtletaOrig = window.toggleAtleta;
-  window.toggleAtleta = function() {
-    track('abrir_zona_nadador', { feature: 'zona_nadador' });
-    return _toggleAtletaOrig && _toggleAtletaOrig.apply(this, arguments);
-  };
-
-  /* --- Ver cartão FPN --- */
-  var _abrirCartaoFPNOrig = window.abrirCartaoFPN;
-  window.abrirCartaoFPN = function() {
-    track('ver_cartao_fpn', { feature: 'zona_nadador' });
-    return _abrirCartaoFPNOrig.apply(this, arguments);
-  };
-
-  /* --- Zona do Treinador: parciais vs cronómetros --- */
+  /* cronoSwitchTab — precisa de lógica por tab */
   var _cronoSwitchTabOrig = window.cronoSwitchTab;
-  window.cronoSwitchTab = function(tab) {
-    if (tab === 'parciais') track('treinador_parciais', { feature: 'zona_treinador' });
-    else if (tab === 'cronos') track('treinador_cronometros', { feature: 'zona_treinador' });
-    else if (tab === 'swolf') track('treinador_swolf', { feature: 'zona_treinador' });
-    else if (tab === 'tarefas') track('treinador_tarefas', { feature: 'zona_treinador' });
-    return _cronoSwitchTabOrig.apply(this, arguments);
-  };
+  if (typeof _cronoSwitchTabOrig === 'function') {
+    window.cronoSwitchTab = function(tab) {
+      var map = { parciais:'treinador_parciais', cronos:'treinador_cronometros', swolf:'treinador_swolf', tarefas:'treinador_tarefas' };
+      if (map[tab]) track(map[tab], { feature: 'zona_treinador' });
+      return _cronoSwitchTabOrig.apply(this, arguments);
+    };
+  }
 
-  /* --- Abrir Zona do Treinador --- */
-  var _toggleCronoOrig = window.toggleCrono;
-  window.toggleCrono = function() {
-    track('abrir_zona_treinador', { feature: 'zona_treinador' });
-    return _toggleCronoOrig && _toggleCronoOrig.apply(this, arguments);
-  };
-
-  /* --- Calcular pontos WA / FPN --- */
-  var _toggleFPNOrig = window.toggleFPN;
-  window.toggleFPN = function() {
-    track('abrir_pontos_wa', { feature: 'pontos_wa' });
-    return _toggleFPNOrig && _toggleFPNOrig.apply(this, arguments);
-  };
-  var _fpnUpdateOrig = window.fpnUpdate;
-  window.fpnUpdate = function() {
-    track('calcular_pontos_wa', { feature: 'pontos_wa' });
-    return _fpnUpdateOrig && _fpnUpdateOrig.apply(this, arguments);
-  };
-
-  /* --- Recordes nacionais --- */
-  var _toggleIdadesOrig = window.toggleIdades;
-  window.toggleIdades = function() {
-    track('abrir_recordes_nacionais', { feature: 'recordes_nacionais' });
-    return _toggleIdadesOrig && _toggleIdadesOrig.apply(this, arguments);
-  };
-
-  /* --- Recordes mundiais --- */
-  var _toggleMundiaisOrig = window.toggleMundiais;
-  window.toggleMundiais = function() {
-    track('abrir_recordes_mundiais', { feature: 'recordes_mundiais' });
-    return _toggleMundiaisOrig && _toggleMundiaisOrig.apply(this, arguments);
-  };
-
-  /* --- Mínimos natação adaptada --- */
-  var _toggleNAOrig = window.toggleNA;
-  window.toggleNA = function() {
-    track('abrir_minimos_adaptada', { feature: 'minimos_adaptada' });
-    return _toggleNAOrig && _toggleNAOrig.apply(this, arguments);
-  };
-
-  /* --- Calendário: adicionar prova --- */
-  var _calAddEventOrig = window.calAddEvent;
-  window.calAddEvent = function() {
-    track('calendario_adicionar_prova', { feature: 'calendario' });
-    return _calAddEventOrig && _calAddEventOrig.apply(this, arguments);
-  };
-
-  /* --- Guardar nadador --- */
-  var _guardarAtletaOrig = window.guardarAtleta;
-  window.guardarAtleta = function() {
-    track('guardar_nadador', { feature: 'zona_nadador' });
-    return _guardarAtletaOrig && _guardarAtletaOrig.apply(this, arguments);
-  };
-
-  /* --- Export Parciais PDF/CSV --- */
-  var _cronoExportPDFOrig = window.cronoExportPDF;
-  window.cronoExportPDF = function() {
-    track('export_pdf', { feature: 'parciais' });
-    return _cronoExportPDFOrig && _cronoExportPDFOrig.apply(this, arguments);
-  };
-  var _cronoExportCSVOrig = window.cronoExportCSV;
-  window.cronoExportCSV = function() {
-    track('export_csv', { feature: 'parciais' });
-    return _cronoExportCSVOrig && _cronoExportCSVOrig.apply(this, arguments);
-  };
-
-  /* --- Upload / Download Firebase --- */
-  var _syncToFirebaseOrig = window.syncToFirebase;
-  window.syncToFirebase = function() {
-    track('sync_upload', { feature: 'conta' });
-    return _syncToFirebaseOrig && _syncToFirebaseOrig.apply(this, arguments);
-  };
-  var _loadFromFirebaseOrig = window.loadFromFirebase;
-  window.loadFromFirebase = function() {
-    track('sync_download', { feature: 'conta' });
-    return _loadFromFirebaseOrig && _loadFromFirebaseOrig.apply(this, arguments);
-  };
-
-  /* --- Conversor 25m/50m --- */
-  var _convCalcularOrig = window.convCalcular;
-  window.convCalcular = function() {
-    track('usar_conversor', { feature: 'conversor' });
-    return _convCalcularOrig.apply(this, arguments);
-  };
-
-  /* --- Calcular pontos FPN --- */
-  var _calcularPontosFPNOrig = window.calcularPontosFPN;
-  window.calcularPontosFPN = function() {
-    track('calcular_pontos_fpn', { feature: 'pontos_fpn' });
-    return _calcularPontosFPNOrig.apply(this, arguments);
-  };
-
-  /* --- Recordes nacionais / mundiais --- */
-  var _mostrarRecordeIdadeOrig = window.mostrarRecordeIdade;
-  window.mostrarRecordeIdade = function() {
-    var piscina = document.getElementById('id-piscina');
-    track('pesquisar_recorde', { feature: 'recordes' });
-    return _mostrarRecordeIdadeOrig.apply(this, arguments);
-  };
-
-  /* --- Melhores estafetas --- */
+  /* calcRelay — throttle */
   var _calcRelayOrig = window.calcRelay;
-  var _calcRelayTracked = false;
-  window.calcRelay = function() {
-    if (!_calcRelayTracked) {
-      track('calcular_estafetas', { feature: 'estafetas' });
-      _calcRelayTracked = true;
-      setTimeout(function() { _calcRelayTracked = false; }, 2000);
-    }
-    return _calcRelayOrig.apply(this, arguments);
-  };
+  if (typeof _calcRelayOrig === 'function') {
+    var _tracked = false;
+    window.calcRelay = function() {
+      if (!_tracked) { track('calcular_estafetas', { feature: 'estafetas' }); _tracked = true; setTimeout(function(){ _tracked = false; }, 2000); }
+      return _calcRelayOrig.apply(this, arguments);
+    };
+  }
+});
 
-})();
 
 var SWOLF_KEY = 'swimmin_swolf_v1';
 
