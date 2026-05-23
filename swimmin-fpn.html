@@ -14415,7 +14415,7 @@ function ocrReset() {
   var _toggleAtletaOrig = window.toggleAtleta;
   window.toggleAtleta = function() {
     track('abrir_zona_nadador', { feature: 'zona_nadador' });
-    return _toggleAtletaOrig.apply(this, arguments);
+    return _toggleAtletaOrig && _toggleAtletaOrig.apply(this, arguments);
   };
 
   /* --- Ver cartão FPN --- */
@@ -14455,24 +14455,24 @@ function ocrReset() {
   };
 
   /* --- Recordes nacionais --- */
-  var _toggleRecordesOrig = window.toggleRecordes;
-  window.toggleRecordes = function() {
+  var _toggleIdadesOrig = window.toggleIdades;
+  window.toggleIdades = function() {
     track('abrir_recordes_nacionais', { feature: 'recordes_nacionais' });
-    return _toggleRecordesOrig && _toggleRecordesOrig.apply(this, arguments);
+    return _toggleIdadesOrig && _toggleIdadesOrig.apply(this, arguments);
   };
 
   /* --- Recordes mundiais --- */
-  var _toggleWROrig = window.toggleWR;
-  window.toggleWR = function() {
+  var _toggleMundiaisOrig = window.toggleMundiais;
+  window.toggleMundiais = function() {
     track('abrir_recordes_mundiais', { feature: 'recordes_mundiais' });
-    return _toggleWROrig && _toggleWROrig.apply(this, arguments);
+    return _toggleMundiaisOrig && _toggleMundiaisOrig.apply(this, arguments);
   };
 
   /* --- Mínimos natação adaptada --- */
-  var _toggleIdadeOrig = window.toggleIdade;
-  window.toggleIdade = function() {
+  var _toggleNAOrig = window.toggleNA;
+  window.toggleNA = function() {
     track('abrir_minimos_adaptada', { feature: 'minimos_adaptada' });
-    return _toggleIdadeOrig && _toggleIdadeOrig.apply(this, arguments);
+    return _toggleNAOrig && _toggleNAOrig.apply(this, arguments);
   };
 
   /* --- Calendário: adicionar prova --- */
