@@ -3041,17 +3041,15 @@ document.addEventListener("click", function(e) {
 </div>
 <div id="crono-section">
   <div class="crono-card">
-    <div class="crono-title" id="crono-title-main" onclick="tarefasRevealClick()" style="cursor:default;user-select:none;">Zona do Treinador</div>
+    <div class="crono-title">Zona do Treinador</div>
     <div style="display:flex;gap:0;margin-bottom:20px;border-radius:12px;overflow:hidden;border:1.5px solid #d0e4f0;">
       <button id="crono-tab-parciais" onclick="cronoSwitchTab('parciais')" style="flex:1;padding:10px;border:none;background:var(--blue-deep);color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;">Parciais</button>
       <button id="crono-tab-cronos" onclick="cronoSwitchTab('cronos')" style="flex:1;padding:10px;border:none;background:#f0f7ff;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;">Cronómetros</button>
       <button id="crono-tab-swolf" onclick="cronoSwitchTab('swolf')" style="flex:1;padding:10px;border:none;background:#f0f7ff;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;">SWOLF</button>
-      <button id="crono-tab-tarefas" onclick="cronoSwitchTab('tarefas')" style="flex:1;padding:10px;border:none;background:#f0f7ff;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;display:none;">Tarefas</button>
     </div>
     <div id="crono-content"></div>
     <div id="crono-cronos-content" style="display:none;"></div>
     <div id="crono-swolf-content" style="display:none;"></div>
-    <div id="crono-tarefas-content" style="display:none;"></div>
   </div>
 </div>
 
@@ -10006,698 +10004,6 @@ function getBestEstilosMisto(males, females, dist, poolKey, topN, useConv) {
 
 
 
-<!-- ===== TAREFAS ===== -->
-<script>
-// ===== TAREFAS — REVEAL =====
-var _tarefasRevealClicks = 0;
-var _tarefasRevealTimer = null;
-var _tarefasRevealed = false;
-function tarefasRevealClick() {
-  if (_tarefasRevealed) return;
-  _tarefasRevealClicks++;
-  clearTimeout(_tarefasRevealTimer);
-  if (_tarefasRevealClicks >= 5) {
-    _tarefasRevealClicks = 0;
-    _tarefasRevealed = true;
-    var btn = document.getElementById('crono-tab-tarefas');
-    if (btn) btn.style.display = 'block';
-  } else {
-    _tarefasRevealTimer = setTimeout(function(){ _tarefasRevealClicks = 0; }, 1500);
-  }
-}
-
-// ===== TAREFAS — ESTADO =====
-var TAREFAS_KEY = 'swimmin_tarefas_v1';
-var tarefaState = 'config'; // 'config' | 'active' | 'intervalo' | 'summary'
-var tarefaConfig = null;    // { nome, blocos, nadadores }
-var tarefaRun = null;       // estado em execução
-var tarefaTimer = null;
-var tarefaStartTs = 0;
-var tarefaTotalTs = 0;
-
-// ===== CSS =====
-(function(){
-  var s = document.createElement('style');
-  s.textContent = `
-.tar-section { padding:4px 0; }
-.tar-bloco { background:var(--card-bg,#f0f7ff); border-radius:12px; padding:14px; margin-bottom:10px; border:1px solid var(--border,#d0e4f0); position:relative; }
-.tar-bloco-header { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
-.tar-bloco-num { background:var(--blue-deep,#1a3a4a); color:#fff; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0; }
-.tar-bloco-title { font-size:13px; font-weight:600; color:var(--text,#1a3a4a); flex:1; }
-.tar-bloco-del { background:none; border:none; color:#e74c3c; font-size:18px; cursor:pointer; padding:0 4px; }
-.tar-row { display:flex; gap:8px; margin-bottom:8px; flex-wrap:wrap; }
-.tar-field { display:flex; flex-direction:column; gap:3px; flex:1; min-width:60px; }
-.tar-field label { font-size:11px; font-weight:600; color:var(--muted,#6b8fa8); }
-.tar-field input, .tar-field select { padding:8px; border-radius:8px; border:1.5px solid var(--border,#d0e4f0); font-size:13px; font-family:'DM Sans',sans-serif; background:var(--bg,#fff); color:var(--text,#1a3a4a); width:100%; }
-.tar-estilos-list { display:flex; flex-direction:column; gap:4px; margin-top:4px; }
-.tar-estilo-item { display:flex; align-items:center; gap:6px; }
-.tar-estilo-item span { font-size:11px; color:var(--muted,#6b8fa8); min-width:20px; }
-.tar-estilo-item input { flex:1; padding:6px 8px; border-radius:7px; border:1.5px solid var(--border,#d0e4f0); font-size:13px; background:var(--bg,#fff); color:var(--text,#1a3a4a); }
-.tar-toggle { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
-.tar-toggle input[type=checkbox] { width:16px; height:16px; cursor:pointer; }
-.tar-toggle label { font-size:12px; color:var(--muted,#6b8fa8); cursor:pointer; }
-.tar-nadador-item { display:flex; align-items:center; gap:8px; margin-bottom:8px; padding:8px; background:var(--bg,#fff); border-radius:8px; border:1px solid var(--border,#d0e4f0); }
-.tar-nadador-item input[type=text] { flex:1; padding:7px; border-radius:7px; border:1.5px solid var(--border,#d0e4f0); font-size:13px; background:var(--card-bg,#f0f7ff); color:var(--text,#1a3a4a); }
-.tar-nadador-item input[type=color] { width:36px; height:36px; border:none; border-radius:6px; cursor:pointer; padding:0; background:none; flex-shrink:0; }
-.tar-nadador-del { background:none; border:none; color:#e74c3c; font-size:16px; cursor:pointer; flex-shrink:0; }
-.tar-sugestoes { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px; }
-.tar-sug-btn { padding:4px 10px; border-radius:20px; border:1.5px solid var(--aqua,#00c4cc); background:transparent; color:var(--aqua,#00c4cc); font-size:12px; cursor:pointer; font-family:'DM Sans',sans-serif; }
-/* Ecrã de execução */
-.tar-active { text-align:center; padding:10px 0; }
-.tar-total-time { font-size:12px; color:var(--muted,#6b8fa8); margin-bottom:8px; }
-.tar-bloco-label { font-size:13px; font-weight:600; color:var(--muted,#6b8fa8); margin-bottom:4px; }
-.tar-serie-label { font-size:28px; font-weight:700; color:var(--text,#1a3a4a); margin-bottom:2px; }
-.tar-style-label { font-size:16px; color:var(--aqua,#00c4cc); font-weight:600; margin-bottom:16px; }
-.tar-crono { font-size:56px; font-weight:700; font-family:'Bebas Neue',sans-serif; color:var(--blue-deep,#1a3a4a); margin-bottom:4px; letter-spacing:2px; }
-.tar-crono.warn { color:#e67e22; }
-.tar-crono.over { color:#e74c3c; }
-.tar-saida-label { font-size:13px; color:var(--muted,#6b8fa8); margin-bottom:16px; }
-.tar-swimmer-btns { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-bottom:16px; }
-.tar-swimmer-btn { width:72px; height:72px; border-radius:50%; border:3px solid transparent; font-size:12px; font-weight:700; color:#fff; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; transition:transform 0.1s; font-family:'DM Sans',sans-serif; }
-.tar-swimmer-btn.marked { transform:scale(0.92); opacity:0.7; border-color:#fff; }
-.tar-swimmer-btn .sw-time { font-size:14px; font-weight:700; }
-.tar-swimmer-btn .sw-name { font-size:10px; font-weight:600; max-width:64px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.tar-ctrl-btns { display:flex; gap:8px; justify-content:center; margin-bottom:12px; }
-.tar-ctrl-btn { padding:10px 20px; border-radius:10px; border:none; font-size:14px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; }
-.tar-progress-wrap { background:var(--border,#d0e4f0); border-radius:6px; height:8px; overflow:hidden; margin-top:8px; }
-.tar-progress-fill { height:8px; background:var(--aqua,#00c4cc); border-radius:6px; transition:width 0.3s; }
-.tar-intervalo { text-align:center; padding:20px 0; }
-.tar-intervalo .label { font-size:14px; font-weight:700; color:var(--muted,#6b8fa8); letter-spacing:1px; text-transform:uppercase; margin-bottom:8px; }
-.tar-intervalo .next { font-size:13px; color:var(--text,#1a3a4a); margin-bottom:16px; }
-.tar-intervalo .countdown { font-size:52px; font-weight:700; font-family:'Bebas Neue',sans-serif; color:var(--blue-deep,#1a3a4a); }
-`;
-  document.head.appendChild(s);
-})();
-
-// ===== HELPERS =====
-function tarefaParseMs(str) {
-  if (!str) return 0;
-  str = str.replace(',','.');
-  var parts = str.split(':');
-  if (parts.length === 2) return (parseInt(parts[0])||0)*60000 + Math.round(parseFloat(parts[1]||0)*1000);
-  if (parts.length === 1) return Math.round(parseFloat(parts[0]||0)*1000);
-  return 0;
-}
-function tarefaFmtMs(ms) {
-  if (ms < 0) ms = 0;
-  var s = Math.floor(ms/1000), c = Math.floor((ms%1000)/10);
-  var m = Math.floor(s/60); s = s%60;
-  if (m > 0) return m + ':' + (s<10?'0':'') + s + ',' + (c<10?'0':'') + c;
-  return s + ',' + (c<10?'0':'') + c;
-}
-function tarefaFmtSecs(ms) {
-  if (ms < 0) ms = 0;
-  var totalSecs = Math.floor(ms / 1000);
-  var h = Math.floor(totalSecs / 3600);
-  var m = Math.floor((totalSecs % 3600) / 60);
-  var s = totalSecs % 60;
-  if (h > 0) return h + ':' + ('0'+m).slice(-2) + ':' + ('0'+s).slice(-2);
-  return m + ':' + ('0'+s).slice(-2);
-}
-
-function tarefaGetSeries() {
-  // Expande todos os blocos em séries individuais
-  var series = [];
-  if (!tarefaConfig) return series;
-  tarefaConfig.blocos.forEach(function(bloco, bi) {
-    for (var r = 0; r < bloco.reps; r++) {
-      var estilo = bloco.estilosIguais ? bloco.estilo : (bloco.estilos[r] || '');
-      series.push({
-        blocoIdx: bi,
-        blocoLabel: 'Bloco ' + (bi+1),
-        rep: r+1,
-        totalReps: bloco.reps,
-        dist: bloco.dist,
-        estilo: estilo,
-        saida: bloco.saida, // ms
-        ultimaDaBloco: r === bloco.reps-1,
-        intervaloApos: bloco.intervalo // ms, 0 = sem intervalo
-      });
-    }
-  });
-  return series;
-}
-
-function tarefaGetSugestoes() {
-  // Buscar nadadores dos parciais
-  var nomes = [];
-  try {
-    var h = JSON.parse(localStorage.getItem('swimmin_crono_history_v1') || '[]');
-    h.forEach(function(sess) {
-      if (sess.session && sess.session.nadadores) {
-        sess.session.nadadores.forEach(function(n) {
-          if (n.nome && nomes.indexOf(n.nome) === -1) nomes.push(n.nome);
-        });
-      }
-    });
-  } catch(e) {}
-  return nomes;
-}
-
-// ===== INIT =====
-function tarefasInit() {
-  var el = document.getElementById('crono-tarefas-content');
-  if (!el) return;
-  tarefaRenderConfig();
-}
-
-// ===== CONFIG =====
-var _tarefaBlocos = [];
-var _tarefaNadadores = [];
-
-function tarefaRenderConfig() {
-  var el = document.getElementById('crono-tarefas-content');
-  if (!el) return;
-  if (_tarefaBlocos.length === 0) _tarefaBlocos = [];
-  if (_tarefaNadadores.length === 0) _tarefaNadadores = [];
-
-  var sugestoes = tarefaGetSugestoes();
-  var sugHtml = sugestoes.length > 0 ? '<div class="tar-sugestoes">' +
-    sugestoes.map(function(n) {
-      return '<button class="tar-sug-btn" onclick="tarefaAddNadadorSug(' + JSON.stringify(n) + ')">' + n + '</button>';
-    }).join('') + '</div>' : '';
-
-  var blocosHtml = _tarefaBlocos.map(function(b, i) {
-    var estilosHtml = '';
-    if (!b.estilosIguais) {
-      estilosHtml = '<div class="tar-estilos-list">' +
-        Array.from({length: b.reps}, function(_, r) {
-          return '<div class="tar-estilo-item"><span>' + (r+1) + '</span>' +
-            '<input type="text" placeholder="ex: L, C, M..." value="' + (b.estilos[r]||'') + '" oninput="tarefaBlocoSetEstilo(' + i + ',' + r + ',this.value)">' +
-            '</div>';
-        }).join('') + '</div>';
-    }
-    return '<div class="tar-bloco" id="tar-bloco-' + i + '">' +
-      '<div class="tar-bloco-header">' +
-        '<div class="tar-bloco-num">' + (i+1) + '</div>' +
-        '<div class="tar-bloco-title">Bloco ' + (i+1) + '</div>' +
-        (i > 0 ? '<button class="tar-bloco-del" onclick="tarefaMoveBloco(' + i + ',-1)" title="Subir">↑</button>' : '') +
-        (i < _tarefaBlocos.length-1 ? '<button class="tar-bloco-del" onclick="tarefaMoveBloco(' + i + ',1)" title="Descer">↓</button>' : '') +
-        '<button class="tar-bloco-del" onclick="tarefaRemoveBloco(' + i + ')">×</button>' +
-      '</div>' +
-      '<div class="tar-row">' +
-        '<div class="tar-field" style="max-width:70px;"><label>Reps</label><input type="number" min="1" max="99" value="' + b.reps + '" oninput="tarefaBlocoSet(' + i + ',\'reps\',+this.value)"></div>' +
-        '<div class="tar-field" style="max-width:90px;"><label>Distância</label><select onchange="tarefaBlocoSet(' + i + ',\'dist\',this.value)">' +
-          [25,50,100,200,400,800,1500].map(function(d){ return '<option value="' + d + '"' + (b.dist==d?' selected':'') + '>' + d + 'm</option>'; }).join('') +
-        '</select></div>' +
-        '<div class="tar-field" style="max-width:90px;"><label>@ (saída)</label><input type="text" placeholder="1:20" value="' + (b.saidaStr||'') + '" oninput="tarefaBlocoSet(' + i + ',\'saidaStr\',this.value)"></div>' +
-      '</div>' +
-      '<div class="tar-toggle">' +
-        '<input type="checkbox" id="tar-ig-' + i + '" ' + (b.estilosIguais?'checked':'') + ' onchange="tarefaBlocoSet(' + i + ',\'estilosIguais\',this.checked)">' +
-        '<label for="tar-ig-' + i + '">Todas iguais</label>' +
-        (b.estilosIguais ? '<input type="text" placeholder="ex: L" value="' + (b.estilo||'') + '" style="flex:1;padding:6px 8px;border-radius:7px;border:1.5px solid var(--border,#d0e4f0);font-size:13px;background:var(--bg,#fff);color:var(--text,#1a3a4a);" oninput="tarefaBlocoSet(' + i + ',\'estilo\',this.value)">' : '') +
-      '</div>' +
-      estilosHtml +
-      '<div class="tar-row">' +
-        '<div class="tar-field"><label>Intervalo após bloco</label>' +
-          '<select onchange="tarefaBlocoSet(' + i + ',\'intervaloStr\',this.value)">' +
-            '<option value="0"' + (b.intervaloStr==='0'?' selected':'') + '>Sem intervalo</option>' +
-            ['0:15','0:20','0:30','0:45','1:00','1:30','2:00','3:00','5:00'].map(function(v){ return '<option value="' + v + '"' + (b.intervaloStr===v?' selected':'') + '>' + v + '</option>'; }).join('') +
-            '<option value="custom"' + (b.intervaloStr==='custom'?' selected':'') + '>Outro...</option>' +
-          '</select>' +
-          (b.intervaloStr==='custom' ? '<input type="text" placeholder="ex: 2:30" style="margin-top:4px;padding:7px;border-radius:7px;border:1.5px solid var(--border,#d0e4f0);font-size:13px;width:100%;background:var(--bg,#fff);color:var(--text,#1a3a4a);" value="' + (b.intervaloCustom||'') + '" oninput="tarefaBlocoSet(' + i + ',\'intervaloCustom\',this.value)">' : '') +
-        '</div>' +
-      '</div>' +
-    '</div>';
-  }).join('');
-
-  var nadadoresHtml = _tarefaNadadores.map(function(n, i) {
-    return '<div class="tar-nadador-item">' +
-      '<input type="color" value="' + n.cor + '" oninput="tarefaNadadorSet(' + i + ',\'cor\',this.value)">' +
-      '<input type="text" placeholder="Nome do nadador" value="' + (n.nome||'') + '" oninput="tarefaNadadorSet(' + i + ',\'nome\',this.value)">' +
-      '<button class="tar-nadador-del" onclick="tarefaRemoveNadador(' + i + ')">×</button>' +
-    '</div>';
-  }).join('');
-
-  el.innerHTML = '<div class="tar-section">' +
-    '<div class="fpn-title" style="margin-bottom:12px;">Nova Tarefa</div>' +
-
-    '<div class="tar-field" style="margin-bottom:12px;"><label>Nome da tarefa (opcional)</label>' +
-      '<input type="text" id="tar-nome" placeholder="ex: Aeróbio base" value="' + (_tarefaConfig_nome||'') + '" oninput="_tarefaConfig_nome=this.value" style="padding:8px;border-radius:8px;border:1.5px solid var(--border,#d0e4f0);font-size:13px;width:100%;background:var(--bg,#fff);color:var(--text,#1a3a4a);">' +
-    '</div>' +
-
-    '<div class="fpn-subtitle" style="margin-bottom:8px;">Blocos</div>' +
-    blocosHtml +
-    '<button onclick="tarefaAddBloco()" style="width:100%;padding:10px;border-radius:10px;border:2px dashed var(--aqua,#00c4cc);background:transparent;color:var(--aqua,#00c4cc);font-size:14px;font-weight:600;cursor:pointer;font-family:\'DM Sans\',sans-serif;margin-bottom:16px;">+ Adicionar bloco</button>' +
-
-    '<div class="fpn-subtitle" style="margin-bottom:8px;">Nadadores <span style="font-size:11px;color:var(--muted,#6b8fa8);font-weight:400;">(opcional)</span></div>' +
-    sugHtml +
-    nadadoresHtml +
-    '<button onclick="tarefaAddNadador()" style="width:100%;padding:9px;border-radius:10px;border:1.5px dashed var(--border,#d0e4f0);background:transparent;color:var(--muted,#6b8fa8);font-size:13px;font-weight:600;cursor:pointer;font-family:\'DM Sans\',sans-serif;margin-bottom:16px;">+ Adicionar nadador</button>' +
-
-    (_tarefaBlocos.length > 0 ? '<button onclick="tarefaIniciar()" style="width:100%;padding:14px;border-radius:12px;border:none;background:var(--blue-deep,#1a3a4a);color:#fff;font-size:16px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;">▶ Iniciar tarefa</button>' : '') +
-
-    (tarefaGetHistory().length > 0 ? '<div style="margin-top:20px;"><div class="fpn-subtitle" style="margin-bottom:8px;">Histórico</div>' + tarefaRenderHistoryHtml() + '</div>' : '') +
-  '</div>';
-}
-
-var _tarefaConfig_nome = '';
-
-function tarefaAddBloco() {
-  _tarefaBlocos.push({ reps:4, dist:100, estilo:'L', estilosIguais:true, estilos:[], saidaStr:'1:30', intervaloStr:'0', intervaloCustom:'' });
-  tarefaRenderConfig();
-}
-function tarefaRemoveBloco(i) {
-  _tarefaBlocos.splice(i,1);
-  tarefaRenderConfig();
-}
-function tarefaMoveBloco(i, dir) {
-  var j = i + dir;
-  if (j < 0 || j >= _tarefaBlocos.length) return;
-  var tmp = _tarefaBlocos[i]; _tarefaBlocos[i] = _tarefaBlocos[j]; _tarefaBlocos[j] = tmp;
-  tarefaRenderConfig();
-}
-function tarefaBlocoSet(i, key, val) {
-  _tarefaBlocos[i][key] = val;
-  if (key === 'reps') {
-    while (_tarefaBlocos[i].estilos.length < val) _tarefaBlocos[i].estilos.push('');
-  }
-  if (key === 'estilosIguais' || key === 'reps' || key === 'intervaloStr') tarefaRenderConfig();
-}
-function tarefaBlocoSetEstilo(i, r, val) { _tarefaBlocos[i].estilos[r] = val; }
-function tarefaAddNadador() {
-  var cores = ['#e74c3c','#3498db','#27ae60','#f39c12','#9b59b6','#1abc9c','#e67e22','#2980b9'];
-  _tarefaNadadores.push({ nome:'', cor: cores[_tarefaNadadores.length % cores.length] });
-  tarefaRenderConfig();
-}
-function tarefaAddNadadorSug(nome) {
-  var cores = ['#e74c3c','#3498db','#27ae60','#f39c12','#9b59b6','#1abc9c','#e67e22','#2980b9'];
-  _tarefaNadadores.push({ nome: nome, cor: cores[_tarefaNadadores.length % cores.length] });
-  tarefaRenderConfig();
-}
-function tarefaRemoveNadador(i) { _tarefaNadadores.splice(i,1); tarefaRenderConfig(); }
-function tarefaNadadorSet(i, key, val) { _tarefaNadadores[i][key] = val; }
-
-// ===== INICIAR =====
-function tarefaIniciar() {
-  if (_tarefaBlocos.length === 0) return;
-  // Compilar config
-  var blocos = _tarefaBlocos.map(function(b) {
-    var saida = tarefaParseMs(b.saidaStr);
-    var intervalo = b.intervaloStr === '0' ? 0 : b.intervaloStr === 'custom' ? tarefaParseMs(b.intervaloCustom) : tarefaParseMs(b.intervaloStr);
-    var estilos = b.estilosIguais ? Array.from({length:b.reps}, function(){ return b.estilo; }) : b.estilos.slice(0, b.reps);
-    return { reps:b.reps, dist:b.dist, estilos:estilos, saida:saida, intervalo:intervalo };
-  });
-
-  tarefaConfig = {
-    nome: _tarefaConfig_nome || 'Tarefa',
-    blocos: blocos,
-    nadadores: _tarefaNadadores.map(function(n){ return { nome: n.nome||'', cor: n.cor }; }),
-    ts: Date.now()
-  };
-
-  // Expandir séries
-  var series = [];
-  blocos.forEach(function(b, bi) {
-    for (var r = 0; r < b.reps; r++) {
-      series.push({ blocoIdx:bi, rep:r+1, totalReps:b.reps, dist:b.dist, estilo:b.estilos[r]||'', saida:b.saida, ultimaDaBloco:r===b.reps-1, intervalo:b.intervalo });
-    }
-  });
-
-  tarefaRun = {
-    series: series,
-    serieIdx: 0,
-    totalSeries: series.length,
-    resultados: series.map(function(){ return {}; }), // {nome: tempo_ms|null}
-    phase: 'active', // 'active'|'intervalo'|'done'
-    startTs: Date.now(),
-    serieStartTs: Date.now(),
-    totalElapsed: 0
-  };
-
-  tarefaState = 'active';
-  tarefaStartTimer();
-  tarefaRenderActive();
-}
-
-// ===== EXECUÇÃO =====
-function tarefaStartTimer() {
-  if (tarefaTimer) clearInterval(tarefaTimer);
-  tarefaTimer = setInterval(tarefaTickTimer, 50);
-}
-function tarefaStopTimer() {
-  if (tarefaTimer) { clearInterval(tarefaTimer); tarefaTimer = null; }
-}
-
-function tarefaTickTimer() {
-  if (!tarefaRun) return;
-  var now = Date.now();
-  tarefaRun.totalElapsed = now - tarefaRun.startTs;
-
-  if (tarefaRun.phase === 'active') {
-    var elapsed = now - tarefaRun.serieStartTs;
-    var serie = tarefaRun.series[tarefaRun.serieIdx];
-    // Actualizar cronómetro
-    var elTot = document.getElementById('tar-total-elapsed');
-    if (elTot) elTot.textContent = tarefaFmtSecs(tarefaRun.totalElapsed);
-    var elCrono = document.getElementById('tar-crono');
-    if (elCrono) {
-      elCrono.textContent = tarefaFmtMs(elapsed);
-      var pct = serie.saida > 0 ? elapsed/serie.saida : 0;
-      elCrono.className = 'tar-crono' + (pct > 0.9 ? ' warn' : '') + (pct > 1 ? ' over' : '');
-    }
-    var elSaida = document.getElementById('tar-saida-left');
-    if (elSaida && serie.saida > 0) {
-      var left = serie.saida - elapsed;
-      elSaida.textContent = left > 0 ? ('próxima saída em ' + tarefaFmtMs(left)) : 'saída!';
-    }
-    // Barra de progressão da série
-    var elBar = document.getElementById('tar-serie-bar');
-    if (elBar && serie.saida > 0) {
-      elBar.style.width = Math.min(100, Math.round((elapsed/serie.saida)*100)) + '%';
-    }
-    // Se chegou ao tempo de saída → avançar
-    if (serie.saida > 0 && elapsed >= serie.saida) {
-      tarefaAvançarSerie();
-    }
-  } else if (tarefaRun.phase === 'intervalo') {
-    var elapsed2 = now - tarefaRun.intervaloStartTs;
-    var elTot2 = document.getElementById('tar-total-elapsed');
-    if (elTot2) elTot2.textContent = tarefaFmtSecs(tarefaRun.totalElapsed);
-    var elCD = document.getElementById('tar-intervalo-cd');
-    if (elCD) {
-      var left2 = tarefaRun.intervaloDur - elapsed2;
-      elCD.textContent = left2 > 0 ? tarefaFmtSecs(left2) : '0,00';
-      if (left2 <= 0) tarefaIniciarProximoBloco();
-    }
-  }
-}
-
-function tarefaAvançarSerie() {
-  var run = tarefaRun;
-  var serie = run.series[run.serieIdx];
-  // Marcar não cumpridos
-  if (tarefaConfig.nadadores.length > 0) {
-    tarefaConfig.nadadores.forEach(function(n) {
-      if (run.resultados[run.serieIdx][n.nome] === undefined) {
-        run.resultados[run.serieIdx][n.nome] = null; // não cumprido
-      }
-    });
-  }
-  run.serieIdx++;
-  if (run.serieIdx >= run.totalSeries) {
-    tarefaTerminar();
-    return;
-  }
-  // Verificar se há intervalo entre blocos
-  var prevSerie = run.series[run.serieIdx - 1];
-  if (prevSerie.ultimaDaBloco && prevSerie.intervalo > 0) {
-    run.phase = 'intervalo';
-    run.intervaloStartTs = Date.now();
-    run.intervaloDur = prevSerie.intervalo;
-    run.intervaloNextLabel = tarefaSerieLabel(run.series[run.serieIdx]);
-    tarefaRenderIntervalo();
-  } else {
-    run.serieStartTs = Date.now();
-    tarefaRenderActive();
-  }
-}
-
-function tarefaIniciarProximoBloco() {
-  tarefaRun.phase = 'active';
-  tarefaRun.serieStartTs = Date.now();
-  tarefaRenderActive();
-}
-
-function tarefaSerieLabel(s) {
-  return s.dist + 'm ' + s.estilo;
-}
-
-function tarefaMarcarChegada(ni) {
-  var run = tarefaRun;
-  if (!run || run.phase !== 'active') return;
-  var n = tarefaConfig.nadadores[ni];
-  if (!n) return;
-  var nome = n.nome;
-  var elapsed = Date.now() - run.serieStartTs;
-  if (run.resultados[run.serieIdx][nome] !== undefined) return; // já marcado
-  run.resultados[run.serieIdx][nome] = elapsed;
-  // Actualizar botão
-  var btn = document.getElementById('tar-sw-btn-sw_' + ni);
-  if (btn) {
-    btn.classList.add('marked');
-    btn.querySelector('.sw-time').textContent = tarefaFmtMs(elapsed);
-  }
-}
-
-function tarefaTerminar() {
-  tarefaStopTimer();
-  tarefaRun.phase = 'done';
-  tarefaState = 'summary';
-  // Guardar no histórico
-  tarefaSaveHistory({ config: tarefaConfig, run: tarefaRun, ts: Date.now() });
-  tarefaRenderSummary();
-}
-
-// ===== RENDER ACTIVE =====
-function tarefaRenderActive() {
-  var el = document.getElementById('crono-tarefas-content');
-  if (!el) return;
-  var run = tarefaRun;
-  var serie = run.series[run.serieIdx];
-  var totalSeries = run.totalSeries;
-  var blocoN = serie.blocoIdx + 1;
-  var totalBlocos = tarefaConfig.blocos.length;
-
-  var swimBtns = tarefaConfig.nadadores.length > 0 ?
-    '<div class="tar-swimmer-btns">' +
-    tarefaConfig.nadadores.map(function(n, ni) {
-      var safe = 'sw_' + ni;
-      var res = run.resultados[run.serieIdx][n.nome];
-      var marked = res !== undefined;
-      return '<button id="tar-sw-btn-' + safe + '" class="tar-swimmer-btn' + (marked?' marked':'') + '" style="background:' + n.cor + ';" onclick="tarefaMarcarChegada(' + ni + ')">' +
-        '<span class="sw-time">' + (marked && res !== null ? tarefaFmtMs(res) : '—') + '</span>' +
-        '<span class="sw-name">' + (n.nome || '?') + '</span>' +
-      '</button>';
-    }).join('') +
-    '</div>' : '';
-
-  // Barra total
-  var progPct = Math.round((run.serieIdx / totalSeries) * 100);
-
-  el.innerHTML = '<div class="tar-active">' +
-    '<div class="tar-total-time">⏱ total: <span id="tar-total-elapsed">0,00</span></div>' +
-    '<div class="tar-bloco-label">Bloco ' + blocoN + '/' + totalBlocos + ' · série ' + serie.rep + '/' + serie.totalReps + '</div>' +
-    '<div class="tar-serie-label">' + serie.dist + 'm</div>' +
-    '<div class="tar-style-label">' + (serie.estilo || '') + '</div>' +
-    '<div id="tar-crono" class="tar-crono">0,00</div>' +
-    '<div class="tar-saida-label" id="tar-saida-left">@ ' + (serie.saida > 0 ? tarefaFmtSecs(serie.saida) : '—') + '</div>' +
-    '<div class="tar-progress-wrap" style="margin-bottom:16px;"><div id="tar-serie-bar" class="tar-progress-fill" style="width:0%"></div></div>' +
-    swimBtns +
-    '<div class="tar-ctrl-btns">' +
-      '<button class="tar-ctrl-btn" style="background:#e67e22;color:#fff;" onclick="tarefaPausar()">⏸ Pausa</button>' +
-      '<button class="tar-ctrl-btn" style="background:#e74c3c;color:#fff;" onclick="tarefaConfirmTerminar()">✕ Terminar</button>' +
-    '</div>' +
-    '<div class="tar-progress-wrap"><div class="tar-progress-fill" style="width:' + progPct + '%;background:var(--aqua,#00c4cc);opacity:0.5;"></div></div>' +
-    '<div style="font-size:11px;color:var(--muted,#6b8fa8);margin-top:4px;">' + run.serieIdx + '/' + totalSeries + ' séries concluídas</div>' +
-  '</div>';
-}
-
-// ===== RENDER INTERVALO =====
-function tarefaRenderIntervalo() {
-  var el = document.getElementById('crono-tarefas-content');
-  if (!el) return;
-  var run = tarefaRun;
-  el.innerHTML = '<div class="tar-intervalo">' +
-    '<div class="tar-total-time">⏱ total: <span id="tar-total-elapsed">0,00</span></div>' +
-    '<div class="label">— INTERVALO —</div>' +
-    '<div class="next">A seguir: ' + run.intervaloNextLabel + '</div>' +
-    '<div id="tar-intervalo-cd" class="countdown">' + tarefaFmtSecs(run.intervaloDur) + '</div>' +
-    '<div class="tar-ctrl-btns" style="margin-top:20px;">' +
-      '<button class="tar-ctrl-btn" style="background:var(--blue-deep,#1a3a4a);color:#fff;" onclick="tarefaIniciarProximoBloco()">▶ Avançar já</button>' +
-      '<button class="tar-ctrl-btn" style="background:#e74c3c;color:#fff;" onclick="tarefaConfirmTerminar()">✕ Terminar</button>' +
-    '</div>' +
-  '</div>';
-}
-
-// ===== PAUSA =====
-var _tarefaPausado = false;
-var _tarefaPausaTs = 0;
-function tarefaPausar() {
-  if (!tarefaRun) return;
-  if (!_tarefaPausado) {
-    _tarefaPausado = true;
-    _tarefaPausaTs = Date.now();
-    tarefaStopTimer();
-    // Mostrar botão retomar
-    var btns = document.querySelector('.tar-ctrl-btns');
-    if (btns) btns.innerHTML =
-      '<button class="tar-ctrl-btn" style="background:#27ae60;color:#fff;" onclick="tarefaRetomar()">▶ Retomar</button>' +
-      '<button class="tar-ctrl-btn" style="background:#e74c3c;color:#fff;" onclick="tarefaConfirmTerminar()">✕ Terminar</button>';
-  }
-}
-function tarefaRetomar() {
-  if (!tarefaRun || !_tarefaPausado) return;
-  var pausaDur = Date.now() - _tarefaPausaTs;
-  tarefaRun.serieStartTs += pausaDur;
-  tarefaRun.startTs += pausaDur;
-  if (tarefaRun.phase === 'intervalo') tarefaRun.intervaloStartTs += pausaDur;
-  _tarefaPausado = false;
-  tarefaStartTimer();
-  if (tarefaRun.phase === 'active') tarefaRenderActive();
-  else tarefaRenderIntervalo();
-}
-function tarefaConfirmTerminar() {
-  tarefaStopTimer();
-  tarefaTerminar();
-}
-
-// ===== SUMMARY =====
-function tarefaRenderSummary() {
-  var el = document.getElementById('crono-tarefas-content');
-  if (!el) return;
-  var run = tarefaRun;
-  var cfg = tarefaConfig;
-
-  var html = '<div class="tar-section">' +
-    '<div class="fpn-title" style="margin-bottom:4px;">' + cfg.nome + '</div>' +
-    '<div style="font-size:12px;color:var(--muted,#6b8fa8);margin-bottom:16px;">Duração total: ' + tarefaFmtSecs(run.totalElapsed) + '</div>';
-
-  if (cfg.nadadores.length > 0) {
-    cfg.nadadores.forEach(function(n) {
-      html += '<div style="margin-bottom:14px;">' +
-        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">' +
-          '<div style="width:14px;height:14px;border-radius:50%;background:' + n.cor + ';"></div>' +
-          '<div style="font-size:14px;font-weight:600;color:var(--text,#1a3a4a);">' + (n.nome||'?') + '</div>' +
-        '</div>';
-      run.series.forEach(function(s, si) {
-        var res = run.resultados[si] ? run.resultados[si][n.nome] : undefined;
-        var resStr = res === null ? '✗' : res === undefined ? '—' : tarefaFmtMs(res);
-        var resColor = res === null ? '#e74c3c' : res === undefined ? '#aaa' : '#27ae60';
-        html += '<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border,#d0e4f0);font-size:13px;">' +
-          '<span style="color:var(--muted,#6b8fa8);">Série ' + (si+1) + ' · ' + s.dist + 'm ' + s.estilo + '</span>' +
-          '<span style="font-weight:700;color:' + resColor + ';">' + resStr + '</span>' +
-        '</div>';
-      });
-      html += '</div>';
-    });
-  } else {
-    html += '<div style="color:var(--muted,#6b8fa8);font-size:13px;margin-bottom:16px;">Tarefa sem nadadores registados.</div>';
-  }
-
-  html += '<div style="display:flex;gap:8px;margin-top:16px;">' +
-    '<button onclick="tarefaExportPDF()" style="flex:1;padding:11px;border-radius:10px;border:none;background:#8e44ad;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:\'DM Sans\',sans-serif;">PDF</button>' +
-    '<button onclick="tarefaExportCSV()" style="flex:1;padding:11px;border-radius:10px;border:none;background:var(--blue-deep,#1a3a4a);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:\'DM Sans\',sans-serif;">CSV</button>' +
-    '<button onclick="tarefaNovaConfig()" style="flex:1;padding:11px;border-radius:10px;border:none;background:var(--aqua,#00c4cc);color:var(--dark,#001f3a);font-size:13px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;">Nova tarefa</button>' +
-  '</div></div>';
-
-  el.innerHTML = html;
-}
-
-function tarefaNovaConfig() {
-  tarefaState = 'config';
-  tarefaRun = null;
-  tarefaConfig = null;
-  _tarefaBlocos = [];
-  _tarefaNadadores = [];
-  _tarefaConfig_nome = '';
-  tarefaRenderConfig();
-}
-
-// ===== HISTÓRICO =====
-var TAREFAS_HIST_KEY = 'swimmin_tarefas_hist_v1';
-function tarefaSaveHistory(entry) {
-  var hist = tarefaGetHistory();
-  hist.unshift(entry);
-  hist = hist.slice(0, 20);
-  try { localStorage.setItem(TAREFAS_HIST_KEY, JSON.stringify(hist)); } catch(e) {}
-}
-function tarefaGetHistory() {
-  try { return JSON.parse(localStorage.getItem(TAREFAS_HIST_KEY) || '[]'); } catch(e) { return []; }
-}
-function tarefaRenderHistoryHtml() {
-  var hist = tarefaGetHistory();
-  if (!hist.length) return '';
-  return hist.map(function(h, i) {
-    var d = new Date(h.ts);
-    var label = d.toLocaleDateString('pt-PT') + ' ' + d.toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'});
-    var totalSeries = h.run && h.run.series ? h.run.series.length : '?';
-    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border,#d0e4f0);font-size:13px;">' +
-      '<div><div style="font-weight:600;color:var(--text,#1a3a4a);">' + (h.config&&h.config.nome?h.config.nome:'Tarefa') + '</div>' +
-      '<div style="font-size:11px;color:var(--muted,#6b8fa8);">' + label + ' · ' + totalSeries + ' séries</div></div>' +
-      '<div style="display:flex;gap:6px;">' +
-        '<button onclick="tarefaLoadFromHistory(' + i + ')" style="padding:5px 10px;border-radius:8px;border:none;background:#1a6fdb;color:#fff;font-size:12px;cursor:pointer;">Ver</button>' +
-        '<button onclick="tarefaDeleteHistory(' + i + ')" style="padding:5px 10px;border-radius:8px;border:none;background:#e74c3c;color:#fff;font-size:12px;cursor:pointer;">×</button>' +
-      '</div>' +
-    '</div>';
-  }).join('');
-}
-function tarefaLoadFromHistory(i) {
-  var hist = tarefaGetHistory();
-  if (!hist[i]) return;
-  tarefaConfig = hist[i].config;
-  tarefaRun = hist[i].run;
-  tarefaState = 'summary';
-  tarefaRenderSummary();
-}
-function tarefaDeleteHistory(i) {
-  var hist = tarefaGetHistory();
-  hist.splice(i,1);
-  try { localStorage.setItem(TAREFAS_HIST_KEY, JSON.stringify(hist)); } catch(e) {}
-  tarefaRenderConfig();
-}
-
-// ===== EXPORT =====
-function tarefaExportCSV() {
-  if (!tarefaConfig || !tarefaRun) return;
-  var lines = [tarefaConfig.nome];
-  lines.push('Série,Distância,Estilo,' + tarefaConfig.nadadores.map(function(n){return n.nome||'?';}).join(','));
-  tarefaRun.series.forEach(function(s, si) {
-    var row = [(si+1), s.dist+'m', s.estilo];
-    tarefaConfig.nadadores.forEach(function(n) {
-      var res = tarefaRun.resultados[si] ? tarefaRun.resultados[si][n.nome] : undefined;
-      row.push(res === null ? 'NC' : res === undefined ? '-' : tarefaFmtMs(res));
-    });
-    lines.push(row.join(','));
-  });
-  var blob = new Blob([lines.join('\n')], {type:'text/csv'});
-  var a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = (tarefaConfig.nome||'tarefa') + '.csv';
-  a.click();
-}
-
-function tarefaExportPDF() {
-  if (!tarefaConfig || !tarefaRun) return;
-  var win = window.open('','_blank');
-  if (!win) return;
-  var rows = tarefaRun.series.map(function(s, si) {
-    var cells = tarefaConfig.nadadores.map(function(n) {
-      var res = tarefaRun.resultados[si] ? tarefaRun.resultados[si][n.nome] : undefined;
-      var val = res === null ? '<span style="color:#e74c3c">NC</span>' : res === undefined ? '—' : '<span style="color:#27ae60;font-weight:700">' + tarefaFmtMs(res) + '</span>';
-      return '<td style="padding:6px 10px;text-align:center;">' + val + '</td>';
-    }).join('');
-    return '<tr style="border-bottom:1px solid #eee;">' +
-      '<td style="padding:6px 10px;color:#888;">' + (si+1) + '</td>' +
-      '<td style="padding:6px 10px;font-weight:600;">' + s.dist + 'm ' + s.estilo + '</td>' +
-      cells + '</tr>';
-  }).join('');
-
-  var descBlocos = tarefaConfig.blocos.map(function(b, i) {
-    var estiloStr = b.estilos ? [...new Set(b.estilos)].join('/') : b.estilo||'';
-    var intStr = b.intervalo > 0 ? ' + ' + tarefaFmtSecs(b.intervalo) + ' intervalo' : '';
-    return (i+1) + '. ' + b.reps + ' × ' + b.dist + 'm ' + estiloStr + ' @ ' + tarefaFmtSecs(b.saida) + intStr;
-  }).join('<br>');
-
-  var theadCells = tarefaConfig.nadadores.map(function(n){
-    return '<th style="padding:6px 10px;background:#1a3a4a;color:#fff;">' + (n.nome||'?') + '</th>';
-  }).join('');
-
-  win.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' + tarefaConfig.nome + '</title></head><body style="font-family:sans-serif;padding:20px;">' +
-    '<h2 style="color:#1a3a4a;margin-bottom:4px;">' + tarefaConfig.nome + '</h2>' +
-    '<div style="font-size:12px;color:#888;margin-bottom:12px;">Duração: ' + tarefaFmtSecs(tarefaRun.totalElapsed) + '</div>' +
-    '<div style="background:#f0f7ff;border-radius:8px;padding:12px;margin-bottom:16px;font-size:13px;line-height:1.8;">' + descBlocos + '</div>' +
-    '<table style="width:100%;border-collapse:collapse;font-size:13px;">' +
-      '<thead><tr><th style="padding:6px 10px;background:#1a3a4a;color:#fff;text-align:left;">Nº</th><th style="padding:6px 10px;background:#1a3a4a;color:#fff;text-align:left;">Série</th>' + theadCells + '</tr></thead>' +
-      '<tbody>' + rows + '</tbody>' +
-    '</table>' +
-    '<p style="font-size:11px;color:#aaa;margin-top:20px;">SwimMin · swimmin.pt</p>' +
-    '</body></html>');
-  win.document.close();
-  setTimeout(function(){ win.print(); }, 500);
-}
-</script>
-
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -11369,20 +10675,16 @@ function cronoSwitchTab(tab) {
   var tPar = document.getElementById('crono-tab-parciais');
   var tCro = document.getElementById('crono-tab-cronos');
   var tSwf = document.getElementById('crono-tab-swolf');
-  var tTar = document.getElementById('crono-tab-tarefas');
   var cPar = document.getElementById('crono-content');
   var cCro = document.getElementById('crono-cronos-content');
   var cSwf = document.getElementById('crono-swolf-content');
-  var cTar = document.getElementById('crono-tarefas-content');
   var bgOn = 'var(--blue-deep)', fgOn = '#fff', bgOff = '#f0f7ff', fgOff = '#1a3a4a';
   if (tPar) { tPar.style.background = bgOff; tPar.style.color = fgOff; }
   if (tCro) { tCro.style.background = bgOff; tCro.style.color = fgOff; }
   if (tSwf) { tSwf.style.background = bgOff; tSwf.style.color = fgOff; }
-  if (tTar) { tTar.style.background = bgOff; tTar.style.color = fgOff; }
   if (cPar) cPar.style.display = 'none';
   if (cCro) cCro.style.display = 'none';
   if (cSwf) cSwf.style.display = 'none';
-  if (cTar) cTar.style.display = 'none';
   if (tab === 'parciais') {
     if (tPar) { tPar.style.background = bgOn; tPar.style.color = fgOn; }
     if (cPar) cPar.style.display = 'block';
@@ -11392,9 +10694,6 @@ function cronoSwitchTab(tab) {
   } else if (tab === 'swolf') {
     if (tSwf) { tSwf.style.background = bgOn; tSwf.style.color = fgOn; }
     if (cSwf) { cSwf.style.display = 'block'; swolfInit(); }
-  } else if (tab === 'tarefas') {
-    if (tTar) { tTar.style.background = bgOn; tTar.style.color = fgOn; }
-    if (cTar) { cTar.style.display = 'block'; tarefasInit(); }
   }
 }
 
@@ -15131,7 +14430,87 @@ function ocrReset() {
   window.cronoSwitchTab = function(tab) {
     if (tab === 'parciais') track('treinador_parciais', { feature: 'zona_treinador' });
     else if (tab === 'cronos') track('treinador_cronometros', { feature: 'zona_treinador' });
+    else if (tab === 'swolf') track('treinador_swolf', { feature: 'zona_treinador' });
+    else if (tab === 'tarefas') track('treinador_tarefas', { feature: 'zona_treinador' });
     return _cronoSwitchTabOrig.apply(this, arguments);
+  };
+
+  /* --- Abrir Zona do Treinador --- */
+  var _toggleCronoOrig = window.toggleCrono;
+  window.toggleCrono = function() {
+    track('abrir_zona_treinador', { feature: 'zona_treinador' });
+    return _toggleCronoOrig && _toggleCronoOrig.apply(this, arguments);
+  };
+
+  /* --- Calcular pontos WA / FPN --- */
+  var _toggleFPNOrig = window.toggleFPN;
+  window.toggleFPN = function() {
+    track('abrir_pontos_wa', { feature: 'pontos_wa' });
+    return _toggleFPNOrig && _toggleFPNOrig.apply(this, arguments);
+  };
+  var _fpnUpdateOrig = window.fpnUpdate;
+  window.fpnUpdate = function() {
+    track('calcular_pontos_wa', { feature: 'pontos_wa' });
+    return _fpnUpdateOrig && _fpnUpdateOrig.apply(this, arguments);
+  };
+
+  /* --- Recordes nacionais --- */
+  var _toggleRecordesOrig = window.toggleRecordes;
+  window.toggleRecordes = function() {
+    track('abrir_recordes_nacionais', { feature: 'recordes_nacionais' });
+    return _toggleRecordesOrig && _toggleRecordesOrig.apply(this, arguments);
+  };
+
+  /* --- Recordes mundiais --- */
+  var _toggleWROrig = window.toggleWR;
+  window.toggleWR = function() {
+    track('abrir_recordes_mundiais', { feature: 'recordes_mundiais' });
+    return _toggleWROrig && _toggleWROrig.apply(this, arguments);
+  };
+
+  /* --- Mínimos natação adaptada --- */
+  var _toggleIdadeOrig = window.toggleIdade;
+  window.toggleIdade = function() {
+    track('abrir_minimos_adaptada', { feature: 'minimos_adaptada' });
+    return _toggleIdadeOrig && _toggleIdadeOrig.apply(this, arguments);
+  };
+
+  /* --- Calendário: adicionar prova --- */
+  var _calAddEventOrig = window.calAddEvent;
+  window.calAddEvent = function() {
+    track('calendario_adicionar_prova', { feature: 'calendario' });
+    return _calAddEventOrig && _calAddEventOrig.apply(this, arguments);
+  };
+
+  /* --- Guardar nadador --- */
+  var _guardarAtletaOrig = window.guardarAtleta;
+  window.guardarAtleta = function() {
+    track('guardar_nadador', { feature: 'zona_nadador' });
+    return _guardarAtletaOrig && _guardarAtletaOrig.apply(this, arguments);
+  };
+
+  /* --- Export Parciais PDF/CSV --- */
+  var _cronoExportPDFOrig = window.cronoExportPDF;
+  window.cronoExportPDF = function() {
+    track('export_pdf', { feature: 'parciais' });
+    return _cronoExportPDFOrig && _cronoExportPDFOrig.apply(this, arguments);
+  };
+  var _cronoExportCSVOrig = window.cronoExportCSV;
+  window.cronoExportCSV = function() {
+    track('export_csv', { feature: 'parciais' });
+    return _cronoExportCSVOrig && _cronoExportCSVOrig.apply(this, arguments);
+  };
+
+  /* --- Upload / Download Firebase --- */
+  var _syncToFirebaseOrig = window.syncToFirebase;
+  window.syncToFirebase = function() {
+    track('sync_upload', { feature: 'conta' });
+    return _syncToFirebaseOrig && _syncToFirebaseOrig.apply(this, arguments);
+  };
+  var _loadFromFirebaseOrig = window.loadFromFirebase;
+  window.loadFromFirebase = function() {
+    track('sync_download', { feature: 'conta' });
+    return _loadFromFirebaseOrig && _loadFromFirebaseOrig.apply(this, arguments);
   };
 
   /* --- Conversor 25m/50m --- */
