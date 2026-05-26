@@ -1,11 +1,506 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="refresh" content="0; url=./swimmin-fpn.html">
-    <link rel="canonical" href="./swimmin-fpn.html">
-  </head>
-  <body>
-    <script>window.location.replace('./swimmin-fpn.html');</script>
-  </body>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>INNOAQUA — Meeting Timer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:   #03045E;
+  --sky:    #00B4D8;
+  --orange: #F77F00;
+  --amber:  #FFBE0B;
+  --green:  #1D9E75;
+  --white:  #FFFFFF;
+  --muted:  rgba(255,255,255,0.42);
+  --dim:    rgba(255,255,255,0.14);
+
+  --h-header:  44px;
+  --h-footer:  80px;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html, body { width:100%; height:100%; overflow:hidden; background:var(--navy); font-family:'DM Sans',sans-serif; color:var(--white); }
+
+/* ── DAY PICKER ── */
+#day-picker {
+  position:fixed; inset:0; z-index:10;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:28px;
+  background:var(--navy);
+}
+.picker-logo { background:var(--orange); color:#fff; font-size:12px; font-weight:600; letter-spacing:2px; padding:6px 14px; border-radius:5px; }
+.picker-subtitle { font-size:14px; color:var(--muted); }
+.picker-subtitle strong { color:#fff; font-weight:600; }
+.day-cards { display:flex; gap:14px; flex-wrap:wrap; justify-content:center; }
+.day-card { background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.14); border-radius:14px; padding:26px 30px; cursor:pointer; text-align:center; min-width:190px; transition:background 0.15s, transform 0.1s; }
+.day-card:active { transform:scale(0.97); }
+.dc-date { font-family:'Bebas Neue',sans-serif; font-size:52px; line-height:1; letter-spacing:2px; }
+.dc-weekday { font-size:10px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin:4px 0 10px; }
+.dc-label { font-size:13px; font-weight:500; color:#fff; line-height:1.3; }
+.dc-sub { font-size:11px; color:var(--muted); margin-top:3px; }
+.day-card.d0 .dc-date { color:var(--sky); }
+.day-card.d1 .dc-date { color:var(--orange); }
+.day-card.d2 .dc-date { color:var(--green); }
+
+/* ── TIMER APP ── */
+#timer-app { display:none; position:fixed; inset:0; flex-direction:column; }
+#timer-app.visible { display:flex; }
+
+/* HEADER */
+header {
+  position:fixed; top:0; left:0; right:0;
+  height:var(--h-header);
+  background:rgba(2,2,60,0.98);
+  border-bottom:1px solid var(--dim);
+  display:flex; align-items:center; padding:0 14px; gap:10px;
+  z-index:4;
+}
+.logo { background:var(--orange); color:#fff; font-size:10px; font-weight:600; letter-spacing:2px; padding:4px 9px; border-radius:4px; flex-shrink:0; }
+.header-title { font-size:11px; color:rgba(255,255,255,0.6); flex:1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+.header-title strong { font-weight:600; color:#fff; }
+.header-right { display:flex; gap:7px; align-items:center; flex-shrink:0; }
+.header-date { font-size:11px; color:var(--muted); border:1px solid var(--dim); border-radius:4px; padding:3px 8px; }
+.btn-change-day { font-family:'DM Sans',sans-serif; font-size:11px; font-weight:500; background:transparent; color:var(--sky); border:1px solid rgba(0,180,216,0.3); border-radius:4px; padding:3px 9px; cursor:pointer; }
+
+/* BODY — between header and footer */
+.app-body {
+  position:fixed;
+  top:var(--h-header);
+  bottom:var(--h-footer);
+  left:0; right:0;
+  display:grid;
+  grid-template-columns:1fr 272px;
+  overflow:hidden;
+}
+
+/* LEFT: timer panel */
+.timer-panel {
+  display:flex; flex-direction:column;
+  padding:10px 20px 8px 22px;
+  overflow:hidden;
+  height:100%;
+}
+
+.block-meta { display:flex; align-items:center; gap:8px; flex-shrink:0; margin-bottom:4px; }
+.block-index { font-size:10px; font-weight:500; letter-spacing:2px; color:var(--sky); text-transform:uppercase; }
+.type-pill { font-size:10px; font-weight:600; letter-spacing:1px; text-transform:uppercase; padding:3px 9px; border-radius:20px; }
+.type-pill.talk    { background:rgba(0,180,216,0.15); color:var(--sky); }
+.type-pill.plenary { background:rgba(247,127,0,0.15); color:var(--orange); }
+.type-pill.break   { background:rgba(29,158,117,0.18); color:#4AC8A0; }
+.type-pill.visit   { background:rgba(255,190,11,0.15); color:var(--amber); }
+.type-pill.social  { background:rgba(29,158,117,0.18); color:#4AC8A0; }
+
+.slot-name { font-size:22px; font-weight:500; line-height:1.2; color:#fff; flex-shrink:0; margin-bottom:2px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.slot-speaker { font-size:13px; font-weight:300; font-style:italic; color:var(--orange); flex-shrink:0; min-height:17px; margin-bottom:6px; }
+
+/*
+  Timer: fixed font size calculated for iPad landscape.
+  iPad landscape viewport height = 768px (Safari address bar ~50px → usable ~718px)
+  header 44 + footer 80 = 124px used → body = ~594px
+  top padding 10 + block-meta ~20 + slot-name ~54 + speaker ~23 + progress ~15 + bottom ~8 = ~130px overhead
+  available for clock ≈ 594 - 130 = ~464px
+  Bebas Neue at font-size X has line-height ~0.9*X
+  So X = 464 / 0.9 ≈ 515px — cap at 420px to be safe and leave breathing room
+*/
+#timer-display {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:540px;
+  line-height:0.9;
+  letter-spacing:2px;
+  color:#fff;
+  transition:color 0.5s;
+  white-space:nowrap;
+  /* scale DOWN to fit width if needed, never scale up */
+  display:block;
+  transform-origin:left center;
+}
+#timer-display.warn     { color:var(--amber); }
+#timer-display.danger   { color:#FF8080; }
+#timer-display.overtime { color:#FF6060; }
+
+.time-sublabel { font-size:9px; letter-spacing:3px; color:rgba(255,255,255,0.16); text-transform:uppercase; margin-top:2px; flex-shrink:0; }
+
+/* ── SCRUBBER ── */
+.progress-wrap {
+  flex-shrink:0;
+  position:relative;
+  height:28px;           /* tall hit area for touch */
+  margin:4px 0 2px;
+  display:flex;
+  align-items:center;
+  cursor:pointer;
+}
+.progress-track {
+  position:absolute; left:0; right:0;
+  height:8px;
+  background:rgba(255,255,255,0.08);
+  border-radius:4px;
+  overflow:hidden;
+}
+#progress-bar {
+  height:100%;
+  border-radius:4px;
+  background:var(--sky);
+  transition:width 0.25s linear, background 0.5s;
+  pointer-events:none;
+}
+#progress-bar.warn     { background:var(--amber); }
+#progress-bar.danger   { background:#FF8080; }
+#progress-bar.overtime { background:#FF6060; width:100%!important; }
+#scrubber-thumb {
+  position:absolute;
+  width:20px; height:20px;
+  border-radius:50%;
+  background:var(--white);
+  box-shadow:0 0 0 3px rgba(0,180,216,0.5);
+  transform:translateX(-50%);
+  top:50%; margin-top:-10px;
+  transition:left 0.25s linear, box-shadow 0.2s;
+  pointer-events:none;
+}
+#scrubber-thumb.warn   { box-shadow:0 0 0 3px rgba(255,190,11,0.6); }
+#scrubber-thumb.danger { box-shadow:0 0 0 3px rgba(255,128,128,0.6); }
+#scrubber-thumb.overtime { background:#FF6060; box-shadow:0 0 0 3px rgba(255,96,96,0.5); }
+.progress-wrap:active #scrubber-thumb { box-shadow:0 0 0 6px rgba(0,180,216,0.3); }
+
+#overtime-label { display:none; flex-shrink:0; font-size:11px; font-weight:500; letter-spacing:1px; color:#FF9090; }
+
+/* RIGHT: agenda */
+.agenda-panel { background:rgba(0,0,0,0.25); border-left:1px solid var(--dim); overflow-y:auto; -webkit-overflow-scrolling:touch; padding:10px 0 12px; }
+.agenda-panel::-webkit-scrollbar { width:3px; }
+.agenda-panel::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1); border-radius:2px; }
+.agenda-hd { font-size:9px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(--muted); padding:0 13px 8px; }
+.sess-label { font-size:9px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase; color:var(--orange); padding:9px 13px 3px; }
+.ag-item { display:flex; align-items:flex-start; gap:6px; padding:6px 13px; cursor:pointer; border-left:2px solid transparent; transition:background 0.1s; }
+.ag-item:hover { background:rgba(255,255,255,0.04); }
+.ag-item.active { background:rgba(0,180,216,0.1); border-left-color:var(--sky); }
+.ag-item.done { opacity:0.27; }
+.ag-item.is-break { background:rgba(29,158,117,0.05); }
+.ag-item.is-break.active { background:rgba(29,158,117,0.13); border-left-color:var(--green); }
+.ag-time { font-size:9px; color:var(--muted); white-space:nowrap; padding-top:2px; min-width:68px; }
+.ag-info { flex:1; min-width:0; }
+.ag-name { font-size:11px; font-weight:400; color:rgba(255,255,255,0.72); line-height:1.3; }
+.ag-item.active .ag-name { color:#fff; font-weight:500; }
+.ag-spk { font-size:10px; font-style:italic; color:rgba(247,127,0,0.62); margin-top:1px; }
+.ag-dur { font-size:9px; color:var(--dim); padding-top:2px; white-space:nowrap; }
+.ag-check { font-size:10px; color:var(--green); flex-shrink:0; padding-top:2px; }
+
+/* FIXED FOOTER */
+#controls-bar {
+  position:fixed; bottom:0; left:0; right:0;
+  height:var(--h-footer);
+  background:rgba(2,2,60,0.98);
+  border-top:1px solid var(--dim);
+  display:none; align-items:center;
+  padding:0 16px; gap:10px;
+  z-index:4;
+}
+#controls-bar.visible { display:flex; }
+
+.btn { font-family:'DM Sans',sans-serif; font-size:16px; font-weight:500; border:none; border-radius:9px; padding:14px 24px; cursor:pointer; white-space:nowrap; -webkit-user-select:none; transition:opacity 0.15s, transform 0.1s; }
+.btn:active { transform:scale(0.96); }
+.btn-play { background:var(--sky); color:var(--navy); font-weight:700; min-width:130px; text-align:center; }
+.btn-play:hover { opacity:0.87; }
+.btn-nav { background:rgba(255,255,255,0.1); color:#fff; border:1px solid rgba(255,255,255,0.2); }
+.btn-nav:hover { background:rgba(255,255,255,0.18); }
+.btn-reset { background:transparent; color:var(--muted); border:1px solid var(--dim); font-size:13px; margin-left:auto; }
+.btn-reset:hover { color:#fff; }
+</style>
+</head>
+<body>
+
+<!-- DAY PICKER -->
+<div id="day-picker">
+  <div class="picker-logo">INNOAQUA</div>
+  <div class="picker-subtitle"><strong>Select the day</strong> to start the timer</div>
+  <div class="day-cards">
+    <div class="day-card d0" onclick="selectDay(0)">
+      <div class="dc-date">26</div>
+      <div class="dc-weekday">Tuesday · May</div>
+      <div class="dc-label">WP2 Workshop</div>
+      <div class="dc-sub">FEUP + SEA8, Porto</div>
+    </div>
+    <div class="day-card d1" onclick="selectDay(1)">
+      <div class="dc-date">27</div>
+      <div class="dc-weekday">Wednesday · May</div>
+      <div class="dc-label">INNOAQUA Meeting</div>
+      <div class="dc-sub">Day 1</div>
+    </div>
+    <div class="day-card d2" onclick="selectDay(2)">
+      <div class="dc-date">28</div>
+      <div class="dc-weekday">Thursday · May</div>
+      <div class="dc-label">INNOAQUA Meeting</div>
+      <div class="dc-sub">Day 2</div>
+    </div>
+  </div>
+</div>
+
+<!-- TIMER APP -->
+<div id="timer-app">
+  <header>
+    <div class="logo">INNOAQUA</div>
+    <div class="header-title" id="header-title"></div>
+    <div class="header-right">
+      <div class="header-date" id="header-date"></div>
+      <button class="btn-change-day" onclick="goToPicker()">Change day</button>
+    </div>
+  </header>
+
+  <div class="app-body">
+    <div class="timer-panel" id="timer-panel">
+      <div class="block-meta">
+        <span class="block-index" id="block-index">BLOCK 1 / 1</span>
+        <span class="type-pill talk" id="type-pill">Talk</span>
+      </div>
+      <div class="slot-name" id="slot-name">—</div>
+      <div class="slot-speaker" id="slot-speaker"></div>
+      <div id="timer-display">00:00</div>
+      <div class="time-sublabel">min &nbsp;&nbsp; sec</div>
+      <div class="progress-wrap" id="progress-wrap">
+        <div class="progress-track"><div id="progress-bar" style="width:100%"></div></div>
+        <div id="scrubber-thumb" style="left:100%"></div>
+      </div>
+      <div id="overtime-label">OVERTIME</div>
+    </div>
+
+    <div class="agenda-panel">
+      <div class="agenda-hd">Full Programme</div>
+      <div id="agenda"></div>
+    </div>
+  </div>
+</div>
+
+<!-- FIXED FOOTER -->
+<div id="controls-bar">
+  <button class="btn btn-nav" onclick="prevSlot()">Previous</button>
+  <button class="btn btn-play" id="btn-play" onclick="togglePlay()">Start</button>
+  <button class="btn btn-nav" onclick="nextSlot()">Next</button>
+  <button class="btn btn-reset" onclick="resetCurrent()">Reset</button>
+</div>
+
+<script>
+const days = [
+  {
+    title:"<strong>WP2 Workshop</strong> — Seaweed &amp; Fish IMTA within EU &nbsp;·&nbsp; FEUP + SEA8, Porto",
+    date:"26 May 2026",
+    slots:[
+      {session:"Arrival",     type:"break",   name:"Registration & welcome coffee",                                  speaker:"",                                    time:"08:30–09:00",dur:30},
+      {session:"Opening",     type:"plenary", name:"Welcome — INESC-TEC & INNOAQUA Coordination",                    speaker:"",                                    time:"09:00–09:15",dur:15},
+      {session:"Session 1",   type:"talk",    name:"IMTA-RAS: Ulva sp. for circularity and fish aquaculture safety", speaker:"Aires Duarte — CIIMAR",               time:"09:15–09:35",dur:20},
+      {session:null,          type:"talk",    name:"INNOAQUA Demo#2 — concept and functionalities",                  speaker:"Rui Pereira — A4F",                   time:"09:35–09:50",dur:15},
+      {session:null,          type:"talk",    name:"SMART-IMTA: digital tools, challenges & perspectives",           speaker:"INESC-TEC",                           time:"09:50–10:20",dur:30},
+      {session:null,          type:"talk",    name:"IMTA with microalgae — potential and challenges",                speaker:"Pia Steinrücken — NORCE",             time:"10:20–10:35",dur:15},
+      {session:null,          type:"talk",    name:"SEA8 vision for IMTA adoption — pros & cons",                   speaker:"Micaela Martins / Jaime León — SEA8", time:"10:35–10:50",dur:15},
+      {session:null,          type:"talk",    name:"CIRCUTECH project",                                              speaker:"Mariana Sá / Isidro Blanquet — APA",  time:"10:50–11:05",dur:15},
+      {session:"Break",       type:"break",   name:"Coffee break",                                                   speaker:"",                                    time:"11:05–11:30",dur:25},
+      {session:"Session 2",   type:"talk",    name:"Limitations of IMTA in the current EU regulatory framework",     speaker:"Carlos León — SUSTAIN/PERSEUS",       time:"11:30–11:45",dur:15},
+      {session:null,          type:"talk",    name:"IMTA — the future of our industry?",                             speaker:"Alistair Lane — European Aquaculture Society",time:"11:45–12:00",dur:15},
+      {session:null,          type:"talk",    name:"European Aquaculture Technology and Innovation Platform",         speaker:"David Basset — EATIP",                time:"12:00–12:15",dur:15},
+      {session:"Discussion",  type:"plenary", name:"Discussion session — on-site & online audience",                 speaker:"Moderated by David Basset — EATIP",   time:"12:15–13:15",dur:60},
+      {session:"Lunch",       type:"break",   name:"Lunch break",                                                    speaker:"",                                    time:"13:15–14:30",dur:75},
+      {session:"Field Visit", type:"visit",   name:"Travel to SEA8 facilities",                                      speaker:"",                                    time:"14:30–15:20",dur:50},
+      {session:null,          type:"visit",   name:"Visit to Demo#2 & SEA8 Sole Hatchery (rotating groups)",         speaker:"",                                    time:"15:20–17:20",dur:120},
+      {session:null,          type:"visit",   name:"Travel back to INESC-TEC facilities",                            speaker:"",                                    time:"17:20–18:30",dur:70},
+    ]
+  },
+  {
+    title:"<strong>INNOAQUA Meeting — Day 1</strong>",
+    date:"27 May 2026",
+    slots:[
+      {session:"Arrival",       type:"break",   name:"Registration & walk-in coffee",                 speaker:"",                                          time:"09:30–10:00",dur:30},
+      {session:"Opening",       type:"plenary", name:"Welcome and introduction to meeting programme",  speaker:"Dorinde Kleinegris / Xavier Ponte — NORCE", time:"10:00–10:15",dur:15},
+      {session:null,            type:"talk",    name:"Summary of Year 3",                              speaker:"Dorinde Kleinegris — NORCE",                time:"10:15–10:30",dur:15},
+      {session:"Work Packages", type:"talk",    name:"WP1 — Progress, main results and deviations",   speaker:"Vanja Falck — NORCE",                       time:"10:30–11:30",dur:60},
+      {session:"Break",         type:"break",   name:"Coffee break",                                   speaker:"",                                          time:"11:30–12:00",dur:30},
+      {session:null,            type:"talk",    name:"WP2 — Progress, main results and deviations",   speaker:"Rui Pereira — A4F",                         time:"12:00–13:00",dur:60},
+      {session:"Lunch",         type:"break",   name:"Lunch break",                                    speaker:"",                                          time:"13:00–14:00",dur:60},
+      {session:"Session 1",     type:"talk",    name:"WP3 — Progress, main results and deviations",   speaker:"Sandra Balsells — LEITAT",                  time:"14:00–15:00",dur:60},
+      {session:"Break",         type:"break",   name:"Coffee break",                                   speaker:"",                                          time:"15:00–15:30",dur:30},
+      {session:"Session 2",     type:"talk",    name:"WP4 — Progress, main results and deviations",   speaker:"Derek Latil — ALGEMY",                      time:"15:30–16:30",dur:60},
+      {session:null,            type:"plenary", name:"Advisory Board feedback",                        speaker:"AB",                                        time:"16:30–17:00",dur:30},
+      {session:"Evening",       type:"social",  name:"Social dinner (venue tbc)",                      speaker:"",                                          time:"19:30",       dur:90},
+    ]
+  },
+  {
+    title:"<strong>INNOAQUA Meeting — Day 2</strong>",
+    date:"28 May 2026",
+    slots:[
+      {session:"Session 1",                           type:"talk",    name:"WP6 — Progress, main results, deviations & publication discussion", speaker:"Kristina Duchoňová — PEDAL / Laura Larriviere — ECOIM",                                         time:"09:00–10:00",dur:60},
+      {session:null,                                  type:"talk",    name:"WP5 — Progress, main results and deviations",                       speaker:"Carlos León — SUSTAINN",                                                                       time:"10:00–10:30",dur:30},
+      {session:"Break",                               type:"break",   name:"Coffee break",                                                       speaker:"",                                                                                             time:"10:30–11:00",dur:30},
+      {session:"Sustainability, Safety & Regulation", type:"talk",    name:"WP5 — Sustainability: circularity assessment exercise",          speaker:"Carlos León — SUSTAINN",                                                                       time:"11:00–11:30",dur:30},
+      {session:null,                                  type:"talk",    name:"WP5 — Mitigation plan for regulatory risks",                        speaker:"Carlos León — SUSTAINN",                                                                       time:"11:30–12:00",dur:30},
+      {session:"Lunch",                               type:"break",   name:"Lunch break",                                                        speaker:"",                                                                                             time:"12:00–13:00",dur:60},
+      {session:"Social Perspectives",                 type:"talk",    name:"WP1 — Agent-based modelling session",                                speaker:"Patrycia Antosz / Vanja Falck — NORCE",                                                        time:"13:00–14:00",dur:60},
+      {session:"Food Ingredients",                    type:"talk",    name:"Seafood prototypes presentation",                                   speaker:"Derek Latil — ALGEMY / Sandra Balsells — LEITAT / Irina Chiriac — LEITAT / Laura Oleaga — PESCANOVA", time:"14:00–15:00",dur:60},
+      {session:"Break",                               type:"break",   name:"Coffee break",                                                       speaker:"",                                                                                             time:"15:00–15:30",dur:30},
+      {session:"Steering Committee",                  type:"plenary", name:"Project Steering Committee Meeting",                                 speaker:"Dorinde Kleinegris / Xavier Ponte — NORCE",                                                    time:"15:30–17:00",dur:90},
+    ]
+  }
+];
+
+const typeLabels={talk:"Talk",plenary:"Plenary",break:"Break",visit:"Field visit",social:"Social"};
+let slots=[],current=0,totalSec=0,remaining=0,overtime=0,isOvertime=false,running=false,iv=null;
+
+/* Scale timer to fill the left panel width */
+function scaleTimer() {
+  const td    = document.getElementById('timer-display');
+  const panel = document.getElementById('timer-panel');
+  if (!td || !panel) return;
+  const available = panel.clientWidth - 44; /* 44 = left+right padding */
+  td.style.transform = 'none';
+  const natural = td.scrollWidth;
+  if (natural > 0 && available > 0) {
+    const scale = Math.min(available / natural, 1.6); /* allow up to 60% upscale */
+    td.style.transform = 'scaleX(' + scale + ')';
+    td.style.transformOrigin = 'left center';
+  }
+}
+
+function selectDay(d) {
+  slots = days[d].slots;
+  document.getElementById('header-title').innerHTML = days[d].title;
+  document.getElementById('header-date').textContent = days[d].date;
+  document.getElementById('day-picker').style.display = 'none';
+  document.getElementById('timer-app').classList.add('visible');
+  document.getElementById('controls-bar').classList.add('visible');
+  loadSlot(0); updateDisplay();
+  requestAnimationFrame(() => requestAnimationFrame(scaleTimer));
+}
+function goToPicker() {
+  clearInterval(iv); running=false;
+  document.getElementById('timer-app').classList.remove('visible');
+  document.getElementById('controls-bar').classList.remove('visible');
+  document.getElementById('day-picker').style.display='flex';
+}
+
+function fmt(s) { const a=Math.abs(s); return String(Math.floor(a/60)).padStart(2,'0')+':'+String(a%60).padStart(2,'0'); }
+
+function updateDisplay() {
+  const sl=slots[current];
+  document.getElementById('block-index').textContent='BLOCK '+(current+1)+' / '+slots.length;
+  document.getElementById('slot-name').textContent=sl.name;
+  document.getElementById('slot-speaker').textContent=sl.speaker;
+  const pill=document.getElementById('type-pill');
+  pill.className='type-pill '+sl.type; pill.textContent=typeLabels[sl.type]||sl.type;
+  const td=document.getElementById('timer-display');
+  const pb=document.getElementById('progress-bar');
+  const otl=document.getElementById('overtime-label');
+  if(isOvertime){
+    td.textContent='−'+fmt(overtime); td.className='overtime';
+    pb.className='overtime'; pb.style.width='100%'; otl.style.display='block';
+  } else {
+    const pct=remaining/totalSec;
+    const cls=pct<=0.2?'danger':pct<=0.4?'warn':'';
+    td.textContent=fmt(remaining); td.className=cls;
+    pb.className=cls; pb.style.width=Math.max(0,pct*100)+'%';
+    otl.style.display='none';
+  }
+  /* update thumb position */
+  const wrap = document.getElementById('progress-wrap');
+  const thumb = document.getElementById('scrubber-thumb');
+  if (wrap && thumb) {
+    const pct = isOvertime ? 1 : Math.max(0, remaining / totalSec);
+    const leftPx = pct * wrap.clientWidth;
+    thumb.style.left = leftPx + 'px';
+    thumb.className = isOvertime ? 'overtime' : (pct<=0.2?'danger':pct<=0.4?'warn':'');
+  }
+  renderAgenda();
+}
+
+function renderAgenda() {
+  const ag=document.getElementById('agenda'); ag.innerHTML='';
+  slots.forEach((sl,i)=>{
+    if(sl.session!==null){const d=document.createElement('div');d.className='sess-label';d.textContent=sl.session;ag.appendChild(d);}
+    const row=document.createElement('div');
+    let cls='ag-item';
+    if(sl.type==='break'||sl.type==='visit'||sl.type==='social') cls+=' is-break';
+    if(i===current) cls+=' active'; else if(i<current) cls+=' done';
+    row.className=cls; row.onclick=()=>jumpTo(i);
+    if(i<current){const c=document.createElement('span');c.className='ag-check';c.textContent='✓';row.appendChild(c);}
+    const tm=document.createElement('span');tm.className='ag-time';tm.textContent=sl.time;
+    const info=document.createElement('div');info.className='ag-info';
+    const nm=document.createElement('div');nm.className='ag-name';nm.textContent=sl.name;info.appendChild(nm);
+    if(sl.speaker){const sp=document.createElement('div');sp.className='ag-spk';sp.textContent=sl.speaker;info.appendChild(sp);}
+    const dur=document.createElement('span');dur.className='ag-dur';dur.textContent=sl.dur+'m';
+    row.appendChild(tm);row.appendChild(info);row.appendChild(dur);ag.appendChild(row);
+  });
+  const active=ag.querySelector('.ag-item.active');
+  if(active) active.scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+
+function loadSlot(i){current=i;totalSec=slots[i].dur*60;remaining=totalSec;overtime=0;isOvertime=false;}
+function togglePlay(){
+  if(running){clearInterval(iv);running=false;document.getElementById('btn-play').textContent='Continue';}
+  else{
+    running=true;document.getElementById('btn-play').textContent='Pause';
+    iv=setInterval(()=>{
+      if(isOvertime){overtime++;}else{remaining--;if(remaining<=0){remaining=0;isOvertime=true;}}
+      updateDisplay();
+    },1000);
+  }
+}
+function jumpTo(i){clearInterval(iv);running=false;document.getElementById('btn-play').textContent='Start';loadSlot(i);updateDisplay();}
+function nextSlot(){clearInterval(iv);running=false;document.getElementById('btn-play').textContent='Start';if(current<slots.length-1){loadSlot(current+1);updateDisplay();}}
+function prevSlot(){if(current>0){clearInterval(iv);running=false;document.getElementById('btn-play').textContent='Start';loadSlot(current-1);updateDisplay();}}
+function resetCurrent(){clearInterval(iv);running=false;document.getElementById('btn-play').textContent='Start';loadSlot(current);updateDisplay();}
+
+
+/* ── SCRUBBER INTERACTION ── */
+(function(){
+  const wrap  = document.getElementById('progress-wrap');
+  let dragging = false;
+  let wasRunning = false;
+
+  function pctFromEvent(e) {
+    const rect = wrap.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    return Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+  }
+
+  function applyPct(pct) {
+    isOvertime = false;
+    remaining  = Math.round(pct * totalSec);
+    updateDisplay();
+  }
+
+  function startDrag(e) {
+    if (!slots.length) return;
+    dragging   = true;
+    wasRunning = running;
+    if (running) { clearInterval(iv); running = false; }
+    /* disable transition while dragging for instant feedback */
+    document.getElementById('progress-bar').style.transition = 'none';
+    document.getElementById('scrubber-thumb').style.transition = 'none';
+    applyPct(pctFromEvent(e));
+    e.preventDefault();
+  }
+  function onDrag(e) {
+    if (!dragging) return;
+    applyPct(pctFromEvent(e));
+    e.preventDefault();
+  }
+  function endDrag(e) {
+    if (!dragging) return;
+    dragging = false;
+    /* restore transitions */
+    document.getElementById('progress-bar').style.transition = '';
+    document.getElementById('scrubber-thumb').style.transition = '';
+    if (wasRunning) togglePlay();
+  }
+
+  /* mouse */
+  wrap.addEventListener('mousedown',  startDrag);
+  window.addEventListener('mousemove', onDrag);
+  window.addEventListener('mouseup',   endDrag);
+  /* touch (iPad) */
+  wrap.addEventListener('touchstart', startDrag, {passive:false});
+  window.addEventListener('touchmove', onDrag,   {passive:false});
+  window.addEventListener('touchend',  endDrag);
+})();
+
+window.addEventListener('resize', scaleTimer);
+</script>
+</body>
 </html>
