@@ -10488,15 +10488,16 @@ function slBuildPrintHTML() {
     '.pf-ev-num{font-size:17px;font-weight:900;min-width:28px;}' +
     '.pf-ev-name{font-size:12px;font-weight:700;}' +
     '.pf-ev-hora{font-size:10px;opacity:.8;margin-left:auto;}' +
-    '.pf-table{width:100%;border-collapse:collapse;font-size:11px;}' +
-    '.pf-table th{background:#e8f0fe;color:#003366;font-size:9px;letter-spacing:.5px;text-transform:uppercase;padding:4px 6px;border:1px solid #ccd9f0;text-align:center;}' +
+    '.pf-table{width:100%;border-collapse:collapse;font-size:11px;table-layout:auto;}' +
+    '.pf-table th{background:#e8f0fe;color:#003366;font-size:9px;letter-spacing:.5px;text-transform:uppercase;padding:4px 6px;border:1px solid #ccd9f0;text-align:center;white-space:nowrap;}' +
     '.pf-table th.tl{text-align:left;}' +
-    '.pf-table td{padding:0;border:1px solid #dde5f4;vertical-align:middle;}' +
+    '.pf-table td{padding:0;border:1px solid #dde5f4;vertical-align:middle;white-space:nowrap;}' +
+    '.pf-table td.name-td{white-space:normal;}' +
     '.pf-table tr:nth-child(even) td{background:#f8faff;}' +
     '.pf-table td>div{padding:4px 6px;min-height:18px;}' +
-    '.pf-table td.write>div{border-left:2px dashed #aac;background:white;min-height:28px;}' +
-    '.serie-row td{background:#dce8f8!important;padding:3px 8px;font-size:9px;font-weight:700;color:#003366;letter-spacing:.5px;text-transform:uppercase;}' +
-    '.lane-c{font-weight:900;font-size:14px;color:#003366;text-align:center;width:30px;}' +
+    '.pf-table td.write>div{border-left:2px dashed #aac;background:white;min-height:28px;min-width:55px;}' +
+    '.serie-row td{background:#dce8f8!important;padding:3px 8px;font-size:9px;font-weight:700;color:#003366;}' +
+    '.lane-c{font-weight:900;font-size:14px;color:#003366;text-align:center;width:32px;}' +
     '.name-c{font-weight:600;}' +
     '.mono{font-family:"Courier New",monospace;color:#003366;text-align:center;font-weight:600;}' +
     '.pf-footer{margin-top:12px;font-size:9px;color:#999;border-top:1px solid #ddd;padding-top:6px;text-align:right;}';
@@ -10521,14 +10522,15 @@ function slBuildPrintHTML() {
     if (hora) html += '<div class="pf-ev-hora">⏰ ' + hora + '</div>';
     html += '</div>';
     html += '<table class="pf-table"><thead><tr>';
-    html += '<th style="width:30px">Série</th><th style="width:30px">Pista</th>';
-    html += '<th class="tl">Nome</th>';
+    html += '<th style="width:32px">Série</th>';
+    html += '<th style="width:32px">Pista</th>';
+    html += '<th class="tl" style="min-width:120px;">Nome</th>';
+    html += '<th style="width:68px">T. Inscrição</th>';
+    html += '<th style="width:68px">T. Final</th>';
     wCols.forEach(function(c) { html += '<th style="width:' + c.w + '">' + c.label + '</th>'; });
-    if (slIsColOn('pb'))     html += '<th style="width:65px">PB / Obj.</th>';
-    if (slIsColOn('notes'))  html += '<th style="width:90px">Notas</th>';
-    html += '<th style="width:65px">T. Inscrição</th>';
-    html += '<th style="width:65px">T. Final</th>';
-    if (hora) html += '<th style="width:55px">Hora</th>';
+    if (slIsColOn('pb'))    html += '<th style="width:68px">PB / Obj.</th>';
+    if (slIsColOn('notes')) html += '<th style="min-width:90px">Notas</th>';
+    if (hora) html += '<th style="width:52px">Hora</th>';
     html += '</tr></thead><tbody>';
 
     matched.forEach(function(a) {
@@ -10536,11 +10538,11 @@ function slBuildPrintHTML() {
       html += '<td class="mono"><div>' + (a.serie || '?') + '</div></td>';
       html += '<td class="lane-c"><div>' + a.lane + '</div></td>';
       html += '<td class="name-c"><div>' + slCleanName(a.name) + '</div></td>';
+      html += '<td class="mono"><div>' + (a.time || 'NT') + '</div></td>';
+      html += '<td class="write"><div></div></td>';
       wCols.forEach(function() { html += '<td class="write"><div></div></td>'; });
       if (slIsColOn('pb'))    html += '<td class="write"><div></div></td>';
       if (slIsColOn('notes')) html += '<td class="write"><div></div></td>';
-      html += '<td class="mono"><div>' + (a.time || 'NT') + '</div></td>';
-      html += '<td class="write"><div></div></td>';
       if (hora) html += '<td class="mono"><div>' + hora + '</div></td>';
       html += '</tr>';
     });
