@@ -10099,11 +10099,19 @@ function slRender() {
 
     // RESULTADOS
     '<div id="sl-results" style="display:none;">' +
+
+      // Preview resultados
       '<div style="background:' + cardBg + ';border-radius:14px;padding:16px;margin-bottom:12px;border:1px solid ' + border + ';">' +
-        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">' +
-          '<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:' + muted + ';">3. Exportar</div>' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">' +
+          '<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:' + muted + ';">Resultados</div>' +
           '<span id="sl-count-badge" style="background:var(--aqua,#00c4cc);color:#001f3a;font-size:13px;font-weight:700;padding:3px 10px;border-radius:12px;"></span>' +
         '</div>' +
+        '<div id="sl-results-list"></div>' +
+      '</div>' +
+
+      // EXPORTAR
+      '<div style="background:' + cardBg + ';border-radius:14px;padding:16px;margin-bottom:12px;border:1px solid ' + border + ';">' +
+        '<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:' + muted + ';margin-bottom:12px;">Exportar</div>' +
 
         // Campos cabeçalho
         '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">' +
@@ -10117,8 +10125,7 @@ function slRender() {
             '<input type="text" id="sl-cfg-coach" placeholder="Nome do treinador" style="width:100%;padding:8px 10px;border-radius:8px;border:1.5px solid ' + border + ';font-size:12px;background:' + inputBg + ';color:' + text + ';font-family:\'DM Sans\',sans-serif;"></div>' +
         '</div>' +
 
-        // Opções de colunas
-        '<div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:' + muted + ';margin-bottom:8px;">Intervalo de parciais</div>' +
+        '<div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:' + muted + ';margin-bottom:8px;">Colunas para preencher</div>' +
         '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;" id="sl-col-opts">' +
           slColBtn('split50','Parciais 50m',true) + slColBtn('split100','Parciais 100m',false) +
           slColBtn('final','T. Final',true) + slColBtn('pb','PB / Objetivo',false) +
@@ -10126,16 +10133,11 @@ function slRender() {
         '</div>' +
 
         '<div style="display:flex;gap:8px;">' +
-          '<button onclick="slExportPDF()" style="flex:1;padding:11px;border-radius:10px;border:none;background:#8e44ad;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;">PDF</button>' +
+          '<button onclick="slExportPDF()" style="flex:1;padding:11px;border-radius:10px;border:none;background:#8e44ad;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;">⬇ Guardar PDF</button>' +
           '<button onclick="slPrint()" style="flex:1;padding:11px;border-radius:10px;border:none;background:var(--blue-deep,#1a3a4a);color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;">🖨 Imprimir</button>' +
         '</div>' +
       '</div>' +
 
-      // Preview resultados
-      '<div style="background:' + cardBg + ';border-radius:14px;padding:16px;border:1px solid ' + border + ';">' +
-        '<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:' + muted + ';margin-bottom:10px;">Preview</div>' +
-        '<div id="sl-results-list"></div>' +
-      '</div>' +
     '</div>' +
 
     '</div>';
@@ -10425,9 +10427,10 @@ function slGetDist(evName) {
 // Clean athlete name — remove numbers, year, single letters
 function slCleanName(name) {
   return (name || '')
-    .replace(/\b\d{5,}\b/g, '')   // licence numbers
-    .replace(/\b(19|20)\d{2}\b/g, '') // years
-    .replace(/\b[MF]\b/g, '')     // gender
+    .replace(/\b\d{5,}\b/g, '')       // licence numbers
+    .replace(/\b(19|20)\d{2}\b/g, '') // years of birth (1900-2099)
+    .replace(/\b\d{2}\b/g, '')        // 2-digit numbers (age etc)
+    .replace(/\b[MF]\b/g, '')         // gender
     .replace(/\s+/g, ' ')
     .trim();
 }
@@ -10442,12 +10445,10 @@ function slGetWriteCols(dist) {
     for (var d = interval; d <= dist; d += interval) {
       cols.push({label: d + 'm', w: '55px'});
     }
-  } else if (interval > 0) {
+  } else if (interval > 0 && dist > 0) {
     cols.push({label: 'T.', w: '55px'});
   }
-  if (slIsColOn('final') && interval === 0) cols.push({label: 'T. Final', w: '65px'});
-  if (slIsColOn('pb'))    cols.push({label: 'PB / Obj.', w: '65px'});
-  if (slIsColOn('notes')) cols.push({label: 'Notas', w: '90px'});
+  if (slIsColOn('final')) cols.push({label: 'T. Final', w: '65px'});
   return cols;
 }
 
@@ -10505,8 +10506,11 @@ function slBuildPrintHTML() {
     html += '<table class="pf-table"><thead><tr>';
     html += '<th style="width:30px">Série</th><th style="width:30px">Pista</th>';
     html += '<th class="tl">Nome</th>';
-    html += '<th style="width:65px">T. Inscrição</th>';
     wCols.forEach(function(c) { html += '<th style="width:' + c.w + '">' + c.label + '</th>'; });
+    if (slIsColOn('pb'))     html += '<th style="width:65px">PB / Obj.</th>';
+    if (slIsColOn('notes'))  html += '<th style="width:90px">Notas</th>';
+    html += '<th style="width:65px">T. Inscrição</th>';
+    if (hora) html += '<th style="width:55px">Hora</th>';
     html += '</tr></thead><tbody>';
 
     matched.forEach(function(a) {
@@ -10514,8 +10518,11 @@ function slBuildPrintHTML() {
       html += '<td class="mono"><div>' + (a.serie || '?') + '</div></td>';
       html += '<td class="lane-c"><div>' + a.lane + '</div></td>';
       html += '<td class="name-c"><div>' + slCleanName(a.name) + '</div></td>';
-      html += '<td class="mono"><div>' + (a.time || 'NT') + '</div></td>';
       wCols.forEach(function() { html += '<td class="write"><div></div></td>'; });
+      if (slIsColOn('pb'))    html += '<td class="write"><div></div></td>';
+      if (slIsColOn('notes')) html += '<td class="write"><div></div></td>';
+      html += '<td class="mono"><div>' + (a.time || 'NT') + '</div></td>';
+      if (hora) html += '<td class="mono"><div>' + hora + '</div></td>';
       html += '</tr>';
     });
 
