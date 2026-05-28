@@ -10080,14 +10080,14 @@ function slRender() {
       '<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:' + muted + ';margin-bottom:10px;">2. Filtrar</div>' +
       '<div style="font-size:11px;color:' + muted + ';margin-bottom:6px;">Por clube — adiciona nome ou sigla (podes adicionar vários):</div>' +
       '<div style="display:flex;gap:8px;margin-bottom:8px;">' +
-        '<input type="text" id="sl-club-input" placeholder="Ex: CNP, Benfica, SLB…" ' +
+        '<input type="text" id="sl-club-input" placeholder="" ' +
           'style="flex:1;padding:9px 12px;border-radius:9px;border:1.5px solid ' + border + ';font-size:13px;background:' + inputBg + ';color:' + text + ';font-family:\'DM Sans\',sans-serif;" ' +
           'onkeydown="if(event.key===\'Enter\')slAddTag()">' +
         '<button onclick="slAddTag()" style="padding:9px 14px;border-radius:9px;border:none;background:var(--aqua,#00c4cc);color:#001f3a;font-size:13px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;">+</button>' +
       '</div>' +
       '<div id="sl-tags" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;min-height:24px;"></div>' +
       '<div style="font-size:11px;color:' + muted + ';margin-bottom:6px;">Por nome do nadador (opcional — filtra apenas as provas desse nadador):</div>' +
-      '<input type="text" id="sl-name-input" placeholder="Ex: João Silva" ' +
+      '<input type="text" id="sl-name-input" placeholder="" ' +
         'style="width:100%;padding:9px 12px;border-radius:9px;border:1.5px solid ' + border + ';font-size:13px;background:' + inputBg + ';color:' + text + ';font-family:\'DM Sans\',sans-serif;margin-bottom:12px;">' +
       '<div id="sl-club-preview" style="display:none;margin-bottom:10px;">' +
         '<div style="font-size:11px;color:' + muted + ';margin-bottom:6px;">Clubes encontrados no PDF (clica para adicionar):</div>' +
@@ -10116,13 +10116,13 @@ function slRender() {
         // Campos cabeçalho
         '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">' +
           '<div><label style="font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:' + muted + ';display:block;margin-bottom:4px;">Competição</label>' +
-            '<input type="text" id="sl-cfg-comp" placeholder="Nome da competição" style="width:100%;padding:8px 10px;border-radius:8px;border:1.5px solid ' + border + ';font-size:12px;background:' + inputBg + ';color:' + text + ';font-family:\'DM Sans\',sans-serif;"></div>' +
+            '<input type="text" id="sl-cfg-comp" placeholder="" style="width:100%;padding:8px 10px;border-radius:8px;border:1.5px solid ' + border + ';font-size:12px;background:' + inputBg + ';color:' + text + ';font-family:\'DM Sans\',sans-serif;"></div>' +
           '<div><label style="font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:' + muted + ';display:block;margin-bottom:4px;">Local</label>' +
-            '<input type="text" id="sl-cfg-local" placeholder="Piscina / Local" style="width:100%;padding:8px 10px;border-radius:8px;border:1.5px solid ' + border + ';font-size:12px;background:' + inputBg + ';color:' + text + ';font-family:\'DM Sans\',sans-serif;"></div>' +
+            '<input type="text" id="sl-cfg-local" placeholder="" style="width:100%;padding:8px 10px;border-radius:8px;border:1.5px solid ' + border + ';font-size:12px;background:' + inputBg + ';color:' + text + ';font-family:\'DM Sans\',sans-serif;"></div>' +
           '<div><label style="font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:' + muted + ';display:block;margin-bottom:4px;">Data</label>' +
-            '<input type="text" id="sl-cfg-data" placeholder="Ex: 14-15 Junho 2025" style="width:100%;padding:8px 10px;border-radius:8px;border:1.5px solid ' + border + ';font-size:12px;background:' + inputBg + ';color:' + text + ';font-family:\'DM Sans\',sans-serif;"></div>' +
+            '<input type="text" id="sl-cfg-data" placeholder="" style="width:100%;padding:8px 10px;border-radius:8px;border:1.5px solid ' + border + ';font-size:12px;background:' + inputBg + ';color:' + text + ';font-family:\'DM Sans\',sans-serif;"></div>' +
           '<div><label style="font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:' + muted + ';display:block;margin-bottom:4px;">Treinador(a)</label>' +
-            '<input type="text" id="sl-cfg-coach" placeholder="Nome do treinador" style="width:100%;padding:8px 10px;border-radius:8px;border:1.5px solid ' + border + ';font-size:12px;background:' + inputBg + ';color:' + text + ';font-family:\'DM Sans\',sans-serif;"></div>' +
+            '<input type="text" id="sl-cfg-coach" placeholder="" style="width:100%;padding:8px 10px;border-radius:8px;border:1.5px solid ' + border + ';font-size:12px;background:' + inputBg + ';color:' + text + ';font-family:\'DM Sans\',sans-serif;"></div>' +
         '</div>' +
 
         '<div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:' + muted + ';margin-bottom:8px;">Colunas para preencher</div>' +
@@ -10134,7 +10134,7 @@ function slRender() {
 
         '<div style="display:flex;gap:8px;">' +
           '<button onclick="slExportPDF()" style="flex:1;padding:11px;border-radius:10px;border:none;background:#8e44ad;color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;">⬇ Guardar PDF</button>' +
-          '<button onclick="slPrint()" style="flex:1;padding:11px;border-radius:10px;border:none;background:var(--blue-deep,#1a3a4a);color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;">🖨 Imprimir</button>' +
+          '<button onclick="slPrint()" style="flex:1;padding:11px;border-radius:10px;border:none;background:var(--blue-deep,#1a3a4a);color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif;">Imprimir</button>' +
         '</div>' +
       '</div>' +
 
@@ -10309,9 +10309,26 @@ function slBuildAth(lane, parts, serie) {
   return {lane: lane || '?', name: name, club: club.trim(), time: time || '', serie: serie || '?'};
 }
 
+function slIsValidClub(str) {
+  if (!str || str.length < 2) return false;
+  // Reject: only numbers, dates, page markers, licence numbers
+  if (/^\d+$/.test(str)) return false;
+  if (/^\d{2}\/\d{2}\/\d{4}/.test(str)) return false;
+  if (/PÁGINA\s*\d+/i.test(str)) return false;
+  if (/^\d{2}:\d{2}/.test(str)) return false; // time
+  if (str.length > 50) return false;
+  // Must contain at least 2 letters
+  var letters = str.replace(/[^a-zA-ZÀ-ú]/g, '');
+  return letters.length >= 2;
+}
+
 function slShowClubPreview(data) {
   var s = new Set();
-  data.events.forEach(function(ev) { ev.athletes.forEach(function(a) { if (a.club && a.club.length > 1) s.add(a.club.toUpperCase()); }); });
+  data.events.forEach(function(ev) {
+    ev.athletes.forEach(function(a) {
+      if (a.club && slIsValidClub(a.club)) s.add(a.club.toUpperCase());
+    });
+  });
   if (!s.size) return;
   var card = document.getElementById('sl-club-preview');
   var list = document.getElementById('sl-club-list');
@@ -10510,6 +10527,7 @@ function slBuildPrintHTML() {
     if (slIsColOn('pb'))     html += '<th style="width:65px">PB / Obj.</th>';
     if (slIsColOn('notes'))  html += '<th style="width:90px">Notas</th>';
     html += '<th style="width:65px">T. Inscrição</th>';
+    html += '<th style="width:65px">T. Final</th>';
     if (hora) html += '<th style="width:55px">Hora</th>';
     html += '</tr></thead><tbody>';
 
@@ -10522,6 +10540,7 @@ function slBuildPrintHTML() {
       if (slIsColOn('pb'))    html += '<td class="write"><div></div></td>';
       if (slIsColOn('notes')) html += '<td class="write"><div></div></td>';
       html += '<td class="mono"><div>' + (a.time || 'NT') + '</div></td>';
+      html += '<td class="write"><div></div></td>';
       if (hora) html += '<td class="mono"><div>' + hora + '</div></td>';
       html += '</tr>';
     });
@@ -10544,17 +10563,17 @@ function slPrint() {
 
 function slExportPDF() {
   if (!_slFilteredResults || !_slFilteredResults.length) { alert('Filtra primeiro a start list.'); return; }
-  // Use print-to-PDF via a new window
   var res = slBuildPrintHTML();
-  var win = window.open('', '_blank');
-  if (!win) { alert('Permite pop-ups para exportar PDF.'); return; }
-  win.document.write(
-    '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
-    '<style>' + res.css + '@media print{body{margin:0;}}</style>' +
-    '<script>window.onload=function(){setTimeout(function(){window.print();},400);}<\/script>' +
-    '</head><body>' + res.html + '</body></html>'
-  );
-  win.document.close();
+  var fname = 'startlist_' + (_slClubTags[0] || 'clube').replace(/\s+/g, '_') + '_' + new Date().toISOString().slice(0, 10) + '.html';
+  var full = '<!DOCTYPE html><html lang="pt"><head><meta charset="UTF-8"><title>Start List</title>' +
+    '<style>' + res.css + '</style></head><body>' + res.html + '</body></html>';
+  var blob = new Blob([full], {type: 'text/html'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = fname;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
 }
 
 function slSetStatus(id, msg, type) {
