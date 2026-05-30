@@ -10265,6 +10265,7 @@ function slRenderSavedModeIdx(idx) {
       var timingsEv = (h.timings && h.timings[ei]) || {};
       var key = 'n' + globalAi;
       var athTimes = timingsEv[key] || [];
+      console.log('RENDER ei='+ei+' globalAi='+globalAi+' timingsKeys='+JSON.stringify(Object.keys(h.timings||{})) + ' athTimes='+JSON.stringify(athTimes) + ' timingsEv='+JSON.stringify(timingsEv));
       // Get final time = last recorded split
       var finalRaw = athTimes.length > 0 ? athTimes[athTimes.length - 1] : null;
       var finalStr = finalRaw ? slFmtInput(finalRaw) : '';
@@ -10330,6 +10331,7 @@ function slRenderSavedModeIdx(idx) {
 
 
 function slLoadSaved(i) {
+  _slTimingHistIdx = i;
   slRenderSavedModeIdx(i);
   var el = document.getElementById('crono-startlist-content');
   if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
@@ -10607,11 +10609,7 @@ function slTimingSaveAll() {
     h.timings[evIdx][key][row] = raw;
     count++;
   });
-  try { localStorage.setItem(SL_HIST_KEY, JSON.stringify(hist)); } catch(e) { alert('Erro ao guardar: ' + e); return; }
-  // DEBUG — remover depois
-  var saved = slGetSavedLists();
-  var timStr = JSON.stringify(saved[_slTimingHistIdx] && saved[_slTimingHistIdx].timings);
-  alert('Guardados ' + count + ' campos.\nTimings: ' + timStr.substring(0,200));
+  try { localStorage.setItem(SL_HIST_KEY, JSON.stringify(hist)); } catch(e) { alert('Erro: ' + e); return; }
   var popup = document.getElementById('sl-timing-popup');
   if (popup) popup.remove();
   slRenderSavedModeIdx(_slTimingHistIdx);
