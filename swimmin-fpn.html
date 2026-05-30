@@ -10260,8 +10260,8 @@ function slRenderSavedModeIdx(idx) {
     html += '</div></div>';
     html += '<button onclick="slOpenTiming(' + idx + ',' + ei + ')" style="flex-shrink:0;padding:7px 12px;border-radius:8px;border:none;background:var(--aqua,#00c4cc);color:#001f3a;font-size:12px;font-weight:700;cursor:pointer;">⏱ Tempos</button>';
     html += '</div>';
-    matched.forEach(function(a, ai) {
-      var globalAi = ev.athletes.indexOf(a);
+    ev.athletes.forEach(function(a, globalAi) {
+      if (!a.highlight) return;
       var timingsEv = (h.timings && h.timings[ei]) || {};
       var key = 'n' + globalAi;
       var athTimes = timingsEv[key] || [];
@@ -10377,9 +10377,9 @@ function slCsToStr(cs) {
 }
 
 function slStrToCs(str) {
-  // "1:00,34" → centiseconds
+  // "1:00,34" ou "1:00.34" → centiseconds
   if (!str) return 0;
-  var s = str.replace(',', '.');
+  var s = str.replace(',', '.').trim();
   var parts = s.split(':');
   if (parts.length === 2) {
     return Math.round((parseInt(parts[0]) * 60 + parseFloat(parts[1])) * 100);
@@ -10434,8 +10434,15 @@ function slOpenTiming(histIdx, evIdx) {
       var athletes = serieMap[serie];
       // Header row for this serie
       var headers = '<th style="padding:6px 8px;background:rgba(0,196,204,0.08);color:' + muted + ';font-size:10px;letter-spacing:.5px;text-transform:uppercase;font-weight:700;white-space:nowrap;">Distância</th>';
-      athletes.forEach(function(a, ai) {
-        var globalAi = allMatched.indexOf(a);
+      athletes.forEach(function(a) {
+        // Find real index in ev.athletes
+        var globalAi = -1;
+        for (var gi = 0; gi < ev.athletes.length; gi++) {
+          if (ev.athletes[gi].name === a.name && ev.athletes[gi].lane === a.lane) {
+            globalAi = gi; break;
+          }
+        }
+        if (globalAi < 0) globalAi = allMatched.indexOf(a);
         headers += '<th style="padding:8px 10px;background:rgba(0,196,204,0.08);color:' + text + ';font-size:12px;font-weight:700;border-left:1px solid ' + border + ';min-width:88px;">' +
           slCleanName(a.name) +
           '<div style="font-size:10px;color:' + muted + ';font-weight:400;">S' + (a.serie||'?') + '/P' + a.lane + '</div>' +
@@ -10581,12 +10588,27 @@ function slTimingSave(inp) {
 }
 
 function slTimingSaveAll() {
-  // Save all current inputs
+  // Save all current inputs, including those not yet blurred
   var inputs = document.querySelectorAll('#sl-timing-popup input[data-hist]');
-  inputs.forEach(function(inp) { slTimingSave(inp); });
+  var hist = slGetSavedLists();
+  inputs.forEach(function(inp) {
+    var raw = inp.value.replace(/\D/g, '');
+    if (!raw) return;
+    var histIdx = parseInt(inp.dataset.hist);
+    var evIdx   = parseInt(inp.dataset.ev);
+    var ai      = parseInt(inp.dataset.ath);
+    var row     = parseInt(inp.dataset.row);
+    var h = hist[histIdx];
+    if (!h) return;
+    if (!h.timings) h.timings = {};
+    if (!h.timings[evIdx]) h.timings[evIdx] = {};
+    var key = 'n' + ai;
+    if (!h.timings[evIdx][key]) h.timings[evIdx][key] = [];
+    h.timings[evIdx][key][row] = raw;
+  });
+  try { localStorage.setItem(SL_HIST_KEY, JSON.stringify(hist)); } catch(e) {}
   var popup = document.getElementById('sl-timing-popup');
   if (popup) popup.remove();
-  // Refresh the saved mode view
   slRenderSavedModeIdx(_slTimingHistIdx);
 }
 
