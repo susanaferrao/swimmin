@@ -10180,6 +10180,8 @@ function slGetSavedLists() {
   try { return JSON.parse(localStorage.getItem(SL_HIST_KEY) || '[]'); } catch(e) { return []; }
 }
 
+var _slSaved = false;
+
 function slSaveToApp() {
   if (!_slFilteredResults || !_slFilteredResults.length) return;
   var comp = (document.getElementById('sl-cfg-comp') || {}).value || '';
@@ -10187,24 +10189,116 @@ function slSaveToApp() {
   var total = _slFilteredResults.reduce(function(s, ev) {
     return s + ev.athletes.filter(function(a) { return a.highlight; }).length;
   }, 0);
+  var results = _slFilteredResults.map(function(ev) {
+    return Object.assign({}, ev, { dist: ev.dist || slGetDist(ev.name) });
+  });
   var entry = {
     ts: Date.now(),
     name: (comp || clubs || 'Start List'),
     clubs: _slClubTags.slice(),
     total: total,
-    results: _slFilteredResults
+    results: results,
+    timings: {}
   };
   var hist = slGetSavedLists();
   hist.unshift(entry);
   hist = hist.slice(0, 15);
   try {
     localStorage.setItem(SL_HIST_KEY, JSON.stringify(hist));
-    slSetStatus('sl-filter-status', '✓ Lista guardada na app', 'success');
-    slRender(); // refresh to show in history
+    _slSaved = true;
+    slRenderSavedMode();
   } catch(e) {
     slSetStatus('sl-filter-status', 'Erro ao guardar.', 'error');
   }
 }
+
+function slUpdateDist(histIdx, evIdx, val) {
+  var hist = slGetSavedLists();
+  if (!hist[histIdx] || !hist[histIdx].results[evIdx]) return;
+  hist[histIdx].results[evIdx].dist = parseInt(val) || 0;
+  try { localStorage.setItem(SL_HIST_KEY, JSON.stringify(hist)); } catch(e) {}
+}
+
+function slRenderSavedMode() {
+  slRenderSavedModeIdx(0);
+}
+
+function slRenderSavedModeIdx(idx) {
+  var el = document.getElementById('crono-startlist-content');
+  if (!el) return;
+  var hist = slGetSavedLists();
+  if (!hist.length) { slRender(); return; }
+  var h = hist[idx];
+  var isLight = document.documentElement.classList.contains('light-mode');
+  var cardBg = isLight ? '#f0f7ff' : 'rgba(255,255,255,0.04)';
+  var border  = isLight ? '#d0e4f0' : 'rgba(255,255,255,0.08)';
+  var muted   = isLight ? '#6b8fa8' : 'rgba(200,220,240,0.6)';
+  var text    = isLight ? '#1a3a4a' : '#e8f4ff';
+  var inputBg = isLight ? '#fff'    : 'rgba(255,255,255,0.07)';
+
+  var html = '<div style="padding:4px 0;">';
+  html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">' +
+    '<div><div style="font-size:16px;font-weight:700;color:' + text + ';">' + h.name + '</div>' +
+    '<div style="font-size:11px;color:' + muted + ';">' + h.clubs.join(' / ') + ' · ' + h.total + ' entradas</div></div>' +
+    '<button onclick="slRender();_slSaved=false;" style="padding:6px 12px;border-radius:8px;border:1px solid ' + border + ';background:transparent;color:' + muted + ';font-size:12px;cursor:pointer;font-family:DM Sans,sans-serif;">+ Nova lista</button>' +
+  '</div>';
+
+  h.results.forEach(function(ev, ei) {
+    var matched = ev.athletes.filter(function(a) { return a.highlight; });
+    if (!matched.length) return;
+    var seriesSet = new Set(matched.map(function(a){ return a.serie||'?'; }));
+    var dist = ev.dist || slGetDist(ev.name);
+    html += '<div style="background:' + cardBg + ';border-radius:12px;margin-bottom:10px;border:1px solid ' + border + ';overflow:hidden;">';
+    html += '<div style="background:rgba(0,196,204,0.08);padding:10px 14px;display:flex;align-items:center;gap:8px;">';
+    html += '<span style="font-size:16px;font-weight:700;color:var(--aqua,#00c4cc);">' + ev.number + '</span>';
+    html += '<div style="flex:1;">';
+    html += '<div style="font-size:13px;font-weight:600;">' + (ev.name||'Prova '+ev.number) + '</div>';
+    html += '<div style="display:flex;align-items:center;gap:5px;margin-top:3px;flex-wrap:wrap;">';
+    html += '<span style="font-size:11px;color:' + muted + ';">' + seriesSet.size + ' série(s) · ' + matched.length + ' nadador(es) ·</span>';
+    html += '<input type="number" value="' + (dist||'') + '" min="25" max="1500" step="25" ' +
+      'onchange="slUpdateDist(' + idx + ',' + ei + ',this.value)" ' +
+      'style="width:52px;padding:2px 5px;border-radius:5px;border:1px solid ' + border + ';font-size:11px;background:' + inputBg + ';color:' + text + ';"><span style="font-size:11px;color:' + muted + ';">m</span>';
+    html += '</div></div>';
+    html += '<button onclick="slOpenTiming(' + idx + ',' + ei + ')" style="flex-shrink:0;padding:7px 12px;border-radius:8px;border:none;background:var(--aqua,#00c4cc);color:#001f3a;font-size:12px;font-weight:700;cursor:pointer;">⏱ Tempos</button>';
+    html += '</div>';
+    matched.forEach(function(a) {
+      html += '<div style="display:flex;align-items:center;padding:7px 14px;border-top:1px solid ' + border + ';font-size:12px;gap:8px;">';
+      html += '<span style="color:var(--aqua,#00c4cc);font-weight:700;min-width:48px;">S'+(a.serie||'?')+'/P'+a.lane+'</span>';
+      html += '<span style="flex:1;">' + slCleanName(a.name) + '</span>';
+      html += '<span style="color:' + muted + ';">' + (a.time||'NT') + '</span>';
+      html += '</div>';
+    });
+    html += '</div>';
+  });
+
+  html += '<div style="display:flex;gap:8px;margin-top:4px;margin-bottom:16px;">' +
+    '<button onclick="_slFilteredResults=slGetSavedLists()[' + idx + '].results;slExportPDF()" style="flex:1;padding:10px;border-radius:10px;border:none;background:#8e44ad;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif;">⬇ PDF</button>' +
+    '<button onclick="_slFilteredResults=slGetSavedLists()[' + idx + '].results;slPrint()" style="flex:1;padding:10px;border-radius:10px;border:none;background:var(--blue-deep,#1a3a4a);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif;">Imprimir</button>' +
+  '</div>';
+
+  // Other saved lists
+  if (hist.length > 1) {
+    html += '<div style="background:' + cardBg + ';border-radius:14px;padding:14px;border:1px solid ' + border + ';">';
+    html += '<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:' + muted + ';margin-bottom:10px;">Outras listas guardadas</div>';
+    hist.forEach(function(hh, i) {
+      if (i === idx) return;
+      var d = new Date(hh.ts);
+      var label = d.toLocaleDateString('pt-PT') + ' ' + d.toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'});
+      html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid ' + border + ';font-size:13px;">' +
+        '<div><div style="font-weight:600;">' + hh.name + '</div>' +
+        '<div style="font-size:11px;color:' + muted + ';">' + label + ' · ' + hh.total + ' entradas</div></div>' +
+        '<div style="display:flex;gap:6px;">' +
+          '<button onclick="slRenderSavedModeIdx(' + i + ')" style="padding:5px 10px;border-radius:8px;border:none;background:#1a6fdb;color:#fff;font-size:12px;cursor:pointer;">Ver</button>' +
+          '<button onclick="slDeleteSaved(' + i + ')" style="padding:5px 10px;border-radius:8px;border:none;background:#e74c3c;color:#fff;font-size:12px;cursor:pointer;">×</button>' +
+        '</div></div>';
+    });
+    html += '</div>';
+  }
+
+  html += '</div>';
+  el.innerHTML = html;
+}
+
 
 function slLoadSaved(i) {
   var hist = slGetSavedLists();
@@ -10220,6 +10314,254 @@ function slLoadSaved(i) {
   slRenderResultsList();
   // Scroll to results
   if (res) res.scrollIntoView({behavior: 'smooth', block: 'start'});
+}
+
+function slFmtInput(raw) {
+  // "10034" → "1:00,34", "2379" → "23,79", "5671" → "56,71"
+  var s = (raw || '').replace(/\D/g, '');
+  if (!s) return '';
+  if (s.length <= 4) {
+    var sec = s.slice(0, -2) || '0';
+    var cs  = s.slice(-2);
+    return sec + ',' + cs;
+  }
+  var cs  = s.slice(-2);
+  var sec = parseInt(s.slice(0, -2));
+  var m   = Math.floor(sec / 60);
+  var ss  = ('0' + (sec % 60)).slice(-2);
+  return (m > 0 ? m + ':' + ss : sec) + ',' + cs;
+}
+
+function slParseToMs(str) {
+  if (!str) return 0;
+  var s = str.replace(',', '.').replace(':', ':');
+  var parts = s.split(':');
+  if (parts.length === 2) return Math.round((parseInt(parts[0]) * 60 + parseFloat(parts[1])) * 100);
+  return Math.round(parseFloat(parts[0]) * 100); // centiseconds * 100 = ms
+}
+
+function slMsToStr(cs) {
+  // cs = centiseconds
+  if (!cs) return '';
+  var m  = Math.floor(cs / 6000);
+  var s  = Math.floor((cs % 6000) / 100);
+  var c  = cs % 100;
+  var ss = ('0' + s).slice(-2);
+  var cc = ('0' + c).slice(-2);
+  return m > 0 ? m + ':' + ss + ',' + cc : s + ',' + cc;
+}
+
+var _slTimingHistIdx = 0;
+var _slTimingEvIdx   = 0;
+
+function slOpenTiming(histIdx, evIdx) {
+  _slTimingHistIdx = histIdx;
+  _slTimingEvIdx   = evIdx;
+
+  var hist = slGetSavedLists();
+  var h    = hist[histIdx];
+  if (!h) return;
+  var ev   = h.results[evIdx];
+  if (!ev) return;
+
+  var matched  = ev.athletes.filter(function(a) { return a.highlight; });
+  var dist     = ev.dist || slGetDist(ev.name);
+  var timings  = (h.timings && h.timings[evIdx]) || {};
+
+  // Build popup
+  var existing = document.getElementById('sl-timing-popup');
+  if (existing) existing.remove();
+
+  var isLight = document.documentElement.classList.contains('light-mode');
+  var bg      = isLight ? '#f5f9fc' : '#0a1929';
+  var cardBg  = isLight ? '#fff'    : '#0d2233';
+  var border  = isLight ? '#d0e4f0' : 'rgba(255,255,255,0.1)';
+  var text    = isLight ? '#1a3a4a' : '#e8f4ff';
+  var muted   = isLight ? '#6b8fa8' : 'rgba(180,210,240,0.6)';
+  var inputBg = isLight ? '#f0f7ff' : 'rgba(255,255,255,0.07)';
+
+  // Default interval: 50m if dist <= 100, else 100m
+  var savedInterval = timings._interval || (dist <= 100 ? 50 : 100);
+  var interval = savedInterval;
+  var nSplits  = dist > 0 && interval > 0 ? Math.floor(dist / interval) : 0;
+
+  var popup = document.createElement('div');
+  popup.id = 'sl-timing-popup';
+  popup.style.cssText = 'position:fixed;inset:0;z-index:99999;background:' + bg + ';overflow-y:auto;font-family:DM Sans,Arial,sans-serif;';
+
+  function buildContent(interval) {
+    var nSpl = dist > 0 && interval > 0 ? Math.floor(dist / interval) : 0;
+    var rows = '';
+    for (var r = 0; r < nSpl; r++) {
+      var d = (r + 1) * interval;
+      rows += '<tr>';
+      rows += '<td style="padding:8px 10px;font-size:13px;font-weight:600;color:var(--aqua,#00c4cc);white-space:nowrap;border-bottom:1px solid ' + border + ';">' + d + 'm</td>';
+      matched.forEach(function(a, ai) {
+        var key = 'n' + ai;
+        var vals = (timings[key] && timings[key][r]) || '';
+        var cs   = vals ? slParseToMs(vals) : 0;
+        // Calculate split (difference)
+        var splitStr = '';
+        if (r > 0) {
+          var prevStr = (timings[key] && timings[key][r-1]) || '';
+          if (vals && prevStr) {
+            var diff = slParseToMs(vals) - slParseToMs(prevStr);
+            splitStr = '<div style="font-size:10px;color:' + muted + ';margin-top:1px;">(' + slMsToStr(diff) + ')</div>';
+          }
+        }
+        rows += '<td style="padding:4px 6px;border-bottom:1px solid ' + border + ';border-left:1px solid ' + border + ';">' +
+          '<input type="tel" inputmode="numeric" placeholder="——" value="' + vals + '" ' +
+          'data-hist="' + histIdx + '" data-ev="' + evIdx + '" data-ath="' + ai + '" data-row="' + r + '" ' +
+          'style="width:100%;padding:7px 6px;border-radius:7px;border:1.5px solid ' + border + ';font-size:14px;font-family:DM Sans,monospace;background:' + inputBg + ';color:' + text + ';text-align:center;" ' +
+          'oninput="slTimingInput(this)" onblur="slTimingSave(this)">' +
+          (vals ? '<div style="font-size:11px;color:var(--aqua,#00c4cc);text-align:center;margin-top:1px;">' + slFmtInput(vals.replace(/\D/g,'')) + '</div>' + splitStr : '') +
+        '</td>';
+      });
+      rows += '</tr>';
+    }
+
+    var headers = '<th style="padding:8px 10px;background:rgba(0,196,204,0.08);color:' + muted + ';font-size:10px;letter-spacing:.5px;text-transform:uppercase;font-weight:700;">Distância</th>';
+    matched.forEach(function(a) {
+      headers += '<th style="padding:8px 10px;background:rgba(0,196,204,0.08);color:' + text + ';font-size:12px;font-weight:700;border-left:1px solid ' + border + ';min-width:90px;">' + slCleanName(a.name) + '<div style="font-size:10px;color:' + muted + ';font-weight:400;">S' + (a.serie||'?') + '/P' + a.lane + '</div></th>';
+    });
+
+    return '<table style="width:100%;border-collapse:collapse;"><thead><tr>' + headers + '</tr></thead><tbody>' + rows + '</tbody></table>';
+  }
+
+  popup.innerHTML =
+    '<div style="position:sticky;top:0;z-index:2;background:' + bg + ';padding:14px 16px 10px;border-bottom:1px solid ' + border + ';display:flex;align-items:center;gap:10px;">' +
+      '<div style="flex:1;min-width:0;">' +
+        '<div style="font-size:11px;color:' + muted + ';">Prova ' + ev.number + '</div>' +
+        '<div style="font-size:15px;font-weight:700;color:' + text + ';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (ev.name||'') + '</div>' +
+      '</div>' +
+      '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">' +
+        '<span style="font-size:12px;color:' + muted + ';">Parciais:</span>' +
+        '<div id="sl-t-toggle" style="display:flex;border-radius:8px;overflow:hidden;border:1px solid ' + border + ';">' +
+          '<button id="sl-t-50" onclick="slTimingSetInterval(50)" style="padding:6px 12px;border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;background:' + (interval===50?'var(--aqua,#00c4cc)':'transparent') + ';color:' + (interval===50?'#001f3a':muted) + ';">50m</button>' +
+          '<button id="sl-t-100" onclick="slTimingSetInterval(100)" style="padding:6px 12px;border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;background:' + (interval===100?'var(--aqua,#00c4cc)':'transparent') + ';color:' + (interval===100?'#001f3a':muted) + ';">100m</button>' +
+        '</div>' +
+      '</div>' +
+      '<button onclick="document.getElementById(\'sl-timing-popup\').remove()" style="width:34px;height:34px;border-radius:50%;border:1px solid ' + border + ';background:transparent;color:' + muted + ';font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">×</button>' +
+    '</div>' +
+    '<div id="sl-timing-table" style="padding:12px 16px;">' + buildContent(interval) + '</div>' +
+    '<div style="padding:12px 16px;padding-bottom:24px;">' +
+      '<button onclick="slTimingSaveAll()" style="width:100%;padding:13px;border-radius:12px;border:none;background:var(--aqua,#00c4cc);color:#001f3a;font-size:15px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;">Guardar tempos</button>' +
+    '</div>';
+
+  document.body.appendChild(popup);
+
+  // Store current interval for toggle
+  popup._interval = interval;
+}
+
+function slTimingSetInterval(interval) {
+  var popup = document.getElementById('sl-timing-popup');
+  if (!popup) return;
+  popup._interval = interval;
+
+  var b50  = document.getElementById('sl-t-50');
+  var b100 = document.getElementById('sl-t-100');
+  var isLight = document.documentElement.classList.contains('light-mode');
+  var muted = isLight ? '#6b8fa8' : 'rgba(180,210,240,0.6)';
+  if (b50)  { b50.style.background  = interval===50  ? 'var(--aqua,#00c4cc)' : 'transparent'; b50.style.color  = interval===50  ? '#001f3a' : muted; }
+  if (b100) { b100.style.background = interval===100 ? 'var(--aqua,#00c4cc)' : 'transparent'; b100.style.color = interval===100 ? '#001f3a' : muted; }
+
+  // Save interval choice
+  var hist = slGetSavedLists();
+  var h = hist[_slTimingHistIdx];
+  if (h) {
+    if (!h.timings) h.timings = {};
+    if (!h.timings[_slTimingEvIdx]) h.timings[_slTimingEvIdx] = {};
+    h.timings[_slTimingEvIdx]._interval = interval;
+    try { localStorage.setItem(SL_HIST_KEY, JSON.stringify(hist)); } catch(e) {}
+  }
+
+  // Rebuild table
+  var ev      = h && h.results[_slTimingEvIdx];
+  var dist    = ev ? (ev.dist || slGetDist(ev.name)) : 0;
+  var matched = ev ? ev.athletes.filter(function(a){ return a.highlight; }) : [];
+  var timings = (h && h.timings && h.timings[_slTimingEvIdx]) || {};
+  var nSpl    = dist > 0 && interval > 0 ? Math.floor(dist / interval) : 0;
+
+  var isLightB = document.documentElement.classList.contains('light-mode');
+  var border  = isLightB ? '#d0e4f0' : 'rgba(255,255,255,0.1)';
+  var text    = isLightB ? '#1a3a4a' : '#e8f4ff';
+  var mutedB  = isLightB ? '#6b8fa8' : 'rgba(180,210,240,0.6)';
+  var inputBg = isLightB ? '#f0f7ff' : 'rgba(255,255,255,0.07)';
+
+  var rows = '';
+  for (var r = 0; r < nSpl; r++) {
+    var d = (r + 1) * interval;
+    rows += '<tr><td style="padding:8px 10px;font-size:13px;font-weight:600;color:var(--aqua,#00c4cc);white-space:nowrap;border-bottom:1px solid ' + border + ';">' + d + 'm</td>';
+    matched.forEach(function(a, ai) {
+      var key = 'n' + ai;
+      var vals = (timings[key] && timings[key][r]) || '';
+      var splitStr = '';
+      if (r > 0) {
+        var prevStr = (timings[key] && timings[key][r-1]) || '';
+        if (vals && prevStr) {
+          var diff = slParseToMs(vals) - slParseToMs(prevStr);
+          splitStr = '<div style="font-size:10px;color:' + mutedB + ';margin-top:1px;">(' + slMsToStr(diff) + ')</div>';
+        }
+      }
+      rows += '<td style="padding:4px 6px;border-bottom:1px solid ' + border + ';border-left:1px solid ' + border + ';">' +
+        '<input type="tel" inputmode="numeric" placeholder="——" value="' + vals + '" ' +
+        'data-hist="' + _slTimingHistIdx + '" data-ev="' + _slTimingEvIdx + '" data-ath="' + ai + '" data-row="' + r + '" ' +
+        'style="width:100%;padding:7px 6px;border-radius:7px;border:1.5px solid ' + border + ';font-size:14px;font-family:DM Sans,monospace;background:' + inputBg + ';color:' + text + ';text-align:center;" ' +
+        'oninput="slTimingInput(this)" onblur="slTimingSave(this)">' +
+        (vals ? '<div style="font-size:11px;color:var(--aqua,#00c4cc);text-align:center;margin-top:1px;">' + slFmtInput(vals.replace(/\D/g,'')) + '</div>' + splitStr : '') +
+      '</td>';
+    });
+    rows += '</tr>';
+  }
+  var tbl = document.getElementById('sl-timing-table');
+  if (tbl) tbl.querySelector('tbody').innerHTML = rows;
+}
+
+function slTimingInput(inp) {
+  // Live format preview below input
+  var raw = inp.value.replace(/\D/g, '');
+  var prev = inp.nextElementSibling;
+  if (raw) {
+    var fmt = slFmtInput(raw);
+    if (!prev || prev.tagName !== 'DIV') {
+      prev = document.createElement('div');
+      prev.style.cssText = 'font-size:11px;color:var(--aqua,#00c4cc);text-align:center;margin-top:1px;';
+      inp.parentNode.insertBefore(prev, inp.nextSibling);
+    }
+    prev.textContent = fmt;
+  } else if (prev && prev.tagName === 'DIV') {
+    prev.textContent = '';
+  }
+}
+
+function slTimingSave(inp) {
+  var histIdx = parseInt(inp.dataset.hist);
+  var evIdx   = parseInt(inp.dataset.ev);
+  var ai      = parseInt(inp.dataset.ath);
+  var row     = parseInt(inp.dataset.row);
+  var val     = inp.value.replace(/\D/g, '');
+  if (!val) return;
+  var fmt = slFmtInput(val);
+  inp.value = fmt;
+
+  var hist = slGetSavedLists();
+  var h = hist[histIdx];
+  if (!h) return;
+  if (!h.timings) h.timings = {};
+  if (!h.timings[evIdx]) h.timings[evIdx] = {};
+  var key = 'n' + ai;
+  if (!h.timings[evIdx][key]) h.timings[evIdx][key] = [];
+  h.timings[evIdx][key][row] = fmt;
+  try { localStorage.setItem(SL_HIST_KEY, JSON.stringify(hist)); } catch(e) {}
+}
+
+function slTimingSaveAll() {
+  // Save all inputs in popup at once
+  var inputs = document.querySelectorAll('#sl-timing-popup input[data-hist]');
+  inputs.forEach(function(inp) { slTimingSave(inp); });
+  document.getElementById('sl-timing-popup').remove();
+  slRenderSavedModeIdx(_slTimingHistIdx);
 }
 
 function slDeleteSaved(i) {
