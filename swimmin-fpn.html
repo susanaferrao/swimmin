@@ -10445,14 +10445,106 @@ function slRunFilter() {
   if (!_slParsedData) { slSetStatus('sl-filter-status', 'Nenhum ficheiro carregado.', 'error'); return; }
   var terms = _slClubTags.map(function(t) { return t.toLowerCase().trim(); });
   var nameFilter = (document.getElementById('sl-name-input').value || '').trim().toLowerCase();
-
   if (!terms.length && !nameFilter) { slSetStatus('sl-filter-status', 'Adiciona pelo menos uma sigla ou nome.', 'error'); return; }
 
+  // Find all distinct club names that match each term
+  var allClubs = new Set();
+  _slParsedData.events.forEach(function(ev) {
+    ev.athletes.forEach(function(a) { if (a.club && slIsValidClub(a.club)) allClubs.add(a.club.trim()); });
+  });
+
+  // For each term, find matching clubs
+  var ambiguous = []; // {term, matches:[]}
+  terms.forEach(function(term) {
+    var matches = Array.from(allClubs).filter(function(c) {
+      return c.toLowerCase().indexOf(term) >= 0;
+    });
+    if (matches.length > 1) {
+      ambiguous.push({term: term, matches: matches});
+    }
+  });
+
+  if (ambiguous.length > 0) {
+    // Show disambiguation popup
+    slShowDisambiguationPopup(ambiguous, nameFilter);
+  } else {
+    slApplyFilter(terms, [], nameFilter);
+  }
+}
+
+var _slExcludedClubs = [];
+
+function slShowDisambiguationPopup(ambiguous, nameFilter) {
+  var existing = document.getElementById('sl-disambig-popup');
+  if (existing) existing.remove();
+  var existingOv = document.getElementById('sl-disambig-overlay');
+  if (existingOv) existingOv.remove();
+
+  var isLight = document.documentElement.classList.contains('light-mode');
+  var bg = isLight ? '#fff' : '#0d2233';
+  var textColor = isLight ? '#1a3a4a' : '#e8f4ff';
+  var mutedColor = isLight ? '#6b8fa8' : 'rgba(180,210,240,0.7)';
+  var borderColor = isLight ? '#d0e4f0' : 'rgba(255,255,255,0.1)';
+
+  // Build all matches with checkboxes
+  var allMatches = [];
+  ambiguous.forEach(function(a) {
+    a.matches.forEach(function(m) {
+      if (!allMatches.find(function(x) { return x.club === m; })) {
+        allMatches.push({club: m, term: a.term, checked: true});
+      }
+    });
+  });
+
+  var rows = allMatches.map(function(m, i) {
+    return '<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid ' + borderColor + ';">' +
+      '<input type="checkbox" id="sl-dis-' + i + '" checked style="width:18px;height:18px;cursor:pointer;accent-color:var(--aqua,#00c4cc);">' +
+      '<label for="sl-dis-' + i + '" style="flex:1;font-size:14px;color:' + textColor + ';cursor:pointer;">' + m.club + '</label>' +
+    '</div>';
+  }).join('');
+
+  var overlay = document.createElement('div');
+  overlay.id = 'sl-disambig-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:99998;';
+
+  var popup = document.createElement('div');
+  popup.id = 'sl-disambig-popup';
+  popup.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:99999;background:' + bg + ';border-radius:18px;padding:24px 22px;max-width:360px;width:92%;box-shadow:0 8px 40px rgba(0,0,0,0.3);font-family:DM Sans,sans-serif;border-top:4px solid var(--aqua,#00c4cc);';
+  popup.innerHTML =
+    '<div style="font-size:16px;font-weight:700;color:' + textColor + ';margin-bottom:6px;">Confirmar clubes</div>' +
+    '<div style="font-size:13px;color:' + mutedColor + ';margin-bottom:16px;">Encontrámos várias correspondências. Selecciona os clubes a incluir:</div>' +
+    '<div id="sl-dis-rows">' + rows + '</div>' +
+    '<div style="display:flex;gap:8px;margin-top:16px;">' +
+      '<button onclick="slConfirmDisambig(' + JSON.stringify(allMatches.map(function(m){return m.club;})) + ',' + JSON.stringify(nameFilter) + ')" ' +
+        'style="flex:1;padding:12px;border-radius:10px;border:none;background:var(--aqua,#00c4cc);color:#001f3a;font-size:14px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;">Confirmar</button>' +
+      '<button onclick="document.getElementById(\'sl-disambig-popup\').remove();document.getElementById(\'sl-disambig-overlay\').remove();" ' +
+        'style="flex:1;padding:12px;border-radius:10px;border:1.5px solid ' + borderColor + ';background:transparent;color:' + mutedColor + ';font-size:14px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif;">Cancelar</button>' +
+    '</div>';
+
+  document.body.appendChild(overlay);
+  document.body.appendChild(popup);
+}
+
+function slConfirmDisambig(allClubs, nameFilter) {
+  // Read which checkboxes are checked
+  var selected = allClubs.filter(function(club, i) {
+    var cb = document.getElementById('sl-dis-' + i);
+    return cb && cb.checked;
+  });
+  document.getElementById('sl-disambig-popup').remove();
+  document.getElementById('sl-disambig-overlay').remove();
+  // Build excluded list
+  var excluded = allClubs.filter(function(c) { return selected.indexOf(c) < 0; });
+  slApplyFilter(_slClubTags.map(function(t){return t.toLowerCase();}), excluded.map(function(c){return c.toLowerCase();}), nameFilter);
+}
+
+function slApplyFilter(terms, excluded, nameFilter) {
   function matchesClub(cl) {
     if (!terms.length) return false;
     var s = (cl || '').toLowerCase().trim();
     if (!s) return false;
-    return terms.some(function(t) { return s.indexOf(t) >= 0 || t.indexOf(s) >= 0; });
+    if (excluded.some(function(e){ return s === e; })) return false;
+    return terms.some(function(t) { return s.indexOf(t) >= 0; });
   }
   function matchesName(name) {
     if (!nameFilter) return false;
@@ -10468,11 +10560,12 @@ function slRunFilter() {
     var mc = athletes.filter(function(a) { return a.highlight; }).length;
     if (mc > 0) { _slFilteredResults.push(Object.assign({}, ev, {athletes: athletes, matchCount: mc})); total += mc; }
   });
+
   if (total > 0) {
     var desc = [];
     if (terms.length) desc.push(_slClubTags.join(' / '));
     if (nameFilter) desc.push('"' + nameFilter + '"');
-    slSetStatus('sl-filter-status', '✓ ' + total + ' entrada(s) em ' + _slFilteredResults.length + ' prova(s) para ' + desc.join(' + '), 'success');
+    slSetStatus('sl-filter-status', '✓ ' + total + ' entrada(s) em ' + _slFilteredResults.length + ' prova(s)', 'success');
     var res = document.getElementById('sl-results');
     if (res) res.style.display = 'block';
     var badge = document.getElementById('sl-count-badge');
