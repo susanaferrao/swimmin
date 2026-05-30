@@ -10330,19 +10330,9 @@ function slRenderSavedModeIdx(idx) {
 
 
 function slLoadSaved(i) {
-  var hist = slGetSavedLists();
-  if (!hist[i]) return;
-  var h = hist[i];
-  _slFilteredResults = h.results;
-  _slClubTags = h.clubs || [];
-  var badge = document.getElementById('sl-count-badge');
-  if (badge) badge.textContent = h.total + ' entradas';
-  var res = document.getElementById('sl-results');
-  if (res) res.style.display = 'block';
-  slRenderTags();
-  slRenderResultsList();
-  // Scroll to results
-  if (res) res.scrollIntoView({behavior: 'smooth', block: 'start'});
+  slRenderSavedModeIdx(i);
+  var el = document.getElementById('crono-startlist-content');
+  if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
 }
 
 function slFmtInput(raw) {
@@ -10591,9 +10581,12 @@ function slTimingSave(inp) {
 }
 
 function slTimingSaveAll() {
+  // Save all current inputs
   var inputs = document.querySelectorAll('#sl-timing-popup input[data-hist]');
   inputs.forEach(function(inp) { slTimingSave(inp); });
-  document.getElementById('sl-timing-popup').remove();
+  var popup = document.getElementById('sl-timing-popup');
+  if (popup) popup.remove();
+  // Refresh the saved mode view
   slRenderSavedModeIdx(_slTimingHistIdx);
 }
 
@@ -10775,7 +10768,8 @@ function slDeleteSaved(i) {
   var hist = slGetSavedLists();
   hist.splice(i, 1);
   try { localStorage.setItem(SL_HIST_KEY, JSON.stringify(hist)); } catch(e) {}
-  slRender();
+  if (hist.length > 0) slRenderSavedModeIdx(0);
+  else slRender();
 }
 
 function slColBtn(key, label, checked) {
