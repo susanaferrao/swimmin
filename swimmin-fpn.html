@@ -10316,27 +10316,31 @@ function slLoadSaved(i) {
 }
 
 function slFmtInput(raw) {
-  // "10034" → "1:00,34", "3000" → "30,00", "10200" → "1:02,00"
+  // Interpreta dígitos como: cc(2) + ss(2) + m(restante)
+  // "10932" → m=1, ss=09, cc=32 → "1:09,32"
+  // "3000"  → m=0, ss=30, cc=00 → "30,00"
+  // "21234" → m=2, ss=12, cc=34 → "2:12,34"
   var s = (raw || '').replace(/\D/g, '');
   if (!s) return '';
-  // Pad to at least 3 chars so last 2 are always centiseconds
-  while (s.length < 3) s = '0' + s;
-  var cs  = s.slice(-2);
-  var sec = parseInt(s.slice(0, -2)) || 0;
-  var m   = Math.floor(sec / 60);
-  var ss  = ('0' + (sec % 60)).slice(-2);
-  if (m > 0) return m + ':' + ss + ',' + cs;
-  return (sec < 10 ? sec : sec) + ',' + cs;
+  while (s.length < 4) s = '0' + s; // mínimo 4 dígitos (ss,cc)
+  var cc = s.slice(-2);
+  var ss = s.slice(-4, -2);
+  var mm = s.slice(0, -4) || '0';
+  var m  = parseInt(mm) || 0;
+  var sec = parseInt(ss) || 0;
+  if (m > 0) return m + ':' + ('0' + sec).slice(-2) + ',' + cc;
+  return sec + ',' + cc;
 }
 
 function slInputToCs(raw) {
-  // raw digits "10034" → centiseconds (100*60 + 34 = 6034)
+  // raw digits → centiseconds
   var s = (raw || '').replace(/\D/g, '');
   if (!s) return 0;
-  while (s.length < 3) s = '0' + s;
-  var cs  = parseInt(s.slice(-2)) || 0;
-  var sec = parseInt(s.slice(0, -2)) || 0;
-  return sec * 100 + cs;
+  while (s.length < 4) s = '0' + s;
+  var cc  = parseInt(s.slice(-2)) || 0;
+  var sec = parseInt(s.slice(-4, -2)) || 0;
+  var m   = parseInt(s.slice(0, -4)) || 0;
+  return (m * 60 + sec) * 100 + cc;
 }
 
 function slCsToStr(cs) {
