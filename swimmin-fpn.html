@@ -10254,10 +10254,9 @@ function slRenderSavedModeIdx(idx) {
     html += '<div style="flex:1;">';
     html += '<div style="font-size:13px;font-weight:600;">' + (ev.name||'Prova '+ev.number) + '</div>';
     html += '<div style="display:flex;align-items:center;gap:5px;margin-top:3px;flex-wrap:wrap;">';
-    html += '<span style="font-size:11px;color:' + muted + ';">' + seriesSet.size + ' série(s) · ' + matched.length + ' nadador(es) ·</span>';
-    html += '<input type="number" value="' + (dist||'') + '" min="25" max="1500" step="25" ' +
-      'onchange="slUpdateDist(' + idx + ',' + ei + ',this.value)" ' +
-      'style="width:52px;padding:2px 5px;border-radius:5px;border:1px solid ' + border + ';font-size:11px;background:' + inputBg + ';color:' + text + ';"><span style="font-size:11px;color:' + muted + ';">m</span>';
+    html += '<span style="font-size:11px;color:' + muted + ';">' + seriesSet.size + ' série(s) · ' + matched.length + ' nadador(es)';
+    if (dist) html += ' · ' + dist + 'm';
+    html += '</span>';
     html += '</div></div>';
     html += '<button onclick="slOpenTiming(' + idx + ',' + ei + ')" style="flex-shrink:0;padding:7px 12px;border-radius:8px;border:none;background:var(--aqua,#00c4cc);color:#001f3a;font-size:12px;font-weight:700;cursor:pointer;">⏱ Tempos</button>';
     html += '</div>';
@@ -10317,39 +10316,53 @@ function slLoadSaved(i) {
 }
 
 function slFmtInput(raw) {
-  // "10034" → "1:00,34", "2379" → "23,79", "5671" → "56,71"
+  // "10034" → "1:00,34", "3000" → "30,00", "10200" → "1:02,00"
   var s = (raw || '').replace(/\D/g, '');
   if (!s) return '';
-  if (s.length <= 4) {
-    var sec = s.slice(0, -2) || '0';
-    var cs  = s.slice(-2);
-    return sec + ',' + cs;
-  }
+  // Pad to at least 3 chars so last 2 are always centiseconds
+  while (s.length < 3) s = '0' + s;
   var cs  = s.slice(-2);
-  var sec = parseInt(s.slice(0, -2));
+  var sec = parseInt(s.slice(0, -2)) || 0;
   var m   = Math.floor(sec / 60);
   var ss  = ('0' + (sec % 60)).slice(-2);
-  return (m > 0 ? m + ':' + ss : sec) + ',' + cs;
+  if (m > 0) return m + ':' + ss + ',' + cs;
+  return (sec < 10 ? sec : sec) + ',' + cs;
 }
 
-function slParseToMs(str) {
-  if (!str) return 0;
-  var s = str.replace(',', '.').replace(':', ':');
-  var parts = s.split(':');
-  if (parts.length === 2) return Math.round((parseInt(parts[0]) * 60 + parseFloat(parts[1])) * 100);
-  return Math.round(parseFloat(parts[0]) * 100); // centiseconds * 100 = ms
+function slInputToCs(raw) {
+  // raw digits "10034" → centiseconds (100*60 + 34 = 6034)
+  var s = (raw || '').replace(/\D/g, '');
+  if (!s) return 0;
+  while (s.length < 3) s = '0' + s;
+  var cs  = parseInt(s.slice(-2)) || 0;
+  var sec = parseInt(s.slice(0, -2)) || 0;
+  return sec * 100 + cs;
 }
 
-function slMsToStr(cs) {
-  // cs = centiseconds
-  if (!cs) return '';
-  var m  = Math.floor(cs / 6000);
-  var s  = Math.floor((cs % 6000) / 100);
-  var c  = cs % 100;
+function slCsToStr(cs) {
+  // centiseconds → "1:00,34"
+  if (!cs && cs !== 0) return '';
+  var absCs = Math.abs(cs);
+  var m  = Math.floor(absCs / 6000);
+  var s  = Math.floor((absCs % 6000) / 100);
+  var c  = absCs % 100;
   var ss = ('0' + s).slice(-2);
   var cc = ('0' + c).slice(-2);
-  return m > 0 ? m + ':' + ss + ',' + cc : s + ',' + cc;
+  var str = m > 0 ? m + ':' + ss + ',' + cc : s + ',' + cc;
+  return (cs < 0 ? '-' : '') + str;
 }
+
+function slStrToCs(str) {
+  // "1:00,34" → centiseconds
+  if (!str) return 0;
+  var s = str.replace(',', '.');
+  var parts = s.split(':');
+  if (parts.length === 2) {
+    return Math.round((parseInt(parts[0]) * 60 + parseFloat(parts[1])) * 100);
+  }
+  return Math.round(parseFloat(parts[0]) * 100);
+}
+
 
 var _slTimingHistIdx = 0;
 var _slTimingEvIdx   = 0;
@@ -10364,70 +10377,90 @@ function slOpenTiming(histIdx, evIdx) {
   var ev   = h.results[evIdx];
   if (!ev) return;
 
-  var matched  = ev.athletes.filter(function(a) { return a.highlight; });
-  var dist     = ev.dist || slGetDist(ev.name);
-  var timings  = (h.timings && h.timings[evIdx]) || {};
+  var allMatched = ev.athletes.filter(function(a) { return a.highlight; });
+  var dist       = ev.dist || slGetDist(ev.name);
+  var timings    = (h.timings && h.timings[evIdx]) || {};
+  var interval   = timings._interval || (dist <= 100 ? 50 : 100);
 
-  // Build popup
+  // Group matched athletes by serie — only show athletes in same serie together
+  var serieMap = {};
+  allMatched.forEach(function(a) {
+    var k = a.serie || '?';
+    if (!serieMap[k]) serieMap[k] = [];
+    serieMap[k].push(a);
+  });
+  // For display: all athletes from all series (sorted by serie)
+  var matched = allMatched;
+
   var existing = document.getElementById('sl-timing-popup');
   if (existing) existing.remove();
 
   var isLight = document.documentElement.classList.contains('light-mode');
   var bg      = isLight ? '#f5f9fc' : '#0a1929';
-  var cardBg  = isLight ? '#fff'    : '#0d2233';
   var border  = isLight ? '#d0e4f0' : 'rgba(255,255,255,0.1)';
   var text    = isLight ? '#1a3a4a' : '#e8f4ff';
   var muted   = isLight ? '#6b8fa8' : 'rgba(180,210,240,0.6)';
   var inputBg = isLight ? '#f0f7ff' : 'rgba(255,255,255,0.07)';
 
-  // Default interval: 50m if dist <= 100, else 100m
-  var savedInterval = timings._interval || (dist <= 100 ? 50 : 100);
-  var interval = savedInterval;
-  var nSplits  = dist > 0 && interval > 0 ? Math.floor(dist / interval) : 0;
+  function buildTable(intv) {
+    var nSpl = dist > 0 && intv > 0 ? Math.floor(dist / intv) : 0;
+    var sections = '';
+
+    Object.keys(serieMap).sort().forEach(function(serie) {
+      var athletes = serieMap[serie];
+      // Header row for this serie
+      var headers = '<th style="padding:6px 8px;background:rgba(0,196,204,0.08);color:' + muted + ';font-size:10px;letter-spacing:.5px;text-transform:uppercase;font-weight:700;white-space:nowrap;">Distância</th>';
+      athletes.forEach(function(a, ai) {
+        var globalAi = allMatched.indexOf(a);
+        headers += '<th style="padding:8px 10px;background:rgba(0,196,204,0.08);color:' + text + ';font-size:12px;font-weight:700;border-left:1px solid ' + border + ';min-width:88px;">' +
+          slCleanName(a.name) +
+          '<div style="font-size:10px;color:' + muted + ';font-weight:400;">S' + (a.serie||'?') + '/P' + a.lane + '</div>' +
+        '</th>';
+      });
+
+      var rows = '';
+      for (var r = 0; r < nSpl; r++) {
+        var d = (r + 1) * intv;
+        rows += '<tr><td style="padding:6px 8px;font-size:13px;font-weight:600;color:var(--aqua,#00c4cc);white-space:nowrap;border-bottom:1px solid ' + border + ';">' + d + 'm</td>';
+        athletes.forEach(function(a) {
+          var globalAi = allMatched.indexOf(a);
+          var key  = 'n' + globalAi;
+          var raw  = (timings[key] && timings[key][r]) || '';
+          var fmtVal = raw ? slFmtInput(raw) : '';
+          var splitStr = '';
+          if (r > 0) {
+            var prevRaw = (timings[key] && timings[key][r-1]) || '';
+            if (raw && prevRaw) {
+              var diff = slInputToCs(raw) - slInputToCs(prevRaw);
+              splitStr = '<div id="sl-t-' + globalAi + '-' + r + '-split" style="font-size:10px;color:' + muted + ';text-align:center;margin-top:1px;">' + (diff > 0 ? '(' + slCsToStr(diff) + ')' : '') + '</div>';
+            } else {
+              splitStr = '<div id="sl-t-' + globalAi + '-' + r + '-split" style="font-size:10px;color:' + muted + ';text-align:center;margin-top:1px;"></div>';
+            }
+          }
+          rows += '<td style="padding:4px 5px;border-bottom:1px solid ' + border + ';border-left:1px solid ' + border + ';">' +
+            '<input type="tel" inputmode="numeric" id="sl-t-' + globalAi + '-' + r + '" placeholder="——" value="' + raw + '" ' +
+            'data-hist="' + histIdx + '" data-ev="' + evIdx + '" data-ath="' + globalAi + '" data-row="' + r + '" ' +
+            'style="width:100%;padding:7px 4px;border-radius:7px;border:1.5px solid ' + border + ';font-size:13px;font-family:monospace;background:' + inputBg + ';color:' + text + ';text-align:center;box-sizing:border-box;" ' +
+            'oninput="slTimingInput(this)" onblur="slTimingSave(this)">' +
+            '<div id="sl-t-' + globalAi + '-' + r + '-prev" style="font-size:11px;color:var(--aqua,#00c4cc);text-align:center;margin-top:1px;min-height:14px;">' + fmtVal + '</div>' +
+            splitStr +
+          '</td>';
+        });
+        rows += '</tr>';
+      }
+
+      if (Object.keys(serieMap).length > 1) {
+        sections += '<div style="font-size:11px;font-weight:700;color:' + muted + ';letter-spacing:.5px;text-transform:uppercase;padding:8px 0 4px;">Série ' + serie + '</div>';
+      }
+      sections += '<table style="width:100%;border-collapse:collapse;margin-bottom:16px;"><thead><tr>' + headers + '</tr></thead><tbody>' + rows + '</tbody></table>';
+    });
+
+    return sections;
+  }
 
   var popup = document.createElement('div');
   popup.id = 'sl-timing-popup';
   popup.style.cssText = 'position:fixed;inset:0;z-index:99999;background:' + bg + ';overflow-y:auto;font-family:DM Sans,Arial,sans-serif;';
-
-  function buildContent(interval) {
-    var nSpl = dist > 0 && interval > 0 ? Math.floor(dist / interval) : 0;
-    var rows = '';
-    for (var r = 0; r < nSpl; r++) {
-      var d = (r + 1) * interval;
-      rows += '<tr>';
-      rows += '<td style="padding:8px 10px;font-size:13px;font-weight:600;color:var(--aqua,#00c4cc);white-space:nowrap;border-bottom:1px solid ' + border + ';">' + d + 'm</td>';
-      matched.forEach(function(a, ai) {
-        var key = 'n' + ai;
-        var vals = (timings[key] && timings[key][r]) || '';
-        var cs   = vals ? slParseToMs(vals) : 0;
-        // Calculate split (difference)
-        var splitStr = '';
-        if (r > 0) {
-          var prevStr = (timings[key] && timings[key][r-1]) || '';
-          if (vals && prevStr) {
-            var diff = slParseToMs(vals) - slParseToMs(prevStr);
-            splitStr = '<div style="font-size:10px;color:' + muted + ';margin-top:1px;">(' + slMsToStr(diff) + ')</div>';
-          }
-        }
-        rows += '<td style="padding:4px 6px;border-bottom:1px solid ' + border + ';border-left:1px solid ' + border + ';">' +
-          '<input type="tel" inputmode="numeric" placeholder="——" value="' + vals + '" ' +
-          'data-hist="' + histIdx + '" data-ev="' + evIdx + '" data-ath="' + ai + '" data-row="' + r + '" ' +
-          'style="width:100%;padding:7px 6px;border-radius:7px;border:1.5px solid ' + border + ';font-size:14px;font-family:DM Sans,monospace;background:' + inputBg + ';color:' + text + ';text-align:center;" ' +
-          'oninput="slTimingInput(this)" onblur="slTimingSave(this)">' +
-          (vals ? '<div style="font-size:11px;color:var(--aqua,#00c4cc);text-align:center;margin-top:1px;">' + slFmtInput(vals.replace(/\D/g,'')) + '</div>' + splitStr : '') +
-        '</td>';
-      });
-      rows += '</tr>';
-    }
-
-    var headers = '<th style="padding:8px 10px;background:rgba(0,196,204,0.08);color:' + muted + ';font-size:10px;letter-spacing:.5px;text-transform:uppercase;font-weight:700;">Distância</th>';
-    matched.forEach(function(a) {
-      headers += '<th style="padding:8px 10px;background:rgba(0,196,204,0.08);color:' + text + ';font-size:12px;font-weight:700;border-left:1px solid ' + border + ';min-width:90px;">' + slCleanName(a.name) + '<div style="font-size:10px;color:' + muted + ';font-weight:400;">S' + (a.serie||'?') + '/P' + a.lane + '</div></th>';
-    });
-
-    return '<table style="width:100%;border-collapse:collapse;"><thead><tr>' + headers + '</tr></thead><tbody>' + rows + '</tbody></table>';
-  }
-
   popup.innerHTML =
     '<div style="position:sticky;top:0;z-index:2;background:' + bg + ';padding:14px 16px 10px;border-bottom:1px solid ' + border + ';display:flex;align-items:center;gap:10px;">' +
       '<div style="flex:1;min-width:0;">' +
@@ -10436,101 +10469,66 @@ function slOpenTiming(histIdx, evIdx) {
       '</div>' +
       '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">' +
         '<span style="font-size:12px;color:' + muted + ';">Parciais:</span>' +
-        '<div id="sl-t-toggle" style="display:flex;border-radius:8px;overflow:hidden;border:1px solid ' + border + ';">' +
-          '<button id="sl-t-50" onclick="slTimingSetInterval(50)" style="padding:6px 12px;border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;background:' + (interval===50?'var(--aqua,#00c4cc)':'transparent') + ';color:' + (interval===50?'#001f3a':muted) + ';">50m</button>' +
-          '<button id="sl-t-100" onclick="slTimingSetInterval(100)" style="padding:6px 12px;border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;background:' + (interval===100?'var(--aqua,#00c4cc)':'transparent') + ';color:' + (interval===100?'#001f3a':muted) + ';">100m</button>' +
+        '<div style="display:flex;border-radius:8px;overflow:hidden;border:1px solid ' + border + ';">' +
+          '<button id="sl-t-btn-50" onclick="slTimingSetInterval(50)" style="padding:6px 12px;border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;background:' + (interval===50?'var(--aqua,#00c4cc)':'transparent') + ';color:' + (interval===50?'#001f3a':muted) + ';">50m</button>' +
+          '<button id="sl-t-btn-100" onclick="slTimingSetInterval(100)" style="padding:6px 12px;border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;background:' + (interval===100?'var(--aqua,#00c4cc)':'transparent') + ';color:' + (interval===100?'#001f3a':muted) + ';">100m</button>' +
         '</div>' +
       '</div>' +
-      '<button onclick="document.getElementById(\'sl-timing-popup\').remove()" style="width:34px;height:34px;border-radius:50%;border:1px solid ' + border + ';background:transparent;color:' + muted + ';font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">×</button>' +
+      '<button onclick="document.getElementById(\'sl-timing-popup\').remove()" style="width:34px;height:34px;border-radius:50%;border:1px solid ' + border + ';background:transparent;color:' + muted + ';font-size:20px;cursor:pointer;line-height:1;flex-shrink:0;">×</button>' +
     '</div>' +
-    '<div id="sl-timing-table" style="padding:12px 16px;">' + buildContent(interval) + '</div>' +
-    '<div style="padding:12px 16px;padding-bottom:24px;">' +
+    '<div id="sl-timing-table" style="padding:12px 16px;">' + buildTable(interval) + '</div>' +
+    '<div style="padding:12px 16px 28px;">' +
       '<button onclick="slTimingSaveAll()" style="width:100%;padding:13px;border-radius:12px;border:none;background:var(--aqua,#00c4cc);color:#001f3a;font-size:15px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;">Guardar tempos</button>' +
     '</div>';
 
-  document.body.appendChild(popup);
-
-  // Store current interval for toggle
+  popup._buildTable = buildTable;
   popup._interval = interval;
+  document.body.appendChild(popup);
 }
 
 function slTimingSetInterval(interval) {
-  var popup = document.getElementById('sl-timing-popup');
-  if (!popup) return;
-  popup._interval = interval;
-
-  var b50  = document.getElementById('sl-t-50');
-  var b100 = document.getElementById('sl-t-100');
-  var isLight = document.documentElement.classList.contains('light-mode');
-  var muted = isLight ? '#6b8fa8' : 'rgba(180,210,240,0.6)';
-  if (b50)  { b50.style.background  = interval===50  ? 'var(--aqua,#00c4cc)' : 'transparent'; b50.style.color  = interval===50  ? '#001f3a' : muted; }
-  if (b100) { b100.style.background = interval===100 ? 'var(--aqua,#00c4cc)' : 'transparent'; b100.style.color = interval===100 ? '#001f3a' : muted; }
-
-  // Save interval choice
+  // Save interval, then reopen popup
   var hist = slGetSavedLists();
   var h = hist[_slTimingHistIdx];
   if (h) {
     if (!h.timings) h.timings = {};
     if (!h.timings[_slTimingEvIdx]) h.timings[_slTimingEvIdx] = {};
     h.timings[_slTimingEvIdx]._interval = interval;
+    // Save all current input values before rebuilding
+    var inputs = document.querySelectorAll('#sl-timing-popup input[data-hist]');
+    inputs.forEach(function(inp) { slTimingSave(inp); });
     try { localStorage.setItem(SL_HIST_KEY, JSON.stringify(hist)); } catch(e) {}
   }
-
-  // Rebuild table
-  var ev      = h && h.results[_slTimingEvIdx];
-  var dist    = ev ? (ev.dist || slGetDist(ev.name)) : 0;
-  var matched = ev ? ev.athletes.filter(function(a){ return a.highlight; }) : [];
-  var timings = (h && h.timings && h.timings[_slTimingEvIdx]) || {};
-  var nSpl    = dist > 0 && interval > 0 ? Math.floor(dist / interval) : 0;
-
-  var isLightB = document.documentElement.classList.contains('light-mode');
-  var border  = isLightB ? '#d0e4f0' : 'rgba(255,255,255,0.1)';
-  var text    = isLightB ? '#1a3a4a' : '#e8f4ff';
-  var mutedB  = isLightB ? '#6b8fa8' : 'rgba(180,210,240,0.6)';
-  var inputBg = isLightB ? '#f0f7ff' : 'rgba(255,255,255,0.07)';
-
-  var rows = '';
-  for (var r = 0; r < nSpl; r++) {
-    var d = (r + 1) * interval;
-    rows += '<tr><td style="padding:8px 10px;font-size:13px;font-weight:600;color:var(--aqua,#00c4cc);white-space:nowrap;border-bottom:1px solid ' + border + ';">' + d + 'm</td>';
-    matched.forEach(function(a, ai) {
-      var key = 'n' + ai;
-      var vals = (timings[key] && timings[key][r]) || '';
-      var splitStr = '';
-      if (r > 0) {
-        var prevStr = (timings[key] && timings[key][r-1]) || '';
-        if (vals && prevStr) {
-          var diff = slParseToMs(vals) - slParseToMs(prevStr);
-          splitStr = '<div style="font-size:10px;color:' + mutedB + ';margin-top:1px;">(' + slMsToStr(diff) + ')</div>';
-        }
-      }
-      rows += '<td style="padding:4px 6px;border-bottom:1px solid ' + border + ';border-left:1px solid ' + border + ';">' +
-        '<input type="tel" inputmode="numeric" placeholder="——" value="' + vals + '" ' +
-        'data-hist="' + _slTimingHistIdx + '" data-ev="' + _slTimingEvIdx + '" data-ath="' + ai + '" data-row="' + r + '" ' +
-        'style="width:100%;padding:7px 6px;border-radius:7px;border:1.5px solid ' + border + ';font-size:14px;font-family:DM Sans,monospace;background:' + inputBg + ';color:' + text + ';text-align:center;" ' +
-        'oninput="slTimingInput(this)" onblur="slTimingSave(this)">' +
-        (vals ? '<div style="font-size:11px;color:var(--aqua,#00c4cc);text-align:center;margin-top:1px;">' + slFmtInput(vals.replace(/\D/g,'')) + '</div>' + splitStr : '') +
-      '</td>';
-    });
-    rows += '</tr>';
-  }
-  var tbl = document.getElementById('sl-timing-table');
-  if (tbl) tbl.querySelector('tbody').innerHTML = rows;
+  slOpenTiming(_slTimingHistIdx, _slTimingEvIdx);
 }
 
 function slTimingInput(inp) {
-  // Live format preview below input
   var raw = inp.value.replace(/\D/g, '');
-  var prev = inp.nextElementSibling;
+  // Update the preview div (id = inp.id + '-prev')
+  var prevId = inp.id + '-prev';
+  var prev = document.getElementById(prevId);
+  if (!prev) return;
   if (raw) {
-    var fmt = slFmtInput(raw);
-    if (!prev || prev.tagName !== 'DIV') {
-      prev = document.createElement('div');
-      prev.style.cssText = 'font-size:11px;color:var(--aqua,#00c4cc);text-align:center;margin-top:1px;';
-      inp.parentNode.insertBefore(prev, inp.nextSibling);
+    prev.textContent = slFmtInput(raw);
+    // Update split below
+    var splitId = inp.id + '-split';
+    var splitEl = document.getElementById(splitId);
+    if (splitEl) {
+      var row  = parseInt(inp.dataset.row);
+      var ai   = parseInt(inp.dataset.ath);
+      if (row > 0) {
+        // Find previous row input
+        var prevInpId = 'sl-t-' + ai + '-' + (row-1);
+        var prevInp = document.getElementById(prevInpId);
+        if (prevInp && prevInp.value) {
+          var cs1 = slInputToCs(prevInp.value.replace(/\D/g,'')) || slStrToCs(prevInp.value);
+          var cs2 = slInputToCs(raw);
+          var diff = cs2 - cs1;
+          splitEl.textContent = diff > 0 ? '(' + slCsToStr(diff) + ')' : '';
+        }
+      }
     }
-    prev.textContent = fmt;
-  } else if (prev && prev.tagName === 'DIV') {
+  } else {
     prev.textContent = '';
   }
 }
@@ -10540,10 +10538,12 @@ function slTimingSave(inp) {
   var evIdx   = parseInt(inp.dataset.ev);
   var ai      = parseInt(inp.dataset.ath);
   var row     = parseInt(inp.dataset.row);
-  var val     = inp.value.replace(/\D/g, '');
-  if (!val) return;
-  var fmt = slFmtInput(val);
-  inp.value = fmt;
+  var raw     = inp.value.replace(/\D/g, '');
+  if (!raw) return;
+  var fmt = slFmtInput(raw);
+  // Don't overwrite input value — keep raw digits while typing, only update preview
+  var prevEl = document.getElementById(inp.id + '-prev');
+  if (prevEl) prevEl.textContent = fmt;
 
   var hist = slGetSavedLists();
   var h = hist[histIdx];
@@ -10552,12 +10552,11 @@ function slTimingSave(inp) {
   if (!h.timings[evIdx]) h.timings[evIdx] = {};
   var key = 'n' + ai;
   if (!h.timings[evIdx][key]) h.timings[evIdx][key] = [];
-  h.timings[evIdx][key][row] = fmt;
+  h.timings[evIdx][key][row] = raw; // save raw digits
   try { localStorage.setItem(SL_HIST_KEY, JSON.stringify(hist)); } catch(e) {}
 }
 
 function slTimingSaveAll() {
-  // Save all inputs in popup at once
   var inputs = document.querySelectorAll('#sl-timing-popup input[data-hist]');
   inputs.forEach(function(inp) { slTimingSave(inp); });
   document.getElementById('sl-timing-popup').remove();
