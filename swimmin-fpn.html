@@ -10472,7 +10472,8 @@ function slRunFilter() {
   }
 }
 
-var _slExcludedClubs = [];
+var _slDisambigClubs = [];
+var _slDisambigNameFilter = '';
 
 function slShowDisambiguationPopup(ambiguous, nameFilter) {
   var existing = document.getElementById('sl-disambig-popup');
@@ -10486,20 +10487,23 @@ function slShowDisambiguationPopup(ambiguous, nameFilter) {
   var mutedColor = isLight ? '#6b8fa8' : 'rgba(180,210,240,0.7)';
   var borderColor = isLight ? '#d0e4f0' : 'rgba(255,255,255,0.1)';
 
-  // Build all matches with checkboxes
+  // Build all matches
   var allMatches = [];
   ambiguous.forEach(function(a) {
     a.matches.forEach(function(m) {
-      if (!allMatches.find(function(x) { return x.club === m; })) {
-        allMatches.push({club: m, term: a.term, checked: true});
+      if (!allMatches.find(function(x) { return x === m; })) {
+        allMatches.push(m);
       }
     });
   });
 
+  _slDisambigClubs = allMatches;
+  _slDisambigNameFilter = nameFilter;
+
   var rows = allMatches.map(function(m, i) {
     return '<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid ' + borderColor + ';">' +
       '<input type="checkbox" id="sl-dis-' + i + '" checked style="width:18px;height:18px;cursor:pointer;accent-color:var(--aqua,#00c4cc);">' +
-      '<label for="sl-dis-' + i + '" style="flex:1;font-size:14px;color:' + textColor + ';cursor:pointer;">' + m.club + '</label>' +
+      '<label for="sl-dis-' + i + '" style="flex:1;font-size:14px;color:' + textColor + ';cursor:pointer;">' + m + '</label>' +
     '</div>';
   }).join('');
 
@@ -10512,30 +10516,34 @@ function slShowDisambiguationPopup(ambiguous, nameFilter) {
   popup.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:99999;background:' + bg + ';border-radius:18px;padding:24px 22px;max-width:360px;width:92%;box-shadow:0 8px 40px rgba(0,0,0,0.3);font-family:DM Sans,sans-serif;border-top:4px solid var(--aqua,#00c4cc);';
   popup.innerHTML =
     '<div style="font-size:16px;font-weight:700;color:' + textColor + ';margin-bottom:6px;">Confirmar clubes</div>' +
-    '<div style="font-size:13px;color:' + mutedColor + ';margin-bottom:16px;">Encontrámos várias correspondências. Selecciona os clubes a incluir:</div>' +
+    '<div style="font-size:13px;color:' + mutedColor + ';margin-bottom:16px;">Selecciona os clubes a incluir:</div>' +
     '<div id="sl-dis-rows">' + rows + '</div>' +
     '<div style="display:flex;gap:8px;margin-top:16px;">' +
-      '<button onclick="slConfirmDisambig(' + JSON.stringify(allMatches.map(function(m){return m.club;})) + ',' + JSON.stringify(nameFilter) + ')" ' +
-        'style="flex:1;padding:12px;border-radius:10px;border:none;background:var(--aqua,#00c4cc);color:#001f3a;font-size:14px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;">Confirmar</button>' +
-      '<button onclick="document.getElementById(\'sl-disambig-popup\').remove();document.getElementById(\'sl-disambig-overlay\').remove();" ' +
-        'style="flex:1;padding:12px;border-radius:10px;border:1.5px solid ' + borderColor + ';background:transparent;color:' + mutedColor + ';font-size:14px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif;">Cancelar</button>' +
+      '<button id="sl-dis-confirm" style="flex:1;padding:12px;border-radius:10px;border:none;background:var(--aqua,#00c4cc);color:#001f3a;font-size:14px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;">Confirmar</button>' +
+      '<button id="sl-dis-cancel" style="flex:1;padding:12px;border-radius:10px;border:1.5px solid ' + borderColor + ';background:transparent;color:' + mutedColor + ';font-size:14px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif;">Cancelar</button>' +
     '</div>';
 
   document.body.appendChild(overlay);
   document.body.appendChild(popup);
+
+  document.getElementById('sl-dis-confirm').onclick = function() { slConfirmDisambig(); };
+  document.getElementById('sl-dis-cancel').onclick = function() {
+    document.getElementById('sl-disambig-popup').remove();
+    document.getElementById('sl-disambig-overlay').remove();
+  };
 }
 
-function slConfirmDisambig(allClubs, nameFilter) {
-  // Read which checkboxes are checked
-  var selected = allClubs.filter(function(club, i) {
+function slConfirmDisambig() {
+  var selected = _slDisambigClubs.filter(function(club, i) {
     var cb = document.getElementById('sl-dis-' + i);
     return cb && cb.checked;
   });
-  document.getElementById('sl-disambig-popup').remove();
-  document.getElementById('sl-disambig-overlay').remove();
-  // Build excluded list
-  var excluded = allClubs.filter(function(c) { return selected.indexOf(c) < 0; });
-  slApplyFilter(_slClubTags.map(function(t){return t.toLowerCase();}), excluded.map(function(c){return c.toLowerCase();}), nameFilter);
+  var excluded = _slDisambigClubs.filter(function(c) { return selected.indexOf(c) < 0; });
+  var p = document.getElementById('sl-disambig-popup');
+  var o = document.getElementById('sl-disambig-overlay');
+  if (p) p.remove();
+  if (o) o.remove();
+  slApplyFilter(_slClubTags.map(function(t){ return t.toLowerCase(); }), excluded.map(function(c){ return c.toLowerCase(); }), _slDisambigNameFilter);
 }
 
 function slApplyFilter(terms, excluded, nameFilter) {
