@@ -10588,9 +10588,9 @@ function slTimingSave(inp) {
 }
 
 function slTimingSaveAll() {
-  // Save all current inputs, including those not yet blurred
   var inputs = document.querySelectorAll('#sl-timing-popup input[data-hist]');
   var hist = slGetSavedLists();
+  var count = 0;
   inputs.forEach(function(inp) {
     var raw = inp.value.replace(/\D/g, '');
     if (!raw) return;
@@ -10605,8 +10605,13 @@ function slTimingSaveAll() {
     var key = 'n' + ai;
     if (!h.timings[evIdx][key]) h.timings[evIdx][key] = [];
     h.timings[evIdx][key][row] = raw;
+    count++;
   });
-  try { localStorage.setItem(SL_HIST_KEY, JSON.stringify(hist)); } catch(e) {}
+  try { localStorage.setItem(SL_HIST_KEY, JSON.stringify(hist)); } catch(e) { alert('Erro ao guardar: ' + e); return; }
+  // DEBUG — remover depois
+  var saved = slGetSavedLists();
+  var timStr = JSON.stringify(saved[_slTimingHistIdx] && saved[_slTimingHistIdx].timings);
+  alert('Guardados ' + count + ' campos.\nTimings: ' + timStr.substring(0,200));
   var popup = document.getElementById('sl-timing-popup');
   if (popup) popup.remove();
   slRenderSavedModeIdx(_slTimingHistIdx);
