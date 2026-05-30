@@ -10260,11 +10260,41 @@ function slRenderSavedModeIdx(idx) {
     html += '</div></div>';
     html += '<button onclick="slOpenTiming(' + idx + ',' + ei + ')" style="flex-shrink:0;padding:7px 12px;border-radius:8px;border:none;background:var(--aqua,#00c4cc);color:#001f3a;font-size:12px;font-weight:700;cursor:pointer;">⏱ Tempos</button>';
     html += '</div>';
-    matched.forEach(function(a) {
-      html += '<div style="display:flex;align-items:center;padding:7px 14px;border-top:1px solid ' + border + ';font-size:12px;gap:8px;">';
+    matched.forEach(function(a, ai) {
+      var globalAi = ev.athletes.indexOf(a);
+      var timingsEv = (h.timings && h.timings[ei]) || {};
+      var key = 'n' + globalAi;
+      var athTimes = timingsEv[key] || [];
+      // Get final time = last recorded split
+      var finalRaw = athTimes.length > 0 ? athTimes[athTimes.length - 1] : null;
+      var finalStr = finalRaw ? slFmtInput(finalRaw) : '';
+      // Calculate percentage vs seed time
+      var pctHtml = '';
+      if (finalStr && a.time && a.time !== 'NT') {
+        var seedCs = slStrToCs(a.time);
+        var finalCs = slInputToCs(finalRaw);
+        if (seedCs > 0 && finalCs > 0) {
+          var pct = Math.round((seedCs / finalCs) * 1000) / 10;
+          var pctColor = pct >= 100 ? '#27ae60' : '#e74c3c';
+          pctHtml = '<span style="font-size:11px;font-weight:700;color:' + pctColor + ';margin-left:4px;">' + pct.toFixed(1) + '%</span>';
+        }
+      }
+      var hasTimings = athTimes.some(function(t){ return t; });
+      html += '<div style="display:flex;align-items:center;padding:8px 14px;border-top:1px solid ' + border + ';font-size:12px;gap:8px;">';
       html += '<span style="color:var(--aqua,#00c4cc);font-weight:700;min-width:48px;">S'+(a.serie||'?')+'/P'+a.lane+'</span>';
       html += '<span style="flex:1;">' + slCleanName(a.name) + '</span>';
-      html += '<span style="color:' + muted + ';">' + (a.time||'NT') + '</span>';
+      // Seed time
+      html += '<span style="color:' + muted + ';font-size:11px;">' + (a.time||'NT') + '</span>';
+      // Final time + percentage
+      if (finalStr) {
+        html += '<span style="font-weight:600;font-size:12px;margin-left:4px;">' + finalStr + '</span>';
+        html += pctHtml;
+      }
+      // Ver button (only if has timings)
+      if (hasTimings) {
+        html += '<button onclick="slOpenAthleteSummary(' + idx + ',' + ei + ',' + globalAi + ')" ' +
+          'style="padding:4px 10px;border-radius:7px;border:none;background:rgba(0,196,204,0.15);color:var(--aqua,#00c4cc);font-size:11px;font-weight:700;cursor:pointer;margin-left:2px;">Ver</button>';
+      }
       html += '</div>';
     });
     html += '</div>';
@@ -10565,6 +10595,180 @@ function slTimingSaveAll() {
   inputs.forEach(function(inp) { slTimingSave(inp); });
   document.getElementById('sl-timing-popup').remove();
   slRenderSavedModeIdx(_slTimingHistIdx);
+}
+
+function slOpenAthleteSummary(histIdx, evIdx, ai) {
+  var hist = slGetSavedLists();
+  var h    = hist[histIdx];
+  if (!h) return;
+  var ev   = h.results[evIdx];
+  if (!ev) return;
+  var a    = ev.athletes[ai];
+  if (!a) return;
+
+  var timingsEv = (h.timings && h.timings[evIdx]) || {};
+  var key       = 'n' + ai;
+  var rawTimes  = timingsEv[key] || [];
+  var interval  = timingsEv._interval || 100;
+  var dist      = ev.dist || slGetDist(ev.name);
+  var nSpl      = dist > 0 && interval > 0 ? Math.floor(dist / interval) : rawTimes.length;
+
+  // Build split data
+  var splits = []; // {d, cumCs, splitCs}
+  for (var r = 0; r < nSpl; r++) {
+    var raw = rawTimes[r] || '';
+    var cumCs = raw ? slInputToCs(raw) : null;
+    var splitCs = (r > 0 && cumCs !== null && splits[r-1].cumCs !== null)
+      ? cumCs - splits[r-1].cumCs : (r === 0 ? cumCs : null);
+    splits.push({ d: (r+1)*interval, cumCs: cumCs, splitCs: splitCs });
+  }
+
+  var seedCs  = slStrToCs(a.time || '');
+  var finalCs = splits.length > 0 && splits[splits.length-1].cumCs !== null ? splits[splits.length-1].cumCs : null;
+  var pct     = (seedCs > 0 && finalCs !== null) ? Math.round((seedCs / finalCs) * 1000) / 10 : null;
+
+  var isLight = document.documentElement.classList.contains('light-mode');
+  var bg      = isLight ? '#f5f9fc' : '#0a1929';
+  var cardBg  = isLight ? '#fff'    : '#0d2233';
+  var border  = isLight ? '#d0e4f0' : 'rgba(255,255,255,0.1)';
+  var text    = isLight ? '#1a3a4a' : '#e8f4ff';
+  var muted   = isLight ? '#6b8fa8' : 'rgba(180,210,240,0.6)';
+
+  var existing = document.getElementById('sl-ath-popup');
+  if (existing) existing.remove();
+
+  // Build table rows
+  var tableRows = splits.map(function(s) {
+    var cumStr   = s.cumCs   !== null ? slCsToStr(s.cumCs)   : '—';
+    var splitStr = s.splitCs !== null ? slCsToStr(s.splitCs) : '—';
+    return '<tr>' +
+      '<td style="padding:8px 12px;font-size:13px;font-weight:600;color:var(--aqua,#00c4cc);border-bottom:1px solid ' + border + ';">' + s.d + 'm</td>' +
+      '<td style="padding:8px 12px;font-size:13px;font-family:monospace;border-bottom:1px solid ' + border + ';text-align:right;">' + cumStr + '</td>' +
+      '<td style="padding:8px 12px;font-size:13px;font-family:monospace;color:' + muted + ';border-bottom:1px solid ' + border + ';text-align:right;">' + splitStr + '</td>' +
+    '</tr>';
+  }).join('');
+
+  // Chart canvas id
+  var chartId = 'sl-ath-chart-' + Date.now();
+
+  var popup = document.createElement('div');
+  popup.id = 'sl-ath-popup';
+  popup.style.cssText = 'position:fixed;inset:0;z-index:99999;background:' + bg + ';overflow-y:auto;font-family:DM Sans,Arial,sans-serif;';
+
+  var pctHtml = '';
+  if (pct !== null) {
+    var pctColor = pct >= 100 ? '#27ae60' : '#e74c3c';
+    var pctLabel = pct >= 100 ? '▲ melhorou' : '▼ piorou';
+    pctHtml = '<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,0.06);border-radius:20px;padding:4px 12px;margin-top:6px;">' +
+      '<span style="font-size:18px;font-weight:700;color:' + pctColor + ';">' + pct.toFixed(1) + '%</span>' +
+      '<span style="font-size:11px;color:' + pctColor + ';">' + pctLabel + '</span>' +
+    '</div>';
+  }
+
+  popup.innerHTML =
+    '<div style="position:sticky;top:0;z-index:2;background:' + bg + ';padding:14px 16px 10px;border-bottom:1px solid ' + border + ';display:flex;align-items:center;gap:10px;">' +
+      '<div style="flex:1;min-width:0;">' +
+        '<div style="font-size:11px;color:' + muted + ';">Prova ' + ev.number + ' · ' + (ev.name||'') + '</div>' +
+        '<div style="font-size:16px;font-weight:700;color:' + text + ';">' + slCleanName(a.name) + '</div>' +
+      '</div>' +
+      '<button onclick="document.getElementById(\'sl-ath-popup\').remove()" style="width:34px;height:34px;border-radius:50%;border:1px solid ' + border + ';background:transparent;color:' + muted + ';font-size:20px;cursor:pointer;line-height:1;flex-shrink:0;">×</button>' +
+    '</div>' +
+
+    '<div style="padding:16px;">' +
+
+    // Seed / Final / %
+    '<div style="background:' + cardBg + ';border-radius:12px;padding:14px;margin-bottom:14px;border:1px solid ' + border + ';text-align:center;">' +
+      '<div style="display:flex;justify-content:center;gap:24px;margin-bottom:6px;">' +
+        '<div><div style="font-size:10px;color:' + muted + ';text-transform:uppercase;letter-spacing:.5px;">T. Inscrição</div>' +
+          '<div style="font-size:18px;font-weight:700;color:' + muted + ';">' + (a.time||'NT') + '</div></div>' +
+        '<div><div style="font-size:10px;color:' + muted + ';text-transform:uppercase;letter-spacing:.5px;">T. Final</div>' +
+          '<div style="font-size:18px;font-weight:700;color:' + text + ';">' + (finalCs !== null ? slCsToStr(finalCs) : '—') + '</div></div>' +
+      '</div>' +
+      pctHtml +
+    '</div>' +
+
+    // Splits table
+    '<div style="background:' + cardBg + ';border-radius:12px;margin-bottom:14px;border:1px solid ' + border + ';overflow:hidden;">' +
+      '<table style="width:100%;border-collapse:collapse;">' +
+        '<thead><tr>' +
+          '<th style="padding:8px 12px;background:rgba(0,196,204,0.08);font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:' + muted + ';text-align:left;">Dist.</th>' +
+          '<th style="padding:8px 12px;background:rgba(0,196,204,0.08);font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:' + muted + ';text-align:right;">Acumulado</th>' +
+          '<th style="padding:8px 12px;background:rgba(0,196,204,0.08);font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:' + muted + ';text-align:right;">Parcial</th>' +
+        '</tr></thead>' +
+        '<tbody>' + tableRows + '</tbody>' +
+      '</table>' +
+    '</div>' +
+
+    // Chart
+    '<div style="background:' + cardBg + ';border-radius:12px;padding:14px;border:1px solid ' + border + ';">' +
+      '<div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:' + muted + ';margin-bottom:10px;">Parciais por distância</div>' +
+      '<canvas id="' + chartId + '" height="200"></canvas>' +
+    '</div>' +
+
+    '</div>';
+
+  document.body.appendChild(popup);
+
+  // Draw chart after render
+  setTimeout(function() {
+    var ctx = document.getElementById(chartId);
+    if (!ctx || typeof Chart === 'undefined') {
+      // Load Chart.js if needed
+      if (typeof Chart === 'undefined') {
+        var sc = document.createElement('script');
+        sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js';
+        sc.onload = function() { slDrawAthChart(chartId, splits, interval, isLight); };
+        document.head.appendChild(sc);
+      }
+      return;
+    }
+    slDrawAthChart(chartId, splits, interval, isLight);
+  }, 100);
+}
+
+function slDrawAthChart(chartId, splits, interval, isLight) {
+  var ctx = document.getElementById(chartId);
+  if (!ctx) return;
+  var labels = splits.map(function(s) { return s.d + 'm'; });
+  var data   = splits.map(function(s) { return s.splitCs !== null ? s.splitCs / 100 : null; });
+  var gridColor  = isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.06)';
+  var tickColor  = isLight ? '#6b8fa8' : 'rgba(180,210,240,0.6)';
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Parcial (s)',
+        data: data,
+        borderColor: '#00c4cc',
+        backgroundColor: 'rgba(0,196,204,0.1)',
+        pointBackgroundColor: '#00c4cc',
+        borderWidth: 2.5,
+        tension: 0.3,
+        pointRadius: 5,
+        spanGaps: true
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: tickColor, font: { size: 11 } }, grid: { color: gridColor }, border: { display: false } },
+        y: {
+          ticks: {
+            color: tickColor, font: { size: 11 },
+            callback: function(v) {
+              var m = Math.floor(v / 60);
+              var s = (v % 60).toFixed(2);
+              return m > 0 ? m + ':' + ('0'+Math.floor(v%60)).slice(-2) : v.toFixed(1) + 's';
+            }
+          },
+          grid: { color: gridColor }, border: { display: false }
+        }
+      }
+    }
+  });
 }
 
 function slDeleteSaved(i) {
