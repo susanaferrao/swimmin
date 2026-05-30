@@ -10262,10 +10262,9 @@ function slRenderSavedModeIdx(idx) {
     html += '</div>';
     ev.athletes.forEach(function(a, globalAi) {
       if (!a.highlight) return;
-      var timingsEv = (h.timings && h.timings[ei]) || {};
+      var timingsEv = (h.timings && h.timings[ev.number]) || {};
       var key = 'n' + globalAi;
       var athTimes = timingsEv[key] || [];
-      console.log('RENDER ei='+ei+' globalAi='+globalAi+' timingsKeys='+JSON.stringify(Object.keys(h.timings||{})) + ' athTimes='+JSON.stringify(athTimes) + ' timingsEv='+JSON.stringify(timingsEv));
       // Get final time = last recorded split
       var finalRaw = athTimes.length > 0 ? athTimes[athTimes.length - 1] : null;
       var finalStr = finalRaw ? slFmtInput(finalRaw) : '';
@@ -10405,7 +10404,7 @@ function slOpenTiming(histIdx, evIdx) {
 
   var allMatched = ev.athletes.filter(function(a) { return a.highlight; });
   var dist       = ev.dist || slGetDist(ev.name);
-  var timings    = (h.timings && h.timings[evIdx]) || {};
+  var timings    = (h.timings && h.timings[ev.number]) || {};
   var interval   = timings._interval || (dist <= 100 ? 50 : 100);
 
   // Group matched athletes by serie — only show athletes in same serie together
@@ -10525,8 +10524,9 @@ function slTimingSetInterval(interval) {
   var h = hist[_slTimingHistIdx];
   if (h) {
     if (!h.timings) h.timings = {};
-    if (!h.timings[_slTimingEvIdx]) h.timings[_slTimingEvIdx] = {};
-    h.timings[_slTimingEvIdx]._interval = interval;
+    var _evNum = h.results[_slTimingEvIdx] ? h.results[_slTimingEvIdx].number : _slTimingEvIdx;
+    if (!h.timings[_evNum]) h.timings[_evNum] = {};
+    h.timings[_evNum]._interval = interval;
     // Save all current input values before rebuilding
     var inputs = document.querySelectorAll('#sl-timing-popup input[data-hist]');
     inputs.forEach(function(inp) { slTimingSave(inp); });
@@ -10582,10 +10582,11 @@ function slTimingSave(inp) {
   var h = hist[histIdx];
   if (!h) return;
   if (!h.timings) h.timings = {};
-  if (!h.timings[evIdx]) h.timings[evIdx] = {};
+  var evNum = (h.results[evIdx] && h.results[evIdx].number) || evIdx;
+  if (!h.timings[evNum]) h.timings[evNum] = {};
   var key = 'n' + ai;
-  if (!h.timings[evIdx][key]) h.timings[evIdx][key] = [];
-  h.timings[evIdx][key][row] = raw; // save raw digits
+  if (!h.timings[evNum][key]) h.timings[evNum][key] = [];
+  h.timings[evNum][key][row] = raw; // save raw digits
   try { localStorage.setItem(SL_HIST_KEY, JSON.stringify(hist)); } catch(e) {}
 }
 
@@ -10603,10 +10604,11 @@ function slTimingSaveAll() {
     var h = hist[histIdx];
     if (!h) return;
     if (!h.timings) h.timings = {};
-    if (!h.timings[evIdx]) h.timings[evIdx] = {};
+    var evNum = (h.results[evIdx] && h.results[evIdx].number) || evIdx;
+    if (!h.timings[evNum]) h.timings[evNum] = {};
     var key = 'n' + ai;
-    if (!h.timings[evIdx][key]) h.timings[evIdx][key] = [];
-    h.timings[evIdx][key][row] = raw;
+    if (!h.timings[evNum][key]) h.timings[evNum][key] = [];
+    h.timings[evNum][key][row] = raw;
     count++;
   });
   try { localStorage.setItem(SL_HIST_KEY, JSON.stringify(hist)); } catch(e) { alert('Erro: ' + e); return; }
@@ -10624,7 +10626,7 @@ function slOpenAthleteSummary(histIdx, evIdx, ai) {
   var a    = ev.athletes[ai];
   if (!a) return;
 
-  var timingsEv = (h.timings && h.timings[evIdx]) || {};
+  var timingsEv = (h.timings && h.timings[ev.number]) || {};
   var key       = 'n' + ai;
   var rawTimes  = timingsEv[key] || [];
   var interval  = timingsEv._interval || 100;
