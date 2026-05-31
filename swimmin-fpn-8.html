@@ -10205,6 +10205,10 @@ function slSaveToApp() {
   hist = hist.slice(0, 15);
   try {
     localStorage.setItem(SL_HIST_KEY, JSON.stringify(hist));
+    // Sync to Firebase if authenticated
+    if (window.currentFirebaseUser && window.firebaseSaveStartList) {
+      try { window.firebaseSaveStartList(hist); } catch(e) {}
+    }
     _slSaved = true;
     slRenderSavedMode();
   } catch(e) {
@@ -10277,9 +10281,15 @@ function slRenderSavedModeIdx(idx) {
         var seedCs = slStrToCs(a.time);
         var finalCs = slInputToCs(finalRaw);
         if (seedCs > 0 && finalCs > 0) {
-          var pct = Math.round((seedCs / finalCs) * 1000) / 10;
-          var pctColor = pct >= 100 ? '#27ae60' : '#e74c3c';
-          pctHtml = '<span style="font-size:11px;font-weight:700;color:' + pctColor + ';margin-left:4px;">' + pct.toFixed(1) + '%</span>';
+          var pct = Math.round((seedCs / finalCs) * 10000) / 100;
+          var diffCs = finalCs - seedCs; // positive = slower, negative = faster
+          var pctColor = diffCs < 0 ? '#27ae60' : diffCs > 0 ? '#e74c3c' : '#888';
+          var arrow = diffCs < 0 ? '▲' : diffCs > 0 ? '▼' : '=';
+          var diffStr = diffCs === 0 ? '' : (diffCs > 0 ? '+' : '') + slCsToStr(Math.abs(diffCs));
+          pctHtml = '<span style="font-size:11px;font-weight:700;color:' + pctColor + ';margin-left:4px;">' +
+            pct.toFixed(2) + '% ' + arrow +
+            (diffStr ? ' ' + diffStr : '') +
+          '</span>';
         }
       }
       var hasTimings = athTimes.some(function(t){ return t; });
@@ -10717,7 +10727,8 @@ function slOpenAthleteSummary(histIdx, evNumber, ai) {
   for (var r2 = splits.length - 1; r2 >= 0; r2--) {
     if (splits[r2].cumCs !== null) { finalCs = splits[r2].cumCs; break; }
   }
-  var pct = (seedCs > 0 && finalCs !== null) ? Math.round((seedCs / finalCs) * 1000) / 10 : null;
+  var pct    = (seedCs > 0 && finalCs !== null) ? Math.round((seedCs / finalCs) * 10000) / 100 : null;
+  var diffCs = (seedCs > 0 && finalCs !== null) ? finalCs - seedCs : null;
 
   var isLight = document.documentElement.classList.contains('light-mode');
   var bg      = isLight ? '#f5f9fc' : '#0a1929';
@@ -10749,11 +10760,13 @@ function slOpenAthleteSummary(histIdx, evNumber, ai) {
 
   var pctHtml = '';
   if (pct !== null) {
-    var pctColor = pct >= 100 ? '#27ae60' : '#e74c3c';
-    var pctLabel = pct >= 100 ? '▲ melhorou' : '▼ piorou';
-    pctHtml = '<div style="display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,0.06);border-radius:20px;padding:4px 12px;margin-top:6px;">' +
-      '<span style="font-size:18px;font-weight:700;color:' + pctColor + ';">' + pct.toFixed(1) + '%</span>' +
-      '<span style="font-size:11px;color:' + pctColor + ';">' + pctLabel + '</span>' +
+    var pctColor = diffCs < 0 ? '#27ae60' : diffCs > 0 ? '#e74c3c' : '#888';
+    var arrow    = diffCs < 0 ? '▲' : diffCs > 0 ? '▼' : '=';
+    var diffStr  = diffCs === 0 ? 'manteve' : (diffCs > 0 ? '+' : '') + slCsToStr(Math.abs(diffCs));
+    pctHtml = '<div style="display:inline-flex;align-items:center;gap:8px;background:rgba(0,0,0,0.06);border-radius:20px;padding:6px 14px;margin-top:6px;">' +
+      '<span style="font-size:20px;font-weight:700;color:' + pctColor + ';">' + pct.toFixed(2) + '%</span>' +
+      '<span style="font-size:14px;color:' + pctColor + ';">' + arrow + '</span>' +
+      '<span style="font-size:13px;color:' + pctColor + ';font-weight:600;">' + diffStr + '</span>' +
     '</div>';
   }
 
@@ -10822,8 +10835,9 @@ function slDrawAthChart(chartId, splits, interval, isLight) {
   var ctx = document.getElementById(chartId);
   if (!ctx) return;
 
-  var labels = splits.map(function(s) { return s.d + 'm'; });
-  var data   = splits.map(function(s) { return s.splitCs !== null ? s.splitCs / 100 : null; });
+  var firstVal = splits.length > 0 && splits[0].splitCs !== null ? splits[0].splitCs / 100 : null;
+  var labels = ['0m'].concat(splits.map(function(s) { return s.d + 'm'; }));
+  var data   = [firstVal].concat(splits.map(function(s) { return s.splitCs !== null ? s.splitCs / 100 : null; }));
 
   // Find min and max for colour scale
   var valid = data.filter(function(v) { return v !== null; });
@@ -10860,7 +10874,7 @@ function slDrawAthChart(chartId, splits, interval, isLight) {
       datasets: [{
         label: 'Parcial',
         data: data,
-        borderColor: function(ctx) { return '#00c4cc'; },
+        borderColor: '#00c4cc',
         segment: {
           borderColor: function(ctx) {
             var v = ctx.p1.parsed.y;
@@ -10869,12 +10883,13 @@ function slDrawAthChart(chartId, splits, interval, isLight) {
         },
         backgroundColor: 'transparent',
         pointBackgroundColor: function(ctx) {
-          return splitColor(ctx.parsed.y);
+          var v = ctx.parsed ? ctx.parsed.y : null;
+          return v !== null ? splitColor(v) : '#00c4cc';
         },
         pointBorderColor: '#fff',
         pointBorderWidth: 1.5,
         borderWidth: 3,
-        tension: 0.3,
+        tension: 0,
         pointRadius: 6,
         spanGaps: true
       }]
@@ -11518,6 +11533,8 @@ window.firebaseSaveSwolf = function(d){ return saveUserDoc('swolfData',{data:JSO
 window.firebaseLoadSwolf = async function(){ var d=await loadUserDoc('swolfData'); if(!d||!d.data)return null; try{return{data:JSON.parse(d.data),updatedAt:d.updatedAt||0};}catch(e){return null;} };
 window.firebaseSaveParciais = function(h){ return saveUserDoc('parciaisHistory',{data:JSON.stringify(h),updatedAt:Date.now()}); };
 window.firebaseLoadParciais = async function(){ var d=await loadUserDoc('parciaisHistory'); if(!d||!d.data)return null; try{return{data:JSON.parse(d.data),updatedAt:d.updatedAt||0};}catch(e){return null;} };
+window.firebaseSaveStartList = function(d){ return saveUserDoc('startListHist',{data:JSON.stringify(d),updatedAt:Date.now()}); };
+window.firebaseLoadStartList = async function(){ var d=await loadUserDoc('startListHist'); if(!d||!d.data)return null; try{return{data:JSON.parse(d.data),updatedAt:d.updatedAt||0};}catch(e){return null;} };
 window.firebaseSaveCalendario = function(c){ return saveUserDoc('calendario',{data:JSON.stringify(c),updatedAt:Date.now()}); };
 window.firebaseLoadCalendario = async function(){ var d=await loadUserDoc('calendario'); if(!d||!d.data)return null; try{return{data:JSON.parse(d.data),updatedAt:d.updatedAt||0};}catch(e){return null;} };
 
@@ -11722,6 +11739,7 @@ window.syncToFirebase = async function() {
       { label: 'SWOLF', key: 'swimmin_swolf_v1', fn: function(d) { return window.firebaseSaveSwolf && window.firebaseSaveSwolf(d); } },
       { label: 'Histórico parciais', key: 'swimmin_crono_history_v1', fn: function(d) { return window.firebaseSaveParciais && window.firebaseSaveParciais(d); } },
       { label: 'Calendário', key: 'swimmin_calendar_v1', fn: function(d) { return window.firebaseSaveCalendario && window.firebaseSaveCalendario(d); } },
+      { label: 'Start List', key: 'swimmin_startlist_hist_v1', fn: function(d) { return window.firebaseSaveStartList && window.firebaseSaveStartList(d); } },
     ];
 
     var done = 0;
@@ -11819,6 +11837,16 @@ window.loadFromFirebase = async function() {
       if (typeof calRender === 'function') setTimeout(calRender, 100);
     }
     done++;
+
+    // Start List
+    if (window.firebaseLoadStartList) {
+      updateSyncPopup(Math.round((done/total)*100), 'Start List...');
+      var slFb = await window.firebaseLoadStartList();
+      if (slFb && slFb.data) {
+        localStorage.setItem('swimmin_startlist_hist_v1', JSON.stringify(slFb.data));
+      }
+      done++;
+    }
 
     // Dados de treinador
     updateSyncPopup(Math.round((done/total)*100), 'Dados de treinador...');
