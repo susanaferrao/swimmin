@@ -10283,18 +10283,14 @@ function slRenderSavedModeIdx(idx) {
       html += '<div style="display:flex;align-items:center;padding:8px 14px;border-top:1px solid ' + border + ';font-size:12px;gap:8px;">';
       html += '<span style="color:var(--aqua,#00c4cc);font-weight:700;min-width:48px;">S'+(a.serie||'?')+'/P'+a.lane+'</span>';
       html += '<span style="flex:1;">' + slCleanName(a.name) + '</span>';
-      // Seed time
       html += '<span style="color:' + muted + ';font-size:11px;">' + (a.time||'NT') + '</span>';
-      // Final time + percentage
       if (finalStr) {
         html += '<span style="font-weight:600;font-size:12px;margin-left:4px;">' + finalStr + '</span>';
         html += pctHtml;
       }
-      // Ver button (only if has timings)
-      if (hasTimings) {
-        html += '<button onclick="slOpenAthleteSummary(' + idx + ',' + ei + ',' + globalAi + ')" ' +
-          'style="padding:4px 10px;border-radius:7px;border:none;background:rgba(0,196,204,0.15);color:var(--aqua,#00c4cc);font-size:11px;font-weight:700;cursor:pointer;margin-left:2px;">Ver</button>';
-      }
+      // Always show Ver button — debug
+      html += '<button onclick="slDebugAndOpen(' + idx + ',' + ei + ',' + globalAi + ',\'' + ev.number + '\')" ' +
+        'style="padding:4px 10px;border-radius:7px;border:none;background:rgba(0,196,204,0.15);color:var(--aqua,#00c4cc);font-size:11px;font-weight:700;cursor:pointer;margin-left:2px;">Ver</button>';
       html += '</div>';
     });
     html += '</div>';
@@ -10615,6 +10611,20 @@ function slTimingSaveAll() {
   var popup = document.getElementById('sl-timing-popup');
   if (popup) popup.remove();
   slRenderSavedModeIdx(_slTimingHistIdx);
+}
+
+function slDebugAndOpen(idx, ei, globalAi, evNumber) {
+  var hist = slGetSavedLists();
+  var h = hist[idx];
+  var timings = h ? h.timings : {};
+  var byNumber = timings[evNumber] || {};
+  var byEi = timings[ei] || {};
+  var allKeys = Object.keys(timings);
+  alert('evNumber=' + evNumber + ' ei=' + ei + ' globalAi=' + globalAi +
+    '\nTimings keys: ' + allKeys.join(',') +
+    '\nByNumber(n' + globalAi + '): ' + JSON.stringify(byNumber['n' + globalAi]) +
+    '\nByEi(n' + globalAi + '): ' + JSON.stringify(byEi['n' + globalAi]));
+  slOpenAthleteSummary(idx, ei, globalAi);
 }
 
 function slOpenAthleteSummary(histIdx, evIdx, ai) {
