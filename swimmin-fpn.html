@@ -10262,11 +10262,14 @@ function slRenderSavedModeIdx(idx) {
     html += '</div>';
     ev.athletes.forEach(function(a, globalAi) {
       if (!a.highlight) return;
-      var timingsEv = (h.timings && h.timings[ev.number]) || {};
+      var timingsEv = (h.timings && (h.timings[ev.number] || h.timings[ei])) || {};
       var key = 'n' + globalAi;
       var athTimes = timingsEv[key] || [];
-      // Get final time = last recorded split
-      var finalRaw = athTimes.length > 0 ? athTimes[athTimes.length - 1] : null;
+      // Get final time = last non-empty recorded split
+      var finalRaw = null;
+      for (var ti = athTimes.length - 1; ti >= 0; ti--) {
+        if (athTimes[ti]) { finalRaw = athTimes[ti]; break; }
+      }
       var finalStr = finalRaw ? slFmtInput(finalRaw) : '';
       // Calculate percentage vs seed time
       var pctHtml = '';
@@ -10502,7 +10505,13 @@ function slOpenTiming(histIdx, evIdx, serieFilter) {
         var d = (r + 1) * intv;
         rows += '<tr><td style="padding:6px 8px;font-size:13px;font-weight:600;color:var(--aqua,#00c4cc);white-space:nowrap;border-bottom:1px solid ' + border + ';">' + d + 'm</td>';
         athletes.forEach(function(a) {
-          var globalAi = allMatched.indexOf(a);
+          var globalAi = -1;
+          for (var gi = 0; gi < ev.athletes.length; gi++) {
+            if (ev.athletes[gi].name === a.name && ev.athletes[gi].lane === a.lane && ev.athletes[gi].serie === a.serie) {
+              globalAi = gi; break;
+            }
+          }
+          if (globalAi < 0) globalAi = 0;
           var key  = 'n' + globalAi;
           var raw  = (timings[key] && timings[key][r]) || '';
           var fmtVal = raw ? slFmtInput(raw) : '';
