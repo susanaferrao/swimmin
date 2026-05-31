@@ -10258,22 +10258,18 @@ function slRenderSavedModeIdx(idx) {
     if (dist) html += ' · ' + dist + 'm';
     html += '</span>';
     html += '</div></div>';
-    html += '<button onclick="slOpenTiming(' + idx + ',' + ei + ')" style="flex-shrink:0;padding:7px 12px;border-radius:8px;border:none;background:var(--aqua,#00c4cc);color:#001f3a;font-size:12px;font-weight:700;cursor:pointer;">⏱ Tempos</button>';
+    html += '<button onclick="slOpenTiming(' + idx + ',' + ei + ',null)" style="flex-shrink:0;padding:7px 12px;border-radius:8px;border:none;background:var(--aqua,#00c4cc);color:#001f3a;font-size:12px;font-weight:700;cursor:pointer;">⏱ Tempos</button>';
     html += '</div>';
-    matched.forEach(function(a, ai) {
-      // Find index in ev.athletes by name+lane (referências podem ser cópias)
-      var globalAi = -1;
-      for (var gi = 0; gi < ev.athletes.length; gi++) {
-        if (ev.athletes[gi].name === a.name && ev.athletes[gi].lane === a.lane && ev.athletes[gi].serie === a.serie) {
-          globalAi = gi; break;
-        }
-      }
-      if (globalAi < 0) globalAi = ai;
-      var timingsEv = (h.timings && h.timings[ei]) || {};
+    ev.athletes.forEach(function(a, globalAi) {
+      if (!a.highlight) return;
+      var timingsEv = (h.timings && (h.timings[ev.number] || h.timings[ei])) || {};
       var key = 'n' + globalAi;
       var athTimes = timingsEv[key] || [];
-      // Get final time = last recorded split
-      var finalRaw = athTimes.length > 0 ? athTimes[athTimes.length - 1] : null;
+      // Get final time = last non-empty recorded split
+      var finalRaw = null;
+      for (var ti = athTimes.length - 1; ti >= 0; ti--) {
+        if (athTimes[ti]) { finalRaw = athTimes[ti]; break; }
+      }
       var finalStr = finalRaw ? slFmtInput(finalRaw) : '';
       // Calculate percentage vs seed time
       var pctHtml = '';
@@ -10290,18 +10286,14 @@ function slRenderSavedModeIdx(idx) {
       html += '<div style="display:flex;align-items:center;padding:8px 14px;border-top:1px solid ' + border + ';font-size:12px;gap:8px;">';
       html += '<span style="color:var(--aqua,#00c4cc);font-weight:700;min-width:48px;">S'+(a.serie||'?')+'/P'+a.lane+'</span>';
       html += '<span style="flex:1;">' + slCleanName(a.name) + '</span>';
-      // Seed time
       html += '<span style="color:' + muted + ';font-size:11px;">' + (a.time||'NT') + '</span>';
-      // Final time + percentage
       if (finalStr) {
         html += '<span style="font-weight:600;font-size:12px;margin-left:4px;">' + finalStr + '</span>';
         html += pctHtml;
       }
-      // Ver button (only if has timings)
-      if (hasTimings) {
-        html += '<button onclick="slOpenAthleteSummary(' + idx + ',' + ei + ',' + globalAi + ')" ' +
-          'style="padding:4px 10px;border-radius:7px;border:none;background:rgba(0,196,204,0.15);color:var(--aqua,#00c4cc);font-size:11px;font-weight:700;cursor:pointer;margin-left:2px;">Ver</button>';
-      }
+      // Always show Ver button — debug
+      html += '<button onclick="slDebugAndOpen(' + idx + ',' + ei + ',' + globalAi + ',\'' + ev.number + '\')"  /* keep as is */ ' +
+        'style="padding:4px 10px;border-radius:7px;border:none;background:rgba(0,196,204,0.15);color:var(--aqua,#00c4cc);font-size:11px;font-weight:700;cursor:pointer;margin-left:2px;">Ver</button>';
       html += '</div>';
     });
     html += '</div>';
@@ -10337,6 +10329,7 @@ function slRenderSavedModeIdx(idx) {
 
 
 function slLoadSaved(i) {
+  _slTimingHistIdx = i;
   slRenderSavedModeIdx(i);
   var el = document.getElementById('crono-startlist-content');
   if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
@@ -10384,9 +10377,9 @@ function slCsToStr(cs) {
 }
 
 function slStrToCs(str) {
-  // "1:00,34" → centiseconds
+  // "1:00,34" ou "1:00.34" → centiseconds
   if (!str) return 0;
-  var s = str.replace(',', '.');
+  var s = str.replace(',', '.').trim();
   var parts = s.split(':');
   if (parts.length === 2) {
     return Math.round((parseInt(parts[0]) * 60 + parseFloat(parts[1])) * 100);
@@ -10397,10 +10390,49 @@ function slStrToCs(str) {
 
 var _slTimingHistIdx = 0;
 var _slTimingEvIdx   = 0;
+var _slTimingSerieFilter = null;
 
-function slOpenTiming(histIdx, evIdx) {
+function slChooseSerie(histIdx, evIdx, serieKeys, ev) {
+  var isLight = document.documentElement.classList.contains('light-mode');
+  var bg = isLight ? '#fff' : '#0d2233';
+  var text = isLight ? '#1a3a4a' : '#e8f4ff';
+  var muted = isLight ? '#6b8fa8' : 'rgba(180,210,240,0.7)';
+  var border = isLight ? '#d0e4f0' : 'rgba(255,255,255,0.1)';
+
+  var existing = document.getElementById('sl-serie-popup');
+  if (existing) existing.remove();
+  var existingOv = document.getElementById('sl-serie-overlay');
+  if (existingOv) existingOv.remove();
+
+  var overlay = document.createElement('div');
+  overlay.id = 'sl-serie-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:99998;';
+
+  var popup = document.createElement('div');
+  popup.id = 'sl-serie-popup';
+  popup.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:99999;background:' + bg + ';border-radius:18px;padding:24px 22px;max-width:320px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,0.3);font-family:DM Sans,sans-serif;border-top:4px solid var(--aqua,#00c4cc);';
+
+  var buttons = serieKeys.map(function(s) {
+    return '<button onclick="document.getElementById(\'sl-serie-popup\').remove();document.getElementById(\'sl-serie-overlay\').remove();slOpenTiming(' + histIdx + ',' + evIdx + ',\'' + s + '\')" ' +
+      'style="width:100%;padding:12px;margin-bottom:8px;border-radius:10px;border:1.5px solid ' + border + ';background:transparent;color:' + text + ';font-size:15px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif;text-align:left;">' +
+      'Série ' + s + '</button>';
+  }).join('');
+
+  popup.innerHTML =
+    '<div style="font-size:15px;font-weight:700;color:' + text + ';margin-bottom:6px;">Prova ' + ev.number + '</div>' +
+    '<div style="font-size:13px;color:' + muted + ';margin-bottom:16px;">Escolhe a série:</div>' +
+    buttons +
+    '<button onclick="document.getElementById(\'sl-serie-popup\').remove();document.getElementById(\'sl-serie-overlay\').remove();" ' +
+      'style="width:100%;padding:10px;border-radius:10px;border:1.5px solid ' + border + ';background:transparent;color:' + muted + ';font-size:13px;cursor:pointer;font-family:DM Sans,sans-serif;">Cancelar</button>';
+
+  document.body.appendChild(overlay);
+  document.body.appendChild(popup);
+}
+
+function slOpenTiming(histIdx, evIdx, serieFilter) {
   _slTimingHistIdx = histIdx;
   _slTimingEvIdx   = evIdx;
+  _slTimingSerieFilter = serieFilter;
 
   var hist = slGetSavedLists();
   var h    = hist[histIdx];
@@ -10410,21 +10442,36 @@ function slOpenTiming(histIdx, evIdx) {
 
   var allMatched = ev.athletes.filter(function(a) { return a.highlight; });
   var dist       = ev.dist || slGetDist(ev.name);
-  var timings    = (h.timings && h.timings[evIdx]) || {};
+  var timings    = (h.timings && h.timings[ev.number]) || {};
   var interval   = timings._interval || (dist <= 100 ? 50 : 100);
 
-  // Group matched athletes by serie — only show athletes in same serie together
+  // Group by serie
   var serieMap = {};
   allMatched.forEach(function(a) {
     var k = a.serie || '?';
     if (!serieMap[k]) serieMap[k] = [];
     serieMap[k].push(a);
   });
-  // For display: all athletes from all series (sorted by serie)
-  var matched = allMatched;
+  var serieKeys = Object.keys(serieMap).sort();
+
+  // If multiple series and no filter, ask which
+  if (serieKeys.length > 1 && serieFilter === null) {
+    slChooseSerie(histIdx, evIdx, serieKeys, ev);
+    return;
+  }
+
+  // Show only the selected serie (or all if only one)
+  var serieToShow = serieFilter || serieKeys[0] || '?';
+  var serieFilteredMap = {};
+  if (serieFilter) {
+    serieFilteredMap[serieFilter] = serieMap[serieFilter] || [];
+  } else {
+    serieFilteredMap = serieMap;
+  }
 
   var existing = document.getElementById('sl-timing-popup');
   if (existing) existing.remove();
+
 
   var isLight = document.documentElement.classList.contains('light-mode');
   var bg      = isLight ? '#f5f9fc' : '#0a1929';
@@ -10436,20 +10483,19 @@ function slOpenTiming(histIdx, evIdx) {
   function buildTable(intv) {
     var nSpl = dist > 0 && intv > 0 ? Math.floor(dist / intv) : 0;
     var sections = '';
-
-    Object.keys(serieMap).sort().forEach(function(serie) {
-      var athletes = serieMap[serie];
+    Object.keys(serieFilteredMap).sort().forEach(function(serie) {
+      var athletes = serieFilteredMap[serie];
       // Header row for this serie
       var headers = '<th style="padding:6px 8px;background:rgba(0,196,204,0.08);color:' + muted + ';font-size:10px;letter-spacing:.5px;text-transform:uppercase;font-weight:700;white-space:nowrap;">Distância</th>';
-      athletes.forEach(function(a, ai) {
-        // Find index in allMatched by name+lane
+      athletes.forEach(function(a) {
+        // Find real index in ev.athletes (consistent with render)
         var globalAi = -1;
-        for (var gi = 0; gi < allMatched.length; gi++) {
-          if (allMatched[gi].name === a.name && allMatched[gi].lane === a.lane && allMatched[gi].serie === a.serie) {
+        for (var gi = 0; gi < ev.athletes.length; gi++) {
+          if (ev.athletes[gi].name === a.name && ev.athletes[gi].lane === a.lane && ev.athletes[gi].serie === a.serie) {
             globalAi = gi; break;
           }
         }
-        if (globalAi < 0) globalAi = ai;
+        if (globalAi < 0) { for (var gi2 = 0; gi2 < allMatched.length; gi2++) { if (allMatched[gi2].name===a.name) { globalAi=gi2; break; } } }
         headers += '<th style="padding:8px 10px;background:rgba(0,196,204,0.08);color:' + text + ';font-size:12px;font-weight:700;border-left:1px solid ' + border + ';min-width:88px;">' +
           slCleanName(a.name) +
           '<div style="font-size:10px;color:' + muted + ';font-weight:400;">S' + (a.serie||'?') + '/P' + a.lane + '</div>' +
@@ -10461,7 +10507,13 @@ function slOpenTiming(histIdx, evIdx) {
         var d = (r + 1) * intv;
         rows += '<tr><td style="padding:6px 8px;font-size:13px;font-weight:600;color:var(--aqua,#00c4cc);white-space:nowrap;border-bottom:1px solid ' + border + ';">' + d + 'm</td>';
         athletes.forEach(function(a) {
-          var globalAi = allMatched.indexOf(a);
+          var globalAi = -1;
+          for (var gi = 0; gi < ev.athletes.length; gi++) {
+            if (ev.athletes[gi].name === a.name && ev.athletes[gi].lane === a.lane && ev.athletes[gi].serie === a.serie) {
+              globalAi = gi; break;
+            }
+          }
+          if (globalAi < 0) globalAi = 0;
           var key  = 'n' + globalAi;
           var raw  = (timings[key] && timings[key][r]) || '';
           var fmtVal = raw ? slFmtInput(raw) : '';
@@ -10530,14 +10582,15 @@ function slTimingSetInterval(interval) {
   var h = hist[_slTimingHistIdx];
   if (h) {
     if (!h.timings) h.timings = {};
-    if (!h.timings[_slTimingEvIdx]) h.timings[_slTimingEvIdx] = {};
-    h.timings[_slTimingEvIdx]._interval = interval;
+    var _evNum = h.results[_slTimingEvIdx] ? h.results[_slTimingEvIdx].number : _slTimingEvIdx;
+    if (!h.timings[_evNum]) h.timings[_evNum] = {};
+    h.timings[_evNum]._interval = interval;
     // Save all current input values before rebuilding
     var inputs = document.querySelectorAll('#sl-timing-popup input[data-hist]');
     inputs.forEach(function(inp) { slTimingSave(inp); });
     try { localStorage.setItem(SL_HIST_KEY, JSON.stringify(hist)); } catch(e) {}
   }
-  slOpenTiming(_slTimingHistIdx, _slTimingEvIdx);
+  slOpenTiming(_slTimingHistIdx, _slTimingEvIdx, _slTimingSerieFilter);
 }
 
 function slTimingInput(inp) {
@@ -10587,17 +10640,18 @@ function slTimingSave(inp) {
   var h = hist[histIdx];
   if (!h) return;
   if (!h.timings) h.timings = {};
-  if (!h.timings[evIdx]) h.timings[evIdx] = {};
+  var evNum = (h.results[evIdx] && h.results[evIdx].number) || evIdx;
+  if (!h.timings[evNum]) h.timings[evNum] = {};
   var key = 'n' + ai;
-  if (!h.timings[evIdx][key]) h.timings[evIdx][key] = [];
-  h.timings[evIdx][key][row] = raw; // save raw digits
+  if (!h.timings[evNum][key]) h.timings[evNum][key] = [];
+  h.timings[evNum][key][row] = raw; // save raw digits
   try { localStorage.setItem(SL_HIST_KEY, JSON.stringify(hist)); } catch(e) {}
 }
 
 function slTimingSaveAll() {
-  // Save all current inputs, including those not yet blurred
   var inputs = document.querySelectorAll('#sl-timing-popup input[data-hist]');
   var hist = slGetSavedLists();
+  var count = 0;
   inputs.forEach(function(inp) {
     var raw = inp.value.replace(/\D/g, '');
     if (!raw) return;
@@ -10608,32 +10662,44 @@ function slTimingSaveAll() {
     var h = hist[histIdx];
     if (!h) return;
     if (!h.timings) h.timings = {};
-    if (!h.timings[evIdx]) h.timings[evIdx] = {};
+    var evNum = (h.results[evIdx] && h.results[evIdx].number) || evIdx;
+    if (!h.timings[evNum]) h.timings[evNum] = {};
     var key = 'n' + ai;
-    if (!h.timings[evIdx][key]) h.timings[evIdx][key] = [];
-    h.timings[evIdx][key][row] = raw;
+    if (!h.timings[evNum][key]) h.timings[evNum][key] = [];
+    h.timings[evNum][key][row] = raw;
+    count++;
   });
-  try { localStorage.setItem(SL_HIST_KEY, JSON.stringify(hist)); } catch(e) {}
+  try { localStorage.setItem(SL_HIST_KEY, JSON.stringify(hist)); } catch(e) { alert('Erro: ' + e); return; }
   var popup = document.getElementById('sl-timing-popup');
   if (popup) popup.remove();
   slRenderSavedModeIdx(_slTimingHistIdx);
 }
 
-function slOpenAthleteSummary(histIdx, evIdx, ai) {
+function slDebugAndOpen(idx, ei, globalAi, evNumber) {
+  slOpenAthleteSummary(idx, evNumber, globalAi);
+}
+
+function slOpenAthleteSummary(histIdx, evNumber, ai) {
   var hist = slGetSavedLists();
   var h    = hist[histIdx];
   if (!h) return;
-  var ev   = h.results[evIdx];
+  // Find ev by number (not array index)
+  var ev = null;
+  for (var i = 0; i < h.results.length; i++) {
+    if (String(h.results[i].number) === String(evNumber)) { ev = h.results[i]; break; }
+  }
   if (!ev) return;
   var a    = ev.athletes[ai];
   if (!a) return;
 
-  var timingsEv = (h.timings && h.timings[evIdx]) || {};
+  var timingsEv = (h.timings && (h.timings[evNumber] || h.timings[String(evNumber)])) || {};
   var key       = 'n' + ai;
   var rawTimes  = timingsEv[key] || [];
-  var interval  = timingsEv._interval || 100;
+  var interval  = timingsEv._interval || (slGetDist(ev.name) <= 100 ? 50 : 100);
   var dist      = ev.dist || slGetDist(ev.name);
-  var nSpl      = dist > 0 && interval > 0 ? Math.floor(dist / interval) : rawTimes.length;
+  // Use actual recorded times count, or calculated splits — whichever is larger
+  var calcSpl   = dist > 0 && interval > 0 ? Math.floor(dist / interval) : 0;
+  var nSpl      = Math.max(calcSpl, rawTimes.filter(Boolean).length);
 
   // Build split data
   var splits = []; // {d, cumCs, splitCs}
@@ -10646,8 +10712,12 @@ function slOpenAthleteSummary(histIdx, evIdx, ai) {
   }
 
   var seedCs  = slStrToCs(a.time || '');
-  var finalCs = splits.length > 0 && splits[splits.length-1].cumCs !== null ? splits[splits.length-1].cumCs : null;
-  var pct     = (seedCs > 0 && finalCs !== null) ? Math.round((seedCs / finalCs) * 1000) / 10 : null;
+  // Final time = last cumulative time recorded
+  var finalCs = null;
+  for (var r2 = splits.length - 1; r2 >= 0; r2--) {
+    if (splits[r2].cumCs !== null) { finalCs = splits[r2].cumCs; break; }
+  }
+  var pct = (seedCs > 0 && finalCs !== null) ? Math.round((seedCs / finalCs) * 1000) / 10 : null;
 
   var isLight = document.documentElement.classList.contains('light-mode');
   var bg      = isLight ? '#f5f9fc' : '#0a1929';
@@ -10724,7 +10794,7 @@ function slOpenAthleteSummary(histIdx, evIdx, ai) {
     // Chart
     '<div style="background:' + cardBg + ';border-radius:12px;padding:14px;border:1px solid ' + border + ';">' +
       '<div style="font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:' + muted + ';margin-bottom:10px;">Parciais por distância</div>' +
-      '<canvas id="' + chartId + '" height="200"></canvas>' +
+      '<div style="position:relative;height:200px;"><canvas id="' + chartId + '"></canvas></div>' +
     '</div>' +
 
     '</div>';
@@ -10751,42 +10821,97 @@ function slOpenAthleteSummary(histIdx, evIdx, ai) {
 function slDrawAthChart(chartId, splits, interval, isLight) {
   var ctx = document.getElementById(chartId);
   if (!ctx) return;
+
   var labels = splits.map(function(s) { return s.d + 'm'; });
   var data   = splits.map(function(s) { return s.splitCs !== null ? s.splitCs / 100 : null; });
-  var gridColor  = isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.06)';
-  var tickColor  = isLight ? '#6b8fa8' : 'rgba(180,210,240,0.6)';
+
+  // Find min and max for colour scale
+  var valid = data.filter(function(v) { return v !== null; });
+  var minV = Math.min.apply(null, valid);
+  var maxV = Math.max.apply(null, valid);
+
+  function splitColor(v) {
+    if (v === null || maxV === minV) return '#f1c40f';
+    // 0 = fastest (green), 1 = slowest (red)
+    var t = (v - minV) / (maxV - minV);
+    if (t < 0.5) {
+      // green → yellow
+      var r = Math.round(39  + (241-39)  * (t * 2));
+      var g = Math.round(174 + (196-174) * (t * 2));
+      var b = Math.round(96  + (15-96)   * (t * 2));
+      return 'rgb(' + r + ',' + g + ',' + b + ')';
+    } else {
+      // yellow → red
+      var t2 = (t - 0.5) * 2;
+      var r2 = Math.round(241 + (231-241) * t2);
+      var g2 = Math.round(196 + (76-196)  * t2);
+      var b2 = Math.round(15  + (60-15)   * t2);
+      return 'rgb(' + r2 + ',' + g2 + ',' + b2 + ')';
+    }
+  }
+
+  var gridColor = isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.06)';
+  var tickColor = isLight ? '#6b8fa8' : 'rgba(180,210,240,0.6)';
+
   new Chart(ctx, {
     type: 'line',
     data: {
       labels: labels,
       datasets: [{
-        label: 'Parcial (s)',
+        label: 'Parcial',
         data: data,
-        borderColor: '#00c4cc',
-        backgroundColor: 'rgba(0,196,204,0.1)',
-        pointBackgroundColor: '#00c4cc',
-        borderWidth: 2.5,
+        borderColor: function(ctx) { return '#00c4cc'; },
+        segment: {
+          borderColor: function(ctx) {
+            var v = ctx.p1.parsed.y;
+            return splitColor(v);
+          }
+        },
+        backgroundColor: 'transparent',
+        pointBackgroundColor: function(ctx) {
+          return splitColor(ctx.parsed.y);
+        },
+        pointBorderColor: '#fff',
+        pointBorderWidth: 1.5,
+        borderWidth: 3,
         tension: 0.3,
-        pointRadius: 5,
+        pointRadius: 6,
         spanGaps: true
       }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              var v = ctx.parsed.y;
+              if (v === null || v === undefined) return '';
+              return slCsToStr(Math.round(v * 100));
+            }
+          }
+        }
+      },
       scales: {
-        x: { ticks: { color: tickColor, font: { size: 11 } }, grid: { color: gridColor }, border: { display: false } },
+        x: {
+          ticks: { color: tickColor, font: { size: 11 } },
+          grid: { color: gridColor },
+          border: { display: false }
+        },
         y: {
+          reverse: true,
           ticks: {
-            color: tickColor, font: { size: 11 },
+            color: tickColor,
+            font: { size: 11 },
             callback: function(v) {
-              var m = Math.floor(v / 60);
-              var s = (v % 60).toFixed(2);
-              return m > 0 ? m + ':' + ('0'+Math.floor(v%60)).slice(-2) : v.toFixed(1) + 's';
+              var cs = Math.round(v * 100);
+              return slCsToStr(cs);
             }
           },
-          grid: { color: gridColor }, border: { display: false }
+          grid: { color: gridColor },
+          border: { display: false }
         }
       }
     }
