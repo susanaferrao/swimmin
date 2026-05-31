@@ -10674,16 +10674,6 @@ function slTimingSaveAll() {
 }
 
 function slDebugAndOpen(idx, ei, globalAi, evNumber) {
-  var hist = slGetSavedLists();
-  var h = hist[idx];
-  var timings = h ? h.timings : {};
-  var byNumber = timings[evNumber] || {};
-  var byEi = timings[ei] || {};
-  var allKeys = Object.keys(timings);
-  alert('evNumber=' + evNumber + ' ei=' + ei + ' globalAi=' + globalAi +
-    '\nTimings keys: ' + allKeys.join(',') +
-    '\nByNumber(n' + globalAi + '): ' + JSON.stringify(byNumber['n' + globalAi]) +
-    '\nByEi(n' + globalAi + '): ' + JSON.stringify(byEi['n' + globalAi]));
   slOpenAthleteSummary(idx, evNumber, globalAi);
 }
 
@@ -10700,14 +10690,14 @@ function slOpenAthleteSummary(histIdx, evNumber, ai) {
   var a    = ev.athletes[ai];
   if (!a) return;
 
-  var timingsEv = (h.timings && h.timings[ev.number]) || {};
+  var timingsEv = (h.timings && (h.timings[evNumber] || h.timings[String(evNumber)])) || {};
   var key       = 'n' + ai;
   var rawTimes  = timingsEv[key] || [];
-  // Debug: if empty try to find by any key
-  console.log('Summary: evNum=' + ev.number + ' ai=' + ai + ' key=' + key + ' timingsEvKeys=' + JSON.stringify(Object.keys(timingsEv)) + ' rawTimes=' + JSON.stringify(rawTimes));
-  var interval  = timingsEv._interval || 100;
+  var interval  = timingsEv._interval || (slGetDist(ev.name) <= 100 ? 50 : 100);
   var dist      = ev.dist || slGetDist(ev.name);
-  var nSpl      = dist > 0 && interval > 0 ? Math.floor(dist / interval) : rawTimes.length;
+  // Use actual recorded times count, or calculated splits — whichever is larger
+  var calcSpl   = dist > 0 && interval > 0 ? Math.floor(dist / interval) : 0;
+  var nSpl      = Math.max(calcSpl, rawTimes.filter(Boolean).length);
 
   // Build split data
   var splits = []; // {d, cumCs, splitCs}
