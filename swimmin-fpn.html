@@ -10835,8 +10835,8 @@ function slDrawAthChart(chartId, splits, interval, isLight) {
   var ctx = document.getElementById(chartId);
   if (!ctx) return;
 
-  var labels = splits.map(function(s) { return s.d + 'm'; });
-  var data   = splits.map(function(s) { return s.splitCs !== null ? s.splitCs / 100 : null; });
+  var labels = ['0m'].concat(splits.map(function(s) { return s.d + 'm'; }));
+  var data   = [null].concat(splits.map(function(s) { return s.splitCs !== null ? s.splitCs / 100 : null; }));
 
   // Find min and max for colour scale
   var valid = data.filter(function(v) { return v !== null; });
