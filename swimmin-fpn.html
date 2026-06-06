@@ -4142,11 +4142,11 @@ var recordesEstafetas = {
           "nadadores": "Rosa Maria Oliveira · Porfirio Braga Nunes · Alexandre Ferreira Amorim · Catarina Maria Ferreira"
         },
         "100_L": {
-          "tempo": "3:38,41",
-          "clube": "Sporting Clube de Portugal",
-          "data": "30/05/2026",
-          "local": "COP Coimbra",
-          "nadadores": "André Miguel Ramos · Pedro Bethlem Tigre · Laura Espínola Barbeito · Anna Fomina"
+          "tempo": "3:39,15",
+          "clube": "Sporting Clube de Braga",
+          "data": "31/05/2025",
+          "local": "Coimbra",
+          "nadadores": "Diogo Alexandre Oliveira · Filipe Manso Laranjo · Ana Pinho Rodrigues · Maria Gomes Neves"
         },
         "50_E": {
           "tempo": "1:50,71",
@@ -4172,11 +4172,11 @@ var recordesEstafetas = {
           "nadadores": "Rosa Maria Oliveira · Porfirio Braga Nunes · Alexandre Ferreira Amorim · Catarina Maria Ferreira"
         },
         "100_L": {
-          "tempo": "3:38,41",
+          "tempo": "3:42,82",
           "clube": "Sporting Clube de Portugal",
-          "data": "30/05/2026",
-          "local": "COP Coimbra",
-          "nadadores": "André Miguel Ramos · Pedro Bethlem Tigre · Laura Espínola Barbeito · Anna Fomina"
+          "data": "31/05/2025",
+          "local": "Coimbra",
+          "nadadores": "Maria Ferreira Moura · Anna Fomina · Kaio Araujo Faftine · Pedro Bethlem Tigre"
         },
         "50_E": {
           "tempo": "1:50,71",
@@ -4745,7 +4745,7 @@ var recordesEstafetas = {
           "tempo": "3:38,72",
           "clube": "Futebol Clube do Porto",
           "data": "14/11/2021",
-          "local": "Felgueiras",
+          "local": "Felguerias",
           "nadadores": "Pedro Miguel Santos · Ana Rita Ramos · Porfirio Braga Nunes · Rosa Maria Oliveira"
         },
         "50_E": {
@@ -4892,31 +4892,6 @@ var recordesEstafetas = {
           "data": "29/06/2019",
           "local": "Alges",
           "nadadores": "Maria Soares Almeida · Rodrigo Ferreira Mimoso · Francisc Gututui · Francisca Santos Ferreira"
-        }
-      },
-      "15": {
-        "50_L": {
-          "tempo": "1:41,68",
-          "clube": "Clube dos Galitos / Bresimar",
-          "data": "30/05/2026",
-          "local": "Mealhada",
-          "nadadores": "Miguel Miranda Fernandes · Daniel Volkov · Santiago Vagos Valente · Francisco Félix Vale"
-        }
-      },
-      "15-16": {
-        "50_L": {
-          "tempo": "1:42,86",
-          "clube": "Clube dos Galitos / Bresimar",
-          "data": "30/05/2026",
-          "local": "Mealhada",
-          "nadadores": "Miguel Miranda Fernandes · Carolina Ratola Taveira · Daniel Volkov · Zoe Pinto Nunes"
-        },
-        "100_E": {
-          "tempo": "4:16,56",
-          "clube": "Clube dos Galitos / Bresimar",
-          "data": "30/05/2026",
-          "local": "Mealhada",
-          "nadadores": "Carolina Ratola Taveira · Raquel Domingos Ré · Miguel Miranda Fernandes · Daniel Volkov"
         }
       }
     }
@@ -6594,7 +6569,7 @@ var recordesIdade = {
         "400_L": {tempo:"4:15,99", nome:"Oliveira, Pedro Fontoura", data:"11/07/2004", local:"Badajoz (ESP)"},
         "800_L": {tempo:"8:54,25", nome:"Oliveira, Pedro Fontoura", data:"29/05/2004", local:"Lisboa"},
         "1500_L": {tempo:"16:43,48", nome:"Oliveira, Pedro Fontoura", data:"19/06/2004", local:"Rio Maior"},
-        "50_C": {tempo:"29,44", nome:"Santos, João Daniel", data:"31/05/2026", local:"COP Coimbra"},
+        "50_C": {tempo:"29,54", nome:"Santos, João Daniel", data:"18/04/2026", local:"Coimbra"},
         "100_C": {tempo:"1:01,39", nome:"Ribas, Alexandre Lages", data:"22/07/2011", local:"Lisboa"},
         "200_C": {tempo:"2:14,56", nome:"Ribas, Alexandre Lages", data:"23/07/2011", local:"Lisboa"},
         "50_B": {tempo:"30,39", nome:"tempo limite", data:"", local:""},
@@ -11846,19 +11821,41 @@ function slPrint() {
   setTimeout(function() { win.print(); }, 300);
 }
 
+// ===== PARTILHA / GUARDAR PDF =====
+// Tenta Web Share API (abre folha nativa de partilha/guardar).
+// Fallback: abre nova tab para o utilizador guardar/imprimir manualmente.
+async function swimminShareHTML(htmlContent, filename) {
+  var blob = new Blob([htmlContent], { type: 'text/html' });
+  var file = new File([blob], filename, { type: 'text/html' });
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({ files: [file], title: 'SwimMin' });
+      return;
+    } catch(e) {
+      if (e.name === 'AbortError') return; // utilizador cancelou
+    }
+  }
+  // Fallback: abrir nova tab
+  var url = URL.createObjectURL(blob);
+  var win = window.open(url, '_blank');
+  if (!win) {
+    // Se popup bloqueado, fazer download directo
+    var a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
+  } else {
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 10000);
+  }
+}
+
 function slExportPDF() {
   if (!_slFilteredResults || !_slFilteredResults.length) { alert('Filtra primeiro a start list.'); return; }
   var res = slBuildPrintHTML();
   var fname = 'startlist_' + (_slClubTags[0] || 'clube').replace(/\s+/g, '_') + '_' + new Date().toISOString().slice(0, 10) + '.html';
   var full = '<!DOCTYPE html><html lang="pt"><head><meta charset="UTF-8"><title>Start List</title>' +
     '<style>' + res.css + '</style></head><body>' + res.html + '</body></html>';
-  var blob = new Blob([full], {type: 'text/html'});
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a');
-  a.href = url; a.download = fname;
-  document.body.appendChild(a);
-  a.click();
-  setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
+  swimminShareHTML(full, fname);
 }
 
 function slSetStatus(id, msg, type) {
@@ -12493,6 +12490,7 @@ var cronoConfig = {
   piscina: '',
   distancia: 0,
   eventoNome: '',
+  negativeSplit: false,
   grupos: [] // [{nome, nadadores:[{nome,cor}]}]
 };
 
@@ -12614,7 +12612,10 @@ function cronoRenderConfig() {
   var tabsHtml = '';
   for (var i = 0; i < nGrupos; i++) {
     var hasSw = cronoConfig.grupos[i].nadadores.filter(function(n){ return n.nome.trim(); }).length > 0;
-    tabsHtml += '<button class="crono-tab' + (i === cronoActiveTab ? ' active' : '') + (hasSw ? ' has-swimmers' : '') + '" onclick="cronoCfgTab(' + i + ')">' + cronoConfig.grupos[i].nome + '</button>';
+    tabsHtml += '<button class="crono-tab' + (i === cronoActiveTab ? ' active' : '') + (hasSw ? ' has-swimmers' : '') + '" onclick="cronoCfgTab(' + i + ')" style="position:relative;padding-right:' + (nGrupos > 1 ? '28px' : '12px') + ';">' +
+      cronoConfig.grupos[i].nome +
+      (nGrupos > 1 ? '<span onclick="event.stopPropagation();cronoRemoveGroupIdx(' + i + ')" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:14px;line-height:1;opacity:0.5;padding:2px 3px;border-radius:4px;" title="Remover grupo">×</span>' : '') +
+    '</button>';
   }
   if (nGrupos < CRONO_MAX_GROUPS) {
     tabsHtml += '<button class="crono-tab" onclick="cronoAddGroup()" style="border-style:dashed;">+ Grupo</button>';
@@ -12644,12 +12645,15 @@ function cronoRenderConfig() {
       '<div class="crono-field"><label class="crono-label">Distância total (m)</label>' +
         '<input class="crono-input" type="number" min="50" step="50" placeholder="ex: 400" value="' + (cronoConfig.distancia || '') + '" onchange="cronoCfgDist(this.value)" onblur="cronoCfgDist(this.value)" autocomplete="off"></div>' +
     '</div>' +
-    '<div style="margin-bottom:16px;font-size:11px;color:var(--muted);">Cada toque = ' + infoToque + infoToques + '</div>' +
+    '<div style="margin-bottom:8px;font-size:11px;color:var(--muted);">Cada toque = ' + infoToque + infoToques + '</div>' +
+    '<label style="display:flex;align-items:center;gap:10px;padding:6px 0 12px;cursor:pointer;">' +
+      '<input type="checkbox" id="crono-negative-cb" ' + (cronoConfig.negativeSplit ? 'checked' : '') + ' onchange="cronoConfig.negativeSplit=this.checked" style="width:18px;height:18px;cursor:pointer;accent-color:var(--aqua,#00c4cc);">' +
+      '<span style="font-size:13px;font-weight:600;color:var(--text,#1a3a4a);">Negative split</span>' +
+    '</label>' +
     // 2º — Divisor
     '<div style="border-top:1px solid #e0edf5;margin-bottom:16px;"></div>' +
     // 3º — Tabs dos grupos
     '<div class="crono-tabs">' + tabsHtml + '</div>' +
-    (nGrupos > 1 ? '<button onclick="cronoRemoveGroup()" style="font-size:11px;color:#c0392b;background:none;border:none;cursor:pointer;margin-bottom:10px;padding:0;">Remover ' + g.nome + '</button>' : '') +
     '<div class="crono-field"><label class="crono-label">Nadadores — ' + g.nome + '</label>' +
       '<div id="crono-swimmers-list">' + swHtml + '</div></div>' +
     '<div style="border-top:1px solid #e0edf5;margin:16px 0 12px;"></div>' +
@@ -12693,6 +12697,19 @@ function cronoRemoveGroup() {
   var nome = cronoConfig.grupos[cronoActiveTab].nome;
   cronoShowUndoPanel('Remover ' + nome + '?', function() {
     cronoConfig.grupos.splice(cronoActiveTab, 1);
+    for (var i = 0; i < cronoConfig.grupos.length; i++) {
+      cronoConfig.grupos[i].nome = 'Grupo ' + (i+1);
+    }
+    cronoActiveTab = Math.min(cronoActiveTab, cronoConfig.grupos.length - 1);
+    cronoRenderConfig();
+  });
+}
+
+function cronoRemoveGroupIdx(idx) {
+  if (cronoConfig.grupos.length <= 1) return;
+  var nome = cronoConfig.grupos[idx].nome;
+  cronoShowUndoPanel('Remover ' + nome + '?', function() {
+    cronoConfig.grupos.splice(idx, 1);
     for (var i = 0; i < cronoConfig.grupos.length; i++) {
       cronoConfig.grupos[i].nome = 'Grupo ' + (i+1);
     }
@@ -12764,6 +12781,7 @@ function cronoCfgIniciar() {
     distPorToque: distPorToque,
     totalToques: totalToques,
     eventoNome: cronoConfig.eventoNome || '',
+    negativeSplit: !!cronoConfig.negativeSplit,
     grupos: []
   };
   for (var gi = 0; gi < cronoConfig.grupos.length; gi++) {
@@ -12796,20 +12814,83 @@ function cronoRenderArranque() {
     var started = g.started;
     btns += '<button class="crono-start-btn' + (started ? ' started' : '') + '" onclick="cronoStartGroup(' + i + ')">' +
       (started ? '✓ ' + g.nome + ' a nadar' : 'Começar ' + g.nome) +
-      '<div style="font-size:11px;font-weight:400;margin-top:3px;opacity:0.8;">' + g.nadadores.length + ' nadador' + (g.nadadores.length!==1?'es':'') + '</div>' +
+      '<div style="font-size:11px;font-weight:400;margin-top:3px;opacity:0.8;">' + g.nadadores.map(function(n){ return n.nome; }).join(' · ') + '</div>' +
     '</button>';
   }
 
   var allStarted = cronoSession.grupos.every(function(g){ return g.started; });
+  var anyStarted = cronoSession.grupos.some(function(g){ return g.started; });
+
+  // Botões dos nadadores já iniciados
+  var swimHtml = '';
+  if (anyStarted) {
+    for (var gi = 0; gi < cronoSession.grupos.length; gi++) {
+      var grp = cronoSession.grupos[gi];
+      if (!grp.started) continue;
+      for (var ni = 0; ni < grp.nadadores.length; ni++) {
+        var n = grp.nadadores[ni];
+        var toques = n.splits ? n.splits.length : 0;
+        var distPerc = toques * cronoSession.distPorToque;
+        var acumStr = toques > 0 ? cronoFmtMs(n.splits.reduce(function(a,b){return a+b;},0)) : '—';
+        var mediaStr = cronoCalcMedia(n);
+        var lastSplit = toques > 0 ? cronoFmtMs(n.splits[toques-1]) : '—';
+        var totalToques = cronoSession.totalToques;
+        var isLast = (toques === totalToques - 1) && !n.finished;
+        var cardBg = n.finished ? '#b0b8c1' : n.cor;
+        var txtColor = cronoTextColor(cardBg);
+        var txtColorSub = cronoTextColorSub(cardBg);
+        var txtShadow = cronoShadow(cardBg);
+        var parcialLabel = (parseInt(cronoSession.distPorToque) < 100) ? 'Parcial 50m: ' : 'Parcial: ';
+        var innerHtml = '';
+        if (n.finished) {
+          innerHtml = '<div class="crono-btn-name" style="color:' + txtColor + ';text-shadow:' + txtShadow + ';">' + n.nome + '</div>' +
+            '<div style="font-size:10px;font-weight:700;color:' + txtColorSub + ';text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">Terminado</div>' +
+            '<div class="crono-btn-info" style="color:' + txtColorSub + ';"><strong>' + cronoFmtTotal(n) + '</strong><br>Média 100: ' + mediaStr + '</div>';
+        } else if (isLast) {
+          innerHtml = '<div class="crono-btn-finish-label">Terminar</div>' +
+            '<div class="crono-btn-name" style="color:' + txtColor + ';text-shadow:' + txtShadow + ';">' + n.nome + '</div>' +
+            '<div class="crono-btn-info" style="color:' + txtColorSub + ';"><strong>' + distPerc + 'm</strong><br>Acum: ' + acumStr + '<br>Média 100: ' + mediaStr + '<br>' + parcialLabel + lastSplit + '</div>';
+        } else {
+          innerHtml = '<div class="crono-btn-name" style="color:' + txtColor + ';text-shadow:' + txtShadow + ';">' + n.nome + '</div>' +
+            '<div class="crono-btn-info" style="color:' + txtColorSub + ';"><strong>' + distPerc + 'm</strong><br>Acum: ' + acumStr + '<br>Média 100: ' + mediaStr + '<br>' + parcialLabel + lastSplit + '</div>';
+        }
+        var btnClass = 'crono-swimmer-btn' + (n.finished ? ' finished' : '');
+        swimHtml += '<div class="' + btnClass + '" style="background:' + cardBg + ';" ' +
+          'data-gi="' + gi + '" data-ni="' + ni + '" ' +
+          'ontouchstart="cronoLongStart(event,' + gi + ',' + ni + ')" ' +
+          'ontouchend="cronoLongEnd(event,' + gi + ',' + ni + ')" ' +
+          'ontouchcancel="cronoLongCancel()" ' +
+          'onmousedown="cronoLongStart(event,' + gi + ',' + ni + ')" ' +
+          'onmouseup="cronoLongEnd(event,' + gi + ',' + ni + ')" ' +
+          'onmouseleave="cronoLongCancel()">' +
+          innerHtml + '</div>';
+      }
+    }
+  }
+
+  var undoLabel = cronoLastTouch ?
+    ('Anular toque — ' + cronoSession.grupos[cronoLastTouch.gi].nadadores[cronoLastTouch.ni].nome) :
+    'Anular último toque';
 
   el.innerHTML =
-    '<div style="margin-bottom:16px;">' +
+    (anyStarted ?
+      '<div class="crono-action-bar">' +
+        '<button class="crono-undo-btn" onclick="cronoUndoLast()">' + undoLabel + '</button>' +
+        '<div style="text-align:center;background:#f5f9fc;border-radius:8px;padding:6px 8px;flex:1.5;">' +
+          '<div style="font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#8a9ab0;margin-bottom:2px;">Tarefa iniciada há</div>' +
+          '<div id="crono-timer-display" style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:var(--blue-deep);letter-spacing:2px;line-height:1;">00:00</div>' +
+        '</div>' +
+      '</div>' : '') +
+    '<div style="margin-bottom:12px;">' +
       '<div style="font-size:13px;font-weight:600;color:var(--blue-deep);margin-bottom:4px;">Sessão pronta</div>' +
       '<div style="font-size:12px;color:var(--muted);">Piscina ' + cronoSession.piscina + 'm · ' + cronoSession.distancia + 'm · ' + cronoSession.distPorToque + 'm por toque</div>' +
     '</div>' +
     '<div class="crono-start-grid">' + btns + '</div>' +
+    (anyStarted ? '<div class="crono-swimmers-grid" style="margin-top:12px;">' + swimHtml + '</div>' : '') +
     (allStarted ? '<button onclick="cronoGoActive()" style="width:100%;padding:14px;border-radius:12px;background:linear-gradient(135deg,#00a896,#00c4cc);color:#fff;border:none;font-size:15px;font-weight:700;cursor:pointer;margin-top:4px;">Ver nadadores</button>' : '') +
     '<button onclick="cronoVoltarConfig()" style="margin-top:10px;width:100%;padding:10px;border-radius:10px;background:transparent;border:1px solid #ccc;color:var(--muted);font-size:13px;cursor:pointer;">Voltar à configuração</button>';
+
+  if (anyStarted && !allStarted) cronoStartTimer();
 }
 
 function cronoStartGroup(gi) {
@@ -13142,12 +13223,43 @@ function cronoRenderSummary() {
         splitsHtml += '<span style="margin-right:10px;">' + (si+1) + '. ' + cronoFmtMs(n.splits[si]) + '</span>';
       }
       var uid = 'sum_' + gi + '_' + ni;
+      var chartId = 'crono-chart-' + gi + '_' + ni;
+
+      // Negative split calc
+      var negHtml = '';
+      if (cronoSession.negativeSplit && n.splits.length >= 2) {
+        var half = Math.floor(n.splits.length / 2);
+        var first = 0, second = 0;
+        for (var s1 = 0; s1 < half; s1++) first += n.splits[s1];
+        for (var s2 = half; s2 < n.splits.length; s2++) second += n.splits[s2];
+        var achieved = second < first;
+        var diff = Math.abs(first - second);
+        var diffStr = (achieved ? '−' : '+') + cronoFmtMs(diff);
+        var halfDist = half * parseInt(cronoSession.distPorToque);
+        negHtml = '<div style="display:flex;gap:8px;margin:6px 0;font-size:12px;">' +
+          '<div style="flex:1;background:rgba(52,152,219,0.12);border-radius:8px;padding:6px 8px;text-align:center;">' +
+            '<div style="font-size:10px;color:var(--muted);margin-bottom:2px;">1ª metade (' + halfDist + 'm)</div>' +
+            '<div style="font-weight:700;color:var(--text);">' + cronoFmtMs(first) + '</div>' +
+          '</div>' +
+          '<div style="flex:1;background:rgba(0,168,150,0.12);border-radius:8px;padding:6px 8px;text-align:center;">' +
+            '<div style="font-size:10px;color:var(--muted);margin-bottom:2px;">2ª metade (' + halfDist + 'm)</div>' +
+            '<div style="font-weight:700;color:var(--text);">' + cronoFmtMs(second) + '</div>' +
+          '</div>' +
+          '<div style="flex:1;background:' + (achieved ? 'rgba(39,174,96,0.15)' : 'rgba(231,76,60,0.12)') + ';border-radius:8px;padding:6px 8px;text-align:center;">' +
+            '<div style="font-size:10px;color:var(--muted);margin-bottom:2px;">Negative split</div>' +
+            '<div style="font-weight:700;color:' + (achieved ? '#27ae60' : '#e74c3c') + ';">' + (achieved ? '✓ ' : '✗ ') + diffStr + '</div>' +
+          '</div>' +
+        '</div>';
+      }
+
       html += '<div class="crono-summary-swimmer">' +
         '<div class="crono-summary-name">' +
           '<div class="crono-summary-dot" style="background:' + n.cor + ';"></div>' +
           n.nome + (n.finished ? '' : ' <span style="font-size:11px;color:var(--muted);font-weight:400;">(incompleto)</span>') +
         '</div>' +
         '<div class="crono-summary-stats">Total: <strong>' + total + '</strong> · Média/100m: <strong>' + media + '</strong></div>' +
+        negHtml +
+        (n.splits.length > 1 ? '<div style="position:relative;height:140px;margin:8px 0 4px;"><canvas id="' + chartId + '"></canvas></div>' : '') +
         '<button class="crono-detail-btn" onclick="cronoToggleSplits(\'' + uid + '\')">Ver parciais</button>' +
         '<div class="crono-summary-splits" id="' + uid + '">' + splitsHtml + '</div>' +
       '</div>';
@@ -13162,12 +13274,125 @@ function cronoRenderSummary() {
   '<button onclick="cronoVoltarInicio()" style="width:100%;margin-top:8px;padding:11px;border-radius:12px;background:transparent;border:1.5px solid var(--border,#d0e4f0);color:var(--muted,#6b8fa8);font-size:13px;font-weight:600;cursor:pointer;">✕ Fechar</button>';
 
   el.innerHTML = html;
+
+  // Draw charts after render
+  cronoDrawSummaryCharts(cronoSession);
 }
 
 function cronoToggleSplits(uid) {
   var el = document.getElementById(uid);
   if (!el) return;
   el.style.display = el.style.display === 'block' ? 'none' : 'block';
+}
+
+function cronoDrawSummaryCharts(session) {
+  cronoDrawSummaryChartsInEl(session, 'crono-chart-');
+}
+
+function cronoDrawSummaryChartsInEl(session, prefix) {
+  function doDrawCharts() {
+    for (var gi = 0; gi < session.grupos.length; gi++) {
+      var g = session.grupos[gi];
+      for (var ni = 0; ni < g.nadadores.length; ni++) {
+        var n = g.nadadores[ni];
+        if (!n.splits || n.splits.length <= 1) continue;
+        var chartId = prefix + gi + '_' + ni;
+        var ctx = document.getElementById(chartId);
+        if (!ctx) continue;
+
+        var dist = parseInt(session.distPorToque) || 50;
+        var labels = n.splits.map(function(_, i) { return ((i+1) * dist) + 'm'; });
+        var data = n.splits.map(function(v) { return v / 1000; });
+
+        var valid = data.filter(function(v) { return v !== null; });
+        var minV = Math.min.apply(null, valid);
+        var maxV = Math.max.apply(null, valid);
+
+        function splitColor(v) {
+          if (v === null || maxV === minV) return '#f1c40f';
+          var t = (v - minV) / (maxV - minV);
+          if (t < 0.5) {
+            var r = Math.round(39  + (241-39)  * (t * 2));
+            var g = Math.round(174 + (196-174) * (t * 2));
+            var b = Math.round(96  + (15-96)   * (t * 2));
+            return 'rgb(' + r + ',' + g + ',' + b + ')';
+          } else {
+            var t2 = (t - 0.5) * 2;
+            var r2 = Math.round(241 + (231-241) * t2);
+            var g2 = Math.round(196 + (76-196)  * t2);
+            var b2 = Math.round(15  + (60-15)   * t2);
+            return 'rgb(' + r2 + ',' + g2 + ',' + b2 + ')';
+          }
+        }
+
+        var isLight = document.documentElement.classList.contains('light-mode');
+        var gridColor = isLight ? 'rgba(0,0,0,0.06)' : 'rgba(255,255,255,0.06)';
+        var tickColor = isLight ? '#6b8fa8' : 'rgba(180,210,240,0.6)';
+
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [{
+              data: data,
+              borderColor: '#00c4cc',
+              segment: {
+                borderColor: function(c) { return splitColor(c.p1.parsed.y); }
+              },
+              backgroundColor: 'transparent',
+              pointBackgroundColor: function(c) { return splitColor(c.parsed ? c.parsed.y : null); },
+              pointBorderColor: '#fff',
+              pointBorderWidth: 1.5,
+              borderWidth: 3,
+              tension: 0,
+              pointRadius: 5,
+              spanGaps: true
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: function(c) {
+                    return cronoFmtMs(Math.round(c.parsed.y * 1000));
+                  }
+                }
+              }
+            },
+            scales: {
+              x: {
+                ticks: { color: tickColor, font: { size: 10 } },
+                grid: { color: gridColor },
+                border: { display: false }
+              },
+              y: {
+                reverse: true,
+                ticks: {
+                  color: tickColor,
+                  font: { size: 10 },
+                  callback: function(v) { return cronoFmtMs(Math.round(v * 1000)); }
+                },
+                grid: { color: gridColor },
+                border: { display: false }
+              }
+            }
+          }
+        });
+      }
+    }
+  }
+
+  if (typeof Chart !== 'undefined') {
+    doDrawCharts();
+  } else {
+    var sc = document.createElement('script');
+    sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js';
+    sc.onload = doDrawCharts;
+    document.head.appendChild(sc);
+  }
 }
 
 function cronoVoltarInicio() {
@@ -13356,17 +13581,10 @@ function cronoExportPDF() {
     '<div style="margin-top:16px;font-size:11px;color:#aaa;text-align:center;">SwimMin · swimmin.pt</div>' +
     '</body></html>';
 
-  // Download directo como ficheiro HTML
+  // Partilhar / Guardar
   var d2 = new Date(cronoSession.data);
   var fname = 'swimmin_parciais_' + d2.toISOString().slice(0,10) + '.html';
-  var blob = new Blob([html], {type: 'text/html'});
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a');
-  a.href = url;
-  a.download = fname;
-  document.body.appendChild(a);
-  a.click();
-  setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
+  swimminShareHTML(html, fname);
 }
 
 function cronoVerHistoria(idx) {
@@ -13427,6 +13645,10 @@ function cronoVerHistoria(idx) {
           '</div>';
         }
         html += '</div>';
+        if (n.splits.length > 1) {
+          var hChartId = 'crono-hchart-' + gi + '_' + ni;
+          html += '<div style="position:relative;height:130px;margin-top:10px;"><canvas id="' + hChartId + '"></canvas></div>';
+        }
       }
       html += '</div>';
     }
@@ -13438,6 +13660,8 @@ function cronoVerHistoria(idx) {
   var el = overlay.firstChild;
   el.id = 'crono-hist-view';
   document.body.appendChild(el);
+  // Draw charts using same function, with prefix for hist chart ids
+  cronoDrawSummaryChartsInEl(h.session, 'crono-hchart-');
 }
 
 function cronoExportFromHistory(idx) {
@@ -13859,12 +14083,7 @@ function swExportPDF() {
     '<div style="margin-top:16px;font-size:11px;color:#aaa;text-align:center;">SwimMin · swimmin.pt</div>' +
     '</body></html>';
   var fname = 'swimmin_swolf_' + new Date().toISOString().slice(0,10) + '.html';
-  var blob = new Blob([html], {type: 'text/html'});
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a');
-  a.href = url; a.download = fname;
-  document.body.appendChild(a); a.click();
-  setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
+  swimminShareHTML(html, fname);
 }
 
 function swSaveToHistory() {
