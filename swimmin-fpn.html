@@ -13413,13 +13413,19 @@ function cronoDrawSummaryChartsInEl(session, prefix) {
 
 function cronoVoltarInicio() {
   cronoSession = null;
-  cronoRenderConfig();
+  cronoPhase = 'config';
+  // Fechar a zona do treinador completamente
+  var s = document.getElementById('crono-section');
+  var btn = document.getElementById('crono-btn');
+  if (s) s.style.display = 'none';
+  if (btn) btn.textContent = 'Zona do Treinador';
 }
 
 function cronoNovaSessionConfirm() {
   cronoShowUndoPanel('Iniciar nova sessão? Os dados ficam guardados no histórico.', function() {
     cronoSession = null;
     cronoPhase = 'config';
+    try { localStorage.removeItem(CRONO_SESSION_KEY); } catch(e) {}
     cronoRenderConfig();
   });
 }
