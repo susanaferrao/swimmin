@@ -12466,8 +12466,11 @@ function fecharCartaoFPN() {
   <div style="position:relative;z-index:1;text-align:center; padding: 18px 0 6px 0; font-size: 0.78em; color: #888; letter-spacing: 0.01em;">
     © SwimMin, todos os direitos reservados
   </div>
-  <div style="position:relative;z-index:1;text-align:center; padding: 0 20px 18px 20px; font-size: 0.78em; color: #888; letter-spacing: 0.01em;">
+  <div style="position:relative;z-index:1;text-align:center; padding: 0 20px 6px 20px; font-size: 0.78em; color: #888; letter-spacing: 0.01em;">
     SwimMin está em fase beta. Encontraste um problema ou tens uma sugestão? Envia-nos um e-mail para <a href="mailto:info@swimmin.pt" style="color:#00c4cc;text-decoration:none;">info@swimmin.pt</a>.
+  </div>
+  <div style="position:relative;z-index:1;text-align:center; padding: 0 20px 24px 20px; font-size: 0.78em; color: #888;">
+    <a href="#" onclick="showPrivacyPolicy();return false;" style="color:#00c4cc;text-decoration:none;">Política de Privacidade</a>
   </div>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
@@ -16965,7 +16968,6 @@ function swolfGL(vals,labels,isLight,titulo){
 
 </script>
 <script>
-<script>
 /* ===== POP-UP NOVIDADES ===== */
 function showNovidadesPopup() {
   try { if (localStorage.getItem('swimmin_novidades_v3')) return; } catch(e) {}
@@ -17054,6 +17056,13 @@ function closeIOSInstallPopup() {
 }
 
 window.addEventListener('load', function() {
+  // Política de privacidade — primeira visita
+  try {
+    if (!localStorage.getItem('swimmin_privacy_v1')) {
+      setTimeout(showPrivacyConsent, 800);
+      return; // não mostrar outros popups antes de aceitar
+    }
+  } catch(e) {}
   setTimeout(showNovidadesPopup, 1500);
   // Pop-up de instalação iOS — só em iPhone/iPad, só uma vez
   var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
@@ -17062,6 +17071,119 @@ window.addEventListener('load', function() {
     try { if (!localStorage.getItem('swimmin_ios_install_v1')) setTimeout(showIOSInstallPopup, 4000); } catch(e) {}
   }
 });
+</script>
+
+<script>
+/* ===== POLÍTICA DE PRIVACIDADE ===== */
+
+function showPrivacyConsent() {
+  var isLight = document.documentElement.classList.contains('light-mode');
+  var bg = isLight ? '#fff' : '#0d2233';
+  var textColor = isLight ? '#1a3a4a' : '#e8f4ff';
+  var mutedColor = isLight ? '#6b8fa8' : 'rgba(180,210,240,0.7)';
+
+  var ov = document.createElement('div');
+  ov.id = 'priv-ov';
+  ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:99995;';
+
+  var popup = document.createElement('div');
+  popup.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:99996;background:'+bg+';border-radius:20px 20px 0 0;padding:28px 24px 32px;max-width:560px;margin:0 auto;box-shadow:0 -8px 40px rgba(0,0,0,0.3);font-family:DM Sans,sans-serif;';
+  popup.innerHTML =
+    '<div style="width:40px;height:4px;background:rgba(128,128,128,0.3);border-radius:2px;margin:0 auto 20px;"></div>'+
+    '<div style="font-size:17px;font-weight:700;color:'+textColor+';margin-bottom:10px;">Privacidade & Dados</div>'+
+    '<div style="font-size:13px;color:'+mutedColor+';line-height:1.6;margin-bottom:20px;">'+
+      'A SwimMin utiliza <strong style="color:'+textColor+'">cookies e armazenamento local</strong> para guardar as tuas preferências e dados de treino neste dispositivo. '+
+      'Se criares conta, os dados são sincronizados de forma segura na cloud (Firebase/Google). '+
+      'Usamos também o <strong style="color:'+textColor+'">Google Analytics</strong> para perceber como a app é utilizada e melhorá-la — sem recolher dados pessoais identificáveis. '+
+      'Não vendemos nem partilhamos os teus dados com terceiros.'+
+    '</div>'+
+    '<div style="display:flex;gap:10px;">'+
+      '<button onclick="acceptPrivacy()" style="flex:2;padding:14px;border-radius:12px;background:#00c4cc;color:#001f3a;border:none;font-size:15px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;">Aceitar e continuar</button>'+
+      '<button onclick="showPrivacyPolicy(true)" style="flex:1;padding:14px;border-radius:12px;background:transparent;color:'+mutedColor+';border:1.5px solid rgba(128,128,128,0.3);font-size:13px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif;">Ler mais</button>'+
+    '</div>';
+
+  document.body.appendChild(ov);
+  document.body.appendChild(popup);
+}
+
+function acceptPrivacy() {
+  try { localStorage.setItem('swimmin_privacy_v1', '1'); } catch(e) {}
+  var p = document.getElementById('priv-ov');
+  if (p) p.remove();
+  // remover o painel sheet
+  var sheets = document.querySelectorAll('[id^="priv-"]');
+  sheets.forEach(function(s) { s.remove(); });
+  document.querySelectorAll('div').forEach(function(d) {
+    if (d.style && d.style.borderRadius === '20px 20px 0px 0px') d.remove();
+  });
+  // mostrar restantes popups
+  setTimeout(showNovidadesPopup, 800);
+  var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  var isStandalone = window.navigator.standalone === true;
+  if (isIOS && !isStandalone) {
+    try { if (!localStorage.getItem('swimmin_ios_install_v1')) setTimeout(showIOSInstallPopup, 3000); } catch(e) {}
+  }
+}
+
+function showPrivacyPolicy(fromConsent) {
+  var isLight = document.documentElement.classList.contains('light-mode');
+  var bg = isLight ? '#fff' : '#0d2233';
+  var textColor = isLight ? '#1a3a4a' : '#e8f4ff';
+  var mutedColor = isLight ? '#6b8fa8' : 'rgba(180,210,240,0.7)';
+
+  // fechar consent sheet se estiver aberto
+  var existOv = document.getElementById('priv-ov');
+
+  var ov2 = document.createElement('div');
+  ov2.id = 'priv-policy-ov';
+  ov2.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:99997;overflow-y:auto;display:flex;align-items:flex-start;justify-content:center;padding:20px 0 40px;';
+
+  var box = document.createElement('div');
+  box.style.cssText = 'background:'+bg+';border-radius:20px;padding:32px 28px;max-width:520px;width:90%;font-family:DM Sans,sans-serif;margin:auto;';
+
+  var now = new Date();
+  var dateStr = now.toLocaleDateString('pt-PT', {day:'2-digit',month:'long',year:'numeric'});
+
+  box.innerHTML =
+    '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">'+
+      '<div>'+
+        '<div style="font-size:20px;font-weight:700;color:'+textColor+';">Política de Privacidade</div>'+
+        '<div style="font-size:12px;color:'+mutedColor+';margin-top:4px;">SwimMin FPN · Atualizada em junho de 2025</div>'+
+      '</div>'+
+      '<button onclick="closePrivacyPolicy()" style="background:rgba(128,128,128,0.15);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:18px;color:'+textColor+';display:flex;align-items:center;justify-content:center;">×</button>'+
+    '</div>'+
+    section(textColor, mutedColor, '1. Quem somos',
+      'A SwimMin é uma aplicação web independente desenvolvida por um particular, disponível em <strong>swimmin.pt</strong>. Não é uma aplicação oficial da Federação Portuguesa de Natação (FPN). Para questões de privacidade, contacta <a href="mailto:info@swimmin.pt" style="color:#00c4cc;">info@swimmin.pt</a>.')+
+    section(textColor, mutedColor, '2. Dados que recolhemos',
+      '<strong>Dados que guardas voluntariamente:</strong> tempos de nado, nome do nadador, histórico de sessões de treino, prova e cronómetro. Estes dados são guardados no teu dispositivo (localStorage) e, se criares conta, na cloud (Firebase/Google).<br><br>'+
+      '<strong>Dados técnicos automáticos:</strong> através do Google Analytics recolhemos dados de utilização anónimos (páginas visitadas, funcionalidades usadas, tipo de dispositivo). Não recolhemos nomes, emails ou dados pessoais identificáveis através desta ferramenta.')+
+    section(textColor, mutedColor, '3. Como usamos os dados',
+      'Os dados que guardas na app ficam armazenados no teu dispositivo ou, se criares conta, na cloud associada à tua conta — não são acedidos nem consultados por nós. Os dados anónimos do Google Analytics são usados exclusivamente para perceber como a app é utilizada e melhorá-la. Não vendemos, partilhamos nem monetizamos os teus dados pessoais.')+
+    section(textColor, mutedColor, '4. Conta e autenticação',
+      'Se criares conta (opcional), o teu email e dados de autenticação são geridos pelo Firebase Authentication (Google). Os dados de treino sincronizados ficam guardados no Firestore, uma base de dados segura da Google, acessível apenas com a tua conta.')+
+    section(textColor, mutedColor, '5. Menores de idade',
+      'A SwimMin pode ser utilizada por atletas de todas as idades. Se és menor de 18 anos, deves ter autorização de um encarregado de educação para criar conta.')+
+    section(textColor, mutedColor, '6. Os teus direitos (RGPD)',
+      'Tens direito a aceder, corrigir ou eliminar os teus dados a qualquer momento. Para eliminar os dados do dispositivo, usa a opção disponível nas definições da app. Para eliminar a conta e dados da cloud, contacta <a href="mailto:info@swimmin.pt" style="color:#00c4cc;">info@swimmin.pt</a>.')+
+    section(textColor, mutedColor, '7. Cookies e armazenamento local',
+      'A SwimMin utiliza localStorage do browser para guardar preferências (tema, idioma, dados de treino). Não utilizamos cookies de rastreio de terceiros, exceto os do Google Analytics, que podes desativar através das definições do teu browser ou usando extensões de bloqueio.')+
+    '<div style="margin-top:24px;">'+
+      '<button onclick="'+(fromConsent ? 'closePrivacyPolicy();acceptPrivacy()' : 'closePrivacyPolicy()')+'" style="width:100%;padding:14px;border-radius:12px;background:#00c4cc;color:#001f3a;border:none;font-size:15px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;">'+(fromConsent ? 'Aceitar e continuar' : 'Fechar')+'</button>'+
+    '</div>';
+
+  document.body.appendChild(ov2);
+  ov2.appendChild(box);
+  ov2.addEventListener('click', function(e) { if (e.target === ov2) closePrivacyPolicy(); });
+}
+
+function section(tc, mc, title, text) {
+  return '<div style="margin-bottom:18px;"><div style="font-size:14px;font-weight:700;color:'+tc+';margin-bottom:6px;">'+title+'</div><div style="font-size:13px;color:'+mc+';line-height:1.7;">'+text+'</div></div>';
+}
+
+function closePrivacyPolicy() {
+  var el = document.getElementById('priv-policy-ov');
+  if (el) el.remove();
+}
 </script>
 </body>
 </html>
