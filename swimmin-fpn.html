@@ -45,6 +45,15 @@
   gtag('config', 'G-HBVBLT12D1');
 
 </script>
+<script>
+/* ===== VIBRAÇÃO HÁPTICA ===== */
+function vibrar(tipo) {
+  if (!navigator.vibrate) return;
+  if (tipo === 'curta')  navigator.vibrate(30);
+  if (tipo === 'media')  navigator.vibrate(60);
+  if (tipo === 'dupla')  navigator.vibrate([80, 60, 80]);
+}
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 
@@ -12902,6 +12911,7 @@ function cronoStartGroup(gi) {
   var now = Date.now();
   g.started = true;
   g.startTime = now;
+  vibrar('media');
   for (var ni = 0; ni < g.nadadores.length; ni++) {
     g.nadadores[ni].startTime = now;
   }
@@ -13065,6 +13075,9 @@ function cronoTouchSwimmer(gi, ni) {
   if (n.splits.length >= cronoSession.totalToques) {
     n.finished = true;
     n.totalTime = elapsed;
+    vibrar('dupla');
+  } else {
+    vibrar('curta');
   }
 
   cronoPersistSession();
@@ -13942,6 +13955,7 @@ function swStart(ci) {
   var c = swState.cronos[ci];
   if (c.running) return;
   c.running = true;
+  vibrar('media');
   swTickStart(ci);
   swRender();
 }
@@ -13950,6 +13964,7 @@ function swStop(ci) {
   var c = swState.cronos[ci];
   if (!c.running) return;
   c.running = false;
+  vibrar('media');
   if (c.interval) { clearInterval(c.interval); c.interval = null; }
   c.elapsed = Date.now() - c.startMs;
   swSave();
@@ -13962,6 +13977,7 @@ function swSplit(ci) {
   var now = c.running ? (Date.now() - c.startMs) : c.elapsed;
   var lastTotal = c.splits.reduce(function(a,b){return a+b;}, 0);
   var split = now - lastTotal;
+  vibrar('curta');
   c.splits.push(split);
   // Update splits display without full re-render
   var el = document.getElementById('sw-splits-' + ci);
@@ -13981,6 +13997,7 @@ function swReset(ci) {
 }
 
 function swStartAll() {
+  vibrar('media');
   for (var i = 0; i < swState.nCronos; i++) {
     var c = swState.cronos[i];
     if (!c.running) { c.running = true; }
@@ -13995,6 +14012,7 @@ function swStartAll() {
 }
 
 function swSplitAll() {
+  vibrar('curta');
   for (var i = 0; i < swState.nCronos; i++) {
     swSplit(i);
   }
@@ -16513,10 +16531,16 @@ window.addEventListener('load', function() {
   safeWrap('toggleMundiais',    'abrir_recordes_mundiais', { feature: 'recordes_mundiais' });
   safeWrap('toggleNA',          'abrir_minimos_adaptada',  { feature: 'minimos_adaptada' });
   safeWrap('convCalcular',      'usar_conversor',          { feature: 'conversor' });
-  safeWrap('cronoExportPDF',    'export_pdf',              { feature: 'parciais' });
-  safeWrap('cronoExportCSV',    'export_csv',              { feature: 'parciais' });
-  safeWrap('syncToFirebase',    'sync_upload',             { feature: 'conta' });
-  safeWrap('loadFromFirebase',  'sync_download',           { feature: 'conta' });
+  safeWrap('cronoExportPDF',    'exportar_ficheiro', { tipo: 'pdf', feature: 'parciais' });
+  safeWrap('cronoExportCSV',    'exportar_ficheiro', { tipo: 'csv', feature: 'parciais' });
+  safeWrap('slExportPDF',       'exportar_ficheiro', { tipo: 'pdf', feature: 'zona_nadador' });
+  safeWrap('swExportCSV',       'exportar_ficheiro', { tipo: 'csv', feature: 'cronos' });
+  safeWrap('swExportPDF',       'exportar_ficheiro', { tipo: 'pdf', feature: 'cronos' });
+  safeWrap('swExportHistCSV',   'exportar_ficheiro', { tipo: 'csv', feature: 'cronos_historico' });
+  safeWrap('tarefaExportCSV',   'exportar_ficheiro', { tipo: 'csv', feature: 'tarefas' });
+  safeWrap('exportarNadador',   'exportar_ficheiro', { tipo: 'swimmin', feature: 'zona_nadador' });
+  safeWrap('syncToFirebase',    'sync_upload',       { feature: 'conta' });
+  safeWrap('loadFromFirebase',  'sync_download',     { feature: 'conta' });
 
   /* cronoSwitchTab — precisa de lógica por tab */
   var _cronoSwitchTabOrig = window.cronoSwitchTab;
