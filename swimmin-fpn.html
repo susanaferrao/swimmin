@@ -2539,6 +2539,11 @@ html.light-mode #sw-hist-view > div, html.light-mode #crono-hist-view > div {
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
 </head>
 <body>
+<div id="auth-ghost-badge" style="display:none;position:fixed;top:14px;left:14px;z-index:9000;">
+  <button onclick="showContaPopup()" style="background:#f4722b;border:none;border-radius:50%;width:38px;height:38px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(244,114,43,0.5);padding:0;" title="Conta">
+    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+  </button>
+</div>
 <div id="auth-badge" style="display:none;position:fixed;top:14px;left:14px;z-index:9000;gap:8px;align-items:center;">
   <!-- Ícone login (pessoa) -->
   <button onclick="toggleAuthBadge()" style="background:#00c98d;border:none;border-radius:50%;width:38px;height:38px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,201,141,0.5);padding:0;" title="Conta">
@@ -2596,6 +2601,52 @@ html.light-mode #sw-hist-view > div, html.light-mode #crono-hist-view > div {
 })();
 </script>
 <script>
+function abrirFormConta() {
+  var ov = document.getElementById('conta-popup-ov');
+  if (ov) ov.remove();
+  var ghost = document.getElementById('auth-ghost-badge');
+  var section = document.getElementById('auth-section');
+  if (ghost) ghost.style.display = 'none';
+  if (section) section.style.display = 'block';
+  if (section) window.scrollTo({top: section.offsetTop - 20, behavior: 'smooth'});
+}
+
+function dismissContaCard() {
+  try { localStorage.setItem('swimmin_conta_dismissed', '1'); } catch(e) {}
+  var section = document.getElementById('auth-section');
+  var ghost = document.getElementById('auth-ghost-badge');
+  if (section) section.style.display = 'none';
+  if (ghost) ghost.style.display = 'block';
+}
+
+function showContaPopup() {
+  var isLight = document.documentElement.classList.contains('light-mode');
+  var bg = isLight ? '#fff' : '#0d2233';
+  var textColor = isLight ? '#1a3a4a' : '#e8f4ff';
+  var mutedColor = isLight ? '#6b8fa8' : 'rgba(180,210,240,0.7)';
+
+  var existing = document.getElementById('conta-popup-ov');
+  if (existing) { existing.remove(); return; }
+
+  var ov = document.createElement('div');
+  ov.id = 'conta-popup-ov';
+  ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9001;';
+  ov.onclick = function(e) { if (e.target === ov) ov.remove(); };
+
+  var popup = document.createElement('div');
+  popup.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9002;background:'+bg+';border-radius:18px;padding:28px 26px;max-width:320px;width:88%;box-shadow:0 8px 40px rgba(0,0,0,0.3);font-family:DM Sans,sans-serif;';
+  popup.innerHTML =
+    '<div style="font-size:17px;font-weight:700;color:'+textColor+';margin-bottom:6px;">Sessão não iniciada</div>'+
+    '<div style="font-size:13px;color:'+mutedColor+';line-height:1.6;margin-bottom:20px;">Cria uma conta ou entra para guardar os teus dados e aceder em qualquer dispositivo.</div>'+
+    '<div style="display:flex;gap:10px;">'+
+      '<button onclick="abrirFormConta()" style="flex:1;padding:12px;border-radius:10px;background:linear-gradient(135deg,#00c4cc,#0090e0);color:#fff;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;">Entrar</button>'+
+      '<button onclick="abrirFormConta()" style="flex:1;padding:12px;border-radius:10px;background:transparent;color:'+textColor+';border:1.5px solid rgba(128,128,128,0.3);font-size:14px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;">Criar conta</button>'+
+    '</div>';
+
+  ov.appendChild(popup);
+  document.body.appendChild(ov);
+}
+
 function toggleAuthBadge() {
   var m = document.getElementById("auth-badge-menu");
   if (m) m.style.display = m.style.display === "block" ? "none" : "block";
@@ -2746,8 +2797,13 @@ document.addEventListener("click", function(e) {
 <div class="fpn-section" id="auth-section" style="margin-top:20px;">
   <!-- Estado: não autenticado (expandido) -->
   <div id="auth-logged-out">
-    <div class="fpn-title">Conta</div>
-    <div class="fpn-subtitle">Guarda os teus dados e acede em qualquer dispositivo</div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+      <div>
+        <div class="fpn-title">Conta</div>
+        <div class="fpn-subtitle">Guarda os teus dados e acede em qualquer dispositivo</div>
+      </div>
+      <button onclick="dismissContaCard()" title="Fechar" style="background:none;border:none;cursor:pointer;padding:4px;color:var(--muted);font-size:20px;line-height:1;margin-top:2px;opacity:0.5;">&#x2715;</button>
+    </div>
     <div class="grid" style="margin-top:14px;">
       <div class="field"><label>Email</label><input id="auth-email" type="email" class="personal-input" placeholder="teu@email.com"></div>
       <div class="field">
@@ -12012,10 +12068,32 @@ _auth.onAuthStateChanged( async (user) => {
   const authSection = document.getElementById('auth-section');
   const authBadge   = document.getElementById('auth-badge');
 
-  if (loggedOut) loggedOut.style.display = user ? 'none' : 'block';
-  if (loggedIn)  loggedIn.style.display  = 'none';
-  if (authSection) authSection.style.display = user ? 'none' : 'block';
-  if (authBadge)   authBadge.style.display   = user ? 'flex' : 'none';
+  var ghostBadge = document.getElementById('auth-ghost-badge');
+  var dismissed = false;
+  try { dismissed = !!localStorage.getItem('swimmin_conta_dismissed'); } catch(e) {}
+
+  if (user) {
+    if (loggedOut) loggedOut.style.display = 'none';
+    if (loggedIn)  loggedIn.style.display  = 'none';
+    if (authSection) authSection.style.display = 'none';
+    if (authBadge)   authBadge.style.display   = 'flex';
+    if (ghostBadge)  ghostBadge.style.display  = 'none';
+  } else {
+    if (dismissed) {
+      if (loggedOut) loggedOut.style.display = 'none';
+      if (authSection) authSection.style.display = 'none';
+      if (authBadge)   authBadge.style.display   = 'none';
+      if (ghostBadge)  ghostBadge.style.display  = 'block';
+    } else {
+      if (loggedOut) loggedOut.style.display = 'block';
+      if (authSection) authSection.style.display = 'block';
+      if (authBadge)   authBadge.style.display   = 'none';
+      if (ghostBadge)  ghostBadge.style.display  = 'none';
+    }
+    if (loggedIn) loggedIn.style.display = 'none';
+  }
+  // shadow var to avoid duplicate logic below
+  var _user = user;
   var syncBtn  = document.getElementById('btn-sync-cloud');
   var loadBtn  = document.getElementById('btn-load-cloud');
   if (syncBtn) syncBtn.style.display = user ? 'flex' : 'none';
@@ -12488,6 +12566,7 @@ function fecharCartaoFPN() {
     <button onclick="cronoCloseColorPicker()" style="margin-top:16px;width:100%;padding:10px;border-radius:10px;background:#f0f7ff;border:1.5px solid #d0e4f0;color:#1a3a4a;font-size:14px;font-weight:600;cursor:pointer;">Cancelar</button>
   </div>
 </div>
+
   <!-- Footer -->
   <div style="position:relative;z-index:1;text-align:center; padding: 18px 0 6px 0; font-size: 0.78em; color: #888; letter-spacing: 0.01em;">
     © SwimMin, todos os direitos reservados
@@ -12496,7 +12575,9 @@ function fecharCartaoFPN() {
     SwimMin está em fase beta. Encontraste um problema ou tens uma sugestão? Envia-nos um e-mail para <a href="mailto:info@swimmin.pt" style="color:#00c4cc;text-decoration:none;">info@swimmin.pt</a>.
   </div>
   <div style="position:relative;z-index:1;text-align:center; padding: 0 20px 24px 20px; font-size: 0.78em; color: #888;">
-    <a href="#" onclick="showPrivacyPolicy();return false;" style="color:#00c4cc;text-decoration:none;">Política de Privacidade</a>
+    <a href="javascript:void(0)" onclick="showPrivacyPolicy()" style="color:#00c4cc;text-decoration:none;">Política de Privacidade</a>
+    <span style="margin:0 8px;opacity:0.4;font-size:0.9em;">·</span>
+    <a href="javascript:void(0)" onclick="showComoUsarPopup()" style="color:#00c4cc;text-decoration:none;">Usar o SwimMin</a>
   </div>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
@@ -17015,9 +17096,55 @@ function swolfGL(vals,labels,isLight,titulo){
 
 </script>
 <script>
+/* ===== POP-UP BOAS-VINDAS ===== */
+function showBoasVindasPopup() {
+  try { if (localStorage.getItem('swimmin_boasvindas_v1')) return; } catch(e) {}
+  var isLight = document.documentElement.classList.contains('light-mode');
+  var bg = isLight ? '#fff' : '#0d2233';
+  var textColor = isLight ? '#1a3a4a' : '#e8f4ff';
+  var mutedColor = isLight ? '#6b8fa8' : 'rgba(180,210,240,0.7)';
+  var borderColor = isLight ? 'rgba(0,0,0,0.07)' : 'rgba(255,255,255,0.07)';
+
+  function item(titulo, texto) {
+    return '<div style="padding:12px 14px;border-radius:10px;background:rgba(128,128,128,0.05);border:1px solid '+borderColor+';margin-bottom:10px;">'+
+      '<div style="font-size:13px;font-weight:700;color:'+textColor+';margin-bottom:4px;">'+titulo+'</div>'+
+      '<div style="font-size:12px;color:'+mutedColor+';line-height:1.6;">'+texto+'</div>'+
+    '</div>';
+  }
+
+  var ov = document.createElement('div');
+  ov.id = 'bv-ov';
+  ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:99993;';
+
+  var popup = document.createElement('div');
+  popup.id = 'bv-popup';
+  popup.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:99994;background:'+bg+';border-radius:18px;padding:26px 22px;max-width:340px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,0.3);font-family:DM Sans,sans-serif;border-top:3px solid #00c4cc;';
+  popup.innerHTML =
+    '<div style="font-size:17px;font-weight:700;color:'+textColor+';margin-bottom:4px;">Bem-vindo a SwimMin</div>'+
+    '<div style="font-size:12px;color:'+mutedColor+';margin-bottom:16px;">Algumas coisas uteis para comecar</div>'+
+    item('Instalar no telemóvel',
+      'Android: toca em "Instalar app" no browser. iPhone: no Safari, toca no icone de partilha e escolhe "Adicionar ao ecra inicial".') +
+    item('Dados sempre atualizados',
+      'Os minimos FPN e recordes sao atualizados com base nas comunicacoes oficiais da FPN e World Aquatics.') +
+    item('Guardar dados em qualquer dispositivo',
+      'Cria uma conta para guardar os teus dados na cloud e aceder em qualquer dispositivo.') +
+    '<button onclick="closeBoasVindasPopup()" style="width:100%;padding:13px;border-radius:10px;background:#00c4cc;color:#001f3a;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;margin-top:4px;">Entendido</button>';
+
+  document.body.appendChild(ov);
+  document.body.appendChild(popup);
+}
+
+function closeBoasVindasPopup() {
+  try { localStorage.setItem('swimmin_boasvindas_v1', '1'); } catch(e) {}
+  var p = document.getElementById('bv-popup');
+  var o = document.getElementById('bv-ov');
+  if (p) p.remove();
+  if (o) o.remove();
+}
+
 /* ===== POP-UP NOVIDADES ===== */
 function showNovidadesPopup() {
-  try { if (localStorage.getItem('swimmin_novidades_v3')) return; } catch(e) {}
+  try { if (localStorage.getItem('swimmin_novidades_v4')) return; } catch(e) {}
   var isLight = document.documentElement.classList.contains('light-mode');
   var bg = isLight ? '#fff' : '#0d2233';
   var textColor = isLight ? '#1a3a4a' : '#e8f4ff';
@@ -17038,23 +17165,73 @@ function showNovidadesPopup() {
   var popup = document.createElement('div');
   popup.id = 'nov-popup';
   popup.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:99999;background:'+bg+';border-radius:18px;padding:28px 26px;max-width:340px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,0.3);font-family:DM Sans,sans-serif;border-top:4px solid #00c4cc;';
+  var svgPhone = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>';
+  var svgRefresh = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>';
+
   popup.innerHTML =
-    '<div style="font-size:18px;font-weight:700;color:'+textColor+';margin-bottom:6px;">🆕 Novidades SwimMin</div>'+
-    '<div style="font-size:13px;color:'+mutedColor+';margin-bottom:16px;line-height:1.5;">A SwimMin tem agora um sistema de conta que te permite aceder aos teus dados em qualquer dispositivo.</div>'+
-    '<div style="font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:'+mutedColor+';margin-bottom:12px;">Depois de entrares aparecem no canto superior esquerdo:</div>'+
-    row('#00c98d', svgPessoa, '<strong>Entrar / sair da conta</strong>')+
-    row('#0090e0', svgUp, '<strong>Enviar</strong> os dados deste dispositivo para a nuvem')+
-    row('#27ae60', svgDown, '<strong>Receber</strong> os dados da nuvem para este dispositivo')+
-    '<button onclick="closeNovidadesPopup()" style="width:100%;padding:13px;border-radius:10px;background:#00c4cc;color:#001f3a;border:none;font-size:15px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;margin-top:8px;">OK</button>';
+    '<div style="font-size:18px;font-weight:700;color:'+textColor+';margin-bottom:6px;">Bem-vindo ao SwimMin</div>'+
+    '<div style="font-size:13px;color:'+mutedColor+';margin-bottom:16px;line-height:1.5;">Algumas coisas uteis para comecar.</div>'+
+    row('#0090e0', svgPhone, '<strong>Instalar no telemovel</strong><br><span style="font-size:12px;font-weight:400;">Android: toca em Instalar app no browser. iPhone: no Safari, toca no icone de partilha e escolhe Adicionar ao ecra inicial.</span>')+
+    row('#00c98d', svgRefresh, '<strong>Dados sempre atualizados</strong><br><span style="font-size:12px;font-weight:400;">Os minimos FPN e recordes sao atualizados com base nas comunicacoes oficiais da FPN e World Aquatics.</span>')+
+    row('#00c4cc', svgPessoa, '<strong>Guardar dados em qualquer dispositivo</strong><br><span style="font-size:12px;font-weight:400;">Cria uma conta para guardar os teus dados na cloud e aceder em qualquer dispositivo. Depois de entrar, usa os botoes de enviar e receber no canto superior esquerdo.</span>')+
+    '<button onclick="closeNovidadesPopup()" style="width:100%;padding:13px;border-radius:10px;background:#00c4cc;color:#001f3a;border:none;font-size:15px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;margin-top:8px;">Entendido</button>';
 
   document.body.appendChild(ov);
   document.body.appendChild(popup);
 }
 
 function closeNovidadesPopup() {
-  try { localStorage.setItem('swimmin_novidades_v3', '1'); } catch(e) {}
+  try { localStorage.setItem('swimmin_novidades_v4', '1'); } catch(e) {}
   var p = document.getElementById('nov-popup');
   var o = document.getElementById('nov-ov');
+  if (p) p.remove();
+  if (o) o.remove();
+}
+
+function showComoUsarPopup() {
+  // Reutiliza o mesmo popup de boas-vindas mas sem guardar no localStorage
+  var isLight = document.documentElement.classList.contains('light-mode');
+  var bg = isLight ? '#fff' : '#0d2233';
+  var textColor = isLight ? '#1a3a4a' : '#e8f4ff';
+  var mutedColor = isLight ? '#6b8fa8' : 'rgba(180,210,240,0.7)';
+  var svgPessoa = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+  var svgPhone = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>';
+  var svgRefresh = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>';
+
+  function row(bgC, svg, txt) {
+    return '<div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;"><div style="width:36px;height:36px;border-radius:50%;background:'+bgC+';display:flex;align-items:center;justify-content:center;flex-shrink:0;">'+svg+'</div><div style="font-size:13px;color:'+textColor+';padding-top:8px;">'+txt+'</div></div>';
+  }
+
+  var existing = document.getElementById('cu-ov');
+  if (existing) { existing.remove(); }
+  var existingP = document.getElementById('cu-popup');
+  if (existingP) { existingP.remove(); }
+
+  var ov = document.createElement('div');
+  ov.id = 'cu-ov';
+  ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:99996;';
+  ov.onclick = function(e) { if (e.target === ov) { closeComoUsarPopup(); } };
+
+  var popup = document.createElement('div');
+  popup.id = 'cu-popup';
+  popup.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:99997;background:'+bg+';border-radius:18px;padding:28px 26px;max-width:340px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,0.3);font-family:DM Sans,sans-serif;';
+  popup.innerHTML =
+    '<div style="font-size:18px;font-weight:700;color:'+textColor+';margin-bottom:16px;">Usar o SwimMin</div>'+
+    '<div style="font-size:13px;font-weight:700;color:'+textColor+';margin-bottom:4px;">Instalar no telemóvel</div>'+
+    '<div style="font-size:12px;color:'+mutedColor+';line-height:1.6;margin-bottom:14px;">Em Android, toca em "Instalar app" quando o browser o sugerir, ou no menu do browser escolhe "Adicionar ao ecrã inicial". Em iPhone, abre a app no Safari, toca no ícone de partilha (quadrado com seta para cima) e escolhe "Adicionar ao ecrã inicial". A app fica guardada como qualquer outra app.</div>'+
+    '<div style="font-size:13px;font-weight:700;color:'+textColor+';margin-bottom:4px;">Dados sempre atualizados</div>'+
+    '<div style="font-size:12px;color:'+mutedColor+';line-height:1.6;margin-bottom:14px;">Os tempos mínimos FPN e os recordes nacionais são atualizados manualmente com base nas comunicações oficiais da Federação Portuguesa de Natação. Os recordes mundiais seguem os dados oficiais da World Aquatics.</div>'+
+    '<div style="font-size:13px;font-weight:700;color:'+textColor+';margin-bottom:4px;">Guardar dados para serem utilizados em qualquer dispositivo</div>'+
+    '<div style="font-size:12px;color:'+mutedColor+';line-height:1.6;margin-bottom:16px;">Cria uma conta SwimMin para guardar os teus dados na cloud. Depois de entrar, usa os botões de enviar e receber (canto superior esquerdo) para sincronizar entre dispositivos. Os dados ficam associados à conta e não ao dispositivo.</div>'+
+    '<button onclick="closeComoUsarPopup()" style="width:100%;padding:13px;border-radius:10px;background:#00c4cc;color:#001f3a;border:none;font-size:15px;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;">Fechar</button>';
+
+  document.body.appendChild(ov);
+  document.body.appendChild(popup);
+}
+
+function closeComoUsarPopup() {
+  var p = document.getElementById('cu-popup');
+  var o = document.getElementById('cu-ov');
   if (p) p.remove();
   if (o) o.remove();
 }
@@ -17137,7 +17314,7 @@ function showPrivacyConsent() {
   popup.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:99996;background:'+bg+';border-radius:20px 20px 0 0;padding:28px 24px 32px;max-width:560px;margin:0 auto;box-shadow:0 -8px 40px rgba(0,0,0,0.3);font-family:DM Sans,sans-serif;';
   popup.innerHTML =
     '<div style="width:40px;height:4px;background:rgba(128,128,128,0.3);border-radius:2px;margin:0 auto 20px;"></div>'+
-    '<div style="font-size:17px;font-weight:700;color:'+textColor+';margin-bottom:10px;">Privacidade & Dados</div>'+
+    '<div style="font-size:17px;font-weight:700;color:'+textColor+';margin-bottom:10px;">Privacidade, Dados</div>'+
     '<div style="font-size:13px;color:'+mutedColor+';line-height:1.6;margin-bottom:20px;">'+
       'A SwimMin utiliza <strong style="color:'+textColor+'">cookies e armazenamento local</strong> para guardar as tuas preferências e dados de treino neste dispositivo. '+
       'Se criares conta, os dados são sincronizados de forma segura na cloud (Firebase/Google). '+
