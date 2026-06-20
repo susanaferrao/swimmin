@@ -2678,10 +2678,6 @@ document.addEventListener("click", function(e) {
     <div class="subtitle" style="font-size:11px; color:var(--aqua); font-weight:700; letter-spacing:1px; margin-top:2px;">Época 2025/26</div>
   </div>
 
-  <div style="margin:0 16px 14px 16px;background:#f4722b;border-radius:10px;padding:10px 14px;text-align:center;">
-    <div style="font-size:12px;color:#fff;font-family:'DM Sans',sans-serif;font-weight:500;line-height:1.5;">Ajuda-nos a crescer. Partilha a app com nadadores, treinadores, pais e nas tuas redes sociais · <a href="https://www.swimmin.pt" style="color:#fff;text-decoration:underline;">www.swimmin.pt</a></div>
-  </div>
-
   <div id="btn-instalar" onclick="instalarApp()" style="display:none;background:var(--aqua);color:#001f3a;font-weight:700;font-size:13px;text-align:center;padding:10px 16px;border-radius:10px;margin:0 16px 14px 16px;cursor:pointer;letter-spacing:1px;">&#11015; INSTALAR APP</div>
 
 
@@ -3316,7 +3312,7 @@ document.addEventListener("click", function(e) {
       </select>
     </div>
     <div id="id-result"></div>
-    <div class="footer">Dados FPN · última atualização a 12/06/2026 (Comunicado n.º 23/26)</div>
+    <div class="footer">Dados FPN · última atualização a 20/06/2026</div>
     </div><!-- /rec-panel-nacionais -->
 
     <!-- Painel Mundiais -->
@@ -7003,7 +6999,7 @@ var recordesIdade = {
     F: {
       open: {
         "50_L": {tempo:"24,94", nome:"Conceicao, Patricia Vilas", data:"20/12/2009", local:"S. António Cavaleiros"},
-        "100_L": {tempo:"54,66", nome:"Rodrigues, Ana Pinho", data:"20/12/2019", local:"Felgueiras"},
+        "100_L": {tempo:"54,28", nome:"Conceição, Ema Jerónimo", data:"20/06/2026", local:"Algés"},
         "200_L": {tempo:"1:55,91", nome:"Martins, Francisca Soares", data:"12/04/2025", local:"Felgueiras"},
         "400_L": {tempo:"4:04,57", nome:"Martins, Francisca Soares", data:"10/12/2023", local:"Otopeni (ROU)"},
         "800_L": {tempo:"8:20,97", nome:"Duraes, Diana Margarida", data:"04/12/2019", local:"Glasgow (GBR)"},
@@ -7023,7 +7019,7 @@ var recordesIdade = {
       },
       "19+": {
         "50_L": {tempo:"24,94", nome:"Conceicao, Patricia Vilas", data:"20/12/2009", local:"S. António Cavaleiros"},
-        "100_L": {tempo:"54,66", nome:"Rodrigues, Ana Pinho", data:"20/12/2019", local:"Felgueiras"},
+        "100_L": {tempo:"54,28", nome:"Conceição, Ema Jerónimo", data:"20/06/2026", local:"Algés"},
         "200_L": {tempo:"1:55,91", nome:"Martins, Francisca Soares", data:"12/04/2025", local:"Felgueiras"},
         "400_L": {tempo:"4:04,57", nome:"Martins, Francisca Soares", data:"10/12/2023", local:"Otopeni (ROU)"},
         "800_L": {tempo:"8:20,97", nome:"Duraes, Diana Margarida", data:"04/12/2019", local:"Glasgow (GBR)"},
@@ -7651,7 +7647,7 @@ var recordesMundiais = {
       "400_E": {tempo:"4:02,50", nome:"Marchand, Leon", data:"23/07/2023", local:"Fukuoka"}
     },
     "F": {
-      "50_L": {tempo:"23,61", nome:"Sjoestroem, Sarah", data:"29/07/2023", local:"Fukuoka"},
+      "50_L": {tempo:"23,59", nome:"Douglass, Kate", data:"19/06/2026", local:"Indianapolis"},
       "100_L": {tempo:"51,71", nome:"Sjoestroem, Sarah", data:"23/07/2017", local:"Budapest"},
       "200_L": {tempo:"1:52,23", nome:"Titmus, Ariarne", data:"12/06/2024", local:"Brisbane"},
       "400_L": {tempo:"3:54,18", nome:"Mcintosh, Summer", data:"07/06/2025", local:"Victoria"},
@@ -10749,17 +10745,19 @@ function slRenderSavedModeIdx(idx) {
         }
       }
       var hasTimings = athTimes.some(function(t){ return t; });
-      html += '<div style="display:flex;align-items:center;padding:8px 14px;border-top:1px solid ' + border + ';font-size:12px;gap:8px;">';
-      html += '<span style="color:var(--aqua,#00c4cc);font-weight:700;min-width:48px;">S'+(a.serie||'?')+'/P'+a.lane+'</span>';
-      html += '<span style="flex:1;">' + slCleanName(a.name) + '</span>';
+      html += '<div style="display:flex;align-items:center;flex-wrap:wrap;padding:8px 14px;border-top:1px solid ' + border + ';font-size:12px;gap:6px;">';
+      html += '<span style="color:var(--aqua,#00c4cc);font-weight:700;min-width:48px;flex-shrink:0;">S'+(a.serie||'?')+'/P'+a.lane+'</span>';
+      html += '<span style="flex:1 1 auto;min-width:80px;">' + slCleanName(a.name) + '</span>';
+      html += '<span style="display:flex;align-items:center;gap:6px;flex-shrink:0;margin-left:auto;">';
       html += '<span style="color:' + muted + ';font-size:11px;">' + (a.time||'NT') + '</span>';
       if (finalStr) {
-        html += '<span style="font-weight:600;font-size:12px;margin-left:4px;">' + finalStr + '</span>';
+        html += '<span style="font-weight:600;font-size:12px;">' + finalStr + '</span>';
         html += pctHtml;
       }
       // Always show Ver button — debug
       html += '<button onclick="slDebugAndOpen(' + idx + ',' + ei + ',' + globalAi + ',\'' + ev.number + '\')"  /* keep as is */ ' +
-        'style="padding:4px 10px;border-radius:7px;border:none;background:rgba(0,196,204,0.15);color:var(--aqua,#00c4cc);font-size:11px;font-weight:700;cursor:pointer;margin-left:2px;">Ver</button>';
+        'style="flex-shrink:0;padding:4px 10px;border-radius:7px;border:none;background:rgba(0,196,204,0.15);color:var(--aqua,#00c4cc);font-size:11px;font-weight:700;cursor:pointer;">Ver</button>';
+      html += '</span>';
       html += '</div>';
     });
     html += '</div>';
