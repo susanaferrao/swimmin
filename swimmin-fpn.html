@@ -3312,7 +3312,7 @@ document.addEventListener("click", function(e) {
       </select>
     </div>
     <div id="id-result"></div>
-    <div class="footer">Dados FPN · última atualização a 20/06/2026</div>
+    <div class="footer">Dados FPN · última atualização a 21/06/2026</div>
     </div><!-- /rec-panel-nacionais -->
 
     <!-- Painel Mundiais -->
@@ -6604,7 +6604,7 @@ var recordesIdade = {
       "16": {
         "50_L": {tempo:"23,27", nome:"Alecrim, Rodolfo Junior", data:"20-23/03/2026", local:"Coimbra"},
         "100_L": {tempo:"51,91", nome:"Alecrim, Rodolfo Junior", data:"20-23/03/2026", local:"Coimbra"},
-        "200_L": {tempo:"1:54,18", nome:"Santa, Gustavo Manuel", data:"24/07/2009", local:"Tampere (FIN)"},
+        "200_L": {tempo:"1:53,43", nome:"Mimoso, Renato", data:"21/06/2026", local:"Futog (Sérvia)"},
         "400_L": {tempo:"3:59,38", nome:"Santa, Gustavo Manuel", data:"21/07/2009", local:"Tampere (FIN)"},
         "800_L": {tempo:"8:23,54", nome:"Santa, Gustavo Manuel", data:"23/07/2009", local:"Tampere (FIN)"},
         "1500_L": {tempo:"15:45,55", nome:"Santa, Gustavo Manuel", data:"23/07/2009", local:"Tampere (FIN)"},
@@ -6617,7 +6617,7 @@ var recordesIdade = {
         "50_M": {tempo:"25,31", nome:"Alecrim, Rodolfo Júnior", data:"03/05/2026", local:"Bratislava"},
         "100_M": {tempo:"56,05", nome:"Vakulyuk, Paulo", data:"03/08/2019", local:"Funchal"},
         "200_M": {tempo:"2:03,76", nome:"Oliveira, Pedro Diogo", data:"31/07/2004", local:"Lisboa"},
-        "200_E": {tempo:"2:08,11", nome:"Almeida, Carlos Esteves", data:"31/07/2004", local:"Lisboa"},
+        "200_E": {tempo:"2:07,24", nome:"Mimoso, Renato", data:"21/06/2026", local:"Futog (Sérvia)"},
         "400_E": {tempo:"4:32,66", nome:"Vital, Joao Alexandre", data:"01/06/2014", local:"Coimbra"}
       },
       "15": {
@@ -6999,7 +6999,7 @@ var recordesIdade = {
     F: {
       open: {
         "50_L": {tempo:"24,94", nome:"Conceicao, Patricia Vilas", data:"20/12/2009", local:"S. António Cavaleiros"},
-        "100_L": {tempo:"54,28", nome:"Conceição, Ema Jerónimo", data:"20/06/2026", local:"Algés"},
+        "100_L": {tempo:"54,66", nome:"Rodrigues, Ana Pinho", data:"20/12/2019", local:"Felgueiras"},
         "200_L": {tempo:"1:55,91", nome:"Martins, Francisca Soares", data:"12/04/2025", local:"Felgueiras"},
         "400_L": {tempo:"4:04,57", nome:"Martins, Francisca Soares", data:"10/12/2023", local:"Otopeni (ROU)"},
         "800_L": {tempo:"8:20,97", nome:"Duraes, Diana Margarida", data:"04/12/2019", local:"Glasgow (GBR)"},
@@ -7019,7 +7019,7 @@ var recordesIdade = {
       },
       "19+": {
         "50_L": {tempo:"24,94", nome:"Conceicao, Patricia Vilas", data:"20/12/2009", local:"S. António Cavaleiros"},
-        "100_L": {tempo:"54,28", nome:"Conceição, Ema Jerónimo", data:"20/06/2026", local:"Algés"},
+        "100_L": {tempo:"54,66", nome:"Rodrigues, Ana Pinho", data:"20/12/2019", local:"Felgueiras"},
         "200_L": {tempo:"1:55,91", nome:"Martins, Francisca Soares", data:"12/04/2025", local:"Felgueiras"},
         "400_L": {tempo:"4:04,57", nome:"Martins, Francisca Soares", data:"10/12/2023", local:"Otopeni (ROU)"},
         "800_L": {tempo:"8:20,97", nome:"Duraes, Diana Margarida", data:"04/12/2019", local:"Glasgow (GBR)"},
@@ -7647,7 +7647,7 @@ var recordesMundiais = {
       "400_E": {tempo:"4:02,50", nome:"Marchand, Leon", data:"23/07/2023", local:"Fukuoka"}
     },
     "F": {
-      "50_L": {tempo:"23,59", nome:"Douglass, Kate", data:"19/06/2026", local:"Indianapolis"},
+      "50_L": {tempo:"23,61", nome:"Sjoestroem, Sarah", data:"29/07/2023", local:"Fukuoka"},
       "100_L": {tempo:"51,71", nome:"Sjoestroem, Sarah", data:"23/07/2017", local:"Budapest"},
       "200_L": {tempo:"1:52,23", nome:"Titmus, Ariarne", data:"12/06/2024", local:"Brisbane"},
       "400_L": {tempo:"3:54,18", nome:"Mcintosh, Summer", data:"07/06/2025", local:"Victoria"},
@@ -10745,19 +10745,17 @@ function slRenderSavedModeIdx(idx) {
         }
       }
       var hasTimings = athTimes.some(function(t){ return t; });
-      html += '<div style="display:flex;align-items:center;flex-wrap:wrap;padding:8px 14px;border-top:1px solid ' + border + ';font-size:12px;gap:6px;">';
-      html += '<span style="color:var(--aqua,#00c4cc);font-weight:700;min-width:48px;flex-shrink:0;">S'+(a.serie||'?')+'/P'+a.lane+'</span>';
-      html += '<span style="flex:1 1 auto;min-width:80px;">' + slCleanName(a.name) + '</span>';
-      html += '<span style="display:flex;align-items:center;gap:6px;flex-shrink:0;margin-left:auto;">';
+      html += '<div style="display:flex;align-items:center;padding:8px 14px;border-top:1px solid ' + border + ';font-size:12px;gap:8px;">';
+      html += '<span style="color:var(--aqua,#00c4cc);font-weight:700;min-width:48px;">S'+(a.serie||'?')+'/P'+a.lane+'</span>';
+      html += '<span style="flex:1;">' + slCleanName(a.name) + '</span>';
       html += '<span style="color:' + muted + ';font-size:11px;">' + (a.time||'NT') + '</span>';
       if (finalStr) {
-        html += '<span style="font-weight:600;font-size:12px;">' + finalStr + '</span>';
+        html += '<span style="font-weight:600;font-size:12px;margin-left:4px;">' + finalStr + '</span>';
         html += pctHtml;
       }
       // Always show Ver button — debug
       html += '<button onclick="slDebugAndOpen(' + idx + ',' + ei + ',' + globalAi + ',\'' + ev.number + '\')"  /* keep as is */ ' +
-        'style="flex-shrink:0;padding:4px 10px;border-radius:7px;border:none;background:rgba(0,196,204,0.15);color:var(--aqua,#00c4cc);font-size:11px;font-weight:700;cursor:pointer;">Ver</button>';
-      html += '</span>';
+        'style="padding:4px 10px;border-radius:7px;border:none;background:rgba(0,196,204,0.15);color:var(--aqua,#00c4cc);font-size:11px;font-weight:700;cursor:pointer;margin-left:2px;">Ver</button>';
       html += '</div>';
     });
     html += '</div>';
