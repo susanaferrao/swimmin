@@ -3312,7 +3312,7 @@ document.addEventListener("click", function(e) {
       </select>
     </div>
     <div id="id-result"></div>
-    <div class="footer">Dados FPN · última atualização a 21/06/2026</div>
+    <div class="footer">Dados FPN · última atualização a 20/06/2026</div>
     </div><!-- /rec-panel-nacionais -->
 
     <!-- Painel Mundiais -->
@@ -6999,7 +6999,7 @@ var recordesIdade = {
     F: {
       open: {
         "50_L": {tempo:"24,94", nome:"Conceicao, Patricia Vilas", data:"20/12/2009", local:"S. António Cavaleiros"},
-        "100_L": {tempo:"54,66", nome:"Rodrigues, Ana Pinho", data:"20/12/2019", local:"Felgueiras"},
+        "100_L": {tempo:"54,28", nome:"Conceição, Ema Jerónimo", data:"20/06/2026", local:"Algés"},
         "200_L": {tempo:"1:55,91", nome:"Martins, Francisca Soares", data:"12/04/2025", local:"Felgueiras"},
         "400_L": {tempo:"4:04,57", nome:"Martins, Francisca Soares", data:"10/12/2023", local:"Otopeni (ROU)"},
         "800_L": {tempo:"8:20,97", nome:"Duraes, Diana Margarida", data:"04/12/2019", local:"Glasgow (GBR)"},
@@ -7019,7 +7019,7 @@ var recordesIdade = {
       },
       "19+": {
         "50_L": {tempo:"24,94", nome:"Conceicao, Patricia Vilas", data:"20/12/2009", local:"S. António Cavaleiros"},
-        "100_L": {tempo:"54,66", nome:"Rodrigues, Ana Pinho", data:"20/12/2019", local:"Felgueiras"},
+        "100_L": {tempo:"54,28", nome:"Conceição, Ema Jerónimo", data:"20/06/2026", local:"Algés"},
         "200_L": {tempo:"1:55,91", nome:"Martins, Francisca Soares", data:"12/04/2025", local:"Felgueiras"},
         "400_L": {tempo:"4:04,57", nome:"Martins, Francisca Soares", data:"10/12/2023", local:"Otopeni (ROU)"},
         "800_L": {tempo:"8:20,97", nome:"Duraes, Diana Margarida", data:"04/12/2019", local:"Glasgow (GBR)"},
@@ -7647,7 +7647,7 @@ var recordesMundiais = {
       "400_E": {tempo:"4:02,50", nome:"Marchand, Leon", data:"23/07/2023", local:"Fukuoka"}
     },
     "F": {
-      "50_L": {tempo:"23,61", nome:"Sjoestroem, Sarah", data:"29/07/2023", local:"Fukuoka"},
+      "50_L": {tempo:"23,59", nome:"Douglass, Kate", data:"19/06/2026", local:"Indianapolis"},
       "100_L": {tempo:"51,71", nome:"Sjoestroem, Sarah", data:"23/07/2017", local:"Budapest"},
       "200_L": {tempo:"1:52,23", nome:"Titmus, Ariarne", data:"12/06/2024", local:"Brisbane"},
       "400_L": {tempo:"3:54,18", nome:"Mcintosh, Summer", data:"07/06/2025", local:"Victoria"},
@@ -9625,12 +9625,12 @@ function instalarApp() {
       <div class="relay-calc">
         <h3>MELHOR ESTAFETA</h3>
         <div class="relay-selects">
-          <select id="relay-pool" onchange="calcRelay()">
+          <select id="relay-pool" onchange="relayUITrack()">
             <option value="">Selecionar Piscina</option>
             <option value="25">Piscina Curta (25m)</option>
             <option value="50">Piscina Longa (50m)</option>
           </select>
-          <select id="relay-escalao" onchange="calcRelay()">
+          <select id="relay-escalao" onchange="relayUITrack()">
             <option value="">Selecionar Escalão</option>
             <option value="INFB">Infantil B</option>
             <option value="INFA">Infantil A</option>
@@ -9642,7 +9642,7 @@ function instalarApp() {
             <option value="SEN">Sénior</option>
             <option value="ABS">Absoluto</option>
           </select>
-          <select id="relay-type" onchange="calcRelay()">
+          <select id="relay-type" onchange="relayUITrack()">
             <option value="">Selecionar Estafeta</option>
             <option value="4x50L-M">4x50m Livres — Masculino</option>
             <option value="4x50L-F">4x50m Livres — Feminino</option>
@@ -9661,7 +9661,7 @@ function instalarApp() {
           </select>
         </div>
         <label id="relay-conv-label" style="display:flex;align-items:center;gap:8px;margin:12px 0 4px 0;cursor:pointer;font-size:13px;color:#1a3a4a;font-weight:600;user-select:none;">
-          <input type="checkbox" id="relay-use-conv" onchange="calcRelay()" style="width:16px;height:16px;accent-color:#00c98d;cursor:pointer;">
+          <input type="checkbox" id="relay-use-conv" onchange="relayUITrack()" style="width:16px;height:16px;accent-color:#00c98d;cursor:pointer;">
           Utilizar conversão de tempos
           <span style="font-size:11px;font-weight:400;color:#6b8fa8;">(Sistema Colorado Timing)</span>
         </label>
@@ -9888,6 +9888,13 @@ function getAthletesForEscalao(esc) {
   };
   var allowed = map[esc] || [];
   return coachAthletes.filter(function(a) { return allowed.indexOf(a.escalao) >= 0; });
+}
+
+function relayUITrack() {
+  if (typeof window._swimminTrack === 'function') {
+    window._swimminTrack('calcular_estafetas', { feature: 'estafetas' });
+  }
+  calcRelay();
 }
 
 function calcRelay() {
@@ -10745,17 +10752,19 @@ function slRenderSavedModeIdx(idx) {
         }
       }
       var hasTimings = athTimes.some(function(t){ return t; });
-      html += '<div style="display:flex;align-items:center;padding:8px 14px;border-top:1px solid ' + border + ';font-size:12px;gap:8px;">';
-      html += '<span style="color:var(--aqua,#00c4cc);font-weight:700;min-width:48px;">S'+(a.serie||'?')+'/P'+a.lane+'</span>';
-      html += '<span style="flex:1;">' + slCleanName(a.name) + '</span>';
+      html += '<div style="display:flex;align-items:center;flex-wrap:wrap;padding:8px 14px;border-top:1px solid ' + border + ';font-size:12px;gap:6px;">';
+      html += '<span style="color:var(--aqua,#00c4cc);font-weight:700;min-width:48px;flex-shrink:0;">S'+(a.serie||'?')+'/P'+a.lane+'</span>';
+      html += '<span style="flex:1 1 auto;min-width:80px;">' + slCleanName(a.name) + '</span>';
+      html += '<span style="display:flex;align-items:center;gap:6px;flex-shrink:0;margin-left:auto;">';
       html += '<span style="color:' + muted + ';font-size:11px;">' + (a.time||'NT') + '</span>';
       if (finalStr) {
-        html += '<span style="font-weight:600;font-size:12px;margin-left:4px;">' + finalStr + '</span>';
+        html += '<span style="font-weight:600;font-size:12px;">' + finalStr + '</span>';
         html += pctHtml;
       }
       // Always show Ver button — debug
       html += '<button onclick="slDebugAndOpen(' + idx + ',' + ei + ',' + globalAi + ',\'' + ev.number + '\')"  /* keep as is */ ' +
-        'style="padding:4px 10px;border-radius:7px;border:none;background:rgba(0,196,204,0.15);color:var(--aqua,#00c4cc);font-size:11px;font-weight:700;cursor:pointer;margin-left:2px;">Ver</button>';
+        'style="flex-shrink:0;padding:4px 10px;border-radius:7px;border:none;background:rgba(0,196,204,0.15);color:var(--aqua,#00c4cc);font-size:11px;font-weight:700;cursor:pointer;">Ver</button>';
+      html += '</span>';
       html += '</div>';
     });
     html += '</div>';
@@ -16656,15 +16665,10 @@ window.addEventListener('load', function() {
     };
   }
 
-  /* calcRelay — throttle */
-  var _calcRelayOrig = window.calcRelay;
-  if (typeof _calcRelayOrig === 'function') {
-    var _tracked = false;
-    window.calcRelay = function() {
-      if (!_tracked) { track('calcular_estafetas', { feature: 'estafetas' }); _tracked = true; setTimeout(function(){ _tracked = false; }, 2000); }
-      return _calcRelayOrig.apply(this, arguments);
-    };
-  }
+  /* calcRelay agora é tracked diretamente nos controlos (ver relayUITrack), não aqui,
+     porque calcRelay() também é chamado em background (guardar/apagar/sync atleta)
+     e isso inflacionava o evento calcular_estafetas sem o utilizador interagir com a calculadora. */
+  window._swimminTrack = track;
 });
 
 
