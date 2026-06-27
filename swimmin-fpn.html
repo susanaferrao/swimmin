@@ -2682,6 +2682,11 @@ document.addEventListener("click", function(e) {
   <div id="btn-instalar" onclick="instalarApp()" style="display:none;background:var(--aqua);color:#001f3a;font-weight:700;font-size:13px;text-align:center;padding:10px 16px;border-radius:10px;margin:0 16px 14px 16px;cursor:pointer;letter-spacing:1px;">&#11015; INSTALAR APP</div>
 
 
+  <!-- Banner Calendário Nacional 2026/27 -->
+  <div id="banner-cal-2627" style="position:relative;margin:0 0 14px 0;background:linear-gradient(135deg,#ff8c00,#e65c00);color:#fff;font-family:'DM Sans',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.3px;text-align:center;padding:12px 16px;border-radius:10px;box-shadow:0 4px 16px rgba(230,92,0,0.35);">
+    Calendário de Competições Nacionais 2026/27 já disponível. Adiciona já as tuas provas no Calendário
+  </div>
+
   <!-- Botão Resultados — oculto até próxima prova -->
   <!-- <div style="margin:0 0 8px 0;">
     <a href="http://anlisboa.info/results/2025-26/anl15-2526-meetxira/" target="_blank" rel="noopener noreferrer"
@@ -8874,14 +8879,6 @@ var CAL_POPUP_KEY = 'swimmin_cal_popup_date';
 // Provas sugeridas (pré-definidas)
 var CAL_SUGESTOES = [
   {
-    id: 'sug_2',
-    nome: 'Meeting Internacional do Porto',
-    dataIni: '2026-06-06',
-    dataFim: '2026-06-07',
-    local: 'Porto',
-    regulamento: 'https://www.swimrankings.net/services/CalendarFile/47962/REGULAMENTO.pdf'
-  },
-  {
     id: 'sug_3',
     nome: 'Campeonatos Nacionais de Infantis',
     dataIni: '2026-07-17',
@@ -8895,6 +8892,134 @@ var CAL_SUGESTOES = [
     dataIni: '2026-07-23',
     dataFim: '2026-07-26',
     local: 'Oeiras-Jamor',
+    regulamento: ''
+  },
+  {
+    id: 'sug_5',
+    nome: 'Fase de Qualificação de Clubes 3ª divisão',
+    dataIni: '2026-10-24',
+    dataFim: '2026-10-24',
+    local: 'Sines',
+    regulamento: ''
+  },
+  {
+    id: 'sug_6',
+    nome: 'Campeonato Nacional de Clubes 3ª divisão',
+    dataIni: '2026-11-27',
+    dataFim: '2026-11-27',
+    local: 'Mealhada',
+    regulamento: ''
+  },
+  {
+    id: 'sug_7',
+    nome: 'Campeonato Nacional de Clubes 2ª divisão',
+    dataIni: '2026-11-28',
+    dataFim: '2026-11-29',
+    local: 'Mealhada',
+    regulamento: ''
+  },
+  {
+    id: 'sug_8',
+    nome: 'Torneio Zonal de Juvenis · Zona Norte',
+    dataIni: '2026-12-04',
+    dataFim: '2026-12-06',
+    local: 'Bragança',
+    regulamento: ''
+  },
+  {
+    id: 'sug_9',
+    nome: 'Torneio Zonal de Juvenis · Zona Sul',
+    dataIni: '2026-12-04',
+    dataFim: '2026-12-06',
+    local: 'Leiria',
+    regulamento: ''
+  },
+  {
+    id: 'sug_10',
+    nome: 'Campeonato Nacional de Juniores e Séniores PC',
+    dataIni: '2026-12-10',
+    dataFim: '2026-12-13',
+    local: 'Tomar',
+    regulamento: ''
+  },
+  {
+    id: 'sug_11',
+    nome: 'Campeonato Nacional de Clubes 1ª divisão',
+    dataIni: '2026-12-19',
+    dataFim: '2026-12-20',
+    local: 'Albufeira',
+    regulamento: ''
+  },
+  {
+    id: 'sug_12',
+    nome: 'Torneio Zonal de Infantis · Zona Norte',
+    dataIni: '2027-02-26',
+    dataFim: '2027-02-28',
+    local: 'Cantanhede',
+    regulamento: ''
+  },
+  {
+    id: 'sug_13',
+    nome: 'Torneio Zonal de Infantis · Zona Sul',
+    dataIni: '2027-02-26',
+    dataFim: '2027-02-28',
+    local: 'Sines',
+    regulamento: ''
+  },
+  {
+    id: 'sug_14',
+    nome: 'Campeonato Nacional de Juvenis',
+    dataIni: '2027-04-02',
+    dataFim: '2027-04-04',
+    local: 'Jamor',
+    regulamento: ''
+  },
+  {
+    id: 'sug_15',
+    nome: 'Campeonato Nacional de Juniores e Séniores e Open de Portugal',
+    dataIni: '2027-04-08',
+    dataFim: '2027-04-11',
+    local: 'Coimbra',
+    regulamento: ''
+  },
+  {
+    id: 'sug_16',
+    nome: 'Campeonato Nacional de Infantis',
+    dataIni: '2027-07-23',
+    dataFim: '2027-07-25',
+    local: 'Reguengos de Monsaraz',
+    regulamento: ''
+  },
+  {
+    id: 'sug_17',
+    nome: 'Campeonato Nacional de Juvenis, Juniores e Seniores',
+    dataIni: '2027-07-29',
+    dataFim: '2027-08-01',
+    local: 'Coimbra',
+    regulamento: ''
+  },
+  {
+    id: 'sug_18',
+    nome: 'Águas Abertas · Campeonato Nacional de Longa Distância',
+    dataIni: '2027-02-20',
+    dataFim: '2027-02-20',
+    local: 'Coimbra',
+    regulamento: ''
+  },
+  {
+    id: 'sug_19',
+    nome: 'Águas Abertas · Campeonato Nacional de Primavera 5/7,5/10Km',
+    dataIni: '2027-05-22',
+    dataFim: '2027-05-23',
+    local: 'Coimbra',
+    regulamento: ''
+  },
+  {
+    id: 'sug_20',
+    nome: 'Águas Abertas · Campeonato Nacional de Verão 5/4x1,5Km',
+    dataIni: '2027-06-26',
+    dataFim: '2027-06-27',
+    local: 'Coimbra',
     regulamento: ''
   }
 ];
@@ -9180,8 +9305,18 @@ function calRenderSuggestions() {
   }
 
   var html = '<div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#5a7a8a;margin-bottom:10px;">Provas sugeridas</div>';
+  var lastSeason = null;
   for (var i = 0; i < pending.length; i++) {
     var s = pending[i];
+    var season = calGetSeason(s.dataIni);
+    if (season !== lastSeason) {
+      var seasonShort = season.split('/')[0] + '/' + season.split('/')[1].slice(2);
+      html += '<div style="display:flex;align-items:center;gap:10px;margin:' + (lastSeason ? '18px' : '4px') + ' 0 12px 0;">'
+        + '<span style="font-size:11px;font-weight:700;letter-spacing:1px;color:#fff;background:linear-gradient(135deg,#ff8c00,#e65c00);padding:4px 12px;border-radius:20px;white-space:nowrap;">Época ' + seasonShort + '</span>'
+        + '<span style="flex:1;height:1px;background:#d0e4f0;"></span>'
+        + '</div>';
+      lastSeason = season;
+    }
     html += '<div class="cal-suggest-item">'
       + '<div class="cal-suggest-info">'
       + '<div class="cal-suggest-name">' + s.nome + '</div>'
