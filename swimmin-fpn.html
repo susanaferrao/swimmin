@@ -9297,9 +9297,10 @@ function calRenderFull() {
   var season = calCurrentSeason();
   var range = calSeasonRange(season);
 
+  // Incluir provas da época atual E de épocas futuras
   var inSeason = events.filter(function(e) {
     var d = calParseDate(e.dataIni);
-    return d && d >= range.start && d <= range.end;
+    return d && d >= range.start;
   }).sort(function(a,b) {
     return calParseDate(a.dataIni) - calParseDate(b.dataIni);
   });
@@ -9351,7 +9352,17 @@ function calRenderFull() {
   } else {
     if (upcoming.length > 0) {
       html += '<div class="cal-section-label">Próximas provas</div>';
+      var lastSeason = null;
       for (var i = 0; i < upcoming.length; i++) {
+        var evSeason = calGetSeason(upcoming[i].dataIni);
+        if (evSeason !== lastSeason) {
+          var seasonShort = evSeason.split('/')[0] + '/' + evSeason.split('/')[1].slice(2);
+          html += '<div style="display:flex;align-items:center;gap:10px;margin:' + (lastSeason ? '18px' : '4px') + ' 0 12px 0;">'
+            + '<span style="font-size:11px;font-weight:700;letter-spacing:1px;color:#fff;background:linear-gradient(135deg,#ff8c00,#e65c00);padding:4px 12px;border-radius:20px;white-space:nowrap;">Época ' + seasonShort + '</span>'
+            + '<span style="flex:1;height:1px;background:rgba(184,223,245,0.2);"></span>'
+            + '</div>';
+          lastSeason = evSeason;
+        }
         html += renderEvent(upcoming[i], i === 0);
       }
     }
