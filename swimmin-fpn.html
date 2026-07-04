@@ -12431,10 +12431,15 @@ _auth.onAuthStateChanged( async (user) => {
       if (calFb && calFb.data !== null && calFb.data !== undefined) {
         var lsCalTs = 0;
         try { lsCalTs = parseInt(localStorage.getItem('swimmin_cal_ts') || '0'); } catch(e) {}
-        if ((calFb.updatedAt || 0) >= lsCalTs) {
+        var fbCalTs = calFb.updatedAt || 0;
+        // Só sobrescreve o local se o Firebase for mais recente por mais de 10 segundos
+        // (evita que dados do Firebase sobrescrevam alterações locais recentes ainda a sincronizar)
+        if (fbCalTs > lsCalTs + 10000) {
           try { localStorage.setItem(CAL_KEY, JSON.stringify(calFb.data)); } catch(e) {}
+          try { localStorage.setItem('swimmin_cal_ts', fbCalTs.toString()); } catch(e) {}
           if (typeof calRender === 'function') calRender();
-        } else {
+        } else if (lsCalTs >= fbCalTs) {
+          // Local é mais recente ou igual — enviar para Firebase
           var localCal = null;
           try { localCal = JSON.parse(localStorage.getItem(CAL_KEY) || 'null'); } catch(e) {}
           if (localCal && window.firebaseSaveCalendario) window.firebaseSaveCalendario(localCal);
