@@ -10261,7 +10261,7 @@ function calcRelay() {
     for (var li = 0; li < r.legs.length; li++) {
       var leg = r.legs[li];
       var convTag = leg.converted ? '<span style="color:#e07b00;font-weight:700;font-size:13px;" title="Tempo convertido de piscina de ' + leg.fromPool + ' (Sistema Colorado Timing)"> *</span>' : '';
-      var lapTag = leg.isLap ? '<span style="color:#f4722b;font-weight:700;font-size:13px;" title="Tempo de lap — não oficial"> †</span>' : '';
+      var lapTag = leg.isLap ? '<span style="color:#f4722b;font-weight:600;font-size:9px;letter-spacing:0.5px;vertical-align:super;"> LAP</span>' : '';
       out += '<div class="relay-leg">'
         + '<span class="relay-leg-name">' + (li+1) + '. ' + leg.nome + convTag + lapTag + '</span>'
         + '<span class="relay-leg-style">' + leg.estilo + '</span>'
@@ -10274,7 +10274,7 @@ function calcRelay() {
     }
     var hasLap = r.legs.some(function(l) { return l.isLap; });
     if (hasLap) {
-      out += '<div style="font-size:10.5px;color:#f4722b;font-style:italic;padding:2px 0 2px 4px;">† Tempo de lap — não oficial, apenas para estimativa</div>';
+      out += '<div style="font-size:10.5px;color:#f4722b;font-style:italic;padding:2px 0 2px 4px;">LAP Tempo de lap — não oficial, apenas para estimativa</div>';
     }
     out += '</div></div>';
   }
