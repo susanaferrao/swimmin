@@ -9848,6 +9848,30 @@ function instalarApp() {
             <div class="time-preview" id="ath-50-200L-p"></div>
           </div>
         </div>
+        <div style="font-size:12px;font-weight:700;color:#7a3a0a;letter-spacing:1px;text-transform:uppercase;margin:14px 0 4px 0;padding:6px 10px;background:#fde8d0;border-radius:8px;">
+          TEMPOS DE LAP <span style="font-size:10px;font-weight:400;text-transform:none;letter-spacing:0;color:#b05a1a;">— não oficiais, apenas para cálculo de estafetas</span>
+        </div>
+        <div style="font-size:11px;color:#b05a1a;margin-bottom:8px;padding:0 2px;">Tempos de 2º, 3º e 4º percurso. Nunca usados no 1º percurso.</div>
+        <div style="font-size:11px;font-weight:600;color:#7a3a0a;margin:6px 0 4px 0;">Piscina 25m</div>
+        <div class="times-grid">
+          <div class="time-field"><label>50L</label><input type="tel" id="lap-25-50L" maxlength="6" placeholder="" oninput="coachPreviewTime(this,'lap-25-50L-p')" /><div class="time-preview" id="lap-25-50L-p"></div></div>
+          <div class="time-field"><label>50B</label><input type="tel" id="lap-25-50B" maxlength="6" placeholder="" oninput="coachPreviewTime(this,'lap-25-50B-p')" /><div class="time-preview" id="lap-25-50B-p"></div></div>
+          <div class="time-field"><label>50M</label><input type="tel" id="lap-25-50M" maxlength="6" placeholder="" oninput="coachPreviewTime(this,'lap-25-50M-p')" /><div class="time-preview" id="lap-25-50M-p"></div></div>
+          <div class="time-field"><label>100L</label><input type="tel" id="lap-25-100L" maxlength="7" placeholder="" oninput="coachPreviewTime(this,'lap-25-100L-p')" /><div class="time-preview" id="lap-25-100L-p"></div></div>
+          <div class="time-field"><label>100B</label><input type="tel" id="lap-25-100B" maxlength="7" placeholder="" oninput="coachPreviewTime(this,'lap-25-100B-p')" /><div class="time-preview" id="lap-25-100B-p"></div></div>
+          <div class="time-field"><label>100M</label><input type="tel" id="lap-25-100M" maxlength="7" placeholder="" oninput="coachPreviewTime(this,'lap-25-100M-p')" /><div class="time-preview" id="lap-25-100M-p"></div></div>
+          <div class="time-field"><label>200L</label><input type="tel" id="lap-25-200L" maxlength="7" placeholder="" oninput="coachPreviewTime(this,'lap-25-200L-p')" /><div class="time-preview" id="lap-25-200L-p"></div></div>
+        </div>
+        <div style="font-size:11px;font-weight:600;color:#7a3a0a;margin:10px 0 4px 0;">Piscina 50m</div>
+        <div class="times-grid">
+          <div class="time-field"><label>50L</label><input type="tel" id="lap-50-50L" maxlength="6" placeholder="" oninput="coachPreviewTime(this,'lap-50-50L-p')" /><div class="time-preview" id="lap-50-50L-p"></div></div>
+          <div class="time-field"><label>50B</label><input type="tel" id="lap-50-50B" maxlength="6" placeholder="" oninput="coachPreviewTime(this,'lap-50-50B-p')" /><div class="time-preview" id="lap-50-50B-p"></div></div>
+          <div class="time-field"><label>50M</label><input type="tel" id="lap-50-50M" maxlength="6" placeholder="" oninput="coachPreviewTime(this,'lap-50-50M-p')" /><div class="time-preview" id="lap-50-50M-p"></div></div>
+          <div class="time-field"><label>100L</label><input type="tel" id="lap-50-100L" maxlength="7" placeholder="" oninput="coachPreviewTime(this,'lap-50-100L-p')" /><div class="time-preview" id="lap-50-100L-p"></div></div>
+          <div class="time-field"><label>100B</label><input type="tel" id="lap-50-100B" maxlength="7" placeholder="" oninput="coachPreviewTime(this,'lap-50-100B-p')" /><div class="time-preview" id="lap-50-100B-p"></div></div>
+          <div class="time-field"><label>100M</label><input type="tel" id="lap-50-100M" maxlength="7" placeholder="" oninput="coachPreviewTime(this,'lap-50-100M-p')" /><div class="time-preview" id="lap-50-100M-p"></div></div>
+          <div class="time-field"><label>200L</label><input type="tel" id="lap-50-200L" maxlength="7" placeholder="" oninput="coachPreviewTime(this,'lap-50-200L-p')" /><div class="time-preview" id="lap-50-200L-p"></div></div>
+        </div>
         <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:4px;">
           <button class="btn-save-athlete" onclick="saveAthlete()">Guardar</button>
           <button class="btn-cancel-athlete" onclick="cancelAthlete()">Cancelar</button>
@@ -9902,6 +9926,11 @@ function instalarApp() {
           <input type="checkbox" id="relay-use-conv" onchange="calcRelay()" style="width:16px;height:16px;accent-color:#00c98d;cursor:pointer;">
           Utilizar conversão de tempos
           <span style="font-size:11px;font-weight:400;color:#6b8fa8;">(Sistema Colorado Timing)</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;margin:4px 0 12px 0;cursor:pointer;font-size:13px;color:#1a3a4a;font-weight:600;user-select:none;">
+          <input type="checkbox" id="relay-use-lap" onchange="calcRelay()" style="width:16px;height:16px;accent-color:#f4722b;cursor:pointer;">
+          Utilizar tempos de lap
+          <span style="font-size:11px;font-weight:400;color:#6b8fa8;">(2º, 3º e 4º percurso)</span>
         </label>
         <div id="relay-results"></div>
       </div>
@@ -9983,6 +10012,7 @@ function coachFormatTime(cs) {
 
 var COACH_PROVAS = ['50L','50C','50B','50M','100L','100C','100B','100M','200L'];
 var POOL_KEYS = ['25','50'];
+var LAP_PROVAS = ['50L','50B','50M','100L','100B','100M','200L'];
 
 function openAddAthlete(idx) {
   coachEditingIdx = (idx !== undefined && idx >= 0) ? idx : -1;
@@ -9999,6 +10029,13 @@ function openAddAthlete(idx) {
           coachPreviewTime(el, 'ath-' + pool + '-' + p + '-p');
         }
       });
+      LAP_PROVAS.forEach(function(p) {
+        var el = document.getElementById('lap-' + pool + '-' + p);
+        if (el) {
+          el.value = (a.lapTempos && a.lapTempos[pool] && a.lapTempos[pool][p]) ? a.lapTempos[pool][p] : '';
+          coachPreviewTime(el, 'lap-' + pool + '-' + p + '-p');
+        }
+      });
     });
   } else {
     document.getElementById('ath-nome').value = '';
@@ -10009,6 +10046,12 @@ function openAddAthlete(idx) {
         var el = document.getElementById('ath-' + pool + '-' + p);
         if (el) el.value = '';
         var pr = document.getElementById('ath-' + pool + '-' + p + '-p');
+        if (pr) pr.textContent = '';
+      });
+      LAP_PROVAS.forEach(function(p) {
+        var el = document.getElementById('lap-' + pool + '-' + p);
+        if (el) el.value = '';
+        var pr = document.getElementById('lap-' + pool + '-' + p + '-p');
         if (pr) pr.textContent = '';
       });
     });
@@ -10043,7 +10086,15 @@ async function saveAthlete() {
       if (el && el.value.trim()) tempos[pool][p] = el.value.trim();
     });
   });
-  var athlete = { nome: nome, sexo: sexo, escalao: escalao, tempos: tempos };
+  var lapTempos = {};
+  POOL_KEYS.forEach(function(pool) {
+    lapTempos[pool] = {};
+    LAP_PROVAS.forEach(function(p) {
+      var el = document.getElementById('lap-' + pool + '-' + p);
+      if (el && el.value.trim()) lapTempos[pool][p] = el.value.trim();
+    });
+  });
+  var athlete = { nome: nome, sexo: sexo, escalao: escalao, tempos: tempos, lapTempos: lapTempos };
   if (coachEditingIdx >= 0) {
     coachAthletes[coachEditingIdx] = athlete;
   } else {
@@ -10133,6 +10184,7 @@ function calcRelay() {
   var typeSel    = document.getElementById('relay-type').value;
   var poolSel    = document.getElementById('relay-pool').value;
   var useConv    = document.getElementById('relay-use-conv') ? document.getElementById('relay-use-conv').checked : false;
+  var useLap     = document.getElementById('relay-use-lap') ? document.getElementById('relay-use-lap').checked : false;
   var resEl      = document.getElementById('relay-results');
   if (!escalaoSel || !typeSel || !poolSel) { resEl.innerHTML = ''; return; }
 
@@ -10154,33 +10206,40 @@ function calcRelay() {
   if (!isEstilos) {
     var key = dist + 'L';
     if (gender === 'X') {
-      var bM = getBestN(males, key, poolSel, 2, useConv);
-      var bF = getBestN(females, key, poolSel, 2, useConv);
+      var bM = getBestN(males, key, poolSel, 2, useConv, useLap, false);
+      var bF = getBestN(females, key, poolSel, 2, useConv, useLap, false);
       if (bM.length < 2 || bF.length < 2) {
         resEl.innerHTML = '<div class="relay-empty">Atletas insuficientes para esta estafeta.</div>';
         return;
       }
       var combo = bM.concat(bF);
       combo.sort(function(a,b) { return a.t - b.t; });
+      // 1º percurso não pode ser lap — reordenar para garantir
+      if (useLap) {
+        var nonLap = combo.filter(function(x) { return !x.isLap; });
+        var lapItems = combo.filter(function(x) { return x.isLap; });
+        combo = nonLap.length ? [nonLap[0]].concat(lapItems).concat(nonLap.slice(1)) : combo;
+        combo = combo.slice(0,4);
+      }
       var tot = 0;
       for (var i=0;i<combo.length;i++) tot += combo[i].t;
-      results.push({ total: tot, legs: combo.map(function(x) { return { nome: x.nome, estilo: 'Livres', time: x.t, converted: x.converted, fromPool: x.fromPool }; }) });
+      results.push({ total: tot, legs: combo.map(function(x) { return { nome: x.nome, estilo: 'Livres', time: x.t, converted: x.converted, fromPool: x.fromPool, isLap: x.isLap }; }) });
     } else {
       if (!pool || pool.length < 4) {
         resEl.innerHTML = '<div class="relay-empty">Atletas insuficientes para esta estafeta.</div>';
         return;
       }
-      results = getTopCombos(pool, key, poolSel, 3, useConv);
+      results = getTopCombos(pool, key, poolSel, 3, useConv, useLap);
     }
   } else {
     if (gender === 'X') {
-      results = getBestEstilosMisto(males, females, dist, poolSel, 3, useConv);
+      results = getBestEstilosMisto(males, females, dist, poolSel, 3, useConv, useLap);
     } else {
       if (!pool || pool.length < 4) {
         resEl.innerHTML = '<div class="relay-empty">Atletas insuficientes para esta estafeta.</div>';
         return;
       }
-      results = getBestEstilos(pool, dist, poolSel, 3, useConv);
+      results = getBestEstilos(pool, dist, poolSel, 3, useConv, useLap);
     }
   }
 
@@ -10202,8 +10261,9 @@ function calcRelay() {
     for (var li = 0; li < r.legs.length; li++) {
       var leg = r.legs[li];
       var convTag = leg.converted ? '<span style="color:#e07b00;font-weight:700;font-size:13px;" title="Tempo convertido de piscina de ' + leg.fromPool + ' (Sistema Colorado Timing)"> *</span>' : '';
+      var lapTag = leg.isLap ? '<span style="color:#f4722b;font-weight:700;font-size:13px;" title="Tempo de lap — não oficial"> †</span>' : '';
       out += '<div class="relay-leg">'
-        + '<span class="relay-leg-name">' + (li+1) + '. ' + leg.nome + convTag + '</span>'
+        + '<span class="relay-leg-name">' + (li+1) + '. ' + leg.nome + convTag + lapTag + '</span>'
         + '<span class="relay-leg-style">' + leg.estilo + '</span>'
         + '<span class="relay-leg-time">' + coachFormatTime(leg.time) + '</span>'
         + '</div>';
@@ -10211,6 +10271,10 @@ function calcRelay() {
     }
     if (convPools.length > 0) {
       out += '<div style="font-size:10.5px;color:#e07b00;font-style:italic;padding:4px 0 2px 4px;">* Tempo(s) convertido(s) de piscina de ' + convPools.join(' / ') + ' — Sistema Colorado Timing</div>';
+    }
+    var hasLap = r.legs.some(function(l) { return l.isLap; });
+    if (hasLap) {
+      out += '<div style="font-size:10.5px;color:#f4722b;font-style:italic;padding:2px 0 2px 4px;">† Tempo de lap — não oficial, apenas para estimativa</div>';
     }
     out += '</div></div>';
   }
@@ -10220,10 +10284,21 @@ function calcRelay() {
 
 // ── Relay conversion helper ──
 // _D and coachParseTime/convParse/convFmt already defined above
-function getRelayBestTime(athlete, key, poolKey, useConv) {
+function getRelayBestTime(athlete, key, poolKey, useConv, useLap, isFirstLeg) {
   // key e.g. "100L", poolKey "25" or "50"
+  // Se useLap e não é o 1º percurso, usar lapTempos se existir
+  var lapTime = null;
+  if (useLap && !isFirstLeg) {
+    var lapVal = athlete.lapTempos && athlete.lapTempos[poolKey] ? athlete.lapTempos[poolKey][key] : null;
+    lapTime = coachParseTime(lapVal);
+  }
+
   var tOrig = coachParseTime(athlete.tempos && athlete.tempos[poolKey] ? athlete.tempos[poolKey][key] : null);
-  if (!useConv) return tOrig !== null ? { t: tOrig, converted: false, fromPool: null } : null;
+  if (!useConv) {
+    // Sem conversão: usar lapTime se existir e não for 1º percurso
+    if (lapTime !== null) return { t: lapTime, converted: false, fromPool: null, isLap: true };
+    return tOrig !== null ? { t: tOrig, converted: false, fromPool: null, isLap: false } : null;
+  }
 
   var otherPool = poolKey === '25' ? '50' : '25';
   var tOther = coachParseTime(athlete.tempos && athlete.tempos[otherPool] ? athlete.tempos[otherPool][key] : null);
@@ -10237,58 +10312,75 @@ function getRelayBestTime(athlete, key, poolKey, useConv) {
     }
   }
 
-  // Pick best
-  if (tOrig !== null && tOtherConv !== null) {
-    if (tOtherConv < tOrig) return { t: tOtherConv, converted: true, fromPool: otherPool + 'm' };
-    return { t: tOrig, converted: false, fromPool: null };
-  }
-  if (tOrig !== null) return { t: tOrig, converted: false, fromPool: null };
-  if (tOtherConv !== null) return { t: tOtherConv, converted: true, fromPool: otherPool + 'm' };
-  return null;
+  // Juntar todas as opções e escolher melhor
+  var options = [];
+  if (lapTime !== null) options.push({ t: lapTime, converted: false, fromPool: null, isLap: true });
+  if (tOrig !== null) options.push({ t: tOrig, converted: false, fromPool: null, isLap: false });
+  if (tOtherConv !== null) options.push({ t: tOtherConv, converted: true, fromPool: otherPool + 'm', isLap: false });
+  if (!options.length) return null;
+  options.sort(function(a,b) { return a.t - b.t; });
+  return options[0];
 }
 
-function getBestN(pool, key, poolKey, n, useConv) {
+function getBestN(pool, key, poolKey, n, useConv, useLap, isFirstLeg) {
   var res = [];
   for (var i=0;i<pool.length;i++) {
-    var r = getRelayBestTime(pool[i], key, poolKey, useConv);
-    if (r !== null) res.push({ nome: pool[i].nome, t: r.t, converted: r.converted, fromPool: r.fromPool });
+    var r = getRelayBestTime(pool[i], key, poolKey, useConv, useLap, isFirstLeg);
+    if (r !== null) res.push({ nome: pool[i].nome, t: r.t, converted: r.converted, fromPool: r.fromPool, isLap: r.isLap });
   }
   res.sort(function(a,b) { return a.t-b.t; });
   return res.slice(0, n);
 }
 
-function getTopCombos(pool, key, poolKey, topN, useConv) {
-  var elig = [];
+function getTopCombos(pool, key, poolKey, topN, useConv, useLap) {
+  // Para o 1º percurso nunca usar lap; para os restantes usar se useLap=true
+  // Calcular tempos separados: firstLeg e otherLeg
+  var eligFirst = [];
+  var eligOther = [];
   for (var i=0;i<pool.length;i++) {
-    var r = getRelayBestTime(pool[i], key, poolKey, useConv);
-    if (r !== null) elig.push({ nome: pool[i].nome, t: r.t, converted: r.converted, fromPool: r.fromPool });
+    var rFirst = getRelayBestTime(pool[i], key, poolKey, useConv, useLap, true);
+    var rOther = getRelayBestTime(pool[i], key, poolKey, useConv, useLap, false);
+    if (rFirst !== null) eligFirst.push({ nome: pool[i].nome, t: rFirst.t, converted: rFirst.converted, fromPool: rFirst.fromPool, isLap: rFirst.isLap });
+    if (rOther !== null) eligOther.push({ nome: pool[i].nome, t: rOther.t, converted: rOther.converted, fromPool: rOther.fromPool, isLap: rOther.isLap });
   }
-  elig.sort(function(a,b) { return a.t-b.t; });
-  if (elig.length < 4) return [];
-  var cands = elig.slice(0, Math.min(8, elig.length));
+  eligFirst.sort(function(a,b) { return a.t-b.t; });
+  eligOther.sort(function(a,b) { return a.t-b.t; });
+  if (eligFirst.length < 1 || eligOther.length < 3) return [];
+  var candsFirst = eligFirst.slice(0, Math.min(8, eligFirst.length));
+  var candsOther = eligOther.slice(0, Math.min(8, eligOther.length));
   var combos = [];
-  for (var a=0;a<cands.length-3;a++)
-    for (var b=a+1;b<cands.length-2;b++)
-      for (var c=b+1;c<cands.length-1;c++)
-        for (var d=c+1;d<cands.length;d++) {
-          var tot = cands[a].t+cands[b].t+cands[c].t+cands[d].t;
-          combos.push({ total: tot, legs: [cands[a],cands[b],cands[c],cands[d]].map(function(x) { return { nome:x.nome, estilo:'Livres', time:x.t, converted:x.converted, fromPool:x.fromPool }; }) });
+  for (var a=0;a<candsFirst.length;a++) {
+    var othersForA = candsOther.filter(function(x) { return x.nome !== candsFirst[a].nome; });
+    if (othersForA.length < 3) continue;
+    var top3others = othersForA.slice(0,8);
+    for (var b=0;b<top3others.length-2;b++)
+      for (var c=b+1;c<top3others.length-1;c++)
+        for (var d=c+1;d<top3others.length;d++) {
+          var tot = candsFirst[a].t + top3others[b].t + top3others[c].t + top3others[d].t;
+          combos.push({ total: tot, legs: [
+            { nome:candsFirst[a].nome, estilo:'Livres', time:candsFirst[a].t, converted:candsFirst[a].converted, fromPool:candsFirst[a].fromPool, isLap:candsFirst[a].isLap },
+            { nome:top3others[b].nome, estilo:'Livres', time:top3others[b].t, converted:top3others[b].converted, fromPool:top3others[b].fromPool, isLap:top3others[b].isLap },
+            { nome:top3others[c].nome, estilo:'Livres', time:top3others[c].t, converted:top3others[c].converted, fromPool:top3others[c].fromPool, isLap:top3others[c].isLap },
+            { nome:top3others[d].nome, estilo:'Livres', time:top3others[d].t, converted:top3others[d].converted, fromPool:top3others[d].fromPool, isLap:top3others[d].isLap },
+          ]});
         }
+  }
   combos.sort(function(a,b) { return a.total-b.total; });
   return combos.slice(0, topN);
 }
 
-function getBestEstilos(pool, dist, poolKey, topN, useConv) {
+function getBestEstilos(pool, dist, poolKey, topN, useConv, useLap) {
   var legs = ['C','B','M','L'];
   var legLabel = {C:'Costas',B:'Brucos',M:'Mariposa',L:'Livres'};
   var elig = {};
   for (var li=0;li<legs.length;li++) {
     var leg = legs[li];
     var key = dist+leg;
+    var isFirst = (li === 0); // Costas é sempre o 1º percurso em estilos
     elig[leg] = [];
     for (var i=0;i<pool.length;i++) {
-      var r = getRelayBestTime(pool[i], key, poolKey, useConv);
-      if (r !== null) elig[leg].push({ nome: pool[i].nome, t: r.t, converted: r.converted, fromPool: r.fromPool });
+      var r = getRelayBestTime(pool[i], key, poolKey, useConv, useLap, isFirst);
+      if (r !== null) elig[leg].push({ nome: pool[i].nome, t: r.t, converted: r.converted, fromPool: r.fromPool, isLap: r.isLap });
     }
     elig[leg].sort(function(a,b) { return a.t-b.t; });
   }
@@ -10299,7 +10391,7 @@ function getBestEstilos(pool, dist, poolKey, topN, useConv) {
     var cands = elig[leg].filter(function(x) { return used.indexOf(x.nome) < 0; }).slice(0,4);
     for (var i=0;i<cands.length;i++) {
       used.push(cands[i].nome);
-      current.push({ nome:cands[i].nome, estilo:legLabel[leg], time:cands[i].t, converted:cands[i].converted, fromPool:cands[i].fromPool });
+      current.push({ nome:cands[i].nome, estilo:legLabel[leg], time:cands[i].t, converted:cands[i].converted, fromPool:cands[i].fromPool, isLap:cands[i].isLap });
       recurse(legIdx+1, used, current, total+cands[i].t);
       current.pop(); used.pop();
     }
@@ -10309,7 +10401,7 @@ function getBestEstilos(pool, dist, poolKey, topN, useConv) {
   return results.slice(0, topN);
 }
 
-function getBestEstilosMisto(males, females, dist, poolKey, topN, useConv) {
+function getBestEstilosMisto(males, females, dist, poolKey, topN, useConv, useLap) {
   var legs = ['C','B','M','L'];
   var legLabel = {C:'Costas',B:'Brucos',M:'Mariposa',L:'Livres'};
   var maleLegsOptions = [[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]];
@@ -10320,11 +10412,12 @@ function getBestEstilosMisto(males, females, dist, poolKey, topN, useConv) {
     for (var li=0;li<4;li++) {
       var leg = legs[li];
       var key = dist+leg;
+      var isFirst = (li === 0); // Costas é sempre o 1º percurso
       var srcPool = mLegs.indexOf(li) >= 0 ? males : females;
       elig[li] = [];
       for (var pi=0;pi<srcPool.length;pi++) {
-        var r = getRelayBestTime(srcPool[pi], key, poolKey, useConv);
-        if (r !== null) elig[li].push({ nome: srcPool[pi].nome, t: r.t, converted: r.converted, fromPool: r.fromPool });
+        var r = getRelayBestTime(srcPool[pi], key, poolKey, useConv, useLap, isFirst);
+        if (r !== null) elig[li].push({ nome: srcPool[pi].nome, t: r.t, converted: r.converted, fromPool: r.fromPool, isLap: r.isLap });
       }
       elig[li].sort(function(a,b) { return a.t-b.t; });
     }
@@ -10340,7 +10433,7 @@ function getBestEstilosMisto(males, females, dist, poolKey, topN, useConv) {
         var cands = elig[legIdx].filter(function(x) { return used.indexOf(x.nome) < 0; }).slice(0,3);
         for (var i=0;i<cands.length;i++) {
           used.push(cands[i].nome);
-          current.push({ nome:cands[i].nome, estilo:legLabel[legs[legIdx]], time:cands[i].t, converted:cands[i].converted, fromPool:cands[i].fromPool });
+          current.push({ nome:cands[i].nome, estilo:legLabel[legs[legIdx]], time:cands[i].t, converted:cands[i].converted, fromPool:cands[i].fromPool, isLap:cands[i].isLap });
           recurseM(legIdx+1, usedM, usedF, current, total+cands[i].t);
           current.pop(); used.pop();
         }
