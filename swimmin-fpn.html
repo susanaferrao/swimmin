@@ -12238,7 +12238,10 @@ async function loadUserDoc(path) {
 
 window.firebaseSaveAtletaProfiles = function(p){ return saveUserDoc('atletaProfiles',{profiles:p||{},updatedAt:Date.now()}); };
 window.firebaseLoadAtletaProfiles = function(){ return loadUserDoc('atletaProfiles'); };
-window.firebaseSaveCoachData = function(n,a){ return saveUserDoc('coachData',{teamName:n||'',athletes:a||[],updatedAt:Date.now()}); };
+window.firebaseSaveCoachData = function(n,a){ 
+  if (n && typeof n === 'object' && !Array.isArray(n)) { a = n.athletes; n = n.teamName; }
+  return saveUserDoc('coachData',{teamName:n||'',athletes:a||[],updatedAt:Date.now()}); 
+};
 window.firebaseLoadCoachData = function(){ return loadUserDoc('coachData'); };
 window.firebaseSaveSwolf = function(d){ return saveUserDoc('swolfData',{data:JSON.stringify(d),updatedAt:Date.now()}); };
 window.firebaseLoadSwolf = async function(){ var d=await loadUserDoc('swolfData'); if(!d||!d.data)return null; try{return{data:JSON.parse(d.data),updatedAt:d.updatedAt||0};}catch(e){return null;} };
@@ -12425,7 +12428,7 @@ _auth.onAuthStateChanged( async (user) => {
 
       // Calendário
       const calFb = await window.firebaseLoadCalendario();
-      if (calFb) {
+      if (calFb && calFb.data !== null && calFb.data !== undefined) {
         var lsCalTs = 0;
         try { lsCalTs = parseInt(localStorage.getItem('swimmin_cal_ts') || '0'); } catch(e) {}
         if ((calFb.updatedAt || 0) >= lsCalTs) {
@@ -12564,7 +12567,7 @@ window.loadFromFirebase = async function() {
     // Calendário
     updateSyncPopup(Math.round((done/total)*100), 'Calendário...');
     var calFb = await window.firebaseLoadCalendario();
-    if (calFb && calFb.data) {
+    if (calFb && calFb.data !== null && calFb.data !== undefined) {
       localStorage.setItem(CAL_KEY, JSON.stringify(calFb.data));
       localStorage.setItem('swimmin_cal_ts', (calFb.updatedAt || Date.now()).toString());
       if (typeof calRender === 'function') setTimeout(calRender, 100);
