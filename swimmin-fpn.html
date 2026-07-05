@@ -10329,40 +10329,45 @@ function getBestN(pool, key, poolKey, n, useConv, useLap, isFirstLeg) {
 }
 
 function getTopCombos(pool, key, poolKey, topN, useConv, useLap) {
-  // Para o 1º percurso nunca usar lap; para os restantes usar se useLap=true
-  // Calcular tempos separados: firstLeg e otherLeg
-  var eligFirst = [];
-  var eligOther = [];
+  // Calcular o melhor tempo disponível para cada nadador em cada posição:
+  // 1º percurso: nunca usa lap; restantes: pode usar lap se melhor
+  // Usar o melhor tempo sem lap para ordenar candidatos
+  var elig = [];
   for (var i=0;i<pool.length;i++) {
-    var rFirst = getRelayBestTime(pool[i], key, poolKey, useConv, useLap, true);
-    var rOther = getRelayBestTime(pool[i], key, poolKey, useConv, useLap, false);
-    if (rFirst !== null) eligFirst.push({ nome: pool[i].nome, t: rFirst.t, converted: rFirst.converted, fromPool: rFirst.fromPool, isLap: rFirst.isLap });
-    if (rOther !== null) eligOther.push({ nome: pool[i].nome, t: rOther.t, converted: rOther.converted, fromPool: rOther.fromPool, isLap: rOther.isLap });
+    var r = getRelayBestTime(pool[i], key, poolKey, useConv, false, true); // sem lap para ranking
+    if (r !== null) elig.push(pool[i]);
   }
-  eligFirst.sort(function(a,b) { return a.t-b.t; });
-  eligOther.sort(function(a,b) { return a.t-b.t; });
-  if (eligFirst.length < 1 || eligOther.length < 3) return [];
-  var candsFirst = eligFirst.slice(0, Math.min(8, eligFirst.length));
-  var candsOther = eligOther.slice(0, Math.min(8, eligOther.length));
+  if (elig.length < 4) return [];
+  var cands = elig.slice(0, Math.min(8, elig.length));
   var combos = [];
-  for (var a=0;a<candsFirst.length;a++) {
-    var othersForA = candsOther.filter(function(x) { return x.nome !== candsFirst[a].nome; });
-    if (othersForA.length < 3) continue;
-    var top3others = othersForA.slice(0,8);
-    for (var b=0;b<top3others.length-2;b++)
-      for (var c=b+1;c<top3others.length-1;c++)
-        for (var d=c+1;d<top3others.length;d++) {
-          var tot = candsFirst[a].t + top3others[b].t + top3others[c].t + top3others[d].t;
+  for (var a=0;a<cands.length;a++)
+    for (var b=0;b<cands.length;b++) { if (b===a) continue;
+      for (var c=0;c<cands.length;c++) { if (c===a||c===b) continue;
+        for (var d=0;d<cands.length;d++) { if (d===a||d===b||d===c) continue;
+          // Posição 1 (a): nunca usa lap; posições 2,3,4: pode usar lap
+          var rA = getRelayBestTime(cands[a], key, poolKey, useConv, useLap, true);
+          var rB = getRelayBestTime(cands[b], key, poolKey, useConv, useLap, false);
+          var rC = getRelayBestTime(cands[c], key, poolKey, useConv, useLap, false);
+          var rD = getRelayBestTime(cands[d], key, poolKey, useConv, useLap, false);
+          if (!rA||!rB||!rC||!rD) continue;
+          var tot = rA.t+rB.t+rC.t+rD.t;
           combos.push({ total: tot, legs: [
-            { nome:candsFirst[a].nome, estilo:'Livres', time:candsFirst[a].t, converted:candsFirst[a].converted, fromPool:candsFirst[a].fromPool, isLap:candsFirst[a].isLap },
-            { nome:top3others[b].nome, estilo:'Livres', time:top3others[b].t, converted:top3others[b].converted, fromPool:top3others[b].fromPool, isLap:top3others[b].isLap },
-            { nome:top3others[c].nome, estilo:'Livres', time:top3others[c].t, converted:top3others[c].converted, fromPool:top3others[c].fromPool, isLap:top3others[c].isLap },
-            { nome:top3others[d].nome, estilo:'Livres', time:top3others[d].t, converted:top3others[d].converted, fromPool:top3others[d].fromPool, isLap:top3others[d].isLap },
+            { nome:cands[a].nome, estilo:'Livres', time:rA.t, converted:rA.converted, fromPool:rA.fromPool, isLap:rA.isLap },
+            { nome:cands[b].nome, estilo:'Livres', time:rB.t, converted:rB.converted, fromPool:rB.fromPool, isLap:rB.isLap },
+            { nome:cands[c].nome, estilo:'Livres', time:rC.t, converted:rC.converted, fromPool:rC.fromPool, isLap:rC.isLap },
+            { nome:cands[d].nome, estilo:'Livres', time:rD.t, converted:rD.converted, fromPool:rD.fromPool, isLap:rD.isLap },
           ]});
         }
-  }
+      }
+    }
   combos.sort(function(a,b) { return a.total-b.total; });
-  return combos.slice(0, topN);
+  // Deduplicar por conjunto de nomes (independentemente de ordem nos percursos 2-4)
+  var seen = [], deduped = [];
+  for (var i=0;i<combos.length;i++) {
+    var k = combos[i].legs.map(function(l){return l.nome;}).sort().join('|');
+    if (seen.indexOf(k)<0) { seen.push(k); deduped.push(combos[i]); }
+  }
+  return deduped.slice(0, topN);
 }
 
 function getBestEstilos(pool, dist, poolKey, topN, useConv, useLap) {
