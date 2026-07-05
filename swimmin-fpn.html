@@ -10285,40 +10285,36 @@ function calcRelay() {
 // ── Relay conversion helper ──
 // _D and coachParseTime/convParse/convFmt already defined above
 function getRelayBestTime(athlete, key, poolKey, useConv, useLap, isFirstLeg) {
-  // key e.g. "100L", poolKey "25" or "50"
-  // Se useLap e não é o 1º percurso, usar lapTempos se existir
-  var lapTime = null;
-  if (useLap && !isFirstLeg) {
-    var lapVal = athlete.lapTempos && athlete.lapTempos[poolKey] ? athlete.lapTempos[poolKey][key] : null;
-    lapTime = coachParseTime(lapVal);
-  }
+  var options = [];
 
+  // Tempo oficial directo
   var tOrig = coachParseTime(athlete.tempos && athlete.tempos[poolKey] ? athlete.tempos[poolKey][key] : null);
-  if (!useConv) {
-    // Sem conversão: usar lapTime se existir e não for 1º percurso
-    if (lapTime !== null) return { t: lapTime, converted: false, fromPool: null, isLap: true };
-    return tOrig !== null ? { t: tOrig, converted: false, fromPool: null, isLap: false } : null;
-  }
+  if (tOrig !== null) options.push({ t: tOrig, converted: false, fromPool: null, isLap: false });
 
-  var otherPool = poolKey === '25' ? '50' : '25';
-  var tOther = coachParseTime(athlete.tempos && athlete.tempos[otherPool] ? athlete.tempos[otherPool][key] : null);
-
-  // Convert tOther to target pool
-  var tOtherConv = null;
-  if (tOther !== null) {
-    var delta = _D[key];
-    if (delta !== undefined) {
-      tOtherConv = otherPool === '50' ? tOther - delta : tOther + delta;
+  // Tempo convertido da outra piscina
+  if (useConv) {
+    var otherPool = poolKey === '25' ? '50' : '25';
+    var tOther = coachParseTime(athlete.tempos && athlete.tempos[otherPool] ? athlete.tempos[otherPool][key] : null);
+    if (tOther !== null) {
+      var delta = _D[key];
+      if (delta !== undefined) {
+        var tConv = otherPool === '50' ? tOther - delta : tOther + delta;
+        options.push({ t: tConv, converted: true, fromPool: otherPool + 'm', isLap: false });
+      }
     }
   }
 
-  // Juntar todas as opções e escolher melhor
-  var options = [];
-  if (lapTime !== null) options.push({ t: lapTime, converted: false, fromPool: null, isLap: true });
-  if (tOrig !== null) options.push({ t: tOrig, converted: false, fromPool: null, isLap: false });
-  if (tOtherConv !== null) options.push({ t: tOtherConv, converted: true, fromPool: otherPool + 'm', isLap: false });
+  // Tempo de lap — só considerado se activado E não for o 1º percurso
+  // Entra como opção adicional: só é usado se for melhor que os tempos oficiais
+  if (useLap && !isFirstLeg) {
+    var lapVal = athlete.lapTempos && athlete.lapTempos[poolKey] ? athlete.lapTempos[poolKey][key] : null;
+    var tLap = coachParseTime(lapVal);
+    if (tLap !== null) options.push({ t: tLap, converted: false, fromPool: null, isLap: true });
+  }
+
   if (!options.length) return null;
-  options.sort(function(a,b) { return a.t - b.t; });
+  // Escolher sempre o melhor (menor tempo)
+  options.sort(function(a, b) { return a.t - b.t; });
   return options[0];
 }
 
