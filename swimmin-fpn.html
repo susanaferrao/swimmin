@@ -4046,32 +4046,35 @@ function idadeUpdateDistancias() {
     // Misto: only relay distances
     provas = estilo === 'L' ? ['4x50L','4x100L'] : ['4x50E','4x100E'];
   } else {
-    // M/F: normal distances
+    // M/F: normal distances (as estafetas já vêm incluídas em ESTILO_PROVAS_LONGA/CURTA)
     provas = piscina === 'longa' ? ESTILO_PROVAS_LONGA[estilo] : ESTILO_PROVAS_CURTA[estilo];
-    // Append relay distances for L and E
-    if (estilo === 'L') provas = provas.concat(['4x50L','4x100L','4x200L']);
-    if (estilo === 'E') provas = provas.concat(['4x50E','4x100E']);
   }
   if (!provas) return;
-  for (var i = 0; i < provas.length; i++) {
-    var isRelay = provas[i].indexOf('4x') === 0;
-    if (isRelay) {
-      var distLabel = provas[i].replace('L','').replace('E','');
-      var optClube = document.createElement('option');
-      optClube.value = provas[i] + '|clube';
-      optClube.textContent = distLabel + ' Clube';
-      distEl.appendChild(optClube);
-      var optSelecao = document.createElement('option');
-      optSelecao.value = provas[i] + '|selecao';
-      optSelecao.textContent = distLabel + ' Seleção';
-      distEl.appendChild(optSelecao);
-    } else {
-      var opt = document.createElement('option');
-      opt.value = provas[i];
-      opt.textContent = provas[i] + 'm';
-      distEl.appendChild(opt);
-    }
-  }
+
+  var individuais = provas.filter(function(p) { return p.indexOf('4x') !== 0; });
+  var estafetas = provas.filter(function(p) { return p.indexOf('4x') === 0; });
+
+  individuais.forEach(function(p) {
+    var opt = document.createElement('option');
+    opt.value = p;
+    opt.textContent = p + 'm';
+    distEl.appendChild(opt);
+  });
+  estafetas.forEach(function(p) {
+    var distLabel = p.replace('L','').replace('E','');
+    var optClube = document.createElement('option');
+    optClube.value = p + '|clube';
+    optClube.textContent = distLabel + ' Clube';
+    distEl.appendChild(optClube);
+  });
+  estafetas.forEach(function(p) {
+    var distLabel = p.replace('L','').replace('E','');
+    var optSelecao = document.createElement('option');
+    optSelecao.value = p + '|selecao';
+    optSelecao.textContent = distLabel + ' Seleção';
+    distEl.appendChild(optSelecao);
+  });
+
   if (distEl.querySelector('option[value="' + prevD + '"]')) distEl.value = prevD;
   mostrarRecordeIdade();
 }
