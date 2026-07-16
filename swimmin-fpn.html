@@ -3365,7 +3365,7 @@ document.addEventListener("click", function(e) {
 // ============================================================
 // DADOS — Piscina Curta (25m) e Piscina Longa (50m)
 // ============================================================
-var tempos, dadosInternacionais, naTAC, recordesIdade, recordesMundiais, recordesEstafetas;
+var tempos, dadosInternacionais, naTAC, recordesIdade, recordesMundiais, recordesEstafetas, recordesEstafetasSelecao;
 var _swimminDadosProntos = false;
 
 (function carregarDadosSwimmin() {
@@ -3387,7 +3387,8 @@ var _swimminDadosProntos = false;
     fetch('minimos-adaptada.json').then(function(r){ return r.json(); }),
     fetch('recordes-mundiais.json').then(function(r){ return r.json(); }),
     fetch('recordes-nacionais.json').then(function(r){ return r.json(); }),
-    fetch('recordes-estafetas.json').then(function(r){ return r.json(); })
+    fetch('recordes-estafetas.json').then(function(r){ return r.json(); }),
+    fetch('recordes-estafetas-selecao.json').then(function(r){ return r.json(); })
   ]).then(function(results) {
     tempos = results[0].tempos;
     dadosInternacionais = results[0].internacionais;
@@ -3395,6 +3396,7 @@ var _swimminDadosProntos = false;
     recordesMundiais = results[2];
     recordesIdade = results[3];
     recordesEstafetas = results[4];
+    recordesEstafetasSelecao = results[5];
     _swimminDadosProntos = true;
     var ov = document.getElementById('swimmin-loading-overlay');
     if (ov) ov.remove();
@@ -4052,11 +4054,23 @@ function idadeUpdateDistancias() {
   }
   if (!provas) return;
   for (var i = 0; i < provas.length; i++) {
-    var opt = document.createElement('option');
     var isRelay = provas[i].indexOf('4x') === 0;
-    opt.value = provas[i];
-    opt.textContent = isRelay ? provas[i].replace('L','').replace('E','') + 'm estafeta' : provas[i] + 'm';
-    distEl.appendChild(opt);
+    if (isRelay) {
+      var distLabel = provas[i].replace('L','').replace('E','');
+      var optClube = document.createElement('option');
+      optClube.value = provas[i] + '|clube';
+      optClube.textContent = distLabel + ' Clube';
+      distEl.appendChild(optClube);
+      var optSelecao = document.createElement('option');
+      optSelecao.value = provas[i] + '|selecao';
+      optSelecao.textContent = distLabel + ' Seleção';
+      distEl.appendChild(optSelecao);
+    } else {
+      var opt = document.createElement('option');
+      opt.value = provas[i];
+      opt.textContent = provas[i] + 'm';
+      distEl.appendChild(opt);
+    }
   }
   if (distEl.querySelector('option[value="' + prevD + '"]')) distEl.value = prevD;
   mostrarRecordeIdade();
@@ -4078,28 +4092,41 @@ function mostrarRecordeIdade() {
   var pisc = piscina === 'curta' ? 'curta' : 'longa';
   var ageKey = idade === 'open' ? 'open' : idade;
   // Para estafetas, tentar chave exacta e depois intervalos (ex: "15" → "15-16")
-  var RELAY_AGE_MAP = {'13':['13'],'14':['14','13-14'],'15':['15'],'16':['16','15-16'],'17':['17'],'18':['18','17-18'],'19+':['19+']};
+  var RELAY_AGE_MAP = {
+    '13':['13','13-14'],
+    '14':['14','13-14','14-15','14-16'],
+    '15':['15','15-16','14-15','14-16'],
+    '16':['16','15-16','16-17','16-18'],
+    '17':['17','17-18','16-17','16-18'],
+    '18':['18','17-18','18+','16-18'],
+    '19+':['19+','18+']
+  };
   function getRelayRec(tab, pisc, sx, age, key) {
     var keys = RELAY_AGE_MAP[age] || [age];
     for (var ki=0; ki<keys.length; ki++) { try { var r=tab[pisc][sx][keys[ki]][key]; if(r) return r; } catch(e){} }
     return null;
   }
-  var isRelayDist = dist.indexOf('4x') === 0;
+  // O valor da distância para estafetas vem como "4x50L|clube" ou "4x50L|selecao"
+  var distParts = dist.split('|');
+  var distBase = distParts[0];
+  var tipoEstafeta = distParts[1] || 'clube';
+  var isRelayDist = distBase.indexOf('4x') === 0;
   var isEstafeta = isRelayDist || sexo === 'X';
   var rec = null;
 
   if (isEstafeta) {
     var lookupSexo = sexo === 'X' ? 'X' : sexo;
-    var relayStr = isRelayDist ? dist : ('4x' + dist + estilo);
+    var relayStr = isRelayDist ? distBase : ('4x' + distBase + estilo);
     var relayMatch = relayStr.match(/^4x(\d+)([LE])$/);
     if (relayMatch) {
       var relayDist = relayMatch[1];
       var relayEstilo = relayMatch[2];
       var key = relayDist + '_' + relayEstilo;
-      rec = getRelayRec(recordesEstafetas, pisc, lookupSexo, ageKey, key);
+      var tabelaEstafeta = tipoEstafeta === 'selecao' ? recordesEstafetasSelecao : recordesEstafetas;
+      rec = getRelayRec(tabelaEstafeta, pisc, lookupSexo, ageKey, key);
     }
   } else {
-    var key = dist + '_' + estilo;
+    var key = distBase + '_' + estilo;
     try { rec = recordesIdade[pisc][sexo][ageKey][key]; } catch(e) {}
   }
 
@@ -4114,7 +4141,7 @@ function mostrarRecordeIdade() {
   html += '<div class="fpn-pontos">' + rec.tempo + '</div>';
   html += '<div class="fpn-divider"></div>';
   if (isEstafeta) {
-    html += '<div class="fpn-rn-nome">' + rec.clube + '</div>';
+    html += '<div class="fpn-rn-nome">' + (rec.clube || rec.equipa) + '</div>';
     if (rec.nadadores) html += '<div class="fpn-rn-info" style="margin-bottom:4px;">' + rec.nadadores + '</div>';
   } else {
     html += '<div class="fpn-rn-nome">' + rec.nome + '</div>';
