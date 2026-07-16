@@ -7215,12 +7215,12 @@ var COMP_DATES = {
 // Estilo map
 var ESTILO_LABELS = {L:'Livres', C:'Costas', B:'Bruços', M:'Mariposa', E:'Estilos', X:'Estafetas'};
 var ESTILO_PROVAS_LONGA = {
-  L:['50','100','200','400','800','1500'], C:['50','100','200'],
-  B:['50','100','200'], M:['50','100','200'], E:['200','400'], X:['4x50L','4x100L','4x50E','4x100E']
+  L:['50','100','200','400','800','1500','4x50L','4x100L','4x200L'], C:['50','100','200'],
+  B:['50','100','200'], M:['50','100','200'], E:['200','400','4x50E','4x100E']
 };
 var ESTILO_PROVAS_CURTA = {
-  L:['50','100','200','400','800','1500'], C:['50','100','200'],
-  B:['50','100','200'], M:['50','100','200'], E:['100','200','400'], X:['4x50L','4x100L','4x50E','4x100E']
+  L:['50','100','200','400','800','1500','4x50L','4x100L','4x200L'], C:['50','100','200'],
+  B:['50','100','200'], M:['50','100','200'], E:['100','200','400','4x50E','4x100E']
 };
 
 // ============================================================
@@ -7305,7 +7305,7 @@ function popularDistanciasPorEstilo() {
   for (var i = 0; i < provas.length; i++) {
     var opt = document.createElement('option');
     opt.value = provas[i];
-    opt.textContent = provas[i] + 'm';
+    var _m = provas[i].match(/^4x(\d+)[LE]$/); opt.textContent = _m ? '4x' + _m[1] + 'm' : provas[i] + 'm';
     distEl.appendChild(opt);
   }
   if (distEl.querySelector('option[value="' + prevDist + '"]')) {
@@ -7511,7 +7511,7 @@ function wrUpdateDist() {
   for (var i = 0; i < provas.length; i++) {
     var opt = document.createElement('option');
     opt.value = provas[i];
-    opt.textContent = provas[i] + 'm';
+    var _m = provas[i].match(/^4x(\d+)[LE]$/); opt.textContent = _m ? '4x' + _m[1] + 'm' : provas[i] + 'm';
     distEl.appendChild(opt);
   }
   if (distEl.querySelector('option[value="' + prevD + '"]')) distEl.value = prevD;
@@ -7578,7 +7578,7 @@ function fpnUpdateDistancias() {
   for (var i = 0; i < provas.length; i++) {
     var opt = document.createElement('option');
     opt.value = provas[i];
-    opt.textContent = provas[i] + 'm';
+    var _m = provas[i].match(/^4x(\d+)[LE]$/); opt.textContent = _m ? '4x' + _m[1] + 'm' : provas[i] + 'm';
     distEl.appendChild(opt);
   }
   if (distEl.querySelector('option[value="' + prevD + '"]')) distEl.value = prevD;
