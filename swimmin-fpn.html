@@ -3178,7 +3178,6 @@ document.addEventListener("click", function(e) {
       </select>
     </div>
     <div id="id-result"></div>
-    <div class="footer">Dados FPN · última atualização a 21/06/2026</div>
     </div><!-- /rec-panel-nacionais -->
 
     <!-- Painel Mundiais -->
@@ -3222,7 +3221,6 @@ document.addEventListener("click", function(e) {
       </div>
     </div>
     <div id="wr-result"></div>
-    <div class="footer">Dados World Aquatics · atualizado a 22/03/2026</div>
     </div><!-- /rec-panel-mundiais -->
   </div><!-- /recordes-section -->
 
@@ -5630,7 +5628,6 @@ function instalarApp() {
       <div class="fpn-tempo-preview" id="fpn-tempo-preview"></div>
     </div>
     <div id="fpn-result" style="margin-top:24px;"></div>
-  <div class="footer">Dados de acordo com o regulamento oficial da FPN · atualizado a 09/03/2026</div>
 </div>
 
   <div class="fpn-btn-wrap">
@@ -6170,6 +6167,10 @@ function openAddAthlete(idx) {
   document.getElementById('btn-add-athlete').style.display = 'none';
   var delBtn = document.getElementById('btn-del-athlete');
   if (delBtn) delBtn.style.display = coachEditingIdx >= 0 ? 'block' : 'none';
+  setTimeout(function() {
+    var formEl = document.getElementById('add-athlete-form');
+    if (formEl) formEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
 }
 
 function cancelAthlete() {
@@ -6476,7 +6477,7 @@ function getTopCombos(pool, key, poolKey, topN, useConv, useLap) {
 
 function getBestEstilos(pool, dist, poolKey, topN, useConv, useLap) {
   var legs = ['C','B','M','L'];
-  var legLabel = {C:'Costas',B:'Brucos',M:'Mariposa',L:'Livres'};
+  var legLabel = {C:'Costas',B:'Bruços',M:'Mariposa',L:'Livres'};
   var elig = {};
   for (var li=0;li<legs.length;li++) {
     var leg = legs[li];
@@ -6508,7 +6509,7 @@ function getBestEstilos(pool, dist, poolKey, topN, useConv, useLap) {
 
 function getBestEstilosMisto(males, females, dist, poolKey, topN, useConv, useLap) {
   var legs = ['C','B','M','L'];
-  var legLabel = {C:'Costas',B:'Brucos',M:'Mariposa',L:'Livres'};
+  var legLabel = {C:'Costas',B:'Bruços',M:'Mariposa',L:'Livres'};
   var maleLegsOptions = [[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]];
   var results = [];
   for (var oi=0;oi<maleLegsOptions.length;oi++) {
@@ -11502,9 +11503,16 @@ var _perfilMode = 'nacional'; // 'nacional' | 'mundial'
 function verMeuPerfil() {
   _perfilUnlocked = true;
   var sec = document.getElementById('perfil-radar-section');
-  if (sec) {
+  var btn = document.getElementById('btn-ver-perfil');
+  if (!sec) return;
+  var isOpen = sec.style.display === 'block';
+  if (isOpen) {
+    sec.style.display = 'none';
+    if (btn) btn.textContent = 'Ver o meu perfil';
+  } else {
     sec.style.display = 'block';
     perfilRender();
+    if (btn) btn.textContent = 'Fechar Perfil';
     setTimeout(function() { sec.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
   }
 }
