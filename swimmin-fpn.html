@@ -1440,8 +1440,8 @@ html:not(.light-mode) .cal-popup-name { color: #fff; }
   padding: 24px 20px; box-shadow: 0 2px 16px rgba(0,0,0,0.07); margin: 0;
 }
 .coach-card h2 {
-  font-family: 'Bebas Neue', sans-serif; font-size: 26px;
-  color: #0a2a4a; letter-spacing: 2px; margin: 0 0 4px 0;
+  font-family: 'Bebas Neue', sans-serif; font-size: 28px; font-weight: normal;
+  color: var(--blue-deep); letter-spacing: 2px; margin: 0 0 4px 0;
 }
 .coach-card .subtitle {
   font-size: 11px; color: #888; letter-spacing: 1px;
@@ -1533,10 +1533,10 @@ html:not(.light-mode) .cal-popup-name { color: #fff; }
 /* Relay calculator */
 .relay-calc { padding-top: 18px; }
 .relay-calc h3 {
-  font-family: 'Bebas Neue', sans-serif; font-size: 20px;
+  font-family: 'Bebas Neue', sans-serif; font-size: 20px; font-weight: normal;
   color: #0a2a4a; letter-spacing: 2px; margin: 0 0 14px 0;
 }
-.relay-selects { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+.relay-selects { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
 .relay-selects select {
   width: 100%; padding: 11px 14px; border-radius: 10px;
   border: 1.5px solid #e0e8f0; font-size: 14px;
@@ -1804,7 +1804,7 @@ input.personal-input:focus, .crono-input:focus, #auth-email:focus, #auth-passwor
 }
 
 /* === TÍTULOS === */
-.fpn-title, .crono-title { color: var(--dp-text) !important; font-size: 28px !important; letter-spacing: 3px !important; }
+.fpn-title, .crono-title, .coach-card h2 { color: var(--dp-text) !important; font-size: 28px !important; letter-spacing: 3px !important; }
 .fpn-subtitle, .crono-subtitle { color: var(--dp-muted) !important; font-size: 11px !important; letter-spacing: 1.5px !important; }
 
 /* === BOTÃO PRINCIPAL === */
@@ -2327,7 +2327,7 @@ html.light-mode .result-empty {
   border-radius: 18px !important;
   color: var(--lg-muted) !important;
 }
-html.light-mode .fpn-title, html.light-mode .crono-title { color: var(--lg-text) !important; }
+html.light-mode .fpn-title, html.light-mode .crono-title, html.light-mode .coach-card h2 { color: var(--lg-text) !important; }
 html.light-mode .fpn-subtitle, html.light-mode .crono-subtitle { color: var(--lg-muted) !important; }
 html.light-mode .diff-result.passa { background: rgba(118,200,147,0.18) !important; border: 1px solid rgba(118,200,147,0.40) !important; border-radius: 12px !important; }
 html.light-mode .diff-result.falta { background: rgba(220,80,80,0.12) !important; border: 1px solid rgba(220,80,80,0.30) !important; border-radius: 12px !important; }
@@ -3107,147 +3107,6 @@ document.addEventListener("click", function(e) {
     <div class="footer">Dados guardados na nuvem</div>
   </div>
 
-
-<div class="fpn-btn-wrap">
-  <button class="fpn-btn" id="crono-btn" onclick="toggleCrono()">Zona do Treinador</button>
-</div>
-<div id="crono-section">
-  <div class="crono-card">
-    <div class="crono-title" id="crono-title-main" onclick="tarefasRevealClick()" style="cursor:default;user-select:none;">Zona do Treinador</div>
-    <div style="display:flex;gap:0;margin-bottom:4px;border-radius:12px;overflow:hidden;border:1.5px solid #d0e4f0;">
-      <button id="crono-tab-parciais" onclick="cronoSwitchTab('parciais')" style="flex:1;padding:10px;border:none;background:var(--blue-deep);color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;">Parciais</button>
-      <button id="crono-tab-cronos" onclick="cronoSwitchTab('cronos')" style="flex:1;padding:10px;border:none;background:#f0f7ff;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;">Cronómetros</button>
-      <button id="crono-tab-swolf" onclick="cronoSwitchTab('swolf')" style="flex:1;padding:10px;border:none;background:#f0f7ff;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;">SWOLF</button>
-    </div>
-    <div id="crono-tabs-row2" style="display:flex;gap:0;margin-bottom:4px;border-radius:12px;overflow:hidden;border:1.5px solid #d0e4f0;">
-      <button id="crono-tab-tarefas" onclick="cronoSwitchTab('tarefas')" style="flex:1;padding:10px;border:none;background:#f0f7ff;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;">Tarefas</button>
-      <button id="crono-tab-startlist" onclick="cronoSwitchTab('startlist')" style="flex:1;padding:10px;border:none;background:#f0f7ff;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;">Start List</button>
-    </div>
-    <div style="margin-bottom:16px;"></div>
-    <div id="crono-content"></div>
-    <div id="crono-cronos-content" style="display:none;"></div>
-    <div id="crono-swolf-content" style="display:none;"></div>
-    <div id="crono-tarefas-content" style="display:none;"></div>
-    <div id="crono-startlist-content" style="display:none;"></div>
-  </div>
-</div>
-
-  <div class="fpn-btn-wrap">
-    <button class="fpn-btn" id="conv-btn" type="button" onclick="toggleConv()">Conversor 25m / 50m</button>
-  </div>
-  <div id="conv-section" class="fpn-section" style="display:none;margin-top:20px;">
-    <div class="fpn-title">Conversor de Tempos</div>
-    <div class="fpn-subtitle">Sistema Colorado Timing &middot; 25m / 50m</div>
-
-    <!-- Toggle direção -->
-    <div id="conv-dir-wrap" style="display:flex;background:rgba(255,255,255,0.12);border:1px solid rgba(0,212,255,0.25);border-radius:14px;overflow:hidden;margin-bottom:16px;">
-      <button type="button" id="conv-dir-50-25"
-        onclick="convSetDir('50to25')"
-        style="flex:1;padding:13px 8px;border:none;background:linear-gradient(135deg,#34A0A4,#1A759F);color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:0.3px;transition:all 0.2s;">
-        50m &rarr; 25m
-      </button>
-      <button type="button" id="conv-dir-25-50"
-        onclick="convSetDir('25to50')"
-        style="flex:1;padding:13px 8px;border:none;background:transparent;color:#00d4ff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:0.3px;transition:all 0.2s;">
-        25m &rarr; 50m
-      </button>
-    </div>
-
-    <!-- Linha 1: Estilo + Distância -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
-      <div class="field">
-        <label>Estilo</label>
-        <select id="conv-estilo" onchange="convUpdateDist()" style="width:100%;">
-          <option value="">Selecionar</option>
-          <option value="L">Livres</option>
-          <option value="C">Costas</option>
-          <option value="B">Bru&ccedil;os</option>
-          <option value="M">Mariposa</option>
-          <option value="E">Estilos</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Dist&acirc;ncia</label>
-        <select id="conv-distancia" onchange="convOnDistChange()" style="width:100%;">
-          <option value="">Selecionar</option>
-        </select>
-      </div>
-    </div>
-
-    <div id="conv-aviso-dist" style="display:none;background:#fff8e1;border-left:3px solid #f0a500;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:#7a5a00;line-height:1.5;"></div>
-
-    <!-- Linha 2: Tempo + Resultado (mesma grelha, mesma altura que os selects) -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-      <div class="field">
-        <label id="conv-label-esq">Tempo 50m</label>
-        <input class="personal-input" type="tel" maxlength="6" placeholder="105000" id="conv-input-esq"
-          oninput="convPreviewEsq(this);convCalcular();"
-          style="width:100%;box-sizing:border-box;font-size:16px;text-align:center;height:50px;padding:0 10px;">
-        <div id="conv-preview-esq" style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:#34A0A4;letter-spacing:2px;text-align:center;min-height:20px;margin-top:5px;"></div>
-      </div>
-      <div class="field">
-        <label id="conv-label-dir">Resultado 25m</label>
-        <div id="conv-resultado-wrap" style="width:100%;box-sizing:border-box;background:rgba(18,42,76,0.75);border:1px solid rgba(0,220,255,0.22);border-radius:12px;height:50px;display:flex;align-items:center;justify-content:center;">
-          <span id="conv-resultado" style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:#fff;letter-spacing:2px;">--</span>
-        </div>
-      </div>
-    </div>
-
-    <div id="conv-aviso" style="margin-top:10px;"></div>
-    <div class="footer" style="margin-top:12px;">Algoritmo Colorado Timing &mdash; estimativa</div>
-  </div>
-
-  <div class="fpn-btn-wrap">
-    <button class="fpn-btn" id="fpn-btn" onclick="toggleFPN()">Calcular Pontos World Aquatics/FPN</button>
-  </div>
-
-  <div class="fpn-section" id="fpn-section" style="display:none">
-    <div class="fpn-title">Pontos World Aquatics / FPN</div>
-    <div class="fpn-subtitle">Pontos baseados nos Recordes Mundiais e Nacionais</div>
-    <div class="grid">
-      <div class="field">
-        <label>Piscina</label>
-        <select id="fpn-piscina" onchange="fpnUpdateEstilos()">
-          <option value="">Selecionar</option>
-          <option value="curta">25m · Piscina Curta</option>
-          <option value="longa">50m · Piscina Longa</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Sexo</label>
-        <select id="fpn-sexo" onchange="fpnUpdateEstilos()">
-          <option value="">Selecionar</option>
-          <option value="M">Masculino</option>
-          <option value="F">Feminino</option>
-          <option value="X">Misto</option>
-        </select>
-      </div>
-    </div>
-    <div class="grid">
-      <div class="field">
-        <label>Estilo</label>
-        <select id="fpn-estilo" onchange="fpnUpdateDistancias()">
-          <option value="">Selecionar</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Distância</label>
-        <select id="fpn-distancia" onchange="calcularPontosFPN()">
-          <option value="">Selecionar</option>
-        </select>
-      </div>
-    </div>
-    <div class="field">
-      <label>O teu tempo</label>
-      <div style="display:flex;gap:10px;align-items:center;">
-        <input class="personal-input" type="tel" maxlength="6" placeholder="105000" id="fpn-tempo" oninput="fpnOnTempoInput(event)" style="background:#f5faff; border:1.5px solid #d0e4f0; color:#1a3a4a; font-size:15px; padding:12px 16px; border-radius:12px; flex:1 1 0; min-width:0; width:0; height:50px; box-sizing:border-box;">
-        <button onclick="calcularPontosFPN()" style="flex:1 1 0; min-width:0; width:0; height:50px; box-sizing:border-box; background:var(--accent,#1a6fa8); color:#fff; border:none; border-radius:12px; font-size:15px; font-weight:700; cursor:pointer; letter-spacing:0.04em;">CALCULAR</button>
-      </div>
-      <div class="fpn-tempo-preview" id="fpn-tempo-preview"></div>
-    </div>
-    <div id="fpn-result" style="margin-top:24px;"></div>
-  <div class="footer">Dados de acordo com o regulamento oficial da FPN · atualizado a 09/03/2026</div>
-</div>
 
   <div class="fpn-btn-wrap">
     <button class="fpn-btn" id="recordes-btn" onclick="toggleRecordes()">Recordes</button>
@@ -5097,27 +4956,139 @@ var CAL_POPUP_KEY = 'swimmin_cal_popup_date';
 // Provas sugeridas (pré-definidas)
 var CAL_SUGESTOES = [
   {
-    id: 'sug_2',
-    nome: 'Meeting Internacional do Porto',
-    dataIni: '2026-06-06',
-    dataFim: '2026-06-07',
-    local: 'Porto',
-    regulamento: 'https://www.swimrankings.net/services/CalendarFile/47962/REGULAMENTO.pdf'
-  },
-  {
-    id: 'sug_3',
-    nome: 'Campeonatos Nacionais de Infantis',
-    dataIni: '2026-07-17',
-    dataFim: '2026-07-19',
-    local: 'Setúbal (ANL)',
-    regulamento: ''
-  },
-  {
     id: 'sug_4',
     nome: 'Campeonatos Nacionais Juv, Jun e Seniores',
     dataIni: '2026-07-23',
     dataFim: '2026-07-26',
     local: 'Oeiras-Jamor',
+    regulamento: ''
+  },
+  {
+    id: 'sug_5',
+    nome: 'Fase de Qualificação de Clubes 3ª divisão',
+    dataIni: '2026-10-24',
+    dataFim: '2026-10-24',
+    local: 'Sines',
+    regulamento: ''
+  },
+  {
+    id: 'sug_6',
+    nome: 'Campeonato Nacional de Clubes 3ª divisão',
+    dataIni: '2026-11-27',
+    dataFim: '2026-11-27',
+    local: 'Mealhada',
+    regulamento: ''
+  },
+  {
+    id: 'sug_7',
+    nome: 'Campeonato Nacional de Clubes 2ª divisão',
+    dataIni: '2026-11-28',
+    dataFim: '2026-11-29',
+    local: 'Mealhada',
+    regulamento: ''
+  },
+  {
+    id: 'sug_8',
+    nome: 'Torneio Zonal de Juvenis - Zona Norte',
+    dataIni: '2026-12-04',
+    dataFim: '2026-12-06',
+    local: 'Bragança',
+    regulamento: ''
+  },
+  {
+    id: 'sug_9',
+    nome: 'Torneio Zonal de Juvenis - Zona Sul',
+    dataIni: '2026-12-04',
+    dataFim: '2026-12-06',
+    local: 'Leiria',
+    regulamento: ''
+  },
+  {
+    id: 'sug_10',
+    nome: 'Campeonato Nacional de Juniores e Séniores PC',
+    dataIni: '2026-12-10',
+    dataFim: '2026-12-13',
+    local: 'Tomar',
+    regulamento: ''
+  },
+  {
+    id: 'sug_11',
+    nome: 'Campeonato Nacional de Clubes 1ª divisão',
+    dataIni: '2026-12-19',
+    dataFim: '2026-12-20',
+    local: 'Albufeira',
+    regulamento: ''
+  },
+  {
+    id: 'sug_12',
+    nome: 'Torneio Zonal de Infantis - Zona Norte',
+    dataIni: '2027-02-26',
+    dataFim: '2027-02-28',
+    local: 'Cantanhede',
+    regulamento: ''
+  },
+  {
+    id: 'sug_13',
+    nome: 'Torneio Zonal de Infantis - Zona Sul',
+    dataIni: '2027-02-26',
+    dataFim: '2027-02-28',
+    local: 'Sines',
+    regulamento: ''
+  },
+  {
+    id: 'sug_14',
+    nome: 'Campeonato Nacional de Juvenis',
+    dataIni: '2027-04-02',
+    dataFim: '2027-04-04',
+    local: 'Jamor',
+    regulamento: ''
+  },
+  {
+    id: 'sug_15',
+    nome: 'Campeonato Nacional de Juniores e Séniores e Open de Portugal',
+    dataIni: '2027-04-08',
+    dataFim: '2027-04-11',
+    local: 'Coimbra',
+    regulamento: ''
+  },
+  {
+    id: 'sug_16',
+    nome: 'Campeonato Nacional de Infantis',
+    dataIni: '2027-07-23',
+    dataFim: '2027-07-25',
+    local: 'Reguengos de Monsaraz',
+    regulamento: ''
+  },
+  {
+    id: 'sug_17',
+    nome: 'Campeonato Nacional de Juvenis, Juniores e Seniores',
+    dataIni: '2027-07-29',
+    dataFim: '2027-08-01',
+    local: 'Coimbra',
+    regulamento: ''
+  },
+  {
+    id: 'sug_18',
+    nome: 'Águas Abertas · Campeonato Nacional de Longa Distância',
+    dataIni: '2027-02-20',
+    dataFim: '2027-02-20',
+    local: 'Coimbra',
+    regulamento: ''
+  },
+  {
+    id: 'sug_19',
+    nome: 'Águas Abertas · Campeonato Nacional de Primavera 5/7,5/10Km',
+    dataIni: '2027-05-22',
+    dataFim: '2027-05-23',
+    local: 'Porto Santo',
+    regulamento: ''
+  },
+  {
+    id: 'sug_20',
+    nome: 'Águas Abertas · Campeonato Nacional de Verão 5/4x1,5Km',
+    dataIni: '2027-06-26',
+    dataFim: '2027-06-27',
+    local: 'Coimbra',
     regulamento: ''
   }
 ];
@@ -5298,6 +5269,13 @@ function calCloseFull() {
   document.body.style.overflow = '';
 }
 
+function calSeasonForDate(d) {
+  var y = d.getFullYear();
+  var m = d.getMonth();
+  if (m >= 8) return y + '/' + (y+1);
+  return (y-1) + '/' + y;
+}
+
 function calRenderFull() {
   var events = calLoad();
   var now = new Date(); now.setHours(0,0,0,0);
@@ -5306,7 +5284,7 @@ function calRenderFull() {
 
   var inSeason = events.filter(function(e) {
     var d = calParseDate(e.dataIni);
-    return d && d >= range.start && d <= range.end;
+    return d && d >= range.start;
   }).sort(function(a,b) {
     return calParseDate(a.dataIni) - calParseDate(b.dataIni);
   });
@@ -5358,7 +5336,15 @@ function calRenderFull() {
   } else {
     if (upcoming.length > 0) {
       html += '<div class="cal-section-label">Próximas provas</div>';
+      var lastSeason = null;
       for (var i = 0; i < upcoming.length; i++) {
+        var evSeason = calSeasonForDate(calParseDate(upcoming[i].dataIni));
+        if (evSeason !== lastSeason) {
+          if (lastSeason !== null) {
+            html += '<div class="cal-section-label">Época ' + evSeason + '</div>';
+          }
+          lastSeason = evSeason;
+        }
         html += renderEvent(upcoming[i], i === 0);
       }
     }
@@ -5401,10 +5387,19 @@ function calRenderSuggestions() {
     wrap.innerHTML = '<div style="text-align:center;padding:12px;font-size:13px;color:#888;">Sem novas sugestões de provas.</div>';
     return;
   }
+  pending.sort(function(a,b) { return calParseDate(a.dataIni) - calParseDate(b.dataIni); });
 
   var html = '<div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#5a7a8a;margin-bottom:10px;">Provas sugeridas</div>';
+  var lastSeason = null;
   for (var i = 0; i < pending.length; i++) {
     var s = pending[i];
+    var sSeason = calSeasonForDate(calParseDate(s.dataIni));
+    if (sSeason !== lastSeason) {
+      if (lastSeason !== null) {
+        html += '<div class="cal-section-label">Época ' + sSeason + '</div>';
+      }
+      lastSeason = sSeason;
+    }
     html += '<div class="cal-suggest-item">'
       + '<div class="cal-suggest-info">'
       + '<div class="cal-suggest-name">' + s.nome + '</div>'
@@ -5521,6 +5516,123 @@ function instalarApp() {
 </script>
 
   <!-- NATAÇÃO ADAPTADA BUTTON -->
+  <div class="fpn-btn-wrap">
+    <button class="fpn-btn" id="conv-btn" type="button" onclick="toggleConv()">Conversor 25m / 50m</button>
+  </div>
+  <div id="conv-section" class="fpn-section" style="display:none;margin-top:20px;">
+    <div class="fpn-title">Conversor de Tempos</div>
+    <div class="fpn-subtitle">Sistema Colorado Timing &middot; 25m / 50m</div>
+
+    <!-- Toggle direção -->
+    <div id="conv-dir-wrap" style="display:flex;background:rgba(255,255,255,0.12);border:1px solid rgba(0,212,255,0.25);border-radius:14px;overflow:hidden;margin-bottom:16px;">
+      <button type="button" id="conv-dir-50-25"
+        onclick="convSetDir('50to25')"
+        style="flex:1;padding:13px 8px;border:none;background:linear-gradient(135deg,#34A0A4,#1A759F);color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:0.3px;transition:all 0.2s;">
+        50m &rarr; 25m
+      </button>
+      <button type="button" id="conv-dir-25-50"
+        onclick="convSetDir('25to50')"
+        style="flex:1;padding:13px 8px;border:none;background:transparent;color:#00d4ff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:0.3px;transition:all 0.2s;">
+        25m &rarr; 50m
+      </button>
+    </div>
+
+    <!-- Linha 1: Estilo + Distância -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+      <div class="field">
+        <label>Estilo</label>
+        <select id="conv-estilo" onchange="convUpdateDist()" style="width:100%;">
+          <option value="">Selecionar</option>
+          <option value="L">Livres</option>
+          <option value="C">Costas</option>
+          <option value="B">Bru&ccedil;os</option>
+          <option value="M">Mariposa</option>
+          <option value="E">Estilos</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Dist&acirc;ncia</label>
+        <select id="conv-distancia" onchange="convOnDistChange()" style="width:100%;">
+          <option value="">Selecionar</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="conv-aviso-dist" style="display:none;background:#fff8e1;border-left:3px solid #f0a500;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:12px;color:#7a5a00;line-height:1.5;"></div>
+
+    <!-- Linha 2: Tempo + Resultado (mesma grelha, mesma altura que os selects) -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div class="field">
+        <label id="conv-label-esq">Tempo 50m</label>
+        <input class="personal-input" type="tel" maxlength="6" placeholder="105000" id="conv-input-esq"
+          oninput="convPreviewEsq(this);convCalcular();"
+          style="width:100%;box-sizing:border-box;font-size:16px;text-align:center;height:50px;padding:0 10px;">
+        <div id="conv-preview-esq" style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:#34A0A4;letter-spacing:2px;text-align:center;min-height:20px;margin-top:5px;"></div>
+      </div>
+      <div class="field">
+        <label id="conv-label-dir">Resultado 25m</label>
+        <div id="conv-resultado-wrap" style="width:100%;box-sizing:border-box;background:rgba(18,42,76,0.75);border:1px solid rgba(0,220,255,0.22);border-radius:12px;height:50px;display:flex;align-items:center;justify-content:center;">
+          <span id="conv-resultado" style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:#fff;letter-spacing:2px;">--</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="conv-aviso" style="margin-top:10px;"></div>
+    <div class="footer" style="margin-top:12px;">Algoritmo Colorado Timing &mdash; estimativa</div>
+  </div>
+
+  <div class="fpn-btn-wrap">
+    <button class="fpn-btn" id="fpn-btn" onclick="toggleFPN()">Calcular Pontos World Aquatics/FPN</button>
+  </div>
+
+  <div class="fpn-section" id="fpn-section" style="display:none">
+    <div class="fpn-title">Pontos World Aquatics / FPN</div>
+    <div class="fpn-subtitle">Pontos baseados nos Recordes Mundiais e Nacionais</div>
+    <div class="grid">
+      <div class="field">
+        <label>Piscina</label>
+        <select id="fpn-piscina" onchange="fpnUpdateEstilos()">
+          <option value="">Selecionar</option>
+          <option value="curta">25m · Piscina Curta</option>
+          <option value="longa">50m · Piscina Longa</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Sexo</label>
+        <select id="fpn-sexo" onchange="fpnUpdateEstilos()">
+          <option value="">Selecionar</option>
+          <option value="M">Masculino</option>
+          <option value="F">Feminino</option>
+          <option value="X">Misto</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="field">
+        <label>Estilo</label>
+        <select id="fpn-estilo" onchange="fpnUpdateDistancias()">
+          <option value="">Selecionar</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Distância</label>
+        <select id="fpn-distancia" onchange="calcularPontosFPN()">
+          <option value="">Selecionar</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label>O teu tempo</label>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <input class="personal-input" type="tel" maxlength="6" placeholder="105000" id="fpn-tempo" oninput="fpnOnTempoInput(event)" style="background:#f5faff; border:1.5px solid #d0e4f0; color:#1a3a4a; font-size:15px; padding:12px 16px; border-radius:12px; flex:1 1 0; min-width:0; width:0; height:50px; box-sizing:border-box;">
+        <button onclick="calcularPontosFPN()" style="flex:1 1 0; min-width:0; width:0; height:50px; box-sizing:border-box; background:var(--accent,#1a6fa8); color:#fff; border:none; border-radius:12px; font-size:15px; font-weight:700; cursor:pointer; letter-spacing:0.04em;">CALCULAR</button>
+      </div>
+      <div class="fpn-tempo-preview" id="fpn-tempo-preview"></div>
+    </div>
+    <div id="fpn-result" style="margin-top:24px;"></div>
+  <div class="footer">Dados de acordo com o regulamento oficial da FPN · atualizado a 09/03/2026</div>
+</div>
+
   <div class="fpn-btn-wrap">
     <button class="fpn-btn" id="na-btn" onclick="toggleNA()">Mínimos · Natação Adaptada</button>
   </div>
@@ -5656,23 +5768,40 @@ function instalarApp() {
     <div id="na-resultado"></div>
   </div>
 
+<div class="fpn-btn-wrap">
+  <button class="fpn-btn" id="crono-btn" onclick="toggleCrono()">Zona do Treinador</button>
+</div>
+<div id="crono-section">
+  <div class="crono-card">
+    <div class="crono-title" id="crono-title-main" onclick="tarefasRevealClick()" style="cursor:default;user-select:none;">Zona do Treinador</div>
+    <div style="display:flex;gap:0;margin-bottom:4px;border-radius:12px;overflow:hidden;border:1.5px solid #d0e4f0;">
+      <button id="crono-tab-parciais" onclick="cronoSwitchTab('parciais')" style="flex:1;padding:10px;border:none;background:var(--blue-deep);color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;">Parciais</button>
+      <button id="crono-tab-cronos" onclick="cronoSwitchTab('cronos')" style="flex:1;padding:10px;border:none;background:#f0f7ff;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;">Cronómetros</button>
+      <button id="crono-tab-swolf" onclick="cronoSwitchTab('swolf')" style="flex:1;padding:10px;border:none;background:#f0f7ff;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;">SWOLF</button>
+    </div>
+    <div id="crono-tabs-row2" style="display:flex;gap:0;margin-bottom:4px;border-radius:12px;overflow:hidden;border:1.5px solid #d0e4f0;">
+      <button id="crono-tab-tarefas" onclick="cronoSwitchTab('tarefas')" style="flex:1;padding:10px;border:none;background:#f0f7ff;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;">Tarefas</button>
+      <button id="crono-tab-startlist" onclick="cronoSwitchTab('startlist')" style="flex:1;padding:10px;border:none;background:#f0f7ff;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;">Start List</button>
+    </div>
+    <div style="margin-bottom:16px;"></div>
+    <div id="crono-content"></div>
+    <div id="crono-cronos-content" style="display:none;"></div>
+    <div id="crono-swolf-content" style="display:none;"></div>
+    <div id="crono-tarefas-content" style="display:none;"></div>
+    <div id="crono-startlist-content" style="display:none;"></div>
+  </div>
+</div>
+
   <!-- TREINADOR BUTTON -->
   <div class="coach-wrap" style="margin-top:28px;">
-    <button class="fpn-btn coach-btn" id="coach-btn" onclick="toggleCoach()">Clubes · Melhores Estafetas</button>
+    <button class="fpn-btn coach-btn" id="coach-btn" onclick="toggleCoach()">Calculadora de Estafetas</button>
   </div>
 
   <!-- TREINADOR SECTION -->
   <div id="coach-section">
     <div class="coach-card">
-      <h2>TREINADOR</h2>
+      <h2>CALCULADORA DE ESTAFETAS</h2>
       <p class="subtitle">Gestão de atletas e otimização de estafetas</p>
-
-      <!-- Team name -->
-      <div class="coach-team-wrap">
-        <label>Clube</label>
-        <input type="text" class="coach-team-input" id="coach-team-name"
-          placeholder="" oninput="saveTeamName()" />
-      </div>
 
       <!-- Athlete list -->
       <div class="athlete-list" id="athlete-list"></div>
@@ -5708,12 +5837,7 @@ function instalarApp() {
           </div>
         </div>
                 <div class="hint-box-alt">
-          <div class="hint-box-alt-title">Como inserir os tempos</div>
-          <div class="hint-box-alt-text">
-            Escreve só os dígitos, sem pontuação:<br>
-            <strong>30,43</strong> &rarr; escreve <strong>3043</strong><br>
-            <strong>1:17,09</strong> &rarr; escreve <strong>11709</strong>
-          </div>
+          <div class="hint-box-alt-text">Escreve apenas os dígitos, sem pontuação.</div>
         </div>
         <div style="font-size:12px;font-weight:700;color:#0a2a4a;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;padding:6px 10px;background:#ddf0f4;border-radius:8px;">
           PISCINA 25m
@@ -5834,6 +5958,35 @@ function instalarApp() {
             <div class="time-preview" id="ath-50-200L-p"></div>
           </div>
         </div>
+
+        <div style="font-size:12px;font-weight:700;color:#0a2a4a;letter-spacing:1px;text-transform:uppercase;margin:14px 0 4px 0;padding:6px 10px;background:#ddf0f4;border-radius:8px;">
+          TEMPOS DE LAP <span style="font-size:10px;font-weight:400;text-transform:none;letter-spacing:0;color:#3a6a80;">— não oficiais, apenas para cálculo opcional de estafetas para o 2º, 3º e 4º percurso</span>
+        </div>
+        <div style="font-size:12px;font-weight:700;color:#0a2a4a;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;padding:6px 10px;background:#ddf0f4;border-radius:8px;">
+          PISCINA 25m
+        </div>
+        <div class="times-grid">
+          <div class="time-field"><label>50L</label><input type="tel" id="lap-25-50L" maxlength="6" placeholder="" oninput="coachPreviewTime(this,'lap-25-50L-p')" /><div class="time-preview" id="lap-25-50L-p"></div></div>
+          <div class="time-field"><label>50B</label><input type="tel" id="lap-25-50B" maxlength="6" placeholder="" oninput="coachPreviewTime(this,'lap-25-50B-p')" /><div class="time-preview" id="lap-25-50B-p"></div></div>
+          <div class="time-field"><label>50M</label><input type="tel" id="lap-25-50M" maxlength="6" placeholder="" oninput="coachPreviewTime(this,'lap-25-50M-p')" /><div class="time-preview" id="lap-25-50M-p"></div></div>
+          <div class="time-field"><label>100L</label><input type="tel" id="lap-25-100L" maxlength="7" placeholder="" oninput="coachPreviewTime(this,'lap-25-100L-p')" /><div class="time-preview" id="lap-25-100L-p"></div></div>
+          <div class="time-field"><label>100B</label><input type="tel" id="lap-25-100B" maxlength="7" placeholder="" oninput="coachPreviewTime(this,'lap-25-100B-p')" /><div class="time-preview" id="lap-25-100B-p"></div></div>
+          <div class="time-field"><label>100M</label><input type="tel" id="lap-25-100M" maxlength="7" placeholder="" oninput="coachPreviewTime(this,'lap-25-100M-p')" /><div class="time-preview" id="lap-25-100M-p"></div></div>
+          <div class="time-field"><label>200L</label><input type="tel" id="lap-25-200L" maxlength="7" placeholder="" oninput="coachPreviewTime(this,'lap-25-200L-p')" /><div class="time-preview" id="lap-25-200L-p"></div></div>
+        </div>
+        <div style="font-size:12px;font-weight:700;color:#0a2a4a;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;padding:6px 10px;background:#ddf0f4;border-radius:8px;">
+          PISCINA 50m
+        </div>
+        <div class="times-grid">
+          <div class="time-field"><label>50L</label><input type="tel" id="lap-50-50L" maxlength="6" placeholder="" oninput="coachPreviewTime(this,'lap-50-50L-p')" /><div class="time-preview" id="lap-50-50L-p"></div></div>
+          <div class="time-field"><label>50B</label><input type="tel" id="lap-50-50B" maxlength="6" placeholder="" oninput="coachPreviewTime(this,'lap-50-50B-p')" /><div class="time-preview" id="lap-50-50B-p"></div></div>
+          <div class="time-field"><label>50M</label><input type="tel" id="lap-50-50M" maxlength="6" placeholder="" oninput="coachPreviewTime(this,'lap-50-50M-p')" /><div class="time-preview" id="lap-50-50M-p"></div></div>
+          <div class="time-field"><label>100L</label><input type="tel" id="lap-50-100L" maxlength="7" placeholder="" oninput="coachPreviewTime(this,'lap-50-100L-p')" /><div class="time-preview" id="lap-50-100L-p"></div></div>
+          <div class="time-field"><label>100B</label><input type="tel" id="lap-50-100B" maxlength="7" placeholder="" oninput="coachPreviewTime(this,'lap-50-100B-p')" /><div class="time-preview" id="lap-50-100B-p"></div></div>
+          <div class="time-field"><label>100M</label><input type="tel" id="lap-50-100M" maxlength="7" placeholder="" oninput="coachPreviewTime(this,'lap-50-100M-p')" /><div class="time-preview" id="lap-50-100M-p"></div></div>
+          <div class="time-field"><label>200L</label><input type="tel" id="lap-50-200L" maxlength="7" placeholder="" oninput="coachPreviewTime(this,'lap-50-200L-p')" /><div class="time-preview" id="lap-50-200L-p"></div></div>
+        </div>
+
         <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:4px;">
           <button class="btn-save-athlete" onclick="saveAthlete()">Guardar</button>
           <button class="btn-cancel-athlete" onclick="cancelAthlete()">Cancelar</button>
@@ -5850,12 +6003,12 @@ function instalarApp() {
         <h3>MELHOR ESTAFETA</h3>
         <div class="relay-selects">
           <select id="relay-pool" onchange="calcRelay()">
-            <option value="">Selecionar Piscina</option>
+            <option value="">Piscina</option>
             <option value="25">Piscina Curta (25m)</option>
             <option value="50">Piscina Longa (50m)</option>
           </select>
           <select id="relay-escalao" onchange="calcRelay()">
-            <option value="">Selecionar Escalão</option>
+            <option value="">Escalão</option>
             <option value="INFB">Infantil B</option>
             <option value="INFA">Infantil A</option>
             <option value="INF">Infantis (A+B)</option>
@@ -5866,28 +6019,30 @@ function instalarApp() {
             <option value="SEN">Sénior</option>
             <option value="ABS">Absoluto</option>
           </select>
-          <select id="relay-type" onchange="calcRelay()">
-            <option value="">Selecionar Estafeta</option>
-            <option value="4x50L-M">4x50m Livres — Masculino</option>
-            <option value="4x50L-F">4x50m Livres — Feminino</option>
-            <option value="4x50L-X">4x50m Livres — Misto</option>
-            <option value="4x50E-M">4x50m Estilos — Masculino</option>
-            <option value="4x50E-F">4x50m Estilos — Feminino</option>
-            <option value="4x50E-X">4x50m Estilos — Misto</option>
-            <option value="4x100L-M">4x100m Livres — Masculino</option>
-            <option value="4x100L-F">4x100m Livres — Feminino</option>
-            <option value="4x100L-X">4x100m Livres — Misto</option>
-            <option value="4x100E-M">4x100m Estilos — Masculino</option>
-            <option value="4x100E-F">4x100m Estilos — Feminino</option>
-            <option value="4x100E-X">4x100m Estilos — Misto</option>
-            <option value="4x200L-M">4x200m Livres — Masculino</option>
-            <option value="4x200L-F">4x200m Livres — Feminino</option>
+          <select id="relay-sexo" onchange="calcRelay()">
+            <option value="">Sexo</option>
+            <option value="M">Masculino</option>
+            <option value="F">Feminino</option>
+            <option value="X">Misto</option>
+          </select>
+          <select id="relay-dist" onchange="calcRelay()">
+            <option value="">Distância / Estilo</option>
+            <option value="4x50L">4x50m Livres</option>
+            <option value="4x50E">4x50m Estilos</option>
+            <option value="4x100L">4x100m Livres</option>
+            <option value="4x100E">4x100m Estilos</option>
+            <option value="4x200L">4x200m Livres</option>
           </select>
         </div>
         <label id="relay-conv-label" style="display:flex;align-items:center;gap:8px;margin:12px 0 4px 0;cursor:pointer;font-size:13px;color:#1a3a4a;font-weight:600;user-select:none;">
           <input type="checkbox" id="relay-use-conv" onchange="calcRelay()" style="width:16px;height:16px;accent-color:#00c98d;cursor:pointer;">
           Utilizar conversão de tempos
           <span style="font-size:11px;font-weight:400;color:#6b8fa8;">(Sistema Colorado Timing)</span>
+        </label>
+        <label id="relay-lap-label" style="display:flex;align-items:center;gap:8px;margin:4px 0 4px 0;cursor:pointer;font-size:13px;color:#1a3a4a;font-weight:600;user-select:none;">
+          <input type="checkbox" id="relay-use-lap" onchange="calcRelay()" style="width:16px;height:16px;accent-color:#e07b00;cursor:pointer;">
+          Utilizar tempos de lap
+          <span style="font-size:11px;font-weight:400;color:#6b8fa8;">(exceto 1º percurso)</span>
         </label>
         <div id="relay-results"></div>
       </div>
@@ -5921,13 +6076,11 @@ function toggleCoach() {
   if (!s || !btn) return;
   if (s.style.display === 'none' || s.style.display === '') {
     s.style.display = 'block';
-    btn.textContent = 'Fechar Clubes';
-    var saved = localStorage.getItem('coachTeamName') || '';
-    document.getElementById('coach-team-name').value = saved;
+    btn.textContent = 'Fechar Calculadora de Estafetas';
     renderAthletes();
   } else {
     s.style.display = 'none';
-    btn.textContent = 'Clubes · Melhores Estafetas';
+    btn.textContent = 'Calculadora de Estafetas';
   }
 }
 
@@ -5968,6 +6121,7 @@ function coachFormatTime(cs) {
 }
 
 var COACH_PROVAS = ['50L','50C','50B','50M','100L','100C','100B','100M','200L'];
+var LAP_PROVAS = ['50L','50B','50M','100L','100B','100M','200L'];
 var POOL_KEYS = ['25','50'];
 
 function openAddAthlete(idx) {
@@ -5985,6 +6139,13 @@ function openAddAthlete(idx) {
           coachPreviewTime(el, 'ath-' + pool + '-' + p + '-p');
         }
       });
+      LAP_PROVAS.forEach(function(p) {
+        var el = document.getElementById('lap-' + pool + '-' + p);
+        if (el) {
+          el.value = (a.lapTempos && a.lapTempos[pool] && a.lapTempos[pool][p]) ? a.lapTempos[pool][p] : '';
+          coachPreviewTime(el, 'lap-' + pool + '-' + p + '-p');
+        }
+      });
     });
   } else {
     document.getElementById('ath-nome').value = '';
@@ -5995,6 +6156,12 @@ function openAddAthlete(idx) {
         var el = document.getElementById('ath-' + pool + '-' + p);
         if (el) el.value = '';
         var pr = document.getElementById('ath-' + pool + '-' + p + '-p');
+        if (pr) pr.textContent = '';
+      });
+      LAP_PROVAS.forEach(function(p) {
+        var el = document.getElementById('lap-' + pool + '-' + p);
+        if (el) el.value = '';
+        var pr = document.getElementById('lap-' + pool + '-' + p + '-p');
         if (pr) pr.textContent = '';
       });
     });
@@ -6022,14 +6189,20 @@ async function saveAthlete() {
     return;
   }
   var tempos = {};
+  var lapTempos = {};
   POOL_KEYS.forEach(function(pool) {
     tempos[pool] = {};
     COACH_PROVAS.forEach(function(p) {
       var el = document.getElementById('ath-' + pool + '-' + p);
       if (el && el.value.trim()) tempos[pool][p] = el.value.trim();
     });
+    lapTempos[pool] = {};
+    LAP_PROVAS.forEach(function(p) {
+      var el = document.getElementById('lap-' + pool + '-' + p);
+      if (el && el.value.trim()) lapTempos[pool][p] = el.value.trim();
+    });
   });
-  var athlete = { nome: nome, sexo: sexo, escalao: escalao, tempos: tempos };
+  var athlete = { nome: nome, sexo: sexo, escalao: escalao, tempos: tempos, lapTempos: lapTempos };
   if (coachEditingIdx >= 0) {
     coachAthletes[coachEditingIdx] = athlete;
   } else {
@@ -6116,16 +6289,16 @@ function getAthletesForEscalao(esc) {
 
 function calcRelay() {
   var escalaoSel = document.getElementById('relay-escalao').value;
-  var typeSel    = document.getElementById('relay-type').value;
+  var sexoSel    = document.getElementById('relay-sexo').value;
+  var distSel    = document.getElementById('relay-dist').value;
   var poolSel    = document.getElementById('relay-pool').value;
   var useConv    = document.getElementById('relay-use-conv') ? document.getElementById('relay-use-conv').checked : false;
+  var useLap     = document.getElementById('relay-use-lap') ? document.getElementById('relay-use-lap').checked : false;
   var resEl      = document.getElementById('relay-results');
-  if (!escalaoSel || !typeSel || !poolSel) { resEl.innerHTML = ''; return; }
+  if (!escalaoSel || !sexoSel || !distSel || !poolSel) { resEl.innerHTML = ''; return; }
 
-  var parts     = typeSel.split('-');
-  var relayCode = parts[0];
-  var gender    = parts[1];
-  var distMatch = relayCode.match(/4x(\d+)([LE])/);
+  var gender    = sexoSel;
+  var distMatch = distSel.match(/4x(\d+)([LE])/);
   if (!distMatch) { resEl.innerHTML = ''; return; }
   var dist      = distMatch[1];
   var isEstilos = distMatch[2] === 'E';
@@ -6140,33 +6313,33 @@ function calcRelay() {
   if (!isEstilos) {
     var key = dist + 'L';
     if (gender === 'X') {
-      var bM = getBestN(males, key, poolSel, 2, useConv);
-      var bF = getBestN(females, key, poolSel, 2, useConv);
+      var bM = getBestN(males, key, poolSel, 2, useConv, useLap);
+      var bF = getBestN(females, key, poolSel, 2, useConv, useLap);
       if (bM.length < 2 || bF.length < 2) {
         resEl.innerHTML = '<div class="relay-empty">Atletas insuficientes para esta estafeta.</div>';
         return;
       }
-      var combo = bM.concat(bF);
-      combo.sort(function(a,b) { return a.t - b.t; });
-      var tot = 0;
-      for (var i=0;i<combo.length;i++) tot += combo[i].t;
-      results.push({ total: tot, legs: combo.map(function(x) { return { nome: x.nome, estilo: 'Livres', time: x.t, converted: x.converted, fromPool: x.fromPool }; }) });
+      var group = bM.concat(bF).map(function(x) {
+        return getRelayLegTimes(x.athlete, key, poolSel, useConv, useLap);
+      });
+      var res = relayBestGroupTotal(group);
+      if (res) results.push(res);
     } else {
       if (!pool || pool.length < 4) {
         resEl.innerHTML = '<div class="relay-empty">Atletas insuficientes para esta estafeta.</div>';
         return;
       }
-      results = getTopCombos(pool, key, poolSel, 3, useConv);
+      results = getTopCombos(pool, key, poolSel, 3, useConv, useLap);
     }
   } else {
     if (gender === 'X') {
-      results = getBestEstilosMisto(males, females, dist, poolSel, 3, useConv);
+      results = getBestEstilosMisto(males, females, dist, poolSel, 3, useConv, useLap);
     } else {
       if (!pool || pool.length < 4) {
         resEl.innerHTML = '<div class="relay-empty">Atletas insuficientes para esta estafeta.</div>';
         return;
       }
-      results = getBestEstilos(pool, dist, poolSel, 3, useConv);
+      results = getBestEstilos(pool, dist, poolSel, 3, useConv, useLap);
     }
   }
 
@@ -6188,8 +6361,9 @@ function calcRelay() {
     for (var li = 0; li < r.legs.length; li++) {
       var leg = r.legs[li];
       var convTag = leg.converted ? '<span style="color:#e07b00;font-weight:700;font-size:13px;" title="Tempo convertido de piscina de ' + leg.fromPool + ' (Sistema Colorado Timing)"> *</span>' : '';
+      var lapTag = leg.isLap ? '<span style="color:#e07b00;font-weight:700;font-size:11px;vertical-align:super;" title="Tempo de lap — não oficial, apenas para estimativa"> LAP</span>' : '';
       out += '<div class="relay-leg">'
-        + '<span class="relay-leg-name">' + (li+1) + '. ' + leg.nome + convTag + '</span>'
+        + '<span class="relay-leg-name">' + (li+1) + '. ' + leg.nome + convTag + lapTag + '</span>'
         + '<span class="relay-leg-style">' + leg.estilo + '</span>'
         + '<span class="relay-leg-time">' + coachFormatTime(leg.time) + '</span>'
         + '</div>';
@@ -6198,56 +6372,89 @@ function calcRelay() {
     if (convPools.length > 0) {
       out += '<div style="font-size:10.5px;color:#e07b00;font-style:italic;padding:4px 0 2px 4px;">* Tempo(s) convertido(s) de piscina de ' + convPools.join(' / ') + ' — Sistema Colorado Timing</div>';
     }
+    if (r.legs.some(function(l) { return l.isLap; })) {
+      out += '<div style="font-size:10.5px;color:#e07b00;font-style:italic;padding:2px 0 2px 4px;">LAP Tempo de lap — não oficial, apenas para estimativa</div>';
+    }
     out += '</div></div>';
   }
   resEl.innerHTML = out;
 }
 
 
-// ── Relay conversion helper ──
+// ── Relay conversion + lap helper ──
 // _D and coachParseTime/convParse/convFmt already defined above
-function getRelayBestTime(athlete, key, poolKey, useConv) {
-  // key e.g. "100L", poolKey "25" or "50"
+function getRelayBestTime(athlete, key, poolKey, useConv, useLap, isFirstLeg) {
+  var options = [];
   var tOrig = coachParseTime(athlete.tempos && athlete.tempos[poolKey] ? athlete.tempos[poolKey][key] : null);
-  if (!useConv) return tOrig !== null ? { t: tOrig, converted: false, fromPool: null } : null;
+  if (tOrig !== null) options.push({ t: tOrig, converted: false, fromPool: null, isLap: false });
 
-  var otherPool = poolKey === '25' ? '50' : '25';
-  var tOther = coachParseTime(athlete.tempos && athlete.tempos[otherPool] ? athlete.tempos[otherPool][key] : null);
-
-  // Convert tOther to target pool
-  var tOtherConv = null;
-  if (tOther !== null) {
-    var delta = _D[key];
-    if (delta !== undefined) {
-      tOtherConv = otherPool === '50' ? tOther - delta : tOther + delta;
+  if (useConv) {
+    var otherPool = poolKey === '25' ? '50' : '25';
+    var tOther = coachParseTime(athlete.tempos && athlete.tempos[otherPool] ? athlete.tempos[otherPool][key] : null);
+    if (tOther !== null) {
+      var delta = _D[key];
+      if (delta !== undefined) {
+        var tConv = otherPool === '50' ? tOther - delta : tOther + delta;
+        options.push({ t: tConv, converted: true, fromPool: otherPool + 'm', isLap: false });
+      }
     }
   }
 
-  // Pick best
-  if (tOrig !== null && tOtherConv !== null) {
-    if (tOtherConv < tOrig) return { t: tOtherConv, converted: true, fromPool: otherPool + 'm' };
-    return { t: tOrig, converted: false, fromPool: null };
+  if (useLap && !isFirstLeg && LAP_PROVAS.indexOf(key) >= 0) {
+    var tLap = coachParseTime(athlete.lapTempos && athlete.lapTempos[poolKey] ? athlete.lapTempos[poolKey][key] : null);
+    if (tLap !== null) options.push({ t: tLap, converted: false, fromPool: null, isLap: true });
   }
-  if (tOrig !== null) return { t: tOrig, converted: false, fromPool: null };
-  if (tOtherConv !== null) return { t: tOtherConv, converted: true, fromPool: otherPool + 'm' };
-  return null;
+
+  if (!options.length) return null;
+  options.sort(function(a,b) { return a.t - b.t; });
+  return options[0];
 }
 
-function getBestN(pool, key, poolKey, n, useConv) {
+// Devolve, para um atleta, tanto a melhor opção com lap disponível como a melhor sem lap
+// (sem lap = a que teria de ser usada se este atleta ficasse no 1º percurso)
+function getRelayLegTimes(athlete, key, poolKey, useConv, useLap) {
+  var withLap = getRelayBestTime(athlete, key, poolKey, useConv, useLap, false);
+  var noLap = useLap ? getRelayBestTime(athlete, key, poolKey, useConv, false, true) : withLap;
+  return { nome: athlete.nome, withLap: withLap, noLap: noLap };
+}
+
+// Dado um grupo de 4 membros já resolvidos (getRelayLegTimes), escolhe qual fica no 1º percurso
+// (nunca lap) de forma a minimizar o tempo total — lap nunca pode piorar o resultado.
+function relayBestGroupTotal(members) {
+  for (var i=0;i<members.length;i++) { if (!members[i].withLap) return null; }
+  var bestIdx = 0, bestPenalty = Infinity;
+  for (var i=0;i<members.length;i++) {
+    var noLapT = members[i].noLap ? members[i].noLap.t : members[i].withLap.t;
+    var penalty = noLapT - members[i].withLap.t;
+    if (penalty < bestPenalty) { bestPenalty = penalty; bestIdx = i; }
+  }
+  var total = 0;
+  var legs = [];
+  for (var i=0;i<members.length;i++) {
+    var chosen = (i === bestIdx) ? (members[i].noLap || members[i].withLap) : members[i].withLap;
+    total += chosen.t;
+    legs.push({ nome: members[i].nome, estilo: 'Livres', time: chosen.t, converted: chosen.converted, fromPool: chosen.fromPool, isLap: chosen.isLap });
+  }
+  var first = legs.splice(bestIdx, 1)[0];
+  legs.unshift(first);
+  return { total: total, legs: legs };
+}
+
+function getBestN(pool, key, poolKey, n, useConv, useLap) {
   var res = [];
   for (var i=0;i<pool.length;i++) {
-    var r = getRelayBestTime(pool[i], key, poolKey, useConv);
-    if (r !== null) res.push({ nome: pool[i].nome, t: r.t, converted: r.converted, fromPool: r.fromPool });
+    var r = getRelayBestTime(pool[i], key, poolKey, useConv, useLap, false);
+    if (r !== null) res.push({ nome: pool[i].nome, athlete: pool[i], t: r.t, converted: r.converted, fromPool: r.fromPool, isLap: r.isLap });
   }
   res.sort(function(a,b) { return a.t-b.t; });
   return res.slice(0, n);
 }
 
-function getTopCombos(pool, key, poolKey, topN, useConv) {
+function getTopCombos(pool, key, poolKey, topN, useConv, useLap) {
   var elig = [];
   for (var i=0;i<pool.length;i++) {
-    var r = getRelayBestTime(pool[i], key, poolKey, useConv);
-    if (r !== null) elig.push({ nome: pool[i].nome, t: r.t, converted: r.converted, fromPool: r.fromPool });
+    var r = getRelayBestTime(pool[i], key, poolKey, useConv, useLap, false);
+    if (r !== null) elig.push({ nome: pool[i].nome, athlete: pool[i], t: r.t });
   }
   elig.sort(function(a,b) { return a.t-b.t; });
   if (elig.length < 4) return [];
@@ -6257,24 +6464,28 @@ function getTopCombos(pool, key, poolKey, topN, useConv) {
     for (var b=a+1;b<cands.length-2;b++)
       for (var c=b+1;c<cands.length-1;c++)
         for (var d=c+1;d<cands.length;d++) {
-          var tot = cands[a].t+cands[b].t+cands[c].t+cands[d].t;
-          combos.push({ total: tot, legs: [cands[a],cands[b],cands[c],cands[d]].map(function(x) { return { nome:x.nome, estilo:'Livres', time:x.t, converted:x.converted, fromPool:x.fromPool }; }) });
+          var group = [cands[a],cands[b],cands[c],cands[d]].map(function(x) {
+            return getRelayLegTimes(x.athlete, key, poolKey, useConv, useLap);
+          });
+          var res = relayBestGroupTotal(group);
+          if (res) combos.push(res);
         }
   combos.sort(function(a,b) { return a.total-b.total; });
   return combos.slice(0, topN);
 }
 
-function getBestEstilos(pool, dist, poolKey, topN, useConv) {
+function getBestEstilos(pool, dist, poolKey, topN, useConv, useLap) {
   var legs = ['C','B','M','L'];
   var legLabel = {C:'Costas',B:'Brucos',M:'Mariposa',L:'Livres'};
   var elig = {};
   for (var li=0;li<legs.length;li++) {
     var leg = legs[li];
     var key = dist+leg;
+    var isFirstLeg = (li === 0); // Costas é sempre o 1º percurso na estafeta de estilos
     elig[leg] = [];
     for (var i=0;i<pool.length;i++) {
-      var r = getRelayBestTime(pool[i], key, poolKey, useConv);
-      if (r !== null) elig[leg].push({ nome: pool[i].nome, t: r.t, converted: r.converted, fromPool: r.fromPool });
+      var r = getRelayBestTime(pool[i], key, poolKey, useConv, useLap, isFirstLeg);
+      if (r !== null) elig[leg].push({ nome: pool[i].nome, t: r.t, converted: r.converted, fromPool: r.fromPool, isLap: r.isLap });
     }
     elig[leg].sort(function(a,b) { return a.t-b.t; });
   }
@@ -6285,7 +6496,7 @@ function getBestEstilos(pool, dist, poolKey, topN, useConv) {
     var cands = elig[leg].filter(function(x) { return used.indexOf(x.nome) < 0; }).slice(0,4);
     for (var i=0;i<cands.length;i++) {
       used.push(cands[i].nome);
-      current.push({ nome:cands[i].nome, estilo:legLabel[leg], time:cands[i].t, converted:cands[i].converted, fromPool:cands[i].fromPool });
+      current.push({ nome:cands[i].nome, estilo:legLabel[leg], time:cands[i].t, converted:cands[i].converted, fromPool:cands[i].fromPool, isLap:cands[i].isLap });
       recurse(legIdx+1, used, current, total+cands[i].t);
       current.pop(); used.pop();
     }
@@ -6295,7 +6506,7 @@ function getBestEstilos(pool, dist, poolKey, topN, useConv) {
   return results.slice(0, topN);
 }
 
-function getBestEstilosMisto(males, females, dist, poolKey, topN, useConv) {
+function getBestEstilosMisto(males, females, dist, poolKey, topN, useConv, useLap) {
   var legs = ['C','B','M','L'];
   var legLabel = {C:'Costas',B:'Brucos',M:'Mariposa',L:'Livres'};
   var maleLegsOptions = [[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]];
@@ -6306,11 +6517,12 @@ function getBestEstilosMisto(males, females, dist, poolKey, topN, useConv) {
     for (var li=0;li<4;li++) {
       var leg = legs[li];
       var key = dist+leg;
+      var isFirstLeg = (li === 0);
       var srcPool = mLegs.indexOf(li) >= 0 ? males : females;
       elig[li] = [];
       for (var pi=0;pi<srcPool.length;pi++) {
-        var r = getRelayBestTime(srcPool[pi], key, poolKey, useConv);
-        if (r !== null) elig[li].push({ nome: srcPool[pi].nome, t: r.t, converted: r.converted, fromPool: r.fromPool });
+        var r = getRelayBestTime(srcPool[pi], key, poolKey, useConv, useLap, isFirstLeg);
+        if (r !== null) elig[li].push({ nome: srcPool[pi].nome, t: r.t, converted: r.converted, fromPool: r.fromPool, isLap: r.isLap });
       }
       elig[li].sort(function(a,b) { return a.t-b.t; });
     }
@@ -6326,7 +6538,7 @@ function getBestEstilosMisto(males, females, dist, poolKey, topN, useConv) {
         var cands = elig[legIdx].filter(function(x) { return used.indexOf(x.nome) < 0; }).slice(0,3);
         for (var i=0;i<cands.length;i++) {
           used.push(cands[i].nome);
-          current.push({ nome:cands[i].nome, estilo:legLabel[legs[legIdx]], time:cands[i].t, converted:cands[i].converted, fromPool:cands[i].fromPool });
+          current.push({ nome:cands[i].nome, estilo:legLabel[legs[legIdx]], time:cands[i].t, converted:cands[i].converted, fromPool:cands[i].fromPool, isLap:cands[i].isLap });
           recurseM(legIdx+1, usedM, usedF, current, total+cands[i].t);
           current.pop(); used.pop();
         }
@@ -8356,7 +8568,17 @@ async function loadUserDoc(path) {
 
 window.firebaseSaveAtletaProfiles = function(p){ return saveUserDoc('atletaProfiles',{profiles:p||{},updatedAt:Date.now()}); };
 window.firebaseLoadAtletaProfiles = function(){ return loadUserDoc('atletaProfiles'); };
-window.firebaseSaveCoachData = function(n,a){ return saveUserDoc('coachData',{teamName:n||'',athletes:a||[],updatedAt:Date.now()}); };
+window.firebaseSaveCoachData = function(n,a){
+  var teamName, athletes;
+  if (n && typeof n === 'object' && !Array.isArray(n)) {
+    teamName = n.teamName || '';
+    athletes = n.athletes || [];
+  } else {
+    teamName = n || '';
+    athletes = a || [];
+  }
+  return saveUserDoc('coachData',{teamName:teamName,athletes:athletes,updatedAt:Date.now()});
+};
 window.firebaseLoadCoachData = function(){ return loadUserDoc('coachData'); };
 window.firebaseSaveSwolf = function(d){ return saveUserDoc('swolfData',{data:JSON.stringify(d),updatedAt:Date.now()}); };
 window.firebaseLoadSwolf = async function(){ var d=await loadUserDoc('swolfData'); if(!d||!d.data)return null; try{return{data:JSON.parse(d.data),updatedAt:d.updatedAt||0};}catch(e){return null;} };
