@@ -294,6 +294,10 @@ function vibrar(tipo) {
     font-size: 72px;
   }
 
+  .result-time.small {
+    font-size: 32px;
+  }
+
   .result-desc {
     margin-top: 10px;
     font-size: 13px;
@@ -1773,6 +1777,7 @@ input.personal-input:focus, .crono-input:focus, #auth-email:focus, #auth-passwor
 .result-box::before, .result-box::after { display: none !important; }
 .result-time { font-size: 72px !important; color: var(--dp-accent) !important; text-shadow: 0 0 30px rgba(0,212,255,0.5) !important; }
 .result-time.big { font-size: 80px !important; }
+.result-time.small { font-size: 32px !important; }
 .result-label { color: var(--dp-muted) !important; }
 .result-desc { color: var(--dp-muted) !important; }
 
@@ -2304,6 +2309,8 @@ html.light-mode .result-box {
 html.light-mode .result-box::before, html.light-mode .result-box::after { display: none !important; }
 html.light-mode .result-time { font-size: 72px !important; color: #fff !important; text-shadow: none !important; }
 html.light-mode .result-time.big { font-size: 80px !important; }
+html.light-mode .result-time.small { font-size: 32px !important; }
+.result-time.small { font-size: 32px !important; }
 html.light-mode .result-label, html.light-mode .result-desc { color: rgba(255,255,255,0.75) !important; }
 html.light-mode .fpn-result-box {
   background: rgba(30,96,145,0.78) !important;
@@ -3305,15 +3312,15 @@ var _swimminDadosProntos = false;
 // DADOS DE COMPETICOES POR ESCALAO
 // ============================================================
 var COMPS = {
-  INF_B:  [{v:'INF_B_ZON',  l:'Zonais'}, {v:'INF_B', l:'Nacional Verão'}, {v:'EUR_JUN', l:'Europeus Juniores'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}],
-  INF_A:  [{v:'INF_A_ZON',  l:'Zonais'}, {v:'INF_A', l:'Nacional Verão'}, {v:'EUR_JUN', l:'Europeus Juniores'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}],
-  JUV_B:  [{v:'JUV_B_ZON',  l:'Zonais'}, {v:'JUV_B_INV', l:'Nacional Inverno'}, {v:'JUV_B_VER', l:'Nacional Verão'}, {v:'EUR_JUN', l:'Europeus Juniores'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}],
-  JUV_A:  [{v:'JUV_A_ZON',  l:'Zonais'}, {v:'JUV_A_INV', l:'Nacional Inverno'}, {v:'JUV_A_VER', l:'Nacional Verão'}, {v:'EUR_JUN', l:'Europeus Juniores'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}],
-  JUN1:   [{v:'JUN1', l:'Nacional'}, {v:'EUR_JUN', l:'Europeus Juniores'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}],
-  JUN:    [{v:'JUN',  l:'Nacional'}, {v:'EUR_JUN', l:'Europeus Juniores'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}],
-  SUB21:  [{v:'SUB21', l:'Nacional'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}],
-  SEN:    [{v:'SEN',   l:'Nacional'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}],
-  ABS:    [{v:'ABS',   l:'Nacional'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}]
+  INF_B:  [{v:'INF_B_ZON',  l:'Zonais'}, {v:'INF_B', l:'Nacional Verão'}, {v:'EUR_JUN', l:'Europeus Juniores'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}, {v:'MUN25', l:'Mundial 25m · Beijing 2026'}, {v:'MUN50', l:'Mundial 50m · Budapeste 2027'}],
+  INF_A:  [{v:'INF_A_ZON',  l:'Zonais'}, {v:'INF_A', l:'Nacional Verão'}, {v:'EUR_JUN', l:'Europeus Juniores'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}, {v:'MUN25', l:'Mundial 25m · Beijing 2026'}, {v:'MUN50', l:'Mundial 50m · Budapeste 2027'}],
+  JUV_B:  [{v:'JUV_B_ZON',  l:'Zonais'}, {v:'JUV_B_INV', l:'Nacional Inverno'}, {v:'JUV_B_VER', l:'Nacional Verão'}, {v:'EUR_JUN', l:'Europeus Juniores'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}, {v:'MUN25', l:'Mundial 25m · Beijing 2026'}, {v:'MUN50', l:'Mundial 50m · Budapeste 2027'}],
+  JUV_A:  [{v:'JUV_A_ZON',  l:'Zonais'}, {v:'JUV_A_INV', l:'Nacional Inverno'}, {v:'JUV_A_VER', l:'Nacional Verão'}, {v:'EUR_JUN', l:'Europeus Juniores'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}, {v:'MUN25', l:'Mundial 25m · Beijing 2026'}, {v:'MUN50', l:'Mundial 50m · Budapeste 2027'}],
+  JUN1:   [{v:'JUN1', l:'Nacional'}, {v:'EUR_JUN', l:'Europeus Juniores'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}, {v:'MUN25', l:'Mundial 25m · Beijing 2026'}, {v:'MUN50', l:'Mundial 50m · Budapeste 2027'}],
+  JUN:    [{v:'JUN',  l:'Nacional'}, {v:'EUR_JUN', l:'Europeus Juniores'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}, {v:'MUN25', l:'Mundial 25m · Beijing 2026'}, {v:'MUN50', l:'Mundial 50m · Budapeste 2027'}],
+  SUB21:  [{v:'SUB21', l:'Nacional'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}, {v:'MUN25', l:'Mundial 25m · Beijing 2026'}, {v:'MUN50', l:'Mundial 50m · Budapeste 2027'}],
+  SEN:    [{v:'SEN',   l:'Nacional'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}, {v:'MUN25', l:'Mundial 25m · Beijing 2026'}, {v:'MUN50', l:'Mundial 50m · Budapeste 2027'}],
+  ABS:    [{v:'ABS',   l:'Nacional'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}, {v:'MUN25', l:'Mundial 25m · Beijing 2026'}, {v:'MUN50', l:'Mundial 50m · Budapeste 2027'}]
 };
 
 // Map comp value to column in tempos
@@ -3322,7 +3329,7 @@ var COL_MAP = {
   'JUV_A_VER':'JUV_A_VER','JUV_A_INV':'JUV_A_INV','JUV_B_VER':'JUV_B_VER','JUV_B_INV':'JUV_B_INV',
   'INF_A':'INF_A','INF_B':'INF_B',
   'JUV_A_ZON':'JUV_A_ZON','JUV_B_ZON':'JUV_B_ZON','INF_A_ZON':'INF_A_ZON','INF_B_ZON':'INF_B_ZON',
-  'EUR_JUN':'EUR_JUN','EUR_SUB23':'EUR_SUB23','EUR':'EUR','OLI':'OLI'
+  'EUR_JUN':'EUR_JUN','EUR_SUB23':'EUR_SUB23','EUR':'EUR','OLI':'OLI','MUN25':'MUN25','MUN50':'MUN50'
 };
 
 // Comp dates info
@@ -3345,7 +3352,9 @@ var COMP_DATES = {
   'EUR_JUN':    'Europeus de Juniores de Piscina Longa · 7-12 jul 2026 · Munique, Alemanha',
   'EUR_SUB23':  'Europeu SUB23 · Mare Nostrum',
   'EUR':        'Europeus de Piscina Longa · 31 jul-16 ago 2026 · Paris, França',
-  'OLI':        'Jogos Olímpicos 2028 · Los Angeles 2028'
+  'OLI':        'Jogos Olímpicos 2028 · Los Angeles 2028',
+  'MUN25':      'Mundial de Piscina Curta (25m) · Beijing 2026 · Qualificação: 27 jul 2025 a 15 nov 2026',
+  'MUN50':      'Mundial de Piscina Longa (50m) · Budapeste 2027 · Qualificação: 2 mar 2026 a 20 jun 2027'
 };
 
 // Estilo map
@@ -3385,7 +3394,7 @@ function onEscalaoChange() {
   if (escalao && COMPS[escalao]) {
     var comps = COMPS[escalao];
     var pisc = document.getElementById('piscina').value;
-    var intlComps = ['EUR_JUN','EUR_SUB23','EUR','OLI'];
+    var intlComps = ['EUR_JUN','EUR_SUB23','EUR','OLI','MUN50'];
     for (var i = 0; i < comps.length; i++) {
       if (pisc === 'curta' && intlComps.indexOf(comps[i].v) >= 0) continue;
       var opt = document.createElement('option');
@@ -3456,6 +3465,8 @@ function getTempo(piscina, genero, dist, estilo, col) {
   else if (col === 'EUR') intlKey = 'europeus';
   else if (col === 'EUR_JUN') intlKey = 'europeus_jun';
   else if (col === 'EUR_SUB23') intlKey = 'europeus_sub23';
+  else if (col === 'MUN25') intlKey = 'mundiais_25m';
+  else if (col === 'MUN50') intlKey = 'mundiais_50m';
   if (intlKey) {
     try {
       var key = dist + '_' + estilo;
@@ -3495,11 +3506,19 @@ function calcular() {
   }
 
   var datesInfo = COMP_DATES[comp] || '';
-  var isIntl = (comp === 'EUR' || comp === 'EUR_JUN' || comp === 'EUR_SUB23' || comp === 'OLI');
+  var isIntl = (comp === 'EUR' || comp === 'EUR_JUN' || comp === 'EUR_SUB23' || comp === 'OLI' || comp === 'MUN25' || comp === 'MUN50');
+  var isAB = (tempo && typeof tempo === 'object');
 
   var html = '<div class="result-box">';
-  html += '<div class="result-label">Tempo mínimo de qualificação</div>';
-  html += '<div class="result-time">' + tempo + '</div>';
+  if (isAB) {
+    html += '<div class="result-label">Marca A (tempo mínimo de qualificação)</div>';
+    html += '<div class="result-time">' + tempo.A + '</div>';
+    html += '<div class="result-label" style="margin-top:10px;">Marca B</div>';
+    html += '<div class="result-time small">' + tempo.B + '</div>';
+  } else {
+    html += '<div class="result-label">Tempo mínimo de qualificação</div>';
+    html += '<div class="result-time">' + tempo + '</div>';
+  }
 
   if (datesInfo || isIntl) {
     html += '<div class="result-dates">';
@@ -3551,8 +3570,9 @@ function calcularDiff() {
   var dist = document.getElementById('distancia').value;
   var col = COL_MAP[comp];
   var g = genero === 'X' ? 'M' : genero;
-  var minimoStr = getTempo(piscina, g, dist, estilo, col);
-  if (!minimoStr) return;
+  var minimoRaw = getTempo(piscina, g, dist, estilo, col);
+  if (!minimoRaw) return;
+  var minimoStr = (minimoRaw && typeof minimoRaw === 'object') ? minimoRaw.A : minimoRaw;
 
   // Parse minimo
   var mStr = minimoStr.replace(',','.');
@@ -4024,15 +4044,15 @@ function mostrarRecordeIdade() {
 // DADOS DE COMPETICOES POR ESCALAO
 // ============================================================
 var COMPS = {
-  INF_B:  [{v:'INF_B_ZON',  l:'Zonais'}, {v:'INF_B', l:'Nacional Verão'}, {v:'EUR_JUN', l:'Europeus Juniores'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}],
-  INF_A:  [{v:'INF_A_ZON',  l:'Zonais'}, {v:'INF_A', l:'Nacional Verão'}, {v:'EUR_JUN', l:'Europeus Juniores'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}],
-  JUV_B:  [{v:'JUV_B_ZON',  l:'Zonais'}, {v:'JUV_B_INV', l:'Nacional Inverno'}, {v:'JUV_B_VER', l:'Nacional Verão'}, {v:'EUR_JUN', l:'Europeus Juniores'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}],
-  JUV_A:  [{v:'JUV_A_ZON',  l:'Zonais'}, {v:'JUV_A_INV', l:'Nacional Inverno'}, {v:'JUV_A_VER', l:'Nacional Verão'}, {v:'EUR_JUN', l:'Europeus Juniores'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}],
-  JUN1:   [{v:'JUN1', l:'Nacional'}, {v:'EUR_JUN', l:'Europeus Juniores'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}],
-  JUN:    [{v:'JUN',  l:'Nacional'}, {v:'EUR_JUN', l:'Europeus Juniores'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}],
-  SUB21:  [{v:'SUB21', l:'Nacional'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}],
-  SEN:    [{v:'SEN',   l:'Nacional'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}],
-  ABS:    [{v:'ABS',   l:'Nacional'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}]
+  INF_B:  [{v:'INF_B_ZON',  l:'Zonais'}, {v:'INF_B', l:'Nacional Verão'}, {v:'EUR_JUN', l:'Europeus Juniores'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}, {v:'MUN25', l:'Mundial 25m · Beijing 2026'}, {v:'MUN50', l:'Mundial 50m · Budapeste 2027'}],
+  INF_A:  [{v:'INF_A_ZON',  l:'Zonais'}, {v:'INF_A', l:'Nacional Verão'}, {v:'EUR_JUN', l:'Europeus Juniores'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}, {v:'MUN25', l:'Mundial 25m · Beijing 2026'}, {v:'MUN50', l:'Mundial 50m · Budapeste 2027'}],
+  JUV_B:  [{v:'JUV_B_ZON',  l:'Zonais'}, {v:'JUV_B_INV', l:'Nacional Inverno'}, {v:'JUV_B_VER', l:'Nacional Verão'}, {v:'EUR_JUN', l:'Europeus Juniores'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}, {v:'MUN25', l:'Mundial 25m · Beijing 2026'}, {v:'MUN50', l:'Mundial 50m · Budapeste 2027'}],
+  JUV_A:  [{v:'JUV_A_ZON',  l:'Zonais'}, {v:'JUV_A_INV', l:'Nacional Inverno'}, {v:'JUV_A_VER', l:'Nacional Verão'}, {v:'EUR_JUN', l:'Europeus Juniores'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}, {v:'MUN25', l:'Mundial 25m · Beijing 2026'}, {v:'MUN50', l:'Mundial 50m · Budapeste 2027'}],
+  JUN1:   [{v:'JUN1', l:'Nacional'}, {v:'EUR_JUN', l:'Europeus Juniores'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}, {v:'MUN25', l:'Mundial 25m · Beijing 2026'}, {v:'MUN50', l:'Mundial 50m · Budapeste 2027'}],
+  JUN:    [{v:'JUN',  l:'Nacional'}, {v:'EUR_JUN', l:'Europeus Juniores'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}, {v:'MUN25', l:'Mundial 25m · Beijing 2026'}, {v:'MUN50', l:'Mundial 50m · Budapeste 2027'}],
+  SUB21:  [{v:'SUB21', l:'Nacional'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}, {v:'MUN25', l:'Mundial 25m · Beijing 2026'}, {v:'MUN50', l:'Mundial 50m · Budapeste 2027'}],
+  SEN:    [{v:'SEN',   l:'Nacional'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}, {v:'MUN25', l:'Mundial 25m · Beijing 2026'}, {v:'MUN50', l:'Mundial 50m · Budapeste 2027'}],
+  ABS:    [{v:'ABS',   l:'Nacional'}, {v:'EUR_SUB23', l:'Europeu SUB23'}, {v:'EUR', l:'Europeus'}, {v:'OLI', l:'Jogos Olímpicos 2028'}, {v:'MUN25', l:'Mundial 25m · Beijing 2026'}, {v:'MUN50', l:'Mundial 50m · Budapeste 2027'}]
 };
 
 // Map comp value to column in tempos
@@ -4041,7 +4061,7 @@ var COL_MAP = {
   'JUV_A_VER':'JUV_A_VER','JUV_A_INV':'JUV_A_INV','JUV_B_VER':'JUV_B_VER','JUV_B_INV':'JUV_B_INV',
   'INF_A':'INF_A','INF_B':'INF_B',
   'JUV_A_ZON':'JUV_A_ZON','JUV_B_ZON':'JUV_B_ZON','INF_A_ZON':'INF_A_ZON','INF_B_ZON':'INF_B_ZON',
-  'EUR_JUN':'EUR_JUN','EUR_SUB23':'EUR_SUB23','EUR':'EUR','OLI':'OLI'
+  'EUR_JUN':'EUR_JUN','EUR_SUB23':'EUR_SUB23','EUR':'EUR','OLI':'OLI','MUN25':'MUN25','MUN50':'MUN50'
 };
 
 // Comp dates info
@@ -4064,7 +4084,9 @@ var COMP_DATES = {
   'EUR_JUN':    'Europeus de Juniores de Piscina Longa · 7-12 jul 2026 · Munique, Alemanha',
   'EUR_SUB23':  'Europeu SUB23 · Mare Nostrum',
   'EUR':        'Europeus de Piscina Longa · 31 jul-16 ago 2026 · Paris, França',
-  'OLI':        'Jogos Olímpicos 2028 · Los Angeles 2028'
+  'OLI':        'Jogos Olímpicos 2028 · Los Angeles 2028',
+  'MUN25':      'Mundial de Piscina Curta (25m) · Beijing 2026 · Qualificação: 27 jul 2025 a 15 nov 2026',
+  'MUN50':      'Mundial de Piscina Longa (50m) · Budapeste 2027 · Qualificação: 2 mar 2026 a 20 jun 2027'
 };
 
 
@@ -4164,15 +4186,15 @@ var PROVAS_INDIVIDUAIS_LONGA = [
 ];
 
 var COMP_POR_ESCALAO = {
-  'INF_B': [{id:'zonal',label:'Zonais',longa_only:false},{id:'verao',label:'Nacional Verão',longa_only:false},{id:'europeus_jun',label:'Europeus Juniores',longa_only:true},{id:'europeus_sub23',label:'Europeu SUB23',longa_only:true},{id:'europeus',label:'Europeus',longa_only:true},{id:'olimpicos',label:'Jogos Olímpicos 2028',longa_only:true}],
-  'INF_A': [{id:'zonal',label:'Zonais',longa_only:false},{id:'verao',label:'Nacional Verão',longa_only:false},{id:'europeus_jun',label:'Europeus Juniores',longa_only:true},{id:'europeus_sub23',label:'Europeu SUB23',longa_only:true},{id:'europeus',label:'Europeus',longa_only:true},{id:'olimpicos',label:'Jogos Olímpicos 2028',longa_only:true}],
-  'JUV_B': [{id:'zonal',label:'Zonais',longa_only:false},{id:'inverno',label:'Nacional Inverno',longa_only:false},{id:'verao',label:'Nacional Verão',longa_only:false},{id:'europeus_jun',label:'Europeus Juniores',longa_only:true},{id:'europeus_sub23',label:'Europeu SUB23',longa_only:true},{id:'europeus',label:'Europeus',longa_only:true},{id:'olimpicos',label:'Jogos Olímpicos 2028',longa_only:true}],
-  'JUV_A': [{id:'zonal',label:'Zonais',longa_only:false},{id:'inverno',label:'Nacional Inverno',longa_only:false},{id:'verao',label:'Nacional Verão',longa_only:false},{id:'europeus_jun',label:'Europeus Juniores',longa_only:true},{id:'europeus_sub23',label:'Europeu SUB23',longa_only:true},{id:'europeus',label:'Europeus',longa_only:true},{id:'olimpicos',label:'Jogos Olímpicos 2028',longa_only:true}],
-  'JUN1':  [{id:'nacional',label:'Nacional',longa_only:false},{id:'europeus_jun',label:'Europeus Juniores',longa_only:true},{id:'europeus_sub23',label:'Europeu SUB23',longa_only:true},{id:'europeus',label:'Europeus',longa_only:true},{id:'olimpicos',label:'Jogos Olímpicos 2028',longa_only:true}],
-  'JUN':   [{id:'nacional',label:'Nacional',longa_only:false},{id:'europeus_jun',label:'Europeus Juniores',longa_only:true},{id:'europeus_sub23',label:'Europeu SUB23',longa_only:true},{id:'europeus',label:'Europeus',longa_only:true},{id:'olimpicos',label:'Jogos Olímpicos 2028',longa_only:true}],
-  'SUB21': [{id:'nacional',label:'Nacional',longa_only:false},{id:'europeus_sub23',label:'Europeu SUB23',longa_only:true},{id:'europeus',label:'Europeus',longa_only:true},{id:'olimpicos',label:'Jogos Olímpicos 2028',longa_only:true}],
-  'SEN':   [{id:'nacional',label:'Nacional',longa_only:false},{id:'europeus_sub23',label:'Europeu SUB23',longa_only:true},{id:'europeus',label:'Europeus',longa_only:true},{id:'olimpicos',label:'Jogos Olímpicos 2028',longa_only:true}],
-  'ABS':   [{id:'nacional',label:'Nacional',longa_only:false},{id:'europeus',label:'Europeus',longa_only:true},{id:'olimpicos',label:'Jogos Olímpicos 2028',longa_only:true}]
+  'INF_B': [{id:'zonal',label:'Zonais',longa_only:false},{id:'verao',label:'Nacional Verão',longa_only:false},{id:'europeus_jun',label:'Europeus Juniores',longa_only:true},{id:'europeus_sub23',label:'Europeu SUB23',longa_only:true},{id:'europeus',label:'Europeus',longa_only:true},{id:'olimpicos',label:'Jogos Olímpicos 2028',longa_only:true},{id:'mundial_25m',label:'Mundial 25m · Beijing 2026',longa_only:false},{id:'mundial_50m',label:'Mundial 50m · Budapeste 2027',longa_only:true}],
+  'INF_A': [{id:'zonal',label:'Zonais',longa_only:false},{id:'verao',label:'Nacional Verão',longa_only:false},{id:'europeus_jun',label:'Europeus Juniores',longa_only:true},{id:'europeus_sub23',label:'Europeu SUB23',longa_only:true},{id:'europeus',label:'Europeus',longa_only:true},{id:'olimpicos',label:'Jogos Olímpicos 2028',longa_only:true},{id:'mundial_25m',label:'Mundial 25m · Beijing 2026',longa_only:false},{id:'mundial_50m',label:'Mundial 50m · Budapeste 2027',longa_only:true}],
+  'JUV_B': [{id:'zonal',label:'Zonais',longa_only:false},{id:'inverno',label:'Nacional Inverno',longa_only:false},{id:'verao',label:'Nacional Verão',longa_only:false},{id:'europeus_jun',label:'Europeus Juniores',longa_only:true},{id:'europeus_sub23',label:'Europeu SUB23',longa_only:true},{id:'europeus',label:'Europeus',longa_only:true},{id:'olimpicos',label:'Jogos Olímpicos 2028',longa_only:true},{id:'mundial_25m',label:'Mundial 25m · Beijing 2026',longa_only:false},{id:'mundial_50m',label:'Mundial 50m · Budapeste 2027',longa_only:true}],
+  'JUV_A': [{id:'zonal',label:'Zonais',longa_only:false},{id:'inverno',label:'Nacional Inverno',longa_only:false},{id:'verao',label:'Nacional Verão',longa_only:false},{id:'europeus_jun',label:'Europeus Juniores',longa_only:true},{id:'europeus_sub23',label:'Europeu SUB23',longa_only:true},{id:'europeus',label:'Europeus',longa_only:true},{id:'olimpicos',label:'Jogos Olímpicos 2028',longa_only:true},{id:'mundial_25m',label:'Mundial 25m · Beijing 2026',longa_only:false},{id:'mundial_50m',label:'Mundial 50m · Budapeste 2027',longa_only:true}],
+  'JUN1':  [{id:'nacional',label:'Nacional',longa_only:false},{id:'europeus_jun',label:'Europeus Juniores',longa_only:true},{id:'europeus_sub23',label:'Europeu SUB23',longa_only:true},{id:'europeus',label:'Europeus',longa_only:true},{id:'olimpicos',label:'Jogos Olímpicos 2028',longa_only:true},{id:'mundial_25m',label:'Mundial 25m · Beijing 2026',longa_only:false},{id:'mundial_50m',label:'Mundial 50m · Budapeste 2027',longa_only:true}],
+  'JUN':   [{id:'nacional',label:'Nacional',longa_only:false},{id:'europeus_jun',label:'Europeus Juniores',longa_only:true},{id:'europeus_sub23',label:'Europeu SUB23',longa_only:true},{id:'europeus',label:'Europeus',longa_only:true},{id:'olimpicos',label:'Jogos Olímpicos 2028',longa_only:true},{id:'mundial_25m',label:'Mundial 25m · Beijing 2026',longa_only:false},{id:'mundial_50m',label:'Mundial 50m · Budapeste 2027',longa_only:true}],
+  'SUB21': [{id:'nacional',label:'Nacional',longa_only:false},{id:'europeus_sub23',label:'Europeu SUB23',longa_only:true},{id:'europeus',label:'Europeus',longa_only:true},{id:'olimpicos',label:'Jogos Olímpicos 2028',longa_only:true},{id:'mundial_25m',label:'Mundial 25m · Beijing 2026',longa_only:false},{id:'mundial_50m',label:'Mundial 50m · Budapeste 2027',longa_only:true}],
+  'SEN':   [{id:'nacional',label:'Nacional',longa_only:false},{id:'europeus_sub23',label:'Europeu SUB23',longa_only:true},{id:'europeus',label:'Europeus',longa_only:true},{id:'olimpicos',label:'Jogos Olímpicos 2028',longa_only:true},{id:'mundial_25m',label:'Mundial 25m · Beijing 2026',longa_only:false},{id:'mundial_50m',label:'Mundial 50m · Budapeste 2027',longa_only:true}],
+  'ABS':   [{id:'nacional',label:'Nacional',longa_only:false},{id:'europeus',label:'Europeus',longa_only:true},{id:'olimpicos',label:'Jogos Olímpicos 2028',longa_only:true},{id:'mundial_25m',label:'Mundial 25m · Beijing 2026',longa_only:false},{id:'mundial_50m',label:'Mundial 50m · Budapeste 2027',longa_only:true}]
 };
 
 function getColForComp(escalao, compId) {
@@ -4195,6 +4217,8 @@ function getColForComp(escalao, compId) {
   if (compId === 'europeus_jun') return 'EUR_JUN';
   if (compId === 'europeus_sub23') return 'EUR_SUB23';
   if (compId === 'olimpicos') return 'OLI';
+  if (compId === 'mundial_25m') return 'MUN25';
+  if (compId === 'mundial_50m') return 'MUN50';
   return null;
 }
 
@@ -4206,11 +4230,12 @@ function getMinimoAtleta(piscina, sexo, escalao, compId, provaKey) {
   var estilo = parts[1];
   var key = dist + '_' + estilo;
   // International competitions use dadosInternacionais
-  var intlMap = {'OLI':'olimpicos','EUR':'europeus','EUR_JUN':'europeus_jun','EUR_SUB23':'europeus_sub23'};
+  var intlMap = {'OLI':'olimpicos','EUR':'europeus','EUR_JUN':'europeus_jun','EUR_SUB23':'europeus_sub23','MUN25':'mundiais_25m','MUN50':'mundiais_50m'};
   if (intlMap[col]) {
     try {
       var val = dadosInternacionais[intlMap[col]][sexo][key];
       if (!val || val === '') return null;
+      if (typeof val === 'object') val = val.A;
       return parseAtletaMs(val);
     } catch(e) { return null; }
   }
@@ -4221,6 +4246,19 @@ function getMinimoAtleta(piscina, sexo, escalao, compId, provaKey) {
     var val = t[col];
     if (!val || val === '' || val === '-') return null;
     return parseAtletaMs(val);
+  } catch(e) { return null; }
+}
+
+function getMinimoAtletaB(piscina, sexo, escalao, compId, provaKey) {
+  var col = getColForComp(escalao, compId);
+  if (!col || (col !== 'MUN25' && col !== 'MUN50')) return null;
+  var parts = provaKey.split('_');
+  var key = parts[0] + '_' + parts[1];
+  var intlMap = {'MUN25':'mundiais_25m','MUN50':'mundiais_50m'};
+  try {
+    var val = dadosInternacionais[intlMap[col]][sexo][key];
+    if (!val || typeof val !== 'object') return null;
+    return parseAtletaMs(val.B);
   } catch(e) { return null; }
 }
 
@@ -4862,8 +4900,8 @@ function renderAtletaResultados(data, compId) {
       }
     }
     if (melhorTempo === null) semTempo.push({label:provaLabel, key:provaKey});
-    else if (atingiu) comMinimo.push({label:provaLabel, tempo:melhorTempo, pisc:melhorPisc, minimo:melhorMin, diff:melhorMin-melhorTempo});
-    else semMinimo.push({label:provaLabel, tempo:melhorTempo, pisc:melhorPisc, minimo:melhorMin, diff:melhorDiff});
+    else if (atingiu) comMinimo.push({label:provaLabel, tempo:melhorTempo, pisc:melhorPisc, minimo:melhorMin, diff:melhorMin-melhorTempo, minimoB:getMinimoAtletaB(melhorPisc, sexo, escalao, comp.id, provaKey)});
+    else semMinimo.push({label:provaLabel, tempo:melhorTempo, pisc:melhorPisc, minimo:melhorMin, diff:melhorDiff, minimoB:getMinimoAtletaB(melhorPisc, sexo, escalao, comp.id, provaKey)});
   }
 
   var html = '';
@@ -4901,7 +4939,7 @@ function renderAtletaResultados(data, compId) {
     html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 4px;border-bottom:1px solid ' + divBorderPass + ';">';
     html += '<div><div style="font-size:14px;font-weight:600;color:' + passLabel + ';">&#10003; ' + e.label + '</div>';
     html += '<div style="font-size:12px;color:' + passDetail + ';">' + formatAtletaMs(e.tempo) + ' (' + (e.pisc==='curta'?'25m':'50m') + ') · -' + formatAtletaMs(e.diff) + '</div></div>';
-    html += '<div style="font-size:12px;color:' + minColor + ';text-align:right;">min<br>' + formatAtletaMs(e.minimo) + '</div></div>';
+    html += '<div style="font-size:12px;color:' + minColor + ';text-align:right;">min A<br>' + formatAtletaMs(e.minimo) + (e.minimoB ? '<br><span style="opacity:0.7;">B ' + formatAtletaMs(e.minimoB) + '</span>' : '') + '</div></div>';
   }
   for (var i = 0; i < semMinimo.length; i++) {
     var e = semMinimo[i];
@@ -4913,7 +4951,7 @@ function renderAtletaResultados(data, compId) {
     html += '<div><div style="font-size:14px;font-weight:600;color:' + failLabel + ';">&#10007; ' + e.label + '</div>';
     html += '<div style="font-size:12px;color:' + failDetail + ';">' + formatAtletaMs(e.tempo) + ' (' + (e.pisc==='curta'?'25m':'50m') + ') · faltam ' + formatAtletaMs(e.diff) + '</div></div>';
     html += '<div style="font-size:12px;font-weight:700;color:' + pctColor + ';text-align:center;min-width:36px;">' + pct + '%</div>';
-    html += '<div style="font-size:12px;color:' + minColor + ';text-align:right;">min<br>' + formatAtletaMs(e.minimo) + '</div></div>';
+    html += '<div style="font-size:12px;color:' + minColor + ';text-align:right;">min A<br>' + formatAtletaMs(e.minimo) + (e.minimoB ? '<br><span style="opacity:0.7;">B ' + formatAtletaMs(e.minimoB) + '</span>' : '') + '</div></div>';
   }
   if (semTempo.length > 0 && total > 0) {
     var labs = []; for (var i=0;i<semTempo.length;i++) labs.push(semTempo[i].label);
