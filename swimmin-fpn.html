@@ -3478,7 +3478,13 @@ function getTempo(piscina, genero, dist, estilo, col) {
   }
   // National competitions from tempos table
   try {
-    var key = dist + '_' + estilo;
+    var key;
+    var relayMatch = dist.match(/^4x(\d+)([LE])$/);
+    if (relayMatch) {
+      key = '4X' + relayMatch[1] + '_' + relayMatch[2];
+    } else {
+      key = dist + '_' + estilo;
+    }
     var val = tempos[piscina][genero][key][col];
     return (val && val !== '') ? val : null;
   } catch(e) { return null; }
@@ -3499,7 +3505,7 @@ function calcular() {
   }
 
   var col = COL_MAP[comp];
-  var g = (genero === 'X') ? 'M' : genero; // estafetas usam M como base
+  var g = genero; // Misto tem os seus próprios dados (diferentes de M/F), usar diretamente
   var tempo = getTempo(piscina, g, dist, estilo, col);
 
   if (!tempo) {
@@ -3571,7 +3577,7 @@ function calcularDiff() {
   var estilo = document.getElementById('estilo').value;
   var dist = document.getElementById('distancia').value;
   var col = COL_MAP[comp];
-  var g = genero === 'X' ? 'M' : genero;
+  var g = genero; // Misto tem os seus próprios dados (diferentes de M/F), usar diretamente
   var minimoRaw = getTempo(piscina, g, dist, estilo, col);
   if (!minimoRaw) return;
   var minimoStr = (minimoRaw && typeof minimoRaw === 'object') ? minimoRaw.A : minimoRaw;
