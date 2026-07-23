@@ -3421,10 +3421,9 @@ function popularEstilos() {
   estiloEl.innerHTML = '<option value="">Selecionar</option>';
   if (!genero || !piscina) { popularDistanciasPorEstilo(); return; }
   
-  var estilos = genero === 'X' ? ['X'] : (piscina === 'longa' 
+  var estilos = genero === 'X' ? ['L','E'] : (piscina === 'longa' 
     ? Object.keys(ESTILO_PROVAS_LONGA).filter(function(e){ return e !== 'X'; })
     : Object.keys(ESTILO_PROVAS_CURTA).filter(function(e){ return e !== 'X'; }));
-  if (genero === 'X') estilos = ['X'];
 
   for (var i = 0; i < estilos.length; i++) {
     var opt = document.createElement('option');
@@ -3443,11 +3442,17 @@ function updateDistanciasPorEstilo() { popularDistanciasPorEstilo(); }
 function popularDistanciasPorEstilo() {
   var piscina = document.getElementById('piscina').value;
   var estilo = document.getElementById('estilo').value;
+  var genero = document.getElementById('genero').value;
   var distEl = document.getElementById('distancia');
   var prevDist = distEl.value;
   distEl.innerHTML = '<option value="">Selecionar</option>';
   if (!piscina || !estilo) return;
-  var provas = piscina === 'longa' ? ESTILO_PROVAS_LONGA[estilo] : ESTILO_PROVAS_CURTA[estilo];
+  var provas;
+  if (genero === 'X') {
+    provas = estilo === 'L' ? ['4x50L','4x100L'] : ['4x50E','4x100E'];
+  } else {
+    provas = piscina === 'longa' ? ESTILO_PROVAS_LONGA[estilo] : ESTILO_PROVAS_CURTA[estilo];
+  }
   if (!provas) return;
   for (var i = 0; i < provas.length; i++) {
     var opt = document.createElement('option');
