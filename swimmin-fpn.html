@@ -3476,10 +3476,12 @@ function getTempo(piscina, genero, dist, estilo, col) {
   else if (col === 'MUN50') intlKey = 'mundiais_50m';
   if (intlKey) {
     try {
-      var key = dist + '_' + estilo;
+      var key;
+      var relayMatchIntl = dist.match(/^4x(\d+)([LE])$/);
+      key = relayMatchIntl ? (relayMatchIntl[1] + '_' + relayMatchIntl[2]) : (dist + '_' + estilo);
       var val = dadosInternacionais[intlKey][genero][key];
       return (val && val !== '') ? val : null;
-    } catch(e) { return '[erro:' + e.message + ']'; }
+    } catch(e) { return null; }
   }
   // National competitions from tempos table
   try {
