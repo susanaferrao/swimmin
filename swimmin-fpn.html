@@ -3222,6 +3222,7 @@ document.addEventListener("click", function(e) {
           <option value="">Selecionar</option>
           <option value="M">Masculino</option>
           <option value="F">Feminino</option>
+          <option value="X">Misto</option>
         </select>
       </div>
     </div>
@@ -3492,11 +3493,10 @@ function getTempo(piscina, genero, dist, estilo, col) {
   else if (col === 'MUN25') intlKey = 'mundiais_25m';
   else if (col === 'MUN50') intlKey = 'mundiais_50m';
   if (intlKey) {
-    // Estafetas não têm mínimos definidos nas competições internacionais
-    // (Olímpicos/Europeus/Mundiais) — não confundir com a prova individual equivalente.
-    if (/^4x\d+[LE]$/.test(dist)) return null;
     try {
-      var key = dist + '_' + estilo;
+      var key;
+      var relayMatchIntl = dist.match(/^4x(\d+)([LE])$/);
+      key = relayMatchIntl ? (relayMatchIntl[1] + '_' + relayMatchIntl[2]) : (dist + '_' + estilo);
       var val = dadosInternacionais[intlKey][genero][key];
       return (val && val !== '') ? val : null;
     } catch(e) { return null; }
@@ -3683,19 +3683,40 @@ function switchRecordesTab(tab) {
 
 function toggleMundiais() { toggleRecordes(); switchRecordesTab('mundiais'); }
 
-var WR_PROVAS_LONGA = {L:['50','100','200','400','800','1500'],C:['50','100','200'],B:['50','100','200'],M:['50','100','200'],E:['200','400']};
-var WR_PROVAS_CURTA = {L:['50','100','200','400','800','1500'],C:['50','100','200'],B:['50','100','200'],M:['50','100','200'],E:['100','200','400']};
+var WR_PROVAS_LONGA = {L:['50','100','200','400','800','1500','4x100L','4x200L'],C:['50','100','200'],B:['50','100','200'],M:['50','100','200'],E:['200','400','4x100E']};
+var WR_PROVAS_CURTA = {L:['50','100','200','400','800','1500','4x50L','4x100L','4x200L'],C:['50','100','200'],B:['50','100','200'],M:['50','100','200'],E:['100','200','400','4x50E','4x100E']};
 
-function wrUpdate() { wrUpdateDist(); }
+function wrUpdate() {
+  var sexo = document.getElementById('wr-sexo').value;
+  var estiloEl = document.getElementById('wr-estilo');
+  var prevEstilo = estiloEl.value;
+  estiloEl.innerHTML = '<option value="">Selecionar</option>';
+  var estilos = sexo === 'X' ? ['L','E'] : ['L','C','B','M','E'];
+  for (var i = 0; i < estilos.length; i++) {
+    var opt = document.createElement('option');
+    opt.value = estilos[i];
+    opt.textContent = ESTILO_LABELS[estilos[i]];
+    estiloEl.appendChild(opt);
+  }
+  if (estiloEl.querySelector('option[value="' + prevEstilo + '"]')) estiloEl.value = prevEstilo;
+  wrUpdateDist();
+}
 
 function wrUpdateDist() {
   var piscina = document.getElementById('wr-piscina').value;
+  var sexo = document.getElementById('wr-sexo').value;
   var estilo = document.getElementById('wr-estilo').value;
   var distEl = document.getElementById('wr-distancia');
   var prevD = distEl.value;
   distEl.innerHTML = '<option value="">Selecionar</option>';
   if (!piscina || !estilo) return;
-  var provas = piscina === 'longa' ? WR_PROVAS_LONGA[estilo] : WR_PROVAS_CURTA[estilo];
+  var provas;
+  if (sexo === 'X') {
+    if (piscina === 'longa') provas = estilo === 'L' ? ['4x100L'] : ['4x100E'];
+    else provas = estilo === 'L' ? ['4x50L'] : ['4x50E'];
+  } else {
+    provas = piscina === 'longa' ? WR_PROVAS_LONGA[estilo] : WR_PROVAS_CURTA[estilo];
+  }
   if (!provas) return;
   for (var i = 0; i < provas.length; i++) {
     var opt = document.createElement('option');
@@ -3714,7 +3735,8 @@ function wrMostrar() {
   var dist = document.getElementById('wr-distancia').value;
   var resultEl = document.getElementById('wr-result');
   if (!piscina || !sexo || !estilo || !dist) { resultEl.innerHTML = ''; return; }
-  var key = dist + '_' + estilo;
+  var relayMatch = dist.match(/^4x(\d+)([LE])$/);
+  var key = relayMatch ? ('4X' + relayMatch[1] + '_' + relayMatch[2]) : (dist + '_' + estilo);
   var rec = null;
   try { rec = recordesMundiais[piscina][sexo][key]; } catch(e) {}
   if (!rec) {
@@ -3724,7 +3746,7 @@ function wrMostrar() {
   var html = '<div class="fpn-result-box" style="margin-top:12px;">';
   html += '<div class="fpn-pontos">' + rec.tempo + '</div>';
   html += '<div class="fpn-divider"></div>';
-  html += '<div class="fpn-rn-nome">' + rec.nome + '</div>';
+  html += '<div class="fpn-rn-nome">' + (rec.nome || rec.nadadores) + '</div>';
   html += '<div class="fpn-rn-info">' + rec.data + ' · ' + rec.local + '</div>';
   html += '</div>';
   resultEl.innerHTML = html;
