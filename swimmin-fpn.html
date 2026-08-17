@@ -3493,10 +3493,11 @@ function getTempo(piscina, genero, dist, estilo, col) {
   else if (col === 'MUN25') intlKey = 'mundiais_25m';
   else if (col === 'MUN50') intlKey = 'mundiais_50m';
   if (intlKey) {
+    // Estafetas não têm mínimos definidos nas competições internacionais
+    // (Olímpicos/Europeus/Mundiais) — não confundir com a prova individual equivalente.
+    if (/^4x\d+[LE]$/.test(dist)) return null;
     try {
-      var key;
-      var relayMatchIntl = dist.match(/^4x(\d+)([LE])$/);
-      key = relayMatchIntl ? (relayMatchIntl[1] + '_' + relayMatchIntl[2]) : (dist + '_' + estilo);
+      var key = dist + '_' + estilo;
       var val = dadosInternacionais[intlKey][genero][key];
       return (val && val !== '') ? val : null;
     } catch(e) { return null; }
