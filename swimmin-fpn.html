@@ -2703,11 +2703,11 @@ document.addEventListener("click", function(e) {
     </a>
   </div>
 
-  <!-- Botão Resultados — Campeonato Nacional de Juvenis, Juniores e Séniores -->
-  <div style="margin:0 0 14px 0;">
-    <a href="https://live.swimrankings.net/10242/" target="_blank" rel="noopener noreferrer"
+  <!-- Botão Resultados — Jogos do Mediterrâneo 2026 -->
+  <div style="margin:0 0 8px 0;">
+    <a href="https://taranto2026.microplustimingservices.com/#/athletic-sports-schedule/SWM/*?lang=en" target="_blank" rel="noopener noreferrer"
        style="display:block;background:linear-gradient(135deg,#ff8c00,#e65c00);color:#fff;font-family:'DM Sans',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;text-decoration:none;padding:10px 22px;border-radius:10px;box-shadow:0 4px 16px rgba(230,92,0,0.35);cursor:pointer;text-align:center;">
-      RESULTADOS CAMPEONATO NACIONAL DE JUVENIS, JUNIORES E SÉNIORES
+      RESULTADOS JOGOS DO MEDITERRÂNEO 2026
     </a>
   </div>
 
@@ -5896,6 +5896,21 @@ function instalarApp() {
     <div id="crono-startlist-content" style="display:none;"></div>
   </div>
 </div>
+
+  <!-- RESULTADOS ANTERIORES BUTTON -->
+  <div class="fpn-btn-wrap">
+    <button class="fpn-btn" id="resultados-anteriores-btn" type="button" onclick="toggleResultadosAnteriores()">Resultados de Competições Anteriores</button>
+  </div>
+  <div id="resultados-anteriores-section" class="fpn-section" style="display:none;margin-top:20px;">
+    <div class="fpn-title">Resultados de Competições Anteriores</div>
+    <div class="fpn-subtitle">Arquivo de ligações para resultados de provas já realizadas</div>
+    <div style="margin-top:14px;">
+      <a href="https://live.swimrankings.net/10242/" target="_blank" rel="noopener noreferrer"
+         style="display:block;background:#f0f7ff;border:1.5px solid #d0e4f0;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;text-decoration:none;padding:10px 16px;border-radius:8px;margin-bottom:8px;text-align:center;">
+        Resultados Campeonato Nacional de Verão 2026
+      </a>
+    </div>
+  </div>
 
   <!-- TREINADOR BUTTON -->
   <div class="coach-wrap" style="margin-top:28px;">
@@ -9260,6 +9275,24 @@ function fecharCartaoFPN() {
     <a href="https://www.swimrankings.net/index.php" target="_blank" rel="noopener noreferrer" style="display:block;text-align:center;padding:11px 6px;border-radius:10px;background:#e8f4fd;border:1.5px solid #b0d4ee;color:#1a5a8a;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;">Swimrankings</a>
   </div>
 
+  <!-- Redes Sociais -->
+  <div style="position:relative;z-index:1;display:flex;justify-content:center;gap:14px;margin:14px 16px 0 16px;">
+    <a href="https://www.instagram.com/swimmin_pt/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"
+       style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;background:linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7);cursor:pointer;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="2" width="20" height="20" rx="5" stroke="#fff" stroke-width="2"/>
+        <circle cx="12" cy="12" r="4.2" stroke="#fff" stroke-width="2"/>
+        <circle cx="17.4" cy="6.6" r="1.15" fill="#fff"/>
+      </svg>
+    </a>
+    <a href="https://www.tiktok.com/@swimmin.pt" target="_blank" rel="noopener noreferrer" aria-label="TikTok"
+       style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;background:#010101;cursor:pointer;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16.5 2c.3 2.4 1.7 4 4 4.2v3c-1.5.1-2.9-.4-4-1.2v6.4c0 3.4-2.7 6.1-6.1 6.1S4.3 17.8 4.3 14.4c0-3.3 2.6-6 5.9-6.1v3.1c-1.6.1-2.9 1.4-2.9 3 0 1.7 1.4 3.1 3.1 3.1s3.1-1.4 3.1-3.1V2h3z" fill="#fff"/>
+      </svg>
+    </a>
+  </div>
+
   <!-- Footer -->
   <div style="position:relative;z-index:1;text-align:center; padding: 18px 0 6px 0; font-size: 0.78em; color: #888; letter-spacing: 0.01em;">
     © SwimMin, todos os direitos reservados
@@ -11064,6 +11097,15 @@ function toggleConv() {
   var open=s.style.display==='block';
   s.style.display=open?'none':'block';
   b.textContent=open?'Conversor 25m / 50m':'Fechar Conversor';
+  if(!open)s.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function toggleResultadosAnteriores() {
+  var s=document.getElementById('resultados-anteriores-section'),b=document.getElementById('resultados-anteriores-btn');
+  if(!s||!b)return;
+  var open=s.style.display==='block';
+  s.style.display=open?'none':'block';
+  b.textContent=open?'Resultados de Competições Anteriores':'Fechar Resultados de Competições Anteriores';
   if(!open)s.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
