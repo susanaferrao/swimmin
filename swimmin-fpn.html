@@ -3160,7 +3160,7 @@ document.addEventListener("click", function(e) {
       </div>
       <div class="field">
         <label>Distância</label>
-        <select id="id-distancia" onchange="mostrarRecordeIdade()">
+        <select id="id-distancia" onchange="idadeUpdateFaixas(); mostrarRecordeIdade()">
           <option value="">Selecionar</option>
         </select>
       </div>
@@ -3994,7 +3994,45 @@ function idadeUpdateDistancias() {
   });
 
   if (distEl.querySelector('option[value="' + prevD + '"]')) distEl.value = prevD;
+  idadeUpdateFaixas();
   mostrarRecordeIdade();
+}
+
+function idadeUpdateFaixas() {
+  var distEl = document.getElementById('id-distancia');
+  var idadeEl = document.getElementById('id-idade');
+  var prevIdade = idadeEl.value;
+  var isRelay = distEl.value.indexOf('4x') === 0;
+  var isSelecao = distEl.value.indexOf('|selecao') !== -1;
+  var opcoes;
+  if (isRelay && isSelecao) {
+    opcoes = [
+      {v:'13', l:'13 anos'}, {v:'14', l:'14 anos'}, {v:'13-14', l:'13-14 anos'},
+      {v:'14-15', l:'14-15 anos'}, {v:'14-16', l:'14-16 anos'},
+      {v:'15', l:'15 anos'}, {v:'16', l:'16 anos'}, {v:'15-16', l:'15-16 anos'},
+      {v:'16-17', l:'16-17 anos'}, {v:'16-18', l:'16-18 anos'}, {v:'17-18', l:'17-18 anos'},
+      {v:'18+', l:'18+ anos'}, {v:'19+', l:'19+ anos'}
+    ];
+  } else if (isRelay) {
+    opcoes = [
+      {v:'13', l:'13 anos'}, {v:'14', l:'14 anos'}, {v:'13-14', l:'13-14 anos'},
+      {v:'15', l:'15 anos'}, {v:'16', l:'16 anos'}, {v:'15-16', l:'15-16 anos'},
+      {v:'17-18', l:'17-18 anos'}, {v:'19+', l:'19+ anos'}
+    ];
+  } else {
+    opcoes = [
+      {v:'13', l:'13 anos'}, {v:'14', l:'14 anos'}, {v:'15', l:'15 anos'}, {v:'16', l:'16 anos'},
+      {v:'17', l:'17 anos'}, {v:'18', l:'18 anos'}, {v:'19+', l:'19+ anos'}, {v:'open', l:'Open'}
+    ];
+  }
+  idadeEl.innerHTML = '<option value="">Selecionar</option>';
+  opcoes.forEach(function(o) {
+    var opt = document.createElement('option');
+    opt.value = o.v;
+    opt.textContent = o.l;
+    idadeEl.appendChild(opt);
+  });
+  if (idadeEl.querySelector('option[value="' + prevIdade + '"]')) idadeEl.value = prevIdade;
 }
 
 function mostrarRecordeIdade() {
