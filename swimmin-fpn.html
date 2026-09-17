@@ -2948,11 +2948,12 @@ document.addEventListener("click", function(e) {
         <button onclick="abrirCartaoFPN()" style="background:var(--blue-deep);color:#fff;border:none;border-radius:10px;padding:12px;font-size:15px;font-weight:700;cursor:pointer;text-align:center;width:100%;">Ver cartão FPN</button>
       </div>
 
-      <!-- Tabs: Os meus tempos / Os meus mínimos -->
+      <!-- Tabs: Os meus tempos / Os meus mínimos / SPI -->
       <div id="atleta-tabs-wrap" style="display:none;margin-top:16px;">
         <div style="display:flex;border-radius:12px;overflow:hidden;border:1.5px solid rgba(0,196,204,0.3);margin-bottom:16px;">
           <button id="atleta-tab-tempos" onclick="atletaSwitchTab('tempos')" style="flex:1;padding:11px 6px;border:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.3px;transition:all 0.2s;">Os meus tempos</button>
           <button id="atleta-tab-minimos" onclick="atletaSwitchTab('minimos')" style="flex:1;padding:11px 6px;border:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.3px;transition:all 0.2s;">Os meus mínimos</button>
+          <button id="atleta-tab-spi" onclick="atletaSwitchTab('spi')" style="flex:1;padding:11px 6px;border:none;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.3px;transition:all 0.2s;">SPI</button>
         </div>
 
         <!-- Painel: Os meus tempos -->
@@ -2965,11 +2966,16 @@ document.addEventListener("click", function(e) {
           <div id="atleta-comp-selector" style="display:none;">
             <div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#7ab8d4;margin-bottom:6px;">Ver mínimos para <span style="opacity:0.7;">&middot; Época 2026/2027</span></div>
             <select id="atleta-comp-select" onchange="selecionarCompAtleta(this.value)" style="width:100%;padding:12px 14px;border-radius:10px;background:#f0f7ff;border:1.5px solid #c0d8ee;color:#1a3a4a;font-size:15px;font-weight:600;cursor:pointer;appearance:auto;"></select>
-            <div style="background:#fff8e1;border-radius:8px;padding:10px 14px;margin-top:12px;border-left:3px solid #f0a500;">
-              <div style="font-size:12px;color:#7a5a00;line-height:1.5;">Para participação nas competições, ter em conta a data de obtenção dos tempos.</div>
+            <div class="hint-box" style="margin-top:12px;">
+              <div class="hint-box-text">Para participação nas competições, ter em conta a data de obtenção dos tempos.</div>
             </div>
           </div>
           <div id="atleta-resultados" style="margin-top:0;"></div>
+        </div>
+
+        <!-- Painel: SPI -->
+        <div id="atleta-panel-spi" style="display:none;">
+          <div id="atleta-spi-table"></div>
         </div>
       </div>
 
@@ -3775,6 +3781,15 @@ function fpnUpdateDistancias() {
 }
 
 
+// ===== SPI (SwimMin Power Index) — base de recordes nacionais absolutos =====
+// Congelada 1x por ano, a 1 de setembro (início da época), tal como o baseTimesFINA abaixo.
+// Última atualização: 07/09/2026 (época 2026/2027). Fonte: recordes-nacionais.json, categoria "open".
+// PARA ATUALIZAR NO PRÓXIMO 1 DE SETEMBRO: substituir os valores abaixo pelos recordes absolutos
+// atuais de recordes-nacionais.json (['longa'|'curta']['M'|'F']['open']), e mudar a data aqui em cima.
+// NÃO editar recordesIdade nem esta tabela ao longo da época — só nesta atualização anual.
+var SPI_BASE = {"longa": {"M": {"50_L": "21,59", "100_L": "47,98", "200_L": "1:47,97", "400_L": "3:50,56", "800_L": "7:52,68", "1500_L": "15:15,12", "50_C": "25,25", "100_C": "53,71", "200_C": "1:57,06", "50_B": "27,92", "100_B": "1:01,01", "200_B": "2:11,92", "50_M": "22,68", "100_M": "51,17", "200_M": "1:56,17", "200_E": "1:58,19", "400_E": "4:15,84"}, "F": {"50_L": "25,25", "100_L": "55,30", "200_L": "1:57,56", "400_L": "4:06,93", "800_L": "8:29,33", "1500_L": "16:15,12", "50_C": "28,24", "100_C": "59,90", "200_C": "2:07,62", "50_B": "30,73", "100_B": "1:08,22", "200_B": "2:25,67", "50_M": "26,58", "100_M": "58,76", "200_M": "2:08,03", "200_E": "2:13,87", "400_E": "4:40,11"}}, "curta": {"M": {"50_L": "21,15", "100_L": "46,55", "200_L": "1:43,16", "400_L": "3:42,57", "800_L": "7:41,51", "1500_L": "14:39,82", "50_C": "23,35", "100_C": "50,82", "200_C": "1:52,66", "50_B": "27,01", "100_B": "58,19", "200_B": "2:05,59", "50_M": "22,48", "100_M": "50,12", "200_M": "1:53,39", "100_E": "52,73", "200_E": "1:53,45", "400_E": "4:05,87"}, "F": {"50_L": "24,94", "100_L": "54,28", "200_L": "1:55,91", "400_L": "4:04,57", "800_L": "8:20,97", "1500_L": "15:55,19", "50_C": "27,16", "100_C": "57,79", "200_C": "2:03,51", "50_B": "29,98", "100_B": "1:06,41", "200_B": "2:22,12", "50_M": "26,12", "100_M": "57,93", "200_M": "2:05,74", "100_E": "1:00,19", "200_E": "2:11,70", "400_E": "4:36,19"}}};
+
+
 // ===== RECORDES MUNDIAIS (FINA/WORLD AQUATICS) =====
 var baseTimesFINA = {
   "longa": {
@@ -4560,19 +4575,28 @@ function atletaSwitchTab(tab) {
 
   var tT = document.getElementById('atleta-tab-tempos');
   var tM = document.getElementById('atleta-tab-minimos');
+  var tS = document.getElementById('atleta-tab-spi');
   var pT = document.getElementById('atleta-panel-tempos');
   var pM = document.getElementById('atleta-panel-minimos');
-  if (!tT || !tM || !pT || !pM) return;
+  var pS = document.getElementById('atleta-panel-spi');
+  if (!tT || !tM || !tS || !pT || !pM || !pS) return;
+
+  tT.style.background = inactiveBg; tT.style.color = inactiveColor;
+  tM.style.background = inactiveBg; tM.style.color = inactiveColor;
+  tS.style.background = inactiveBg; tS.style.color = inactiveColor;
+  pT.style.display = 'none'; pM.style.display = 'none'; pS.style.display = 'none';
 
   if (tab === 'tempos') {
     tT.style.background = activeBg; tT.style.color = activeColor;
-    tM.style.background = inactiveBg; tM.style.color = inactiveColor;
-    pT.style.display = 'block'; pM.style.display = 'none';
+    pT.style.display = 'block';
     renderAtletaTempos();
+  } else if (tab === 'spi') {
+    tS.style.background = activeBg; tS.style.color = activeColor;
+    pS.style.display = 'block';
+    renderAtletaSPI();
   } else {
     tM.style.background = activeBg; tM.style.color = activeColor;
-    tT.style.background = inactiveBg; tT.style.color = inactiveColor;
-    pM.style.display = 'block'; pT.style.display = 'none';
+    pM.style.display = 'block';
     var compSel = document.getElementById('atleta-comp-selector');
     if (compSel) compSel.style.display = 'block';
     var activeId = getActiveProfileId();
@@ -4683,6 +4707,90 @@ function renderAtletaTempos() {
 
   html += '</tbody></table></div>';
   html += '<div style="font-size:10px;color:' + mutedColor + ';text-align:right;margin-top:6px;">pts = Pontos World Aquatics</div>';
+  el.innerHTML = html;
+}
+
+var SPI_PROVA_LABELS = {
+  '50_L':'50m Livres','100_L':'100m Livres','200_L':'200m Livres','400_L':'400m Livres',
+  '800_L':'800m Livres','1500_L':'1500m Livres','50_C':'50m Costas','100_C':'100m Costas',
+  '200_C':'200m Costas','50_B':'50m Bruços','100_B':'100m Bruços','200_B':'200m Bruços',
+  '50_M':'50m Mariposa','100_M':'100m Mariposa','200_M':'200m Mariposa',
+  '100_E':'100m Estilos','200_E':'200m Estilos','400_E':'400m Estilos'
+};
+
+function calcSPIDetalhe(piscina, sexo, temposObj) {
+  var linhas = [];
+  for (var key in temposObj) {
+    var ms = temposObj[key];
+    if (!ms) continue;
+    var baseStr = SPI_BASE[piscina] && SPI_BASE[piscina][sexo] && SPI_BASE[piscina][sexo][key];
+    if (!baseStr) continue;
+    var baseMs = parseAtletaMs(baseStr);
+    if (!baseMs) continue;
+    var pontos = (Math.pow(ms / baseMs, 3) - 1) * 100 + 1;
+    if (pontos > 100) pontos = 100;
+    linhas.push({key: key, label: SPI_PROVA_LABELS[key] || key, ms: ms, pontos: pontos});
+  }
+  if (linhas.length === 0) return null;
+  linhas.sort(function(a, b) { return a.pontos - b.pontos; });
+  var pesos = [1.0, 1.0, 0.25, 0.05];
+  var top4 = [];
+  for (var i = 0; i < 4; i++) {
+    if (linhas[i]) top4.push({key: linhas[i].key, label: linhas[i].label, ms: linhas[i].ms, pontos: Math.round(linhas[i].pontos * 100) / 100, peso: pesos[i], emFalta: false});
+    else top4.push({key: null, label: null, ms: null, pontos: 100, peso: pesos[i], emFalta: true});
+  }
+  var soma = 0;
+  for (var j = 0; j < 4; j++) soma += top4[j].pontos * top4[j].peso;
+  var spi = soma / 2.30;
+  if (spi > 100) spi = 100;
+  return { spi: Math.round(spi * 100) / 100, provas: top4 };
+}
+
+function renderAtletaSPI() {
+  var el = document.getElementById('atleta-spi-table');
+  if (!el) return;
+  var activeId = getActiveProfileId();
+  var data = activeId ? (getAllProfiles()[activeId] || null) : loadAtleta();
+  if (!data || !data.tempos) {
+    el.innerHTML = '<div style="text-align:center;color:var(--muted);font-size:13px;padding:16px;">Sem tempos guardados.</div>';
+    return;
+  }
+  var sexo = data.sexo || 'M';
+  var isLight = document.documentElement.classList.contains('light-mode');
+  var textColor = isLight ? '#1a3a4a' : '#e8f4ff';
+  var mutedColor = isLight ? '#7ab8d4' : 'rgba(0,212,255,0.5)';
+  var borderColor = isLight ? 'rgba(0,100,150,0.1)' : 'rgba(0,212,255,0.12)';
+
+  function bloco(titulo, piscinaLabel, detalhe) {
+    var html = '<div style="background:' + (isLight ? '#f0f7ff' : 'rgba(0,196,204,0.08)') + ';border-radius:14px;padding:16px;margin-bottom:14px;">';
+    html += '<div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:' + mutedColor + ';margin-bottom:2px;">' + titulo + ' &middot; ' + piscinaLabel + '</div>';
+    if (!detalhe) {
+      html += '<div style="font-size:13px;color:' + mutedColor + ';padding:8px 0;">Sem tempos suficientes para calcular.</div>';
+      html += '</div>';
+      return html;
+    }
+    html += '<div style="font-size:48px;font-weight:800;color:var(--aqua);line-height:1.1;margin-bottom:10px;">' + detalhe.spi.toFixed(2).replace('.', ',') + '</div>';
+    detalhe.provas.forEach(function(p) {
+      html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-top:1px solid ' + borderColor + ';font-size:12px;">';
+      if (p.emFalta) {
+        html += '<span style="color:' + mutedColor + ';font-style:italic;">Prova em falta</span>';
+        html += '<span style="color:' + mutedColor + ';">100,00 SPI</span>';
+      } else {
+        html += '<span style="color:' + textColor + ';font-weight:600;">' + p.label + ' <span style="color:' + mutedColor + ';font-weight:400;">(' + formatAtletaMs(p.ms) + ')</span></span>';
+        html += '<span style="color:' + mutedColor + ';">' + p.pontos.toFixed(2).replace('.', ',') + ' SPI</span>';
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+    return html;
+  }
+
+  var detC = calcSPIDetalhe('curta', sexo, data.tempos.curta || {});
+  var detL = calcSPIDetalhe('longa', sexo, data.tempos.longa || {});
+
+  var html = '<div style="font-size:13px;color:' + mutedColor + ';margin-bottom:14px;line-height:1.5;">O SPI é uma pontuação de 1 a 100 (1 = melhor) que resume as 4 melhores provas de um nadador com base na proximidade aos recordes nacionais absolutos.</div>';
+  html += bloco('SPI', 'Piscina Curta (25m)', detC);
+  html += bloco('SPI', 'Piscina Longa (50m)', detL);
   el.innerHTML = html;
 }
 
@@ -9311,12 +9419,6 @@ function fecharCartaoFPN() {
         <rect x="2" y="2" width="20" height="20" rx="5" stroke="#fff" stroke-width="2"/>
         <circle cx="12" cy="12" r="4.2" stroke="#fff" stroke-width="2"/>
         <circle cx="17.4" cy="6.6" r="1.15" fill="#fff"/>
-      </svg>
-    </a>
-    <a href="https://www.tiktok.com/@swimmin.pt" target="_blank" rel="noopener noreferrer" aria-label="TikTok"
-       style="display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;background:#010101;cursor:pointer;">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M16.5 2c.3 2.4 1.7 4 4 4.2v3c-1.5.1-2.9-.4-4-1.2v6.4c0 3.4-2.7 6.1-6.1 6.1S4.3 17.8 4.3 14.4c0-3.3 2.6-6 5.9-6.1v3.1c-1.6.1-2.9 1.4-2.9 3 0 1.7 1.4 3.1 3.1 3.1s3.1-1.4 3.1-3.1V2h3z" fill="#fff"/>
       </svg>
     </a>
   </div>
