@@ -9,6 +9,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="SwimMin">
 <link rel="apple-touch-icon" href="./icon-192.png">
+<link rel="icon" type="image/png" sizes="64x64" href="./favicon-64.png">
+<link rel="icon" type="image/png" sizes="32x32" href="./favicon-32.png">
 <link rel="manifest" id="manifest-link">
 <script>
 (function() {
@@ -23,10 +25,16 @@
     "orientation": "portrait",
     "icons": [
       {
-        "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjgwIiBmaWxsPSIjMDAzZDZiIi8+CiAgPHRleHQgeD0iMjU2IiB5PSIyMDAiIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjaywgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxODAiIGZvbnQtd2VpZ2h0PSI5MDAiIGZpbGw9IiMwMGM0Y2MiIHRleHQtYW5jaG9yPSJtaWRkbGUiPlNXPC90ZXh0PgogIDx0ZXh0IHg9IjI1NiIgeT0iMzcwIiBmb250LWZhbWlseT0iQXJpYWwgQmxhY2ssIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIwIiBmb250LXdlaWdodD0iOTAwIiBmaWxsPSIjZmZmZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5NSU48L3RleHQ+Cjwvc3ZnPg==",
+        "src": "./icon-192.png",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "any"
+      },
+      {
+        "src": "./icon-512.png",
         "sizes": "512x512",
-        "type": "image/svg+xml",
-        "purpose": "any maskable"
+        "type": "image/png",
+        "purpose": "any"
       }
     ]
   };
@@ -144,6 +152,17 @@ function vibrar(tipo) {
     color: var(--aqua);
     text-shadow: 0 0 20px rgba(0,196,204,0.5);
   }
+
+  .logo-img {
+    display: block;
+    height: 161px;
+    width: auto;
+    margin: 0 auto;
+  }
+
+  .logo-img-dark { display: none; }
+  html:not(.light-mode) .logo-img-light { display: none; }
+  html:not(.light-mode) .logo-img-dark { display: block; }
 
   .subtitle {
     font-size: 13px;
@@ -2544,6 +2563,20 @@ html.light-mode #sw-hist-view > div, html.light-mode #crono-hist-view > div {
   box-shadow: inset 0 1.5px 0 rgba(255,255,255,0.96), 0 20px 60px rgba(0,0,0,0.14) !important;
 }
 
+/* Logo solto sobre o fundo, sem cartão à volta */
+.header, html.light-mode .header {
+  background: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 3px 0 6px !important;
+}
+.header::before, .header::after,
+html.light-mode .header::before, html.light-mode .header::after {
+  display: none !important;
+}
+
 </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
@@ -2683,9 +2716,8 @@ document.addEventListener("click", function(e) {
     </button>
   </div>
   <div class="header">
-    <div class="logo">Swim<span>Min</span></div>
-    <div class="subtitle">TEMPOS MÍNIMOS FPN</div>
-    <div class="subtitle" style="font-size:11px; color:var(--aqua); font-weight:700; letter-spacing:1px; margin-top:2px;">Época 2026/27</div>
+    <img src="logo-header-light.png" alt="SwimMin" class="logo-img logo-img-light">
+    <img src="logo-header-dark.png" alt="SwimMin" class="logo-img logo-img-dark">
   </div>
 
   <div id="btn-instalar" onclick="instalarApp()" style="display:none;background:var(--aqua);color:#001f3a;font-weight:700;font-size:13px;text-align:center;padding:10px 16px;border-radius:10px;margin:0 16px 14px 16px;cursor:pointer;letter-spacing:1px;">&#11015; INSTALAR APP</div>
@@ -5186,14 +5218,6 @@ var CAL_POPUP_KEY = 'swimmin_cal_popup_date';
 // Provas sugeridas (pré-definidas)
 var CAL_SUGESTOES = [
   {
-    id: 'sug_4',
-    nome: 'Campeonatos Nacionais Juv, Jun e Seniores',
-    dataIni: '2026-07-23',
-    dataFim: '2026-07-26',
-    local: 'Oeiras-Jamor',
-    regulamento: ''
-  },
-  {
     id: 'sug_5',
     nome: 'Fase de Qualificação de Clubes 3ª divisão',
     dataIni: '2026-10-24',
@@ -5308,17 +5332,17 @@ var CAL_SUGESTOES = [
   {
     id: 'sug_19',
     nome: 'Águas Abertas · Campeonato Nacional de Primavera 5/7,5/10Km',
-    dataIni: '2027-05-22',
-    dataFim: '2027-05-23',
+    dataIni: '2027-05-15',
+    dataFim: '2027-05-16',
     local: 'Porto Santo',
     regulamento: ''
   },
   {
     id: 'sug_20',
-    nome: 'Águas Abertas · Campeonato Nacional de Verão 5/4x1,5Km',
+    nome: 'Águas Abertas · Campeonato Nacional de Verão 5Km/3Km KO',
     dataIni: '2027-06-26',
     dataFim: '2027-06-27',
-    local: 'Coimbra',
+    local: 'Aldeia do Mato',
     regulamento: ''
   }
 ];
