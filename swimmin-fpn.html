@@ -13531,6 +13531,22 @@ window.addEventListener('load', function() {
   safeWrap('fpnUpdate',         'calcular_pontos_wa',      { feature: 'pontos_wa' });
   safeWrap('toggleRecordes',    'abrir_recordes',          { feature: 'recordes' });
   safeWrap('switchRecordesTab', 'ver_tab_recordes',         { feature: 'recordes' });
+
+  function safeWrapResultado(fnName, resultElId, eventName) {
+    var orig = window[fnName];
+    if (typeof orig !== 'function') return;
+    window[fnName] = function() {
+      var ret = orig.apply(this, arguments);
+      var el = document.getElementById(resultElId);
+      if (el && el.textContent && el.textContent.indexOf('Sem registo') === -1) {
+        track(eventName, { feature: 'recordes' });
+      }
+      return ret;
+    };
+  }
+  safeWrapResultado('mostrarRecordeIdade', 'id-result',  'ver_recorde_nacional');
+  safeWrapResultado('mstMostrar',          'mst-result', 'ver_recorde_masters');
+  safeWrapResultado('wrMostrar',           'wr-result',  'ver_recorde_mundial');
   safeWrap('toggleNA',          'abrir_minimos_adaptada',  { feature: 'minimos_adaptada' });
   safeWrap('convCalcular',      'usar_conversor',          { feature: 'conversor' });
   safeWrap('cronoExportPDF',    'exportar_ficheiro', { tipo: 'pdf', feature: 'parciais' });
