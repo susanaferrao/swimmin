@@ -7,35 +7,35 @@
           "clube": "Clube Fluvial Vilacondense",
           "data": "31/01/2009",
           "local": "Torres Novas",
-          "nadadores": "Lopes, Vasco Vieira, Coelho, Miguel Santos, Passos, Ricardo Zamith, Silva, Pedro Miguel"
+          "nadadores": "Vasco Vieira Lopes; Miguel Santos Coelho; Ricardo Zamith Passos; Pedro Miguel Silva"
         },
         "100_L": {
           "tempo": "3:42,82",
           "clube": "Clube Nautico de Leiria - VOID",
           "data": "24/01/2025",
           "local": "Torres Novas",
-          "nadadores": "Gomes, Filipe Miguel, Rodrigues, Diogo Filipe, Tenreiro, Ricardo Luis, Domingues, Bruno Pinto"
+          "nadadores": "Filipe Miguel Gomes; Diogo Filipe Rodrigues; Ricardo Luis Tenreiro; Bruno Pinto Domingues"
         },
         "200_L": {
           "tempo": "8:27,41",
           "clube": "Clube Nautico de Leiria - VOID",
           "data": "08/11/2025",
           "local": "Leiria",
-          "nadadores": "Rodrigues, Diogo Filipe, Gomes, Filipe Miguel, Fabiao, Goncalo Silva, Taborda, Bruno Filipe"
+          "nadadores": "Diogo Filipe Rodrigues; Filipe Miguel Gomes; Goncalo Silva Fabiao; Bruno Filipe Taborda"
         },
         "50_E": {
           "tempo": "1:49,59",
           "clube": "Clube de Natacao de Valongo",
           "data": "26/01/2025",
           "local": "Torres Novas",
-          "nadadores": "Guimaraes, Nuno Henrique, Sousa, Frederico Renato, Felgueiras, Humberto Fernandes, Neves, Diogo Ferreira"
+          "nadadores": "Nuno Henrique Guimaraes; Frederico Renato Sousa; Humberto Fernandes Felgueiras; Diogo Ferreira Neves"
         },
         "100_E": {
           "tempo": "4:08,44",
           "clube": "Clube de Natacao de Valongo",
           "data": "21/04/2024",
           "local": "Valongo",
-          "nadadores": "Guimaraes, Nuno Henrique, Sousa, Frederico Renato, Neves, Diogo Ferreira, Felgueiras, Humberto Fernandes"
+          "nadadores": "Nuno Henrique Guimaraes; Frederico Renato Sousa; Diogo Ferreira Neves; Humberto Fernandes Felgueiras"
         }
       },
       "120-159": {
@@ -44,28 +44,28 @@
           "clube": "Clube Fluvial Vilacondense",
           "data": "25/04/2013",
           "local": "Vila do Conde",
-          "nadadores": "Silva, Pedro Miguel, Neiva, Henrique Pereira, Pereira, Fabio Manuel, Cardoso, Carlos Alberto"
+          "nadadores": "Pedro Miguel Silva; Henrique Pereira Neiva; Fabio Manuel Pereira; Carlos Alberto Cardoso"
         },
         "100_L": {
           "tempo": "3:52,28",
           "clube": "Clube de Natacao do Litoral Alentejano",
           "data": "02/04/2016",
           "local": "Algés",
-          "nadadores": "Margarido, Ivo Andre, Costa, Jaime Fernando, Inacio, Mauro Santos, Costa, Rodrigo Marques"
+          "nadadores": "Ivo Andre Margarido; Jaime Fernando Costa; Mauro Santos Inacio; Rodrigo Marques Costa"
         },
         "200_L": {
           "tempo": "8:37,07",
           "clube": "Clube Náutico de Leiria - VOID",
           "data": "22/04/2023",
           "local": "Caldas da Rainha",
-          "nadadores": "Santos, Joao Miguel, Ribeiro, Joao Paulo, Antunes, Nuno Ricardo, Taborda, Bruno Filipe"
+          "nadadores": "Joao Miguel Santos; Joao Paulo Ribeiro; Nuno Ricardo Antunes; Bruno Filipe Taborda"
         },
         "50_E": {
           "tempo": "1:49,72",
           "clube": "Grupo Desp. Natacao V.N.Famalicao",
           "data": "16/05/2015",
           "local": "Recarei",
-          "nadadores": "Pereira, Fabio Manuel, Neiva, Henrique Pereira, Silva, Pedro Miguel, Cardoso, Carlos Alberto"
+          "nadadores": "Fabio Manuel Pereira; Henrique Pereira Neiva; Pedro Miguel Silva; Carlos Alberto Cardoso"
         },
         "100_E": {
           "tempo": "4:28,06",
@@ -81,35 +81,35 @@
           "clube": "Futebol Clube do Porto",
           "data": "24/01/2025",
           "local": "Torres Novas",
-          "nadadores": "Sevieri, Eduardo Ferreira, Quintal, Francisco Nunes, Barbosa, Celso Ruben, Lopes, Pedro Fragoso"
+          "nadadores": "Eduardo Ferreira Sevieri; Francisco Nunes Quintal; Celso Ruben Barbosa; Pedro Fragoso Lopes"
         },
         "100_L": {
           "tempo": "3:51,23",
           "clube": "Clube Nautico de Leiria - VOID",
           "data": "24/01/2025",
           "local": "Torres Novas",
-          "nadadores": "Santos, Joao Miguel, Antunes, Nuno Ricardo, Henriques, Miguel Duarte, Ribeiro, Joao Paulo"
+          "nadadores": "Joao Miguel Santos; Nuno Ricardo Antunes; Miguel Duarte Henriques; Joao Paulo Ribeiro"
         },
         "200_L": {
           "tempo": "8:52,03",
           "clube": "Clube Fluvial Portuense",
           "data": "05/05/2024",
           "local": "Penafiel",
-          "nadadores": "Ferreira, Ricardo Regufe, Pires, Miguel Pinheiro, Portela, Antonio Luis, Santos, Alexandre Miguel"
+          "nadadores": "Ricardo Regufe Ferreira; Miguel Pinheiro Pires; Antonio Luis Portela; Alexandre Miguel Santos"
         },
         "50_E": {
           "tempo": "1:53,75",
           "clube": "Futebol Clube do Porto",
           "data": "26/01/2025",
           "local": "Torres Novas",
-          "nadadores": "Sevieri, Eduardo Ferreira, Fernandes, Jose Antonio, Leal, Ricardo Andre, Carvalho, Joao Filipe"
+          "nadadores": "Eduardo Ferreira Sevieri; Jose Antonio Fernandes; Ricardo Andre Leal; Joao Filipe Carvalho"
         },
         "100_E": {
           "tempo": "4:32,66",
           "clube": "Clube Fluvial Portuense",
           "data": "30/10/2016",
           "local": "Porto",
-          "nadadores": "Goncalves, Carlos Guimaraes, Fernandes, Hugo Miguel, Goncalves, Americo Pedro, Freitas, Jose Carlos"
+          "nadadores": "Carlos Guimaraes Goncalves; Hugo Miguel Fernandes; Americo Pedro Goncalves; Jose Carlos Freitas"
         }
       },
       "200-239": {
@@ -118,35 +118,35 @@
           "clube": "Clube Fluvial Portuense",
           "data": "23/01/2026",
           "local": "Torres Novas",
-          "nadadores": "Monteiro, Jorge Manuel, Santos, Alexandre Miguel, Monteiro, Luis Miguel, Portela, Antonio Luis"
+          "nadadores": "Jorge Manuel Monteiro; Alexandre Miguel Santos; Luis Miguel Monteiro; Antonio Luis Portela"
         },
         "100_L": {
           "tempo": "4:12,51",
           "clube": "Clube Fluvial Portuense",
           "data": "30/10/2016",
           "local": "Porto",
-          "nadadores": "Freitas, Jose Carlos, Vaz, Jose Augusto, Santana, Jose Pedro, Goncalves, Carlos Guimaraes"
+          "nadadores": "Jose Carlos Freitas; Jose Augusto Vaz; Jose Pedro Santana; Carlos Guimaraes Goncalves"
         },
         "200_L": {
           "tempo": "9:29,71",
           "clube": "Clube Fluvial Portuense",
           "data": "05/05/2024",
           "local": "Penafiel",
-          "nadadores": "Neves, Jose Pedro, Goncalves, Carlos Guimaraes, Lobo, Nuno Silva, Goncalves, Americo Pedro"
+          "nadadores": "Jose Pedro Neves; Carlos Guimaraes Goncalves; Nuno Silva Lobo; Americo Pedro Goncalves"
         },
         "50_E": {
           "tempo": "2:02,05",
           "clube": "Futebol Clube do Porto",
           "data": "26/01/2025",
           "local": "Torres Novas",
-          "nadadores": "Carvalho, Mario Moura, Sousa, Pedro Alexandre, Chaves, Antonio Aderito, Soares, Jose Pedro"
+          "nadadores": "Mario Moura Carvalho; Pedro Alexandre Sousa; Antonio Aderito Chaves; Jose Pedro Soares"
         },
         "100_E": {
           "tempo": "4:49,22",
           "clube": "Clube Fluvial Portuense",
           "data": "07/05/2023",
           "local": "Lousada",
-          "nadadores": "Goncalves, Carlos Guimaraes, Barroso, Jose Miguel, Pires, Miguel Pinheiro, Sa, Nuno Manuel"
+          "nadadores": "Carlos Guimaraes Goncalves; Jose Miguel Barroso; Miguel Pinheiro Pires; Nuno Manuel Sa"
         }
       },
       "240-279": {
@@ -155,35 +155,35 @@
           "clube": "Clube Fluvial Portuense",
           "data": "24/01/2025",
           "local": "Torres Novas",
-          "nadadores": "Lobo, Nuno Silva, Barroso, Jose Miguel, Vaz, Jose Augusto, Santana, Jose Pedro"
+          "nadadores": "Nuno Silva Lobo; Jose Miguel Barroso; Jose Augusto Vaz; Jose Pedro Santana"
         },
         "100_L": {
           "tempo": "4:50,13",
           "clube": "Sport Alges e Dafundo",
           "data": "23/04/2016",
           "local": "Badajoz (ESP)",
-          "nadadores": "Bilro, Joaquim Mendes, Mavioso, Vitor Manuel, Basto, Antonio Bessone, Correia, Alberto Vaz"
+          "nadadores": "Joaquim Mendes Bilro; Vitor Manuel Mavioso; Antonio Bessone Basto; Alberto Vaz Correia"
         },
         "200_L": {
           "tempo": "10:43,68",
           "clube": "Clube Fluvial Portuense",
           "data": "05/05/2024",
           "local": "Penafiel",
-          "nadadores": "Seabra, Henrique Luis, Bernardo, Luis Miguel, Sa, Nuno Manuel, Barroso, Jose Miguel"
+          "nadadores": "Henrique Luis Seabra; Luis Miguel Bernardo; Nuno Manuel Sa; Jose Miguel Barroso"
         },
         "50_E": {
           "tempo": "2:14,32",
           "clube": "Clube Fluvial Portuense",
           "data": "25/01/2026",
           "local": "Torres Novas",
-          "nadadores": "Lobo, Nuno Silva, Barroso, Jose Miguel, Santana, Jose Pedro, Sa, Nuno Manuel"
+          "nadadores": "Nuno Silva Lobo; Jose Miguel Barroso; Jose Pedro Santana; Nuno Manuel Sa"
         },
         "100_E": {
           "tempo": "5:14,66",
           "clube": "Clube Fluvial Portuense",
           "data": "07/05/2023",
           "local": "Lousada",
-          "nadadores": "Lobo, Nuno Silva, Bernardo, Luis Miguel, Santos, Luis Lopes, Seabra, Henrique Luis"
+          "nadadores": "Nuno Silva Lobo; Luis Miguel Bernardo; Luis Lopes Santos; Henrique Luis Seabra"
         }
       },
       "280-319": {
@@ -192,28 +192,28 @@
           "clube": "Sport Alges e Dafundo",
           "data": "11/12/2022",
           "local": "Albufeira",
-          "nadadores": "Dyson, Stephen Thomas, Bilro, Joaquim Mendes, Trabuco, Antonio Jose, Mavioso, Vitor Manuel"
+          "nadadores": "Stephen Thomas Dyson; Joaquim Mendes Bilro; Antonio Jose Trabuco; Vitor Manuel Mavioso"
         },
         "100_L": {
           "tempo": "5:29,02",
           "clube": "Sport Alges e Dafundo",
           "data": "16/06/2024",
           "local": "Algés",
-          "nadadores": "Bilro, Joaquim Mendes, Madeira, Luis Cavaleiro, Basto, Antonio Bessone, Bento, Jaime Carlos"
+          "nadadores": "Joaquim Mendes Bilro; Luis Cavaleiro Madeira; Antonio Bessone Basto; Jaime Carlos Bento"
         },
         "50_E": {
           "tempo": "2:43,93",
           "clube": "Sport Alges e Dafundo",
           "data": "21/02/2015",
           "local": "Pontevedra (ESP)",
-          "nadadores": "Basto, Antonio Bessone, Gaspar, Alexandre Azevedo, Bairrada, Orlando Gomes, Salgueiro, Luis Vidigal"
+          "nadadores": "Antonio Bessone Basto; Alexandre Azevedo Gaspar; Orlando Gomes Bairrada; Luis Vidigal Salgueiro"
         },
         "100_E": {
           "tempo": "8:59,37",
           "clube": "Sport Alges e Dafundo",
           "data": "07/04/2013",
           "local": "Algés",
-          "nadadores": "Marreiros, Jose Joaquim, Gomes, Leonel Sousa, Ferreira, Antonio Manuel, Viegas, Luis Silveira"
+          "nadadores": "Jose Joaquim Marreiros; Leonel Sousa Gomes; Antonio Manuel Ferreira; Luis Silveira Viegas"
         }
       },
       "320-359": {
@@ -222,28 +222,28 @@
           "clube": "Sport Alges e Dafundo",
           "data": "14/06/2026",
           "local": "Algés",
-          "nadadores": "Basto, Antonio Bessone, Viegas, Luis Silveira, Salgueiro, Luis Vidigal, Dyson, Stephen Thomas"
+          "nadadores": "Antonio Bessone Basto; Luis Silveira Viegas; Luis Vidigal Salgueiro; Stephen Thomas Dyson"
         },
         "100_L": {
           "tempo": "6:39,92",
           "clube": "Sport Alges e Dafundo",
           "data": "16/06/2024",
           "local": "Algés",
-          "nadadores": "Moura, Jose Vicente, Viegas, Luis Silveira, Salgueiro, Luis Vidigal, Dyson, Stephen Thomas"
+          "nadadores": "Jose Vicente Moura; Luis Silveira Viegas; Luis Vidigal Salgueiro; Stephen Thomas Dyson"
         },
         "200_L": {
           "tempo": "22:00,09",
           "clube": "Associacao Academica de Coimbra",
           "data": "23/03/2019",
           "local": "Manique",
-          "nadadores": "Rodrigues, Antonio Alexandre, Tenreiro, Manuel Monteiro, Freitas, Joaquim Fidalgo, Baptista, Antonio Poiares"
+          "nadadores": "Antonio Alexandre Rodrigues; Manuel Monteiro Tenreiro; Joaquim Fidalgo Freitas; Antonio Poiares Baptista"
         },
         "50_E": {
           "tempo": "3:15,27",
           "clube": "Sport Alges e Dafundo",
           "data": "25/01/2026",
           "local": "Torres Novas",
-          "nadadores": "Bilro, Joaquim Mendes, Salgueiro, Luis Vidigal, Dyson, Stephen Thomas, Moura, Jose Vicente"
+          "nadadores": "Joaquim Mendes Bilro; Luis Vidigal Salgueiro; Stephen Thomas Dyson; Jose Vicente Moura"
         }
       }
     },
@@ -254,35 +254,35 @@
           "clube": "Clube de Instrucao e Recreio do Laranjeiro",
           "data": "25/01/2025",
           "local": "Torres Novas",
-          "nadadores": "Riesenberger, Bruna Martins, Pires, Carolina Saraiva, Rolim, Soraia Guerra, Nunes, Sofia Alexandra"
+          "nadadores": "Bruna Martins Riesenberger; Carolina Saraiva Pires; Soraia Guerra Rolim; Sofia Alexandra Nunes"
         },
         "100_L": {
           "tempo": "4:34,24",
           "clube": "Clube Propaganda da Natacao",
           "data": "28/04/2018",
           "local": "Senhora da Hora",
-          "nadadores": "Silva, Carolina Santos, Maia, Joana Marques, Reis, Ana Catarina, Martins, Joana Catarina"
+          "nadadores": "Carolina Santos Silva; Joana Marques Maia; Ana Catarina Reis; Joana Catarina Martins"
         },
         "200_L": {
           "tempo": "11:11,18",
           "clube": "Clube dos Galitos / Bresimar",
           "data": "08/11/2025",
           "local": "Leiria",
-          "nadadores": "Martins, Maria Teresa, Barnabe, Sandra Maria, Rodrigues, Ana Margarida, Monteiro, Patricia Cabral"
+          "nadadores": "Maria Teresa Martins; Sandra Maria Barnabe; Ana Margarida Rodrigues; Patricia Cabral Monteiro"
         },
         "50_E": {
           "tempo": "2:07,13",
           "clube": "Clube de Instrucao e Recreio do Laranjeiro",
           "data": "26/01/2025",
           "local": "Torres Novas",
-          "nadadores": "Nunes, Sofia Alexandra, Rolim, Soraia Guerra, Riesenberger, Bruna Martins, Gervasio, Ana Sofia"
+          "nadadores": "Sofia Alexandra Nunes; Soraia Guerra Rolim; Bruna Martins Riesenberger; Ana Sofia Gervasio"
         },
         "100_E": {
           "tempo": "5:03,80",
           "clube": "Clube de Natacao da Maia",
           "data": "08/11/2014",
           "local": "Porto",
-          "nadadores": "Silva, Carolina Santos, Ramalho, Catia Santos, Fougo, Rita Claudia, Oliveira, Ana Mafalda"
+          "nadadores": "Carolina Santos Silva; Catia Santos Ramalho; Rita Claudia Fougo; Ana Mafalda Oliveira"
         }
       },
       "120-159": {
@@ -291,35 +291,35 @@
           "clube": "Futebol Clube do Porto",
           "data": "27/01/2024",
           "local": "Caldas da Rainha",
-          "nadadores": "Marinho, Marta Vieira, Lousa, Irina Filipa, Oliveira, Sara Freitas, Rodrigues, Joana Aguiar"
+          "nadadores": "Marta Vieira Marinho; Irina Filipa Lousa; Sara Freitas Oliveira; Joana Aguiar Rodrigues"
         },
         "100_L": {
           "tempo": "4:34,00",
           "clube": "Clube Fluvial Portuense",
           "data": "08/11/2014",
           "local": "Porto",
-          "nadadores": "Rothes, Ines Maria, Costa, Maria Luisa, Martins, Maria Sofia, Sousa, Natacha Alexandra"
+          "nadadores": "Ines Maria Rothes; Maria Luisa Costa; Maria Sofia Martins; Natacha Alexandra Sousa"
         },
         "200_L": {
           "tempo": "11:11,29",
           "clube": "Vila DEste/Gaia",
           "data": "23/03/2019",
           "local": "Manique - Salesianos",
-          "nadadores": "Carvalho, Elza Maria, Machado, Maria Margarida, Ribeiro, Patricia Marisa, Monteiro, Alexandra Sofia"
+          "nadadores": "Elza Maria Carvalho; Maria Margarida Machado; Patricia Marisa Ribeiro; Alexandra Sofia Monteiro"
         },
         "50_E": {
           "tempo": "2:08,04",
           "clube": "Viana Natacao Clube",
           "data": "26/01/2025",
           "local": "Torres Novas",
-          "nadadores": "Pinheiro, Filipa Mendes, Silva, Mariana Pereira, Neves, Vania Soares, Soares, Marta Novais"
+          "nadadores": "Filipa Mendes Pinheiro; Mariana Pereira Silva; Vania Soares Neves; Marta Novais Soares"
         },
         "100_E": {
           "tempo": "4:57,73",
           "clube": "Clube Fluvial Portuense",
           "data": "08/11/2014",
           "local": "Porto",
-          "nadadores": "Sousa, Natacha Alexandra, Martins, Maria Sofia, Costa, Maria Luisa, Rothes, Ines Maria"
+          "nadadores": "Natacha Alexandra Sousa; Maria Sofia Martins; Maria Luisa Costa; Ines Maria Rothes"
         }
       },
       "160-199": {
@@ -328,35 +328,35 @@
           "clube": "Clube Fluvial Portuense",
           "data": "25/01/2025",
           "local": "Torres Novas",
-          "nadadores": "Freitas, Joana Manuel, Coutinho, Gisela Barbosa, Afonso, Sofia Martiniano, Martins, Maria Sofia"
+          "nadadores": "Joana Manuel Freitas; Gisela Barbosa Coutinho; Sofia Martiniano Afonso; Maria Sofia Martins"
         },
         "100_L": {
           "tempo": "4:54,40",
           "clube": "Clube Fluvial Portuense",
           "data": "28/11/2015",
           "local": "Porto",
-          "nadadores": "Rothes, Ines Maria, Fonseca, Maria Ana, Costa, Maria Luisa, Brandao, Maria Teresa"
+          "nadadores": "Ines Maria Rothes; Maria Ana Fonseca; Maria Luisa Costa; Maria Teresa Brandao"
         },
         "200_L": {
           "tempo": "13:55,64",
           "clube": "Clube Nautico de Leiria - VOID",
           "data": "08/11/2025",
           "local": "Leiria",
-          "nadadores": "Cordeiro, Ines Margarida, Julio, Isabel Maria, Nunes, Carla Sousinha, Pascoal, Rita Fernandes"
+          "nadadores": "Ines Margarida Cordeiro; Isabel Maria Julio; Carla Sousinha Nunes; Rita Fernandes Pascoal"
         },
         "50_E": {
           "tempo": "2:12,55",
           "clube": "Clube Fluvial Portuense",
           "data": "26/01/2025",
           "local": "Torres Novas",
-          "nadadores": "Afonso, Sofia Martiniano, Freitas, Joana Manuel, Martins, Maria Sofia, Coutinho, Gisela Barbosa"
+          "nadadores": "Sofia Martiniano Afonso; Joana Manuel Freitas; Maria Sofia Martins; Gisela Barbosa Coutinho"
         },
         "100_E": {
           "tempo": "5:34,96",
           "clube": "Leixoes Sport Club",
           "data": "29/10/2017",
           "local": "Porto",
-          "nadadores": "Baptista, Liliana Elisabete, Faria, Joana Maria, Silva, Raquel Alexandra, Fernandes, Maribel Santos"
+          "nadadores": "Liliana Elisabete Baptista; Joana Maria Faria; Raquel Alexandra Silva; Maribel Santos Fernandes"
         }
       },
       "200-239": {
@@ -365,35 +365,35 @@
           "clube": "Clube Fluvial Portuense",
           "data": "27/01/2024",
           "local": "Caldas da Rainha",
-          "nadadores": "Coutinho, Gisela Barbosa, Brandao, Maria Teresa, Ferreira, Filipa Margarida, Costa, Maria Luisa"
+          "nadadores": "Gisela Barbosa Coutinho; Maria Teresa Brandao; Filipa Margarida Ferreira; Maria Luisa Costa"
         },
         "100_L": {
           "tempo": "4:56,28",
           "clube": "Clube Fluvial Portuense",
           "data": "08/12/2022",
           "local": "Recarei",
-          "nadadores": "Rothes, Ines Maria, Ferreira, Filipa Margarida, Brandao, Maria Teresa, Costa, Maria Luisa"
+          "nadadores": "Ines Maria Rothes; Filipa Margarida Ferreira; Maria Teresa Brandao; Maria Luisa Costa"
         },
         "200_L": {
           "tempo": "11:17,92",
           "clube": "Colegio Monte Maior",
           "data": "23/03/2019",
           "local": "Manique - Salesianos",
-          "nadadores": "Reina, Rita Miguel, Silva, Rita Rijo, Kraeva, Elena Nikolaevna, Miranda, Laura Manuela"
+          "nadadores": "Rita Miguel Reina; Rita Rijo Silva; Elena Nikolaevna Kraeva; Laura Manuela Miranda"
         },
         "50_E": {
           "tempo": "2:22,85",
           "clube": "Futebol Clube do Porto",
           "data": "20/01/2019",
           "local": "Mealhada",
-          "nadadores": "Rezende, Monica Anjos, Andrade, Maria Teresa, Barba, Carla Santa, Goncalves, Maria Fernanda"
+          "nadadores": "Monica Anjos Rezende; Maria Teresa Andrade; Carla Santa Barba; Maria Fernanda Goncalves"
         },
         "100_E": {
           "tempo": "5:55,22",
           "clube": "Clube Fluvial Portuense",
           "data": "07/05/2023",
           "local": "Lousada",
-          "nadadores": "Palhares, Paula Alexandra, Carvalho, Elza Maria, Brandao, Maria Teresa, Blanco, Catarina Araujo"
+          "nadadores": "Paula Alexandra Palhares; Elza Maria Carvalho; Maria Teresa Brandao; Catarina Araujo Blanco"
         }
       },
       "240-279": {
@@ -402,21 +402,21 @@
           "clube": "Futebol Clube do Porto",
           "data": "25/01/2025",
           "local": "Torres Novas",
-          "nadadores": "Andrade, Maria Teresa, Oliveira, Maria Emidia, Babo, Rosalina Bessa, Friaes, Maria Manuel"
+          "nadadores": "Maria Teresa Andrade; Maria Emidia Oliveira; Rosalina Bessa Babo; Maria Manuel Friaes"
         },
         "100_L": {
           "tempo": "7:18,00",
           "clube": "Sport Alges e Dafundo",
           "data": "02/04/2016",
           "local": "Algés",
-          "nadadores": "Basto, Luisa Bessone, Raimundo, Isabel Maria, Ferreira, Maria Felix, Lenzi, Carla Vale"
+          "nadadores": "Luisa Bessone Basto; Isabel Maria Raimundo; Maria Felix Ferreira; Carla Vale Lenzi"
         },
         "50_E": {
           "tempo": "2:47,11",
           "clube": "Clube Fluvial Portuense",
           "data": "11/01/2025",
           "local": "Águas Santas",
-          "nadadores": "Palhares, Paula Alexandra, Lobo, Ana Cristina, Osorio, Maria Claudia, Guimaraes, Rita Cabral"
+          "nadadores": "Paula Alexandra Palhares; Ana Cristina Lobo; Maria Claudia Osorio; Rita Cabral Guimaraes"
         }
       },
       "280-319": {
@@ -425,14 +425,14 @@
           "clube": "Sport Alges e Dafundo",
           "data": "07/01/2018",
           "local": "Sto António Cavaleiros",
-          "nadadores": "Ferreira, Ana Maria, Raimundo, Isabel Maria, Conceicao, Paula Cristina, Basto, Luisa Bessone"
+          "nadadores": "Ana Maria Ferreira; Isabel Maria Raimundo; Paula Cristina Conceicao; Luisa Bessone Basto"
         },
         "50_E": {
           "tempo": "3:31,96",
           "clube": "Sport Alges e Dafundo",
           "data": "07/01/2018",
           "local": "Sto António Cavaleiros",
-          "nadadores": "Raimundo, Isabel Maria, Ferreira, Maria Felix, Ferreira, Ana Maria, Basto, Luisa Bessone"
+          "nadadores": "Isabel Maria Raimundo; Maria Felix Ferreira; Ana Maria Ferreira; Luisa Bessone Basto"
         }
       }
     },
@@ -443,28 +443,28 @@
           "clube": "Clube de Instrucao e Recreio do Laranjeiro",
           "data": "28/01/2024",
           "local": "Caldas da Rainha",
-          "nadadores": "Cazeiro, Daniel Filipe, Pires, Carolina Saraiva, Riesenberger, Bruna Martins, Estevens, Ricardo Nuno"
+          "nadadores": "Daniel Filipe Cazeiro; Carolina Saraiva Pires; Bruna Martins Riesenberger; Ricardo Nuno Estevens"
         },
         "100_L": {
           "tempo": "4:10,13",
           "clube": "Futebol Clube do Porto",
           "data": "08/12/2022",
           "local": "Recarei",
-          "nadadores": "Marafona, Joao Duarte, Lemos, Ines Sousa, Lopes, Pedro Fragoso, Leitao, Rita Fernandes"
+          "nadadores": "Joao Duarte Marafona; Ines Sousa Lemos; Pedro Fragoso Lopes; Rita Fernandes Leitao"
         },
         "50_E": {
           "tempo": "1:56,58",
           "clube": "Clube de Instrucao e Recreio do Laranjeiro",
           "data": "24/01/2026",
           "local": "Torres Novas",
-          "nadadores": "Nunes, Sofia Alexandra, Magalhaes, Andre Filipe, Teixeira, Rodrigo Costa, Rolim, Soraia Guerra"
+          "nadadores": "Sofia Alexandra Nunes; Andre Filipe Magalhaes; Rodrigo Costa Teixeira; Soraia Guerra Rolim"
         },
         "100_E": {
           "tempo": "4:32,14",
           "clube": "Futebol Clube do Porto",
           "data": "08/12/2022",
           "local": "Recarei",
-          "nadadores": "Lousa, Irina Filipa, Silva, Sergio Baptista, Lopes, Pedro Fragoso, Leitao, Rita Fernandes"
+          "nadadores": "Irina Filipa Lousa; Sergio Baptista Silva; Pedro Fragoso Lopes; Rita Fernandes Leitao"
         }
       },
       "120-159": {
@@ -473,28 +473,28 @@
           "clube": "Futebol Clube do Porto",
           "data": "28/01/2024",
           "local": "Caldas da Rainha",
-          "nadadores": "Carvalho, Joao Filipe, Marafona, Joao Duarte, Lousa, Irina Filipa, Rodrigues, Joana Aguiar"
+          "nadadores": "Joao Filipe Carvalho; Joao Duarte Marafona; Irina Filipa Lousa; Joana Aguiar Rodrigues"
         },
         "100_L": {
           "tempo": "3:58,63",
           "clube": "Futebol Clube do Porto",
           "data": "03/12/2023",
           "local": "Lousada",
-          "nadadores": "Marafona, Joao Duarte, Carvalho, Joao Filipe, Lousa, Irina Filipa, Rodrigues, Joana Aguiar"
+          "nadadores": "Joao Duarte Marafona; Joao Filipe Carvalho; Irina Filipa Lousa; Joana Aguiar Rodrigues"
         },
         "50_E": {
           "tempo": "1:56,26",
           "clube": "Futebol Clube do Porto",
           "data": "28/01/2023",
           "local": "Caldas da Rainha",
-          "nadadores": "Sevieri, Eduardo Ferreira, Leitao, Rita Fernandes, Roque, Jorge Manuel, Rodrigues, Joana Aguiar"
+          "nadadores": "Eduardo Ferreira Sevieri; Rita Fernandes Leitao; Jorge Manuel Roque; Joana Aguiar Rodrigues"
         },
         "100_E": {
           "tempo": "4:32,01",
           "clube": "Lisboa PoolSharks",
           "data": "04/03/2023",
           "local": "Sines",
-          "nadadores": "Mestre, Joao Miguel, Duarte, Jaime Marques, Cruz, Sara Francisco, Viana, Joana Rebelo"
+          "nadadores": "Joao Miguel Mestre; Jaime Marques Duarte; Sara Francisco Cruz; Joana Rebelo Viana"
         }
       },
       "160-199": {
@@ -503,28 +503,28 @@
           "clube": "Louletano Desportos Clube",
           "data": "25/01/2026",
           "local": "Torres Novas",
-          "nadadores": "Lopes, Carolina Sofia, Figueira, Isabel Maria, Baeta, Nelson Correia, Bota, Fabio Silva"
+          "nadadores": "Carolina Sofia Lopes; Isabel Maria Figueira; Nelson Correia Baeta; Fabio Silva Bota"
         },
         "100_L": {
           "tempo": "4:07,22",
           "clube": "Louletano Desportos Clube",
           "data": "14/03/2026",
           "local": "Sines",
-          "nadadores": "Lopes, Carolina Sofia, Figueira, Isabel Maria, Baeta, Nelson Correia, Carneiro, Ivo Emanuel"
+          "nadadores": "Carolina Sofia Lopes; Isabel Maria Figueira; Nelson Correia Baeta; Ivo Emanuel Carneiro"
         },
         "50_E": {
           "tempo": "1:57,15",
           "clube": "Louletano Desportos Clube",
           "data": "30/11/2025",
           "local": "Quarteira",
-          "nadadores": "Lopes, Carolina Sofia, Figueira, Isabel Maria, Filipe, Ricardo Sousa, Duarte, Rui Miguel"
+          "nadadores": "Carolina Sofia Lopes; Isabel Maria Figueira; Ricardo Sousa Filipe; Rui Miguel Duarte"
         },
         "100_E": {
           "tempo": "4:31,88",
           "clube": "Louletano Desportos Clube",
           "data": "14/03/2026",
           "local": "Sines",
-          "nadadores": "Lopes, Carolina Sofia, Figueira, Isabel Maria, Dias, Andre Manuel, Bota, Fabio Silva"
+          "nadadores": "Carolina Sofia Lopes; Isabel Maria Figueira; Andre Manuel Dias; Fabio Silva Bota"
         }
       },
       "200-239": {
@@ -533,28 +533,28 @@
           "clube": "Clube Fluvial Portuense",
           "data": "28/01/2024",
           "local": "Caldas da Rainha",
-          "nadadores": "Portela, Antonio Luis, Costa, Maria Luisa, Coutinho, Gisela Barbosa, Monteiro, Jorge Manuel"
+          "nadadores": "Antonio Luis Portela; Maria Luisa Costa; Gisela Barbosa Coutinho; Jorge Manuel Monteiro"
         },
         "100_L": {
           "tempo": "4:22,80",
           "clube": "Clube Fluvial Portuense",
           "data": "02/11/2024",
           "local": "Porto",
-          "nadadores": "Vaz, Jose Augusto, Portela, Antonio Luis, Coutinho, Gisela Barbosa, Costa, Maria Luisa"
+          "nadadores": "Jose Augusto Vaz; Antonio Luis Portela; Gisela Barbosa Coutinho; Maria Luisa Costa"
         },
         "50_E": {
           "tempo": "2:08,73",
           "clube": "Clube Fluvial Portuense",
           "data": "25/01/2025",
           "local": "Torres Novas",
-          "nadadores": "Coutinho, Gisela Barbosa, Santos, Alexandre Miguel, Martins, Maria Sofia, Vaz, Jose Augusto"
+          "nadadores": "Gisela Barbosa Coutinho; Alexandre Miguel Santos; Maria Sofia Martins; Jose Augusto Vaz"
         },
         "100_E": {
           "tempo": "4:56,27",
           "clube": "Clube Fluvial Portuense",
           "data": "02/11/2024",
           "local": "Porto",
-          "nadadores": "Coutinho, Gisela Barbosa, Santos, Alexandre Miguel, Monteiro, Jorge Manuel, Ferreira, Filipa Margarida"
+          "nadadores": "Gisela Barbosa Coutinho; Alexandre Miguel Santos; Jorge Manuel Monteiro; Filipa Margarida Ferreira"
         }
       },
       "240-279": {
@@ -563,28 +563,28 @@
           "clube": "Clube Fluvial Portuense",
           "data": "26/01/2025",
           "local": "Torres Novas",
-          "nadadores": "Vaz, Jose Augusto, Guimaraes, Rita Cabral, Santos, Luis Lopes, Brandao, Maria Teresa"
+          "nadadores": "Jose Augusto Vaz; Rita Cabral Guimaraes; Luis Lopes Santos; Maria Teresa Brandao"
         },
         "100_L": {
           "tempo": "4:58,37",
           "clube": "Clube Fluvial Portuense",
           "data": "02/11/2024",
           "local": "Porto",
-          "nadadores": "Barroso, Jose Miguel, Guimaraes, Rita Cabral, Brandao, Maria Teresa, Seabra, Henrique Luis"
+          "nadadores": "Jose Miguel Barroso; Rita Cabral Guimaraes; Maria Teresa Brandao; Henrique Luis Seabra"
         },
         "50_E": {
           "tempo": "2:21,57",
           "clube": "Clube Fluvial Portuense",
           "data": "24/01/2026",
           "local": "Torres Novas",
-          "nadadores": "Guimaraes, Rita Cabral, Barroso, Jose Miguel, Monteiro, Jorge Manuel, Ferreira, Filipa Margarida"
+          "nadadores": "Rita Cabral Guimaraes; Jose Miguel Barroso; Jorge Manuel Monteiro; Filipa Margarida Ferreira"
         },
         "100_E": {
           "tempo": "5:47,33",
           "clube": "Clube Fluvial Portuense",
           "data": "08/12/2024",
           "local": "Penafiel",
-          "nadadores": "Palhares, Paula Alexandra, Barroso, Jose Miguel, Seabra, Henrique Luis, Osorio, Maria Claudia"
+          "nadadores": "Paula Alexandra Palhares; Jose Miguel Barroso; Henrique Luis Seabra; Maria Claudia Osorio"
         }
       },
       "280-319": {
@@ -593,28 +593,28 @@
           "clube": "Sport Alges e Dafundo",
           "data": "14/06/2026",
           "local": "Algés",
-          "nadadores": "Dantas, Paulo Marcos, Basto, Luisa Bessone, Reis, Claudia Gabriela, Salgueiro, Luis Vidigal"
+          "nadadores": "Paulo Marcos Dantas; Luisa Bessone Basto; Claudia Gabriela Reis; Luis Vidigal Salgueiro"
         },
         "100_L": {
           "tempo": "5:48,79",
           "clube": "Sport Alges e Dafundo",
           "data": "07/03/2020",
           "local": "Sines",
-          "nadadores": "Trabuco, Antonio Jose, Basto, Luisa Bessone, Bilro, Joaquim Mendes, Ferreira, Ana Maria"
+          "nadadores": "Antonio Jose Trabuco; Luisa Bessone Basto; Joaquim Mendes Bilro; Ana Maria Ferreira"
         },
         "50_E": {
           "tempo": "2:53,14",
           "clube": "Sport Alges e Dafundo",
           "data": "19/03/2023",
           "local": "Évora",
-          "nadadores": "Yokochi, Luisa Tamaki, Basto, Luisa Bessone, Dyson, Stephen Thomas, Trabuco, Antonio Jose"
+          "nadadores": "Luisa Tamaki Yokochi; Luisa Bessone Basto; Stephen Thomas Dyson; Antonio Jose Trabuco"
         },
         "100_E": {
           "tempo": "6:13,87",
           "clube": "Sport Alges e Dafundo",
           "data": "04/03/2023",
           "local": "Sines",
-          "nadadores": "Madeira, Luis Cavaleiro, Basto, Luisa Bessone, Mavioso, Vitor Manuel, Ferreira, Ana Maria"
+          "nadadores": "Luis Cavaleiro Madeira; Luisa Bessone Basto; Vitor Manuel Mavioso; Ana Maria Ferreira"
         }
       },
       "320-359": {
@@ -623,14 +623,14 @@
           "clube": "Sport Alges e Dafundo",
           "data": "26/01/2025",
           "local": "Torres Novas",
-          "nadadores": "Moura, Jose Vicente, Gaspar, Alexandre Azevedo, Ferreira, Maria Felix, Basto, Luisa Bessone"
+          "nadadores": "Jose Vicente Moura; Alexandre Azevedo Gaspar; Maria Felix Ferreira; Luisa Bessone Basto"
         },
         "50_E": {
           "tempo": "5:37,22",
           "clube": "Sporting Clube de Espinho",
           "data": "25/01/2025",
           "local": "Torres Novas",
-          "nadadores": "Alves, Maria Fernanda, Pinho, Maria Noemia, Canelas, Antonio Monteiro, Sousa, Fernando Luis"
+          "nadadores": "Maria Fernanda Alves; Maria Noemia Pinho; Antonio Monteiro Canelas; Fernando Luis Sousa"
         }
       }
     }
@@ -643,28 +643,28 @@
           "clube": "Sport Alges e Dafundo",
           "data": "22/08/2026",
           "local": "Samorin (SVK)",
-          "nadadores": "Moura, Jose Vicente, Salgueiro, Luis Vidigal, Fernandes, Manuel Carlos, Trabuco, Antonio Jose"
+          "nadadores": "Jose Vicente Moura; Luis Vidigal Salgueiro; Manuel Carlos Fernandes; Antonio Jose Trabuco"
         },
         "100_L": {
           "tempo": "6:53,66",
           "clube": "Sport Algés e Dafundo",
           "data": "05/07/2024",
           "local": "São João da Madeira",
-          "nadadores": "Moura, Jose Vicente, Salgueiro, Luis Vidigal, Basto, Antonio Bessone, Dyson, Stephen Thomas"
+          "nadadores": "Jose Vicente Moura; Luis Vidigal Salgueiro; Antonio Bessone Basto; Stephen Thomas Dyson"
         },
         "50_E": {
           "tempo": "3:23,62",
           "clube": "Sport Algés e Dafundo",
           "data": "06/07/2024",
           "local": "São João da Madeira",
-          "nadadores": "Basto, Antonio Bessone, Gaspar, Alexandre Azevedo, Dyson, Stephen Thomas, Moura, Jose Vicente"
+          "nadadores": "Antonio Bessone Basto; Alexandre Azevedo Gaspar; Stephen Thomas Dyson; Jose Vicente Moura"
         },
         "100_E": {
           "tempo": "8:27,62",
           "clube": "Sport Algés e Dafundo",
           "data": "07/07/2024",
           "local": "São João da Madeira",
-          "nadadores": "Basto, Antonio Bessone, Gaspar, Alexandre Azevedo, Dyson, Stephen Thomas, Moura, Jose Vicente"
+          "nadadores": "Antonio Bessone Basto; Alexandre Azevedo Gaspar; Stephen Thomas Dyson; Jose Vicente Moura"
         }
       },
       "280-319": {
@@ -673,35 +673,35 @@
           "clube": "Sport Alges e Dafundo",
           "data": "11/07/2025",
           "local": "Reguengos de Monsaraz",
-          "nadadores": "Bento, Jaime Carlos, Silva, Carlos Roberto, Mavioso, Vitor Manuel, Dyson, Stephen Thomas"
+          "nadadores": "Jaime Carlos Bento; Carlos Roberto Silva; Vitor Manuel Mavioso; Stephen Thomas Dyson"
         },
         "100_L": {
           "tempo": "5:58,38",
           "clube": "Sport Alges e Dafundo",
           "data": "10/07/2016",
           "local": "Loulé",
-          "nadadores": "Dyson, Stephen Thomas, Jorge, Luis Vaz, Bairrada, Orlando Gomes, Salgueiro, Luis Vidigal"
+          "nadadores": "Stephen Thomas Dyson; Luis Vaz Jorge; Orlando Gomes Bairrada; Luis Vidigal Salgueiro"
         },
         "200_L": {
           "tempo": "12:52,37",
           "clube": "Sport Alges e Dafundo",
           "data": "10/07/2022",
           "local": "Reguengos de Monsaraz",
-          "nadadores": "Bento, Jaime Carlos, Bilro, Joaquim Mendes, Dyson, Stephen Thomas, Salgueiro, Luis Vidigal"
+          "nadadores": "Jaime Carlos Bento; Joaquim Mendes Bilro; Stephen Thomas Dyson; Luis Vidigal Salgueiro"
         },
         "50_E": {
           "tempo": "2:47,67",
           "clube": "Sport Alges e Dafundo",
           "data": "29/05/2016",
           "local": "London (GBR)",
-          "nadadores": "Basto, Antonio Bessone, Gaspar, Alexandre Azevedo, Bairrada, Orlando Gomes, Salgueiro, Luis Vidigal"
+          "nadadores": "Antonio Bessone Basto; Alexandre Azevedo Gaspar; Orlando Gomes Bairrada; Luis Vidigal Salgueiro"
         },
         "100_E": {
           "tempo": "6:53,29",
           "clube": "Sport Alges e Dafundo",
           "data": "04/07/2015",
           "local": "Loulé",
-          "nadadores": "Ribeiro, Herlander Felga, Gaspar, Alexandre Azevedo, Bairrada, Orlando Gomes, Dyson, Stephen Thomas"
+          "nadadores": "Herlander Felga Ribeiro; Alexandre Azevedo Gaspar; Orlando Gomes Bairrada; Stephen Thomas Dyson"
         }
       },
       "240-279": {
@@ -710,28 +710,28 @@
           "clube": "Clube Fluvial Portuense",
           "data": "10/07/2026",
           "local": "Famalicão",
-          "nadadores": "Monteiro, Jorge Manuel, Barroso, Jose Miguel, Lobo, Nuno Silva, Santana, Jose Pedro"
+          "nadadores": "Jorge Manuel Monteiro; Jose Miguel Barroso; Nuno Silva Lobo; Jose Pedro Santana"
         },
         "100_L": {
           "tempo": "4:26,10",
           "clube": "Clube Fluvial Portuense",
           "data": "05/07/2024",
           "local": "São João da Madeira",
-          "nadadores": "Vaz, Jose Augusto, Barroso, Jose Miguel, Lobo, Nuno Silva, Santana, Jose Pedro"
+          "nadadores": "Jose Augusto Vaz; Jose Miguel Barroso; Nuno Silva Lobo; Jose Pedro Santana"
         },
         "50_E": {
           "tempo": "2:15,70",
           "clube": "Clube Fluvial Portuense",
           "data": "12/07/2025",
           "local": "Reguengos de Monsaraz",
-          "nadadores": "Santana, Jose Pedro, Bernardo, Luis Miguel, Monteiro, Jorge Manuel, Santos, Luis Lopes"
+          "nadadores": "Jose Pedro Santana; Luis Miguel Bernardo; Jorge Manuel Monteiro; Luis Lopes Santos"
         },
         "100_E": {
           "tempo": "5:23,07",
           "clube": "Sport Alges e Dafundo",
           "data": "09/07/2023",
           "local": "S. Joao da Madeira",
-          "nadadores": "Madeira, Luis Cavaleiro, Silva, Carlos Roberto, Antunes, Ricardo Jorge, Bento, Jaime Carlos"
+          "nadadores": "Luis Cavaleiro Madeira; Carlos Roberto Silva; Ricardo Jorge Antunes; Jaime Carlos Bento"
         }
       },
       "200-239": {
@@ -740,35 +740,35 @@
           "clube": "Clube Fluvial Portuense",
           "data": "10/07/2026",
           "local": "Famalicão",
-          "nadadores": "Machado, Miguel Alexandre, Portela, Antonio Luis, Santos, Alexandre Miguel, Pires, Miguel Pinheiro"
+          "nadadores": "Miguel Alexandre Machado; Antonio Luis Portela; Alexandre Miguel Santos; Miguel Pinheiro Pires"
         },
         "100_L": {
           "tempo": "4:06,26",
           "clube": "Clube Fluvial Portuense",
           "data": "09/07/2026",
           "local": "Famalicão",
-          "nadadores": "Machado, Miguel Alexandre, Portela, Antonio Luis, Santos, Alexandre Miguel, Pires, Miguel Pinheiro"
+          "nadadores": "Miguel Alexandre Machado; Antonio Luis Portela; Alexandre Miguel Santos; Miguel Pinheiro Pires"
         },
         "200_L": {
           "tempo": "9:13,56",
           "clube": "Clube de Natacao do Litoral Alentejano",
           "data": "10/07/2022",
           "local": "Reguengos de Monsaraz",
-          "nadadores": "Freitas, Jose Carlos, Faria, Jorge Eduardo, Vantaggiato, Marco, Inacio, Mauro Santos"
+          "nadadores": "Jose Carlos Freitas; Jorge Eduardo Faria; Marco Vantaggiato; Mauro Santos Inacio"
         },
         "50_E": {
           "tempo": "1:58,23",
           "clube": "Clube Fluvial Portuense",
           "data": "11/07/2026",
           "local": "Famalicão",
-          "nadadores": "Machado, Miguel Alexandre, Santos, Alexandre Miguel, Pires, Miguel Pinheiro, Portela, Antonio Luis"
+          "nadadores": "Miguel Alexandre Machado; Alexandre Miguel Santos; Miguel Pinheiro Pires; Antonio Luis Portela"
         },
         "100_E": {
           "tempo": "4:50,43",
           "clube": "Futebol Clube do Porto",
           "data": "07/07/2024",
           "local": "São João da Madeira",
-          "nadadores": "Carvalho, Mario Moura, Santos, Manuel Duran, Chaves, Antonio Aderito, Sousa, Antonio Fernando"
+          "nadadores": "Mario Moura Carvalho; Manuel Duran Santos; Antonio Aderito Chaves; Antonio Fernando Sousa"
         }
       },
       "160-199": {
@@ -777,35 +777,35 @@
           "clube": "Sport Alges e Dafundo",
           "data": "15/07/2018",
           "local": "Loulé",
-          "nadadores": "Faria, Jorge Eduardo, Laurentino, Nuno Filipe, Silva, Pedro Nuno, Frischknecht, Emilio Nuno"
+          "nadadores": "Jorge Eduardo Faria; Nuno Filipe Laurentino; Pedro Nuno Silva; Emilio Nuno Frischknecht"
         },
         "100_L": {
           "tempo": "3:51,26",
           "clube": "Sport Alges e Dafundo",
           "data": "05/07/2015",
           "local": "Loulé",
-          "nadadores": "Silva, Pedro Nuno, Cabrita, Miguel Mendonca, Frischknecht, Emilio Nuno, Laurentino, Nuno Filipe"
+          "nadadores": "Pedro Nuno Silva; Miguel Mendonca Cabrita; Emilio Nuno Frischknecht; Nuno Filipe Laurentino"
         },
         "200_L": {
           "tempo": "11:25,68",
           "clube": "Lisboa PoolSharks",
           "data": "19/07/2024",
           "local": "Viena (AUT)",
-          "nadadores": "Silva, Bruno Miguel, Oliveira, Luis Miguel, Fujao, Carlos Alberto, Pinto, Luis Filipe"
+          "nadadores": "Bruno Miguel Silva; Luis Miguel Oliveira; Carlos Alberto Fujao; Luis Filipe Pinto"
         },
         "50_E": {
           "tempo": "1:59,93",
           "clube": "Futebol Clube do Porto",
           "data": "08/07/2017",
           "local": "Famalicão",
-          "nadadores": "Carvalho, Mario Moura, Santos, Manuel Duran, Barbosa, Celso Ruben, Nascimento, Paulo Sergio"
+          "nadadores": "Mario Moura Carvalho; Manuel Duran Santos; Celso Ruben Barbosa; Paulo Sergio Nascimento"
         },
         "100_E": {
           "tempo": "4:17,33",
           "clube": "Sport Alges e Dafundo",
           "data": "04/07/2015",
           "local": "Loulé",
-          "nadadores": "Laurentino, Nuno Filipe, Silva, Pedro Nuno, Frischknecht, Emilio Nuno, Faria, Jorge Eduardo"
+          "nadadores": "Nuno Filipe Laurentino; Pedro Nuno Silva; Emilio Nuno Frischknecht; Jorge Eduardo Faria"
         }
       },
       "120-159": {
@@ -814,35 +814,35 @@
           "clube": "Futebol Clube do Porto",
           "data": "10/07/2016",
           "local": "Loulé",
-          "nadadores": "Sevieri, Eduardo Ferreira, Pinto, Gil Goncalves, Sousa, Pedro Alexandre, Santos, Paulo Jorge"
+          "nadadores": "Eduardo Ferreira Sevieri; Gil Goncalves Pinto; Pedro Alexandre Sousa; Paulo Jorge Santos"
         },
         "100_L": {
           "tempo": "3:47,08",
           "clube": "Futebol Clube do Porto",
           "data": "10/07/2016",
           "local": "Loulé",
-          "nadadores": "Sevieri, Eduardo Ferreira, Pinto, Gil Goncalves, Sousa, Pedro Alexandre, Santos, Paulo Jorge"
+          "nadadores": "Eduardo Ferreira Sevieri; Gil Goncalves Pinto; Pedro Alexandre Sousa; Paulo Jorge Santos"
         },
         "200_L": {
           "tempo": "9:14,72",
           "clube": "Lisboa PoolSharks",
           "data": "19/07/2024",
           "local": "Viena (AUT)",
-          "nadadores": "Salustiano, Humberto Melo, Pereira, David Piteira, Carvalho, Joao Carlos, Goncalves, Filipe Gouveia"
+          "nadadores": "Humberto Melo Salustiano; David Piteira Pereira; Joao Carlos Carvalho; Filipe Gouveia Goncalves"
         },
         "50_E": {
           "tempo": "1:50,84",
           "clube": "Futebol Clube do Porto",
           "data": "09/07/2016",
           "local": "Loulé",
-          "nadadores": "Sevieri, Eduardo Ferreira, Pinto, Gil Goncalves, Sousa, Pedro Alexandre, Santos, Paulo Jorge"
+          "nadadores": "Eduardo Ferreira Sevieri; Gil Goncalves Pinto; Pedro Alexandre Sousa; Paulo Jorge Santos"
         },
         "100_E": {
           "tempo": "4:11,45",
           "clube": "Futebol Clube do Porto",
           "data": "09/07/2016",
           "local": "Loulé",
-          "nadadores": "Sevieri, Eduardo Ferreira, Pinto, Gil Goncalves, Sousa, Pedro Alexandre, Santos, Paulo Jorge"
+          "nadadores": "Eduardo Ferreira Sevieri; Gil Goncalves Pinto; Pedro Alexandre Sousa; Paulo Jorge Santos"
         }
       },
       "100-119": {
@@ -851,28 +851,28 @@
           "clube": "Futebol Clube do Porto",
           "data": "09/07/2017",
           "local": "Famalicão",
-          "nadadores": "Santos, Paulo Jorge, Carvalho, Joao Filipe, Pinto, Gil Goncalves, Santos, Carlos Filipe"
+          "nadadores": "Paulo Jorge Santos; Joao Filipe Carvalho; Gil Goncalves Pinto; Carlos Filipe Santos"
         },
         "100_L": {
           "tempo": "3:44,34",
           "clube": "Futebol Clube do Porto",
           "data": "05/07/2015",
           "local": "Loulé",
-          "nadadores": "Pinto, Gil Goncalves, Encarnacao, Manuel Jose, Sevieri, Eduardo Ferreira, Santos, Paulo Jorge"
+          "nadadores": "Gil Goncalves Pinto; Manuel Jose Encarnacao; Eduardo Ferreira Sevieri; Paulo Jorge Santos"
         },
         "50_E": {
           "tempo": "1:50,67",
           "clube": "Futebol Clube do Porto",
           "data": "04/07/2015",
           "local": "Loulé",
-          "nadadores": "Sevieri, Eduardo Ferreira, Pinto, Gil Goncalves, Graca, Bruno Emanuel, Santos, Paulo Jorge"
+          "nadadores": "Eduardo Ferreira Sevieri; Gil Goncalves Pinto; Bruno Emanuel Graca; Paulo Jorge Santos"
         },
         "100_E": {
           "tempo": "4:08,45",
           "clube": "Futebol Clube do Porto",
           "data": "08/07/2017",
           "local": "Famalicão",
-          "nadadores": "Pinto, Gil Goncalves, Silva, Sergio Baptista, Santos, Carlos Filipe, Santos, Paulo Jorge"
+          "nadadores": "Gil Goncalves Pinto; Sergio Baptista Silva; Carlos Filipe Santos; Paulo Jorge Santos"
         }
       }
     },
@@ -883,28 +883,28 @@
           "clube": "Sport Alges e Dafundo",
           "data": "14/07/2018",
           "local": "Loulé",
-          "nadadores": "Raimundo, Isabel Maria, Ferreira, Maria Felix, Ferreira, Ana Maria, Graca, Helena Prista"
+          "nadadores": "Isabel Maria Raimundo; Maria Felix Ferreira; Ana Maria Ferreira; Helena Prista Graca"
         },
         "100_L": {
           "tempo": "7:53,10",
           "clube": "Sport Alges e Dafundo",
           "data": "15/07/2018",
           "local": "Loulé",
-          "nadadores": "Raimundo, Isabel Maria, Ferreira, Maria Felix, Graca, Helena Prista, Basto, Luisa Bessone"
+          "nadadores": "Isabel Maria Raimundo; Maria Felix Ferreira; Helena Prista Graca; Luisa Bessone Basto"
         },
         "50_E": {
           "tempo": "3:28,06",
           "clube": "Sport Alges e Dafundo",
           "data": "04/07/2015",
           "local": "Loulé",
-          "nadadores": "Madeira, Berta Maria, Raimundo, Isabel Maria, Ferreira, Ana Maria, Basto, Luisa Bessone"
+          "nadadores": "Berta Maria Madeira; Isabel Maria Raimundo; Ana Maria Ferreira; Luisa Bessone Basto"
         },
         "100_E": {
           "tempo": "8:18,71",
           "clube": "Sport Alges e Dafundo",
           "data": "08/07/2017",
           "local": "Famalicão",
-          "nadadores": "Raimundo, Isabel Maria, Ferreira, Maria Felix, Ferreira, Ana Maria, Basto, Luisa Bessone"
+          "nadadores": "Isabel Maria Raimundo; Maria Felix Ferreira; Ana Maria Ferreira; Luisa Bessone Basto"
         }
       },
       "240-279": {
@@ -913,28 +913,28 @@
           "clube": "Clube Fluvial Portuense",
           "data": "",
           "local": "",
-          "nadadores": "Osorio, Maria Claudia, Reis, Margarida Bleck, Silva, Vivien Patricia, Guimaraes, Rita Cabral"
+          "nadadores": "Maria Claudia Osorio; Margarida Bleck Reis; Vivien Patricia Silva; Rita Cabral Guimaraes"
         },
         "100_L": {
           "tempo": "5:36,85",
           "clube": "Clube Fluvial Portuense",
           "data": "09/07/2026",
           "local": "Famalicão",
-          "nadadores": "Guimaraes, Rita Cabral, Palhares, Paula Alexandra, Ferreira, Filipa Margarida, Osorio, Maria Claudia"
+          "nadadores": "Rita Cabral Guimaraes; Paula Alexandra Palhares; Filipa Margarida Ferreira; Maria Claudia Osorio"
         },
         "50_E": {
           "tempo": "2:49,95",
           "clube": "Futebol Clube do Porto",
           "data": "12/07/2025",
           "local": "Reguengos de Monsaraz",
-          "nadadores": "Babo, Rosalina Bessa, Oliveira, Maria Emidia, Friaes, Maria Manuel, Andrade, Maria Teresa"
+          "nadadores": "Rosalina Bessa Babo; Maria Emidia Oliveira; Maria Manuel Friaes; Maria Teresa Andrade"
         },
         "100_E": {
           "tempo": "6:40,63",
           "clube": "Associacao Academica de Coimbra",
           "data": "10/07/2022",
           "local": "Reguengos de Monsaraz",
-          "nadadores": "Oliveira, Maria Luisa, Torres, Maria Isabel, Cunha, Eugenia Maria, Urbano, Maria Margarida"
+          "nadadores": "Maria Luisa Oliveira; Maria Isabel Torres; Eugenia Maria Cunha; Maria Margarida Urbano"
         }
       },
       "200-239": {
@@ -943,28 +943,28 @@
           "clube": "Clube Fluvial Portuense",
           "data": "08/07/2023",
           "local": "S. Joao da Madeira",
-          "nadadores": "Rothes, Ines Maria, Coutinho, Gisela Barbosa, Ferreira, Filipa Margarida, Costa, Maria Luisa"
+          "nadadores": "Ines Maria Rothes; Gisela Barbosa Coutinho; Filipa Margarida Ferreira; Maria Luisa Costa"
         },
         "100_L": {
           "tempo": "4:47,64",
           "clube": "Clube Fluvial Portuense",
           "data": "08/07/2023",
           "local": "S. Joao da Madeira",
-          "nadadores": "Rothes, Ines Maria, Brandao, Maria Teresa, Coutinho, Gisela Barbosa, Costa, Maria Luisa"
+          "nadadores": "Ines Maria Rothes; Maria Teresa Brandao; Gisela Barbosa Coutinho; Maria Luisa Costa"
         },
         "50_E": {
           "tempo": "2:28,85",
           "clube": "Futebol Clube do Porto",
           "data": "07/07/2023",
           "local": "S. Joao da Madeira",
-          "nadadores": "Goncalves, Maria Fernanda, Andrade, Maria Teresa, Oliveira, Sara Freitas, Fernandes, Rita Lopes"
+          "nadadores": "Maria Fernanda Goncalves; Maria Teresa Andrade; Sara Freitas Oliveira; Rita Lopes Fernandes"
         },
         "100_E": {
           "tempo": "5:25,98",
           "clube": "Clube Fluvial Portuense",
           "data": "07/07/2024",
           "local": "São João da Madeira",
-          "nadadores": "Coutinho, Gisela Barbosa, Carvalho, Elza Maria, Costa, Maria Luisa, Ferreira, Filipa Margarida"
+          "nadadores": "Gisela Barbosa Coutinho; Elza Maria Carvalho; Maria Luisa Costa; Filipa Margarida Ferreira"
         }
       },
       "160-199": {
@@ -973,28 +973,28 @@
           "clube": "Futebol Clube do Porto",
           "data": "08/07/2023",
           "local": "S. Joao da Madeira",
-          "nadadores": "Sevieri, Tatiana Gama, Barbara, Carla Santa, Sousa, Keissy Joselin, Oliveira, Sara Freitas"
+          "nadadores": "Tatiana Gama Sevieri; Carla Santa Barbara; Keissy Joselin Sousa; Sara Freitas Oliveira"
         },
         "100_L": {
           "tempo": "4:40,63",
           "clube": "Clube Fluvial Portuense",
           "data": "05/07/2024",
           "local": "São João da Madeira",
-          "nadadores": "Rothes, Ines Maria, Martins, Maria Sofia, Costa, Maria Luisa, Coutinho, Gisela Barbosa"
+          "nadadores": "Ines Maria Rothes; Maria Sofia Martins; Maria Luisa Costa; Gisela Barbosa Coutinho"
         },
         "50_E": {
           "tempo": "2:14,10",
           "clube": "Clube Fluvial Portuense",
           "data": "17/05/2026",
           "local": "Coimbra",
-          "nadadores": "Afonso, Sofia Martiniano, Martins, Maria Sofia, Coutinho, Gisela Barbosa, Ferreira, Beatriz Marques"
+          "nadadores": "Sofia Martiniano Afonso; Maria Sofia Martins; Gisela Barbosa Coutinho; Beatriz Marques Ferreira"
         },
         "100_E": {
           "tempo": "5:09,82",
           "clube": "Clube Fluvial Portuense",
           "data": "04/07/2015",
           "local": "Loulé",
-          "nadadores": "Sousa, Natacha Alexandra, Martins, Maria Sofia, Costa, Maria Luisa, Ferreira, Filipa Margarida"
+          "nadadores": "Natacha Alexandra Sousa; Maria Sofia Martins; Maria Luisa Costa; Filipa Margarida Ferreira"
         }
       },
       "120-159": {
@@ -1003,28 +1003,28 @@
           "clube": "Futebol Clube do Porto",
           "data": "05/07/2015",
           "local": "Loulé",
-          "nadadores": "Sevieri, Tatiana Gama, Barbara, Carla Santa, Sousa, Keissy Joselin, Oliveira, Sara Freitas"
+          "nadadores": "Tatiana Gama Sevieri; Carla Santa Barbara; Keissy Joselin Sousa; Sara Freitas Oliveira"
         },
         "100_L": {
           "tempo": "4:27,79",
           "clube": "Clube de Instrucao e Recreio do Laranjeiro",
           "data": "05/07/2024",
           "local": "São João da Madeira",
-          "nadadores": "Gervasio, Ana Sofia, Prior, Ana Filipa, Rolim, Soraia Guerra, Pires, Carolina Saraiva"
+          "nadadores": "Ana Sofia Gervasio; Ana Filipa Prior; Soraia Guerra Rolim; Carolina Saraiva Pires"
         },
         "50_E": {
           "tempo": "2:09,44",
           "clube": "Louletano Desportos Clube",
           "data": "30/05/2026",
           "local": "Loulé",
-          "nadadores": "Lopes, Carolina Sofia, Figueira, Isabel Maria, Teiga, Ana Claudia, Almeida, Catarina Ribeiro"
+          "nadadores": "Carolina Sofia Lopes; Isabel Maria Figueira; Ana Claudia Teiga; Catarina Ribeiro Almeida"
         },
         "100_E": {
           "tempo": "4:58,07",
           "clube": "Futebol Clube do Porto",
           "data": "09/07/2023",
           "local": "S. Joao da Madeira",
-          "nadadores": "Marinho, Marta Vieira, Azevedo, Sara Silva, Oliveira, Sara Freitas, Rodrigues, Joana Aguiar"
+          "nadadores": "Marta Vieira Marinho; Sara Silva Azevedo; Sara Freitas Oliveira; Joana Aguiar Rodrigues"
         }
       },
       "100-119": {
@@ -1033,28 +1033,28 @@
           "clube": "Futebol Clube do Porto",
           "data": "09/07/2017",
           "local": "Famalicão",
-          "nadadores": "Ferreira, Ana Ribeiro, Alves, Joana Isabel, Santos, Carla Sofia, Oliveira, Sara Freitas"
+          "nadadores": "Ana Ribeiro Ferreira; Joana Isabel Alves; Carla Sofia Santos; Sara Freitas Oliveira"
         },
         "100_L": {
           "tempo": "4:29,47",
           "clube": "Clube de Natacao de Alcobaca",
           "data": "09/07/2026",
           "local": "Famalicão",
-          "nadadores": "Ferreira, Ana Claudia, Paulino, Bruna Elisabete, Domingues, Monica Seara, Silva, Ines Rocha"
+          "nadadores": "Ana Claudia Ferreira; Bruna Elisabete Paulino; Monica Seara Domingues; Ines Rocha Silva"
         },
         "50_E": {
           "tempo": "2:10,16",
           "clube": "Clube Instrucao e Recreio do Laranjeiro",
           "data": "12/07/2025",
           "local": "Reguengos de Monsaraz",
-          "nadadores": "Nunes, Sofia Alexandra, Rolim, Soraia Guerra, Riesenberger, Bruna Martins, Pires, Carolina Saraiva"
+          "nadadores": "Sofia Alexandra Nunes; Soraia Guerra Rolim; Bruna Martins Riesenberger; Carolina Saraiva Pires"
         },
         "100_E": {
           "tempo": "4:57,90",
           "clube": "Ginasio Clube de Santo Tirso",
           "data": "21/07/2019",
           "local": "Reguengos de Monsaraz",
-          "nadadores": "Silva, Carolina Santos, Maia, Joana Marques, Teixeira, Rute Sofia, Almeida, Mariana Dias"
+          "nadadores": "Carolina Santos Silva; Joana Marques Maia; Rute Sofia Teixeira; Mariana Dias Almeida"
         }
       }
     },
@@ -1065,7 +1065,7 @@
           "clube": "Sporting Clube de Espinho",
           "data": "31/05/2026",
           "local": "Porto",
-          "nadadores": "Alves, Maria Fernanda, Pinho, Maria Noemia, Canelas, Antonio Monteiro, Sousa, Fernando Luis"
+          "nadadores": "Maria Fernanda Alves; Maria Noemia Pinho; Antonio Monteiro Canelas; Fernando Luis Sousa"
         }
       },
       "280-319": {
@@ -1074,28 +1074,28 @@
           "clube": "Sport Alges e Dafundo",
           "data": "08/07/2022",
           "local": "Reguengos de Monsaraz",
-          "nadadores": "Ferreira, Ana Maria, Basto, Luisa Bessone, Salgueiro, Luis Vidigal, Dantas, Paulo Marcos"
+          "nadadores": "Ana Maria Ferreira; Luisa Bessone Basto; Luis Vidigal Salgueiro; Paulo Marcos Dantas"
         },
         "100_L": {
           "tempo": "7:18,46",
           "clube": "Sport Alges e Dafundo",
           "data": "17/05/2026",
           "local": "Vila Franca de Xira",
-          "nadadores": "Ribeiro, Violante Isabel, Ferreira, Maria Felix, Trabuco, Antonio Jose, Bilro, Joaquim Mendes"
+          "nadadores": "Violante Isabel Ribeiro; Maria Felix Ferreira; Antonio Jose Trabuco; Joaquim Mendes Bilro"
         },
         "50_E": {
           "tempo": "3:03,32",
           "clube": "Sport Alges e Dafundo",
           "data": "27/05/2016",
           "local": "London (GBR)",
-          "nadadores": "Basto, Antonio Bessone, Raimundo, Isabel Maria, Bairrada, Orlando Gomes, Ferreira, Ana Maria"
+          "nadadores": "Antonio Bessone Basto; Isabel Maria Raimundo; Orlando Gomes Bairrada; Ana Maria Ferreira"
         },
         "100_E": {
           "tempo": "10:07,55",
           "clube": "CCD Assoc de Nadaores Estoris",
           "data": "17/05/2026",
           "local": "VF Xira",
-          "nadadores": "Sa, Nair Gomes, Marques, Antonio Higino, Correia, Jose Luis, Ribeiro, Maria Joao"
+          "nadadores": "Nair Gomes Sa; Antonio Higino Marques; Jose Luis Correia; Maria Joao Ribeiro"
         }
       },
       "240-279": {
@@ -1104,28 +1104,28 @@
           "clube": "Clube Fluvial Portuense",
           "data": "12/07/2026",
           "local": "Famalicão",
-          "nadadores": "Vaz, Jose Augusto, Guimaraes, Rita Cabral, Ferreira, Filipa Margarida, Barroso, Jose Miguel"
+          "nadadores": "Jose Augusto Vaz; Rita Cabral Guimaraes; Filipa Margarida Ferreira; Jose Miguel Barroso"
         },
         "100_L": {
           "tempo": "5:24,82",
           "clube": "Clube Fluvial Portuense",
           "data": "21/06/2026",
           "local": "Póvoa de Varzim",
-          "nadadores": "Barroso, Jose Miguel, Osorio, Maria Claudia, Wernicke, Maria Giraldo, Lobo, Nuno Silva"
+          "nadadores": "Jose Miguel Barroso; Maria Claudia Osorio; Maria Giraldo Wernicke; Nuno Silva Lobo"
         },
         "50_E": {
           "tempo": "2:28,03",
           "clube": "Clube Fluvial Portuense",
           "data": "05/07/2024",
           "local": "São João da Madeira",
-          "nadadores": "Palhares, Paula Alexandra, Bernardo, Luis Miguel, Santos, Luis Lopes, Ferreira, Filipa Margarida"
+          "nadadores": "Paula Alexandra Palhares; Luis Miguel Bernardo; Luis Lopes Santos; Filipa Margarida Ferreira"
         },
         "100_E": {
           "tempo": "6:05,19",
           "clube": "Sport Alges Dafundo",
           "data": "07/04/2024",
           "local": "Vila Franca de Xira",
-          "nadadores": "Yokochi, Luisa Tamaki, Madeira, Luis Cavaleiro, Bento, Jaime Carlos, Lenzi, Carla Vale"
+          "nadadores": "Luisa Tamaki Yokochi; Luis Cavaleiro Madeira; Jaime Carlos Bento; Carla Vale Lenzi"
         }
       },
       "200-239": {
@@ -1134,28 +1134,28 @@
           "clube": "Futebol Clube do Porto",
           "data": "12/07/2026",
           "local": "Famalicão",
-          "nadadores": "Sousa, Pedro Alexandre, Soares, Jose Pedro, Costa, Maria Luisa, Barbara, Carla Santa"
+          "nadadores": "Pedro Alexandre Sousa; Jose Pedro Soares; Maria Luisa Costa; Carla Santa Barbara"
         },
         "100_L": {
           "tempo": "4:49,83",
           "clube": "Clube Nacional de Natacao",
           "data": "17/05/2026",
           "local": "Vila Franca de Xira",
-          "nadadores": "Festas, Joao Saldanha, Pinho, Catarina Dias, Yokochi, Luisa Tamaki, Simoes, Pedro Martins"
+          "nadadores": "Joao Saldanha Festas; Catarina Dias Pinho; Luisa Tamaki Yokochi; Pedro Martins Simoes"
         },
         "50_E": {
           "tempo": "2:12,32",
           "clube": "Clube Fluvial Portuense",
           "data": "11/07/2025",
           "local": "Reguengos de Monsaraz",
-          "nadadores": "Coutinho, Gisela Barbosa, Santos, Alexandre Miguel, Monteiro, Jorge Manuel, Costa, Maria Luisa"
+          "nadadores": "Gisela Barbosa Coutinho; Alexandre Miguel Santos; Jorge Manuel Monteiro; Maria Luisa Costa"
         },
         "100_E": {
           "tempo": "5:57,08",
           "clube": "Clube de Natacao de Valongo",
           "data": "21/06/2026",
           "local": "Póvoa de Varzim",
-          "nadadores": "Oliveira, Jorge Miguel, Navarro, Paula Margarida, Rodrigues, Marcelo Porto, Santos, Maria Paula"
+          "nadadores": "Jorge Miguel Oliveira; Paula Margarida Navarro; Marcelo Porto Rodrigues; Maria Paula Santos"
         }
       },
       "160-199": {
@@ -1164,28 +1164,28 @@
           "clube": "Clube Fluvial Portuense",
           "data": "04/07/2015",
           "local": "Loulé",
-          "nadadores": "Goncalves, Americo Pedro, Sousa, Natacha Alexandra, Costa, Maria Luisa, Monteiro, Luis Miguel"
+          "nadadores": "Americo Pedro Goncalves; Natacha Alexandra Sousa; Maria Luisa Costa; Luis Miguel Monteiro"
         },
         "100_L": {
           "tempo": "4:28,17",
           "clube": "Louletano Desportos Clube",
           "data": "31/05/2026",
           "local": "Loulé",
-          "nadadores": "Lopes, Carolina Sofia, Martelo, Filipe Velez, Figueira, Isabel Maria, Baeta, Nelson Correia"
+          "nadadores": "Carolina Sofia Lopes; Filipe Velez Martelo; Isabel Maria Figueira; Nelson Correia Baeta"
         },
         "50_E": {
           "tempo": "2:08,10",
           "clube": "Clube Fluvial Portuense",
           "data": "10/05/2025",
           "local": "Coimbra",
-          "nadadores": "Coutinho, Gisela Barbosa, Santos, Alexandre Miguel, Martins, Maria Sofia, Monteiro, Luis Miguel"
+          "nadadores": "Gisela Barbosa Coutinho; Alexandre Miguel Santos; Maria Sofia Martins; Luis Miguel Monteiro"
         },
         "100_E": {
           "tempo": "4:52,67",
           "clube": "Louletano Desportos Clube",
           "data": "31/05/2026",
           "local": "Loulé",
-          "nadadores": "Lopes, Carolina Sofia, Figueira, Isabel Maria, Carneiro, Ivo Emanuel, Marrico, Gabriel Jose"
+          "nadadores": "Carolina Sofia Lopes; Isabel Maria Figueira; Ivo Emanuel Carneiro; Gabriel Jose Marrico"
         }
       },
       "120-159": {
@@ -1194,35 +1194,35 @@
           "clube": "Futebol Clube do Porto",
           "data": "11/07/2025",
           "local": "Reguengos de Monsaraz",
-          "nadadores": "Lousa, Irina Filia, Marafona, Joao Duarte, Carvalho, Joao Filipe, Rodrigues, Joana Aguiar"
+          "nadadores": "Irina Filia Lousa; Joao Duarte Marafona; Joao Filipe Carvalho; Joana Aguiar Rodrigues"
         },
         "100_L": {
           "tempo": "4:13,94",
           "clube": "Clube Natacao de Valongo",
           "data": "21/06/2026",
           "local": "Póvoa de Varzim",
-          "nadadores": "Domingues, Diogo Manuel, Neves, Diogo Ferreira, Vilar, Sonia Oliveira, Santos, Carolina Ascenso"
+          "nadadores": "Diogo Manuel Domingues; Diogo Ferreira Neves; Sonia Oliveira Vilar; Carolina Ascenso Santos"
         },
         "200_L": {
           "tempo": "11:02,51",
           "clube": "Lisboa PoolSharks",
           "data": "19/07/2024",
           "local": "Viena (AUT)",
-          "nadadores": "Bargado, Catarina Isabel, Duarte, Mariana Amendoeira, Rodrigues, Nuno Miguel, Freire, Tiago Alexandre"
+          "nadadores": "Catarina Isabel Bargado; Mariana Amendoeira Duarte; Nuno Miguel Rodrigues; Tiago Alexandre Freire"
         },
         "50_E": {
           "tempo": "1:58,82",
           "clube": "Leixoes Sport Club",
           "data": "12/07/2026",
           "local": "Famalicão",
-          "nadadores": "Santos, Alexandra Jesus, Monteiro, Bruno Daniel, Mendes, Joao Santos, Alves, Miriam Natacha"
+          "nadadores": "Alexandra Jesus Santos; Bruno Daniel Monteiro; Joao Santos Mendes; Miriam Natacha Alves"
         },
         "100_E": {
           "tempo": "4:47,85",
           "clube": "Clube de Natacao de Alcobaca",
           "data": "13/04/2025",
           "local": "Vila Franca de Xira",
-          "nadadores": "Paulino, Diogo Miguel, Pacheco, Luis Daniel, Paulino, Bruna Elisabete, Pinheiro, Daniela Ferreira"
+          "nadadores": "Diogo Miguel Paulino; Luis Daniel Pacheco; Bruna Elisabete Paulino; Daniela Ferreira Pinheiro"
         }
       },
       "100-119": {
@@ -1231,28 +1231,28 @@
           "clube": "Futebol Clube do Porto",
           "data": "08/07/2017",
           "local": "Famalicão",
-          "nadadores": "Santos, Paulo Jorge, Oliveira, Sara Freitas, Carvalho, Joao Filipe, Alves, Joana Isabel"
+          "nadadores": "Paulo Jorge Santos; Sara Freitas Oliveira; Joao Filipe Carvalho; Joana Isabel Alves"
         },
         "100_L": {
           "tempo": "4:38,01",
           "clube": "Clube Desportivo Universitario do Porto",
           "data": "21/06/2026",
           "local": "Póvoa de Varzim",
-          "nadadores": "Amado, Miguel Mendes, Saraiva, Marcia Raquel, Azevedo, Ana Maria, Bastos, Diogo Moreno"
+          "nadadores": "Miguel Mendes Amado; Marcia Raquel Saraiva; Ana Maria Azevedo; Diogo Moreno Bastos"
         },
         "50_E": {
           "tempo": "1:58,80",
           "clube": "Leixoes Sport Club",
           "data": "11/07/2025",
           "local": "Reguengos de Monsaraz",
-          "nadadores": "Santos, Alexandra Jesus, Monteiro, Bruno Daniel, Mendes, Joao Santos, Alves, Miriam Natacha"
+          "nadadores": "Alexandra Jesus Santos; Bruno Daniel Monteiro; Joao Santos Mendes; Miriam Natacha Alves"
         },
         "100_E": {
           "tempo": "5:18,01",
           "clube": "Lisboa Pool Sharks",
           "data": "19/07/2024",
           "local": "Viena (AUT)",
-          "nadadores": "Bargado, Catarina Isabel, Silva, Bruno Miguel, Duarte, Mariana Amendoeira, Pereira, David Piteira"
+          "nadadores": "Catarina Isabel Bargado; Bruno Miguel Silva; Mariana Amendoeira Duarte; David Piteira Pereira"
         }
       }
     }
