@@ -3240,6 +3240,7 @@ document.addEventListener("click", function(e) {
           <option value="">Selecionar</option>
           <option value="M">Masculino</option>
           <option value="F">Feminino</option>
+          <option value="X">Misto</option>
         </select>
       </div>
     </div>
@@ -3257,30 +3258,15 @@ document.addEventListener("click", function(e) {
       </div>
       <div class="field">
         <label>Distância</label>
-        <select id="mst-distancia" onchange="mstMostrar()">
+        <select id="mst-distancia" onchange="mstUpdateFaixas()">
           <option value="">Selecionar</option>
         </select>
       </div>
     </div>
     <div class="field">
-      <label>Faixa Etária</label>
-      <select id="mst-faixa" onchange="mstMostrar()">
+      <label id="mst-faixa-label">Faixa Etária</label>
+      <select id="mst-faixa" onchange="mstMostrar()" disabled>
         <option value="">Selecionar</option>
-        <option value="25-29">25-29 anos</option>
-        <option value="30-34">30-34 anos</option>
-        <option value="35-39">35-39 anos</option>
-        <option value="40-44">40-44 anos</option>
-        <option value="45-49">45-49 anos</option>
-        <option value="50-54">50-54 anos</option>
-        <option value="55-59">55-59 anos</option>
-        <option value="60-64">60-64 anos</option>
-        <option value="65-69">65-69 anos</option>
-        <option value="70-74">70-74 anos</option>
-        <option value="75-79">75-79 anos</option>
-        <option value="80-84">80-84 anos</option>
-        <option value="85-89">85-89 anos</option>
-        <option value="90-94">90-94 anos</option>
-        <option value="95-99">95-99 anos</option>
       </select>
     </div>
     <div id="mst-result"></div>
@@ -3338,7 +3324,7 @@ document.addEventListener("click", function(e) {
 // ============================================================
 // DADOS — Piscina Curta (25m) e Piscina Longa (50m)
 // ============================================================
-var tempos, dadosInternacionais, naTAC, recordesIdade, recordesMundiais, recordesMasters, recordesEstafetas, recordesEstafetasSelecao;
+var tempos, dadosInternacionais, naTAC, recordesIdade, recordesMundiais, recordesMasters, recordesMastersEstafetas, recordesEstafetas, recordesEstafetasSelecao;
 var _swimminDadosProntos = false;
 
 (function carregarDadosSwimmin() {
@@ -3362,7 +3348,8 @@ var _swimminDadosProntos = false;
     fetch('recordes-nacionais.json').then(function(r){ return r.json(); }),
     fetch('recordes-estafetas.json').then(function(r){ return r.json(); }),
     fetch('recordes-estafetas-selecao.json').then(function(r){ return r.json(); }),
-    fetch('recordes-masters.json').then(function(r){ return r.json(); })
+    fetch('recordes-masters.json').then(function(r){ return r.json(); }),
+    fetch('recordes-masters-estafetas.json').then(function(r){ return r.json(); })
   ]).then(function(results) {
     tempos = results[0].tempos;
     dadosInternacionais = results[0].internacionais;
@@ -3372,6 +3359,7 @@ var _swimminDadosProntos = false;
     recordesEstafetas = results[4];
     recordesEstafetasSelecao = results[5];
     recordesMasters = results[6];
+    recordesMastersEstafetas = results[7];
     _swimminDadosProntos = true;
     var ov = document.getElementById('swimmin-loading-overlay');
     if (ov) ov.remove();
@@ -3843,27 +3831,79 @@ function toggleIdades() { toggleRecordes(); switchRecordesTab('nacionais'); }
 
 var MST_PROVAS_LONGA = {L:['50','100','200','400','800','1500'],C:['50','100','200'],B:['50','100','200'],M:['50','100','200'],E:['200','400']};
 var MST_PROVAS_CURTA = {L:['50','100','200','400','800','1500'],C:['50','100','200'],B:['50','100','200'],M:['50','100','200'],E:['100','200','400']};
+var MST_ESTAFETA_LONGA = {L:['50','100','200'],E:['50','100']};
+var MST_ESTAFETA_CURTA = {L:['50','100','200'],E:['50','100']};
+var MST_FAIXAS_IDADE = ['25-29','30-34','35-39','40-44','45-49','50-54','55-59','60-64','65-69','70-74','75-79','80-84','85-89','90-94','95-99'];
+var MST_FAIXAS_ESTAFETA = ['100-119','120-159','160-199','200-239','240-279','280-319','320-359'];
 
 function mstUpdate() {
+  var sexo = document.getElementById('mst-sexo').value;
+  var estiloEl = document.getElementById('mst-estilo');
+  var prevEstilo = estiloEl.value;
+  estiloEl.innerHTML = '<option value="">Selecionar</option>';
+  var estilos = sexo === 'X' ? ['L','E'] : ['L','C','B','M','E'];
+  for (var i = 0; i < estilos.length; i++) {
+    var opt = document.createElement('option');
+    opt.value = estilos[i];
+    opt.textContent = ESTILO_LABELS[estilos[i]];
+    estiloEl.appendChild(opt);
+  }
+  if (estiloEl.querySelector('option[value="' + prevEstilo + '"]')) estiloEl.value = prevEstilo;
   mstUpdateDist();
 }
 
 function mstUpdateDist() {
   var piscina = document.getElementById('mst-piscina').value;
+  var sexo = document.getElementById('mst-sexo').value;
   var estilo = document.getElementById('mst-estilo').value;
   var distEl = document.getElementById('mst-distancia');
   var prevD = distEl.value;
   distEl.innerHTML = '<option value="">Selecionar</option>';
-  if (!piscina || !estilo) { mstMostrar(); return; }
-  var provas = piscina === 'longa' ? MST_PROVAS_LONGA[estilo] : MST_PROVAS_CURTA[estilo];
-  if (!provas) { mstMostrar(); return; }
-  for (var i = 0; i < provas.length; i++) {
-    var opt = document.createElement('option');
-    opt.value = provas[i];
-    opt.textContent = provas[i] + 'm';
-    distEl.appendChild(opt);
+  if (!piscina || !estilo) { mstUpdateFaixas(); return; }
+  var provasInd = (sexo === 'X') ? null : (piscina === 'longa' ? MST_PROVAS_LONGA[estilo] : MST_PROVAS_CURTA[estilo]);
+  if (provasInd) {
+    for (var i = 0; i < provasInd.length; i++) {
+      var opt = document.createElement('option');
+      opt.value = provasInd[i];
+      opt.textContent = provasInd[i] + 'm';
+      distEl.appendChild(opt);
+    }
+  }
+  var provasRelay = piscina === 'longa' ? MST_ESTAFETA_LONGA[estilo] : MST_ESTAFETA_CURTA[estilo];
+  if (provasRelay) {
+    for (var j = 0; j < provasRelay.length; j++) {
+      var optR = document.createElement('option');
+      optR.value = 'R' + provasRelay[j];
+      optR.textContent = '4x' + provasRelay[j] + 'm (Estafeta)';
+      distEl.appendChild(optR);
+    }
   }
   if (distEl.querySelector('option[value="' + prevD + '"]')) distEl.value = prevD;
+  mstUpdateFaixas();
+}
+
+function mstUpdateFaixas() {
+  var dist = document.getElementById('mst-distancia').value;
+  var faixaEl = document.getElementById('mst-faixa');
+  var prevF = faixaEl.value;
+  faixaEl.innerHTML = '<option value="">Selecionar</option>';
+  if (!dist) {
+    faixaEl.disabled = true;
+    mstMostrar();
+    return;
+  }
+  var isRelay = dist.charAt(0) === 'R';
+  var faixas = isRelay ? MST_FAIXAS_ESTAFETA : MST_FAIXAS_IDADE;
+  var faixaLabelEl = document.getElementById('mst-faixa-label');
+  if (faixaLabelEl) faixaLabelEl.textContent = isRelay ? 'Soma de Idades da Equipa' : 'Faixa Etária';
+  for (var i = 0; i < faixas.length; i++) {
+    var opt = document.createElement('option');
+    opt.value = faixas[i];
+    opt.textContent = isRelay ? faixas[i] : (faixas[i] + ' anos');
+    faixaEl.appendChild(opt);
+  }
+  faixaEl.disabled = false;
+  if (faixaEl.querySelector('option[value="' + prevF + '"]')) faixaEl.value = prevF;
   mstMostrar();
 }
 
@@ -3875,9 +3915,15 @@ function mstMostrar() {
   var faixa = document.getElementById('mst-faixa').value;
   var resultEl = document.getElementById('mst-result');
   if (!piscina || !sexo || !estilo || !dist || !faixa) { resultEl.innerHTML = ''; return; }
-  var key = dist + '_' + estilo;
+  var isRelay = dist.charAt(0) === 'R';
   var rec = null;
-  try { rec = recordesMasters[piscina][sexo][faixa][key]; } catch(e) {}
+  if (isRelay) {
+    var key = dist.slice(1) + '_' + estilo;
+    try { rec = recordesMastersEstafetas[piscina][sexo][faixa][key]; } catch(e) {}
+  } else {
+    var key2 = dist + '_' + estilo;
+    try { rec = recordesMasters[piscina][sexo][faixa][key2]; } catch(e) {}
+  }
   if (!rec) {
     resultEl.innerHTML = '<div class="fpn-result-box" style="margin-top:12px;"><div class="fpn-pontos-label" style="font-size:16px;color:var(--aqua);">Sem registo</div></div>';
     return;
@@ -3885,8 +3931,11 @@ function mstMostrar() {
   var html = '<div class="fpn-result-box" style="margin-top:12px;">';
   html += '<div class="fpn-pontos">' + rec.tempo + '</div>';
   html += '<div class="fpn-divider"></div>';
-  html += '<div class="fpn-rn-nome">' + (rec.nome || rec.nadadores) + '</div>';
-  html += '<div class="fpn-rn-info">' + rec.data + ' · ' + rec.local + '</div>';
+  if (isRelay && rec.clube) html += '<div class="fpn-rn-nome">' + rec.clube + '</div>';
+  if (rec.nadadores) html += '<div class="fpn-rn-info" style="margin-bottom:2px;">' + rec.nadadores + '</div>';
+  if (!isRelay && (rec.nome || rec.nadadores)) html += '<div class="fpn-rn-nome">' + (rec.nome || rec.nadadores) + '</div>';
+  var infoLine = [rec.data, rec.local].filter(function(v){ return v; }).join(' · ');
+  if (infoLine) html += '<div class="fpn-rn-info">' + infoLine + '</div>';
   html += '</div>';
   resultEl.innerHTML = html;
 }
