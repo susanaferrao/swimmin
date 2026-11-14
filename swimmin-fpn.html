@@ -457,7 +457,7 @@ function vibrar(tipo) {
   /* FPN Button */
   .fpn-btn-wrap {
     text-align: center;
-    margin-top: 28px;
+    margin-top: 19px;
   }
   .fpn-btn {
     background: linear-gradient(135deg, var(--aqua), var(--blue-bright));
@@ -1840,7 +1840,7 @@ input.personal-input:focus, .crono-input:focus, #auth-email:focus, #auth-passwor
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
   border: 1px solid rgba(0,212,255,0.35) !important;
-  border-radius: 14px !important;
+  border-radius: 27px !important;
   color: var(--dp-accent) !important;
   height: 54px !important;
   font-weight: 700 !important;
@@ -2305,10 +2305,10 @@ html.light-mode .fpn-btn {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   border: none !important;
-  border-radius: 10px !important;
+  border-radius: 23px !important;
   color: #fff !important;
   height: auto !important;
-  padding: 10px 22px !important;
+  padding: 14px 22px !important;
   font-weight: 700 !important;
   font-size: 13px !important;
   letter-spacing: 1px !important;
@@ -2319,6 +2319,10 @@ html.light-mode .fpn-btn {
 }
 html.light-mode .fpn-btn:hover { transform: translateY(-2px) !important; box-shadow: 0 8px 22px rgba(0,0,0,0.22) !important; }
 html.light-mode .fpn-btn:active { transform: scale(0.98) !important; }
+/* === CANTOS COERENTES (pílula) === */
+select, html.light-mode select, html.light-mode .crono-select { border-radius: 25px !important; padding-left: 20px !important; }
+html.light-mode #auth-email, html.light-mode #auth-password, #auth-email, #auth-password { border-radius: 25px !important; padding-left: 20px !important; }
+.cal-more-btn { border-radius: 999px !important; }
 html.light-mode .divider { height: 1px !important; border: none !important; background: rgba(255,255,255,0.85) !important; margin: 24px 0 !important; }
 html.light-mode .result-box {
   background: rgba(30,96,145,0.78) !important;
@@ -6242,34 +6246,34 @@ function instalarApp() {
     <div class="fpn-subtitle">Arquivo de ligações para resultados de provas já realizadas</div>
     <div style="margin-top:14px;">
       <a href="https://www.swimrankings.net/index.php?page=CalendarDetail&CalendarId=251875549" target="_blank" rel="noopener noreferrer"
-         style="display:block;background:#f0f7ff;border:1.5px solid #d0e4f0;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;text-decoration:none;padding:14px 16px;border-radius:8px;margin-bottom:6px;text-align:center;">
+         style="display:block;background:#f0f7ff;border:1.5px solid #d0e4f0;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;text-decoration:none;padding:10px 16px;border-radius:19px;margin-bottom:6px;text-align:center;">
         Resultados III Leiria Open Meeting
       </a>
       <a href="https://live.swimrankings.net/10999/#" target="_blank" rel="noopener noreferrer"
-         style="display:block;background:#f0f7ff;border:1.5px solid #d0e4f0;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;text-decoration:none;padding:14px 16px;border-radius:8px;margin-bottom:6px;text-align:center;">
+         style="display:block;background:#f0f7ff;border:1.5px solid #d0e4f0;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;text-decoration:none;padding:10px 16px;border-radius:19px;margin-bottom:6px;text-align:center;">
         Resultados Qualificação de Clubes 3ª Divisão
       </a>
       <a href="https://live.swimrankings.net/10242/" target="_blank" rel="noopener noreferrer"
-         style="display:block;background:#f0f7ff;border:1.5px solid #d0e4f0;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;text-decoration:none;padding:14px 16px;border-radius:8px;margin-bottom:6px;text-align:center;">
+         style="display:block;background:#f0f7ff;border:1.5px solid #d0e4f0;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;text-decoration:none;padding:10px 16px;border-radius:19px;margin-bottom:6px;text-align:center;">
         Resultados Campeonato Nacional de Verão 2026
       </a>
       <a href="https://europeanaquatics.org/paris-2026/schedule-and-results/#/athletic-sports-schedule/SWM/*" target="_blank" rel="noopener noreferrer"
-         style="display:block;background:#f0f7ff;border:1.5px solid #d0e4f0;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;text-decoration:none;padding:14px 16px;border-radius:8px;margin-bottom:6px;text-align:center;">
+         style="display:block;background:#f0f7ff;border:1.5px solid #d0e4f0;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;text-decoration:none;padding:10px 16px;border-radius:19px;margin-bottom:6px;text-align:center;">
         Resultados Europeus Paris 2026
       </a>
       <a href="https://multicrono.com/v2/circuitos/circuito-aa-algarve?ano=2026" target="_blank" rel="noopener noreferrer"
-         style="display:block;background:#f0f7ff;border:1.5px solid #d0e4f0;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;text-decoration:none;padding:14px 16px;border-radius:8px;margin-bottom:6px;text-align:center;">
+         style="display:block;background:#f0f7ff;border:1.5px solid #d0e4f0;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;text-decoration:none;padding:10px 16px;border-radius:19px;margin-bottom:6px;text-align:center;">
         Resultados Circuito de Mar Algarve 2026
       </a>
       <a href="https://taranto2026.microplustimingservices.com/#/athletic-sports-schedule/SWM/*?lang=en" target="_blank" rel="noopener noreferrer"
-         style="display:block;background:#f0f7ff;border:1.5px solid #d0e4f0;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;text-decoration:none;padding:14px 16px;border-radius:8px;margin-bottom:6px;text-align:center;">
+         style="display:block;background:#f0f7ff;border:1.5px solid #d0e4f0;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;text-decoration:none;padding:10px 16px;border-radius:19px;margin-bottom:6px;text-align:center;">
         Resultados Jogos do Mediterrâneo 2026
       </a>
     </div>
   </div>
 
   <!-- TREINADOR BUTTON -->
-  <div class="coach-wrap" style="margin-top:28px;">
+  <div class="coach-wrap" style="margin-top:19px;">
     <button class="fpn-btn coach-btn" id="coach-btn" onclick="toggleCoach()">Calculadora de Estafetas</button>
   </div>
 
@@ -9626,9 +9630,9 @@ function fecharCartaoFPN() {
 
   <!-- Acessos rápidos -->
   <div style="position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:20px 16px 0 16px;">
-    <a href="https://www.fpnatacao.pt" target="_blank" rel="noopener noreferrer" style="display:block;text-align:center;padding:11px 6px;border-radius:10px;background:#e8f4fd;border:1.5px solid #b0d4ee;color:#1a5a8a;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;">FPN</a>
-    <a href="https://www.youtube.com/@fpnatacao/streams" target="_blank" rel="noopener noreferrer" style="display:block;text-align:center;padding:11px 6px;border-radius:10px;background:#e8f4fd;border:1.5px solid #b0d4ee;color:#1a5a8a;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;">Streams FPN</a>
-    <a href="https://www.swimrankings.net/index.php" target="_blank" rel="noopener noreferrer" style="display:block;text-align:center;padding:11px 6px;border-radius:10px;background:#e8f4fd;border:1.5px solid #b0d4ee;color:#1a5a8a;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;">Swimrankings</a>
+    <a href="https://www.fpnatacao.pt" target="_blank" rel="noopener noreferrer" style="display:block;text-align:center;padding:11px 6px;border-radius:999px;background:#e8f4fd;border:1.5px solid #b0d4ee;color:#1a5a8a;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;">FPN</a>
+    <a href="https://www.youtube.com/@fpnatacao/streams" target="_blank" rel="noopener noreferrer" style="display:block;text-align:center;padding:11px 6px;border-radius:999px;background:#e8f4fd;border:1.5px solid #b0d4ee;color:#1a5a8a;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;">Streams FPN</a>
+    <a href="https://www.swimrankings.net/index.php" target="_blank" rel="noopener noreferrer" style="display:block;text-align:center;padding:11px 6px;border-radius:999px;background:#e8f4fd;border:1.5px solid #b0d4ee;color:#1a5a8a;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:none;">Swimrankings</a>
   </div>
 
   <!-- Redes Sociais -->
