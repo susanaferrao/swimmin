@@ -2323,6 +2323,9 @@ html.light-mode .fpn-btn:active { transform: scale(0.98) !important; }
 select, html.light-mode select, html.light-mode .crono-select { border-radius: 25px !important; padding-left: 20px !important; }
 html.light-mode #auth-email, html.light-mode #auth-password, #auth-email, #auth-password { border-radius: 25px !important; padding-left: 20px !important; }
 .cal-more-btn { border-radius: 999px !important; }
+/* seta única no seletor de competição da Zona do Nadador (modo claro usa a seta personalizada) */
+html.light-mode #atleta-comp-select { -webkit-appearance: none !important; appearance: none !important; padding-right: 44px !important; }
+html:not(.light-mode) #atleta-comp-select { appearance: auto !important; }
 html.light-mode .divider { height: 1px !important; border: none !important; background: rgba(255,255,255,0.85) !important; margin: 24px 0 !important; }
 html.light-mode .result-box {
   background: rgba(30,96,145,0.78) !important;
@@ -2728,23 +2731,20 @@ document.addEventListener("click", function(e) {
 
   <!-- Botões Resultados — visíveis durante as provas; depois de terminar, passar para "Resultados de Competições Anteriores" e remover daqui -->
   <div style="margin:0 0 14px 0;">
-    <a href="http://anlisboa.info/results/2026-27/anl04-2627-cabs-pc/" target="_blank" rel="noopener noreferrer"
+    <a href="https://live.swimrankings.net/11541/" target="_blank" rel="noopener noreferrer"
        style="display:block;background:linear-gradient(135deg,#ff8c00,#e65c00);color:#fff;font-family:'DM Sans',sans-serif;font-weight:700;font-size:12.5px;line-height:1.35;letter-spacing:1px;text-transform:uppercase;text-decoration:none;padding:10px 18px;border-radius:19px;box-shadow:0 4px 16px rgba(230,92,0,0.35);cursor:pointer;text-align:center;margin-bottom:8px;">
-      RESULTADOS · Regionais de Lisboa
+      RESULTADOS · Territorial Braga
     </a>
-    <a href="https://analgarve.com/resultados/2627/04/aquatempo.html" target="_blank" rel="noopener noreferrer"
+    <a href="https://live.swimrankings.net/11018/" target="_blank" rel="noopener noreferrer"
        style="display:block;background:linear-gradient(135deg,#ff8c00,#e65c00);color:#fff;font-family:'DM Sans',sans-serif;font-weight:700;font-size:12.5px;line-height:1.35;letter-spacing:1px;text-transform:uppercase;text-decoration:none;padding:10px 18px;border-radius:19px;box-shadow:0 4px 16px rgba(230,92,0,0.35);cursor:pointer;text-align:center;margin-bottom:8px;">
-      RESULTADOS · XII Algarve Meeting
+      RESULTADOS · Distrital Leiria
     </a>
-    <a href="https://provas.annp.pt/provas2627/04/" target="_blank" rel="noopener noreferrer"
+    <a href="https://live.swimrankings.net/11174/" target="_blank" rel="noopener noreferrer"
        style="display:block;background:linear-gradient(135deg,#ff8c00,#e65c00);color:#fff;font-family:'DM Sans',sans-serif;font-weight:700;font-size:12.5px;line-height:1.35;letter-spacing:1px;text-transform:uppercase;text-decoration:none;padding:10px 18px;border-radius:19px;box-shadow:0 4px 16px rgba(230,92,0,0.35);cursor:pointer;text-align:center;margin-bottom:8px;">
-      RESULTADOS · Territoriais Norte Juv/Jun/Sen
-    </a>
-    <a href="https://live.swimrankings.net/11638/" target="_blank" rel="noopener noreferrer"
-       style="display:block;background:linear-gradient(135deg,#ff8c00,#e65c00);color:#fff;font-family:'DM Sans',sans-serif;font-weight:700;font-size:12.5px;line-height:1.35;letter-spacing:1px;text-transform:uppercase;text-decoration:none;padding:10px 18px;border-radius:19px;box-shadow:0 4px 16px rgba(230,92,0,0.35);cursor:pointer;text-align:center;margin-bottom:8px;">
-      RESULTADOS · Distrital Santarém
+      RESULTADOS · Regional Sines
     </a>
   </div>
+
   <!-- Botão VER EM DIRETO — oculto, provas terminadas. Manter para reutilizar na próxima época.
   <div style="margin:0 0 14px 0;">
     <a href="https://natacaotv.pt/live2.php" target="_blank" rel="noopener noreferrer"
@@ -3013,7 +3013,7 @@ document.addEventListener("click", function(e) {
         <div id="atleta-panel-minimos" style="display:none;">
           <div id="atleta-comp-selector" style="display:none;">
             <div style="font-size:10px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#7ab8d4;margin-bottom:6px;">Ver mínimos para <span style="opacity:0.7;">&middot; Época 2026/2027</span></div>
-            <select id="atleta-comp-select" onchange="selecionarCompAtleta(this.value)" style="width:100%;padding:12px 14px;border-radius:10px;background:#f0f7ff;border:1.5px solid #c0d8ee;color:#1a3a4a;font-size:15px;font-weight:600;cursor:pointer;appearance:auto;"></select>
+            <select id="atleta-comp-select" onchange="selecionarCompAtleta(this.value)" style="width:100%;padding:12px 14px;border-radius:10px;background:#f0f7ff;border:1.5px solid #c0d8ee;color:#1a3a4a;font-size:15px;font-weight:600;cursor:pointer;"></select>
             <div class="hint-box" style="margin-top:12px;">
               <div class="hint-box-text">Para participação nas competições, ter em conta a data de obtenção dos tempos.</div>
             </div>
@@ -6245,6 +6245,22 @@ function instalarApp() {
     <div class="fpn-title">Resultados de Competições Anteriores</div>
     <div class="fpn-subtitle">Arquivo de ligações para resultados de provas já realizadas</div>
     <div style="margin-top:14px;">
+      <a href="https://live.swimrankings.net/11638/" target="_blank" rel="noopener noreferrer"
+         style="display:block;background:#f0f7ff;border:1.5px solid #d0e4f0;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;text-decoration:none;padding:10px 16px;border-radius:19px;margin-bottom:6px;text-align:center;">
+        Resultados Distrital Santarém
+      </a>
+      <a href="https://provas.annp.pt/provas2627/04/" target="_blank" rel="noopener noreferrer"
+         style="display:block;background:#f0f7ff;border:1.5px solid #d0e4f0;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;text-decoration:none;padding:10px 16px;border-radius:19px;margin-bottom:6px;text-align:center;">
+        Resultados Territoriais Norte Juv/Jun/Sen
+      </a>
+      <a href="https://analgarve.com/resultados/2627/04/aquatempo.html" target="_blank" rel="noopener noreferrer"
+         style="display:block;background:#f0f7ff;border:1.5px solid #d0e4f0;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;text-decoration:none;padding:10px 16px;border-radius:19px;margin-bottom:6px;text-align:center;">
+        Resultados XII Algarve Meeting
+      </a>
+      <a href="http://anlisboa.info/results/2026-27/anl04-2627-cabs-pc/" target="_blank" rel="noopener noreferrer"
+         style="display:block;background:#f0f7ff;border:1.5px solid #d0e4f0;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;text-decoration:none;padding:10px 16px;border-radius:19px;margin-bottom:6px;text-align:center;">
+        Resultados Regionais de Lisboa
+      </a>
       <a href="https://www.swimrankings.net/index.php?page=CalendarDetail&CalendarId=251875549" target="_blank" rel="noopener noreferrer"
          style="display:block;background:#f0f7ff;border:1.5px solid #d0e4f0;color:#1a3a4a;font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;text-decoration:none;padding:10px 16px;border-radius:19px;margin-bottom:6px;text-align:center;">
         Resultados III Leiria Open Meeting
