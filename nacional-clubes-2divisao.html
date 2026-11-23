@@ -1708,6 +1708,7 @@ try{
   if(localStorage.getItem('swimmin-theme')==='dark'){
     document.body.classList.remove('tema-claro');
     document.getElementById('btnTema').textContent='Modo claro';
+    renderChart(); // recalcula as cores do gráfico para o tema escuro
   }
 }catch(e){}
 

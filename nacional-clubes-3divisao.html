@@ -223,7 +223,7 @@
   <h3>Classificação Geral</h3>
   <p class="small" id="classGeralSub"></p>
   <div class="table-scroll"><table id="tabelaClassGeral" class="wide"></table></div>
-  <p class="small" style="margin-top:6px;">P = Pontos &nbsp;·&nbsp; D = Diferença para o próximo &nbsp;·&nbsp; PP = Pontos Previstos &nbsp;·&nbsp; CFP = Classificação Final Prevista &nbsp;·&nbsp; ↑CP = Melhor Classificação Possível no campeonato &nbsp;·&nbsp; ↓CP = Pior Classificação Possível no campeonato &nbsp;·&nbsp; Zona verde = os 4 primeiros sobem à 2ª divisão</p>
+  <p class="small" style="margin-top:6px;">P = Pontos &nbsp;·&nbsp; D = Diferença para o próximo &nbsp;·&nbsp; PP = Pontos Previstos &nbsp;·&nbsp; CFP = Classificação Final Prevista &nbsp;·&nbsp; ↑CP = Melhor Classificação Possível no campeonato &nbsp;·&nbsp; ↓CP = Pior Classificação Possível no campeonato &nbsp;·&nbsp; Zona verde = os 4 primeiros sobem à 2ª divisão · zona vermelha = os 4 últimos descem</p>
 </div>
 
 <div class="card">
@@ -288,7 +288,8 @@ const DIVISAO_TXT = "3ª Divisão";
 const NSERIES = 4;
 const SERIES = ["serie_1","serie_2","serie_3","serie_4"];
 const NSESSOES = 2;
-const ZONA_SUBIDA = 4; // os 4 primeiros sobem à 2ª divisão; não há descidas
+const ZONA_SUBIDA = 4; // os 4 primeiros sobem à 2ª divisão
+const ZONA_DESCIDA = 4; // os 4 últimos descem (zona vermelha)
 
 const CORES = ["#00c4cc","#ff8c00","#e74c3c","#27ae60","#b19cd9","#f39c12"];
 const CORES_CLUBES = {"AEJ": "#305090", "Aljustrelense": "#1090f0", "BUZIOS Coruche": "#f01030", "BA Leiria": "#d03030", "Bombeiros P. Delgada": "#6b8fa8", "Bombeiros Estoris": "#f03030", "CPCD": "#1010b0", "CASPAE": "#101090", "CD Campinho": "#105030", "CDE Água de Pau": "#1070b0", "CD Nacional": "#f0b010", "CD Estarreja": "#705030", "CN Ponta Delgada": "#3050b0", "Columbófila Cantanhedense": "#f0d010", "FC Ferreiras": "#1050b0", "Física Torres Vedras": "#f03030", "Gafanha da Encarnação": "#103090", "Gualdim Pais": "#305070", "Lagoa Académico": "#505010", "Laranjeiro": "#503010", "Litoral Alentejano": "#1090f0", "Miranda do Corvo": "#f01030", "Natação Valongo": "#d03010", "NC Fafe": "#107070", "Natação Lagos": "#1070b0", "Naval Praia da Vitória": "#f0b030", "Naval Setubalense": "#d03010", "Naval da Horta": "#f01010", "Naval de Peniche": "#101090", "O Crasto": "#105010", "Penafiel": "#105090", "Piedense": "#50b050", "RIA Aqua Tavira": "#10f0d0", "Rio Maior": "#1070d0", "Sanjoanense": "#f0b030", "Sporting Espinho": "#b09050", "Torres Novas": "#1010d0", "Tubarões de Gaia": "#103070", "Viana Natação": "#101070", "Vieirense": "#f01030", "Viver Santarém": "#107090", "Aquático Silves": "#d9622b", "Benedita": "#f0e61e", "CCD Serta": "#2f9bd6"};
@@ -1009,6 +1010,12 @@ function validarProva(){
       if(estavaDespromocao !== estaDespromocao){
         add('despromocao', estaDespromocao ? `${c} entra na zona de subida (${posDepois[c]}º lugar).` : `${c} sai da zona de subida (agora em ${posDepois[c]}º lugar).`);
       }
+      // 3b. entrada/saída da zona de descida (últimos 4)
+      const _nC = d.clubes.length;
+      const estavaDesc = posAntes[c] > _nC-ZONA_DESCIDA, estaDesc = posDepois[c] > _nC-ZONA_DESCIDA;
+      if(estavaDesc !== estaDesc){
+        add('zonadescida', estaDesc ? `${c} entra na zona de descida (${posDepois[c]}º lugar).` : `${c} sai da zona de descida (agora em ${posDepois[c]}º lugar).`);
+      }
       // 4. grandes subidas/descidas (3 ou mais posições)
       const diff = posAntes[c] - posDepois[c];
       if(Math.abs(diff)>=3){
@@ -1067,12 +1074,13 @@ function reabrirProva(){
 // ---------- MENSAGENS AUTOMÁTICAS: SELEÇÃO E ENVIO ----------
 const CORES_TIPO_MENSAGEM = {
   lider:'#D4AF37', empate:'#D4AF37', top3:'#00c4cc', despromocao:'#27ae60',
-  subida:'#27ae60', descida:'#e74c3c', expectativa_boa:'#9b59b6', expectativa_ma:'#e67e22', decidida:'#0090e0'
+  subida:'#27ae60', descida:'#e74c3c', zonadescida:'#e74c3c', expectativa_boa:'#9b59b6', expectativa_ma:'#e67e22', decidida:'#0090e0'
 };
 const LEGENDA_TIPO_MENSAGEM = [
   {cor:'#D4AF37', texto:'Liderança (novo líder ou empate)'},
   {cor:'#00c4cc', texto:'Entrada/saída do top 3'},
   {cor:'#27ae60', texto:'Entrada/saída da zona de subida (top 4)'},
+  {cor:'#e74c3c', texto:'Entrada/saída da zona de descida (últimos 4)'},
   {cor:'#e74c3c', texto:'Descida na tabela'},
   {cor:'#27ae60', texto:'Subida na tabela'},
   {cor:'#9b59b6', texto:'Superou a expectativa numa prova'},
@@ -1204,6 +1212,9 @@ function gerarResumoSessao(genero, sessaoNum){
     const promovidos = final.ranking.slice(0,ZONA_SUBIDA);
     const fdesp = fraseGrupo(promovidos,'sobe','sobem');
     if(fdesp) linhas.push(fdesp+' à 2ª divisão.');
+    const descidos = final.ranking.slice(d.clubes.length-ZONA_DESCIDA);
+    const fdesc = fraseGrupo(descidos,'desce','descem');
+    if(fdesc) linhas.push(fdesc+'.');
     const mvps = calcularMVP(d, d.provas);
     if(mvps.length){
       const maxPts = Math.max(...mvps.map(m=>m.total));
@@ -1257,6 +1268,13 @@ function gerarResumoSessao(genero, sessaoNum){
   const fEntraDesp = fraseGrupo(entramDesp,'entra','entram'); if(fEntraDesp) linhas.push(fEntraDesp+' na zona de subida (top 4).');
   const fSaiDesp = fraseGrupo(saemDesp,'sai','saem'); if(fSaiDesp) linhas.push(fSaiDesp+' da zona de subida (top 4).');
   const fMantemDesp = fraseGrupo(mantemDesp,'mantém','mantêm'); if(fMantemDesp && sessaoNum>1) linhas.push(fMantemDesp+' na zona de subida (top 4).');
+
+  {
+    const nC = d.clubes.length;
+    const eD = d.clubes.filter(c=>posAntes[c]>nC-ZONA_DESCIDA), aD = d.clubes.filter(c=>posDepois[c]>nC-ZONA_DESCIDA);
+    const fE = fraseGrupo(aD.filter(c=>!eD.includes(c)),'entra','entram'); if(fE) linhas.push(fE+' na zona de descida (últimos 4).');
+    const fS = fraseGrupo(eD.filter(c=>!aD.includes(c)),'sai','saem'); if(fS) linhas.push(fS+' da zona de descida (últimos 4).');
+  }
 
   if(sessaoNum>1){
     d.clubes.forEach(c=>{
@@ -1561,6 +1579,7 @@ function renderTabelaClassificacao(){
     ${ranking.map((c,i)=>{
       const pos = i+1;
       const emDespromocao = pos <= ZONA_SUBIDA;
+      const emDescida = pos > ranking.length - ZONA_DESCIDA;
       const proximoClube = ranking[i+1];
       const diferenca = proximoClube ? (acumulado[c] - acumulado[proximoClube]) : null;
 
@@ -1569,10 +1588,11 @@ function renderTabelaClassificacao(){
       else if(pos===2) corBarra = '#B0B0B8';  // prata
       else if(pos===3) corBarra = '#CD7F32';  // bronze
       else if(emDespromocao) corBarra = '#27ae60'; // zona de subida
+      else if(emDescida) corBarra = '#e74c3c'; // zona de descida
 
       return `
-      <tr style="${emDespromocao ? 'background:rgba(39,174,96,.08);' : ''}">
-        <td style="padding:0; width:5px;"><div title="${emDespromocao?'Zona de subida (top 4)':(pos<=3?pos+'º lugar':'')}" style="width:5px; min-height:28px; height:100%; border-radius:4px; background:${corBarra};"></div></td>
+      <tr style="${emDespromocao ? 'background:rgba(39,174,96,.08);' : emDescida ? 'background:rgba(231,76,60,.08);' : ''}">
+        <td style="padding:0; width:5px;"><div title="${emDespromocao?'Zona de subida (top 4)':emDescida?'Zona de descida (últimos 4)':(pos<=3?pos+'º lugar':'')}" style="width:5px; min-height:28px; height:100%; border-radius:4px; background:${corBarra};"></div></td>
         <td class="num">${pos}º</td>
         <td style="cursor:pointer;" onclick="showClube('${c}')">${LOGOS[c] ? `<img src="${LOGOS[c]}" style="width:22px;height:22px;object-fit:contain;vertical-align:middle;border-radius:4px;">` : ''}</td>
         <td style="cursor:pointer; max-width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:12px;" title="${c}" onclick="showClube('${c}')">${c}</td>
@@ -1582,7 +1602,7 @@ function renderTabelaClassificacao(){
         <td class="num">${previsaoFinal[c].pontos}</td>
         <td class="num">${previsaoFinal[c].posicaoGeral}º</td>
         <td class="num" style="color:${melhorPior[c].melhor<=ZONA_SUBIDA?'var(--green)':'var(--text-dim)'};">${melhorPior[c].melhor}º</td>
-        <td class="num" style="color:${melhorPior[c].pior<=ZONA_SUBIDA?'var(--green)':'var(--text-dim)'};">${melhorPior[c].pior}º</td>
+        <td class="num" style="color:${melhorPior[c].pior<=ZONA_SUBIDA?'var(--green)':melhorPior[c].pior>ranking.length-ZONA_DESCIDA?'#e74c3c':'var(--text-dim)'};">${melhorPior[c].pior}º</td>
       </tr>`;
     }).join("")}
   `;
@@ -1702,6 +1722,7 @@ try{
   if(localStorage.getItem('swimmin-theme')==='dark'){
     document.body.classList.remove('tema-claro');
     document.getElementById('btnTema').textContent='Modo claro';
+    renderChart(); // recalcula as cores do gráfico para o tema escuro
   }
 }catch(e){}
 
