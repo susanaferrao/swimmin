@@ -656,7 +656,7 @@ function renderChart(){
         svgContent += `<image href="${logo}" x="${px-s/2}" y="${py-s/2}" width="${s}" height="${s}" clip-path="url(#${clipId})" style="cursor:pointer" onclick="toggleSelecaoClube('${clube}')"/>`;
         svgContent += `</g>`;
       } else if(provaDoPonto.id!=null){
-        svgContent += `<circle cx="${px}" cy="${py}" r="4" fill="${cor}" stroke="${corContornoPonto}" stroke-width="1.5" opacity="${opacidade}" style="cursor:pointer" onclick="showProva('${provaDoPonto.id}')"/>`;
+        svgContent += `<circle cx="${px}" cy="${py}" r="4" fill="${cor}" stroke="${corContornoPonto}" stroke-width="1.5" opacity="${opacidade}" style="cursor:pointer" onclick="toggleSelecaoClube('${clube}')"/>`;
       } else {
         svgContent += `<circle cx="${px}" cy="${py}" r="4" fill="${cor}" stroke="${corContornoPonto}" stroke-width="1.5" opacity="${opacidade}"/>`;
       }
@@ -708,6 +708,7 @@ function showProva(provaId){
       }).join("")}
     </table></div>
   `;
+  panel.scrollIntoView({behavior:"smooth", block:"start"});
 }
 
 // ---------- PAINEL: DETALHE POR CLUBE ----------
