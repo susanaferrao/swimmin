@@ -536,24 +536,38 @@ function limparSelecao(){
 }
 
 
-// Eixo das posições sempre visível: quando o gráfico é deslocado para a direita, repete a coluna 1º, 2º, 3º... fixa à esquerda
+// Eixo das posições sempre visível (esquerda e direita): repete as colunas 1º, 2º, 3º... fixas nas margens quando o gráfico é deslocado
+function ajustarEixosFixos(){
+  try{
+    const box=document.getElementById('chartScroll'), L=document.getElementById('yAxisL'), R=document.getElementById('yAxisR'), sticky=document.getElementById('yAxisSticky');
+    if(!box||!L||!R||!sticky) return;
+    sticky.style.display='block';
+    L.style.display = box.scrollLeft>4 ? 'block':'none';
+    R.style.display = (box.scrollLeft+box.clientWidth) < (box.scrollWidth-4) ? 'block':'none';
+  }catch(e){}
+}
 function atualizarEixoFixo(){
   try{
-    const svg=document.getElementById('chart'), box=document.getElementById('chartScroll'), inner=document.getElementById('yAxisInner'), sticky=document.getElementById('yAxisSticky');
-    const g=window.__chartGeom; if(!svg||!box||!inner||!sticky||!g) return;
+    const svg=document.getElementById('chart'), box=document.getElementById('chartScroll'), inner=document.getElementById('yAxisInner');
+    const g=window.__chartGeom; if(!svg||!box||!inner||!g) return;
     const sc=svg.getBoundingClientRect().width/g.W; if(!sc) return;
     const claro=document.body.classList.contains('tema-claro');
     const st=getComputedStyle(document.body);
     const corEixo=st.getPropertyValue('--eixo').trim()||'#8aa', corTxt=st.getPropertyValue('--texto-eixo').trim()||'#789';
     const bg=claro?'rgba(246,250,253,.96)':'rgba(15,39,72,.96)';
     const y=p=>g.padT+((p-1)/Math.max(1,g.n-1))*(g.H-g.padT-g.padB-16);
-    let h=`<div style="position:absolute;left:0;top:0;width:${(g.padL-8)*sc}px;height:${g.H*sc}px;background:${bg};border-right:1px solid ${corEixo};"></div>`;
-    for(let p=1;p<=g.n;p++) h+=`<div style="position:absolute;left:0;width:${(g.padL-10)*sc}px;text-align:right;top:${(y(p)-7)*sc}px;font:${10*sc}px/${14*sc}px 'DM Sans',sans-serif;color:${corTxt};">${p}º</div>`;
-    inner.innerHTML=h;
-    sticky.style.display = box.scrollLeft>4 ? 'block':'none';
+    const wL=(g.padL-8)*sc, wR=(g.padR-2)*sc, fonte=`${10*sc}px/${14*sc}px 'DM Sans',sans-serif`;
+    let hl=`<div style="position:absolute;left:0;top:0;width:${wL}px;height:${g.H*sc}px;background:${bg};border-right:1px solid ${corEixo};"></div>`;
+    let hr=`<div style="position:absolute;left:0;top:0;width:${wR}px;height:${g.H*sc}px;background:${bg};border-left:1px solid ${corEixo};"></div>`;
+    for(let p=1;p<=g.n;p++){
+      hl+=`<div style="position:absolute;left:0;width:${(g.padL-10)*sc}px;text-align:right;top:${(y(p)-7)*sc}px;font:${fonte};color:${corTxt};">${p}º</div>`;
+      hr+=`<div style="position:absolute;left:${8*sc}px;top:${(y(p)-7)*sc}px;font:${fonte};color:${corTxt};white-space:nowrap;">${p}º</div>`;
+    }
+    inner.innerHTML=`<div id="yAxisL" style="position:absolute;left:0;top:0;display:none;">${hl}</div><div id="yAxisR" style="position:absolute;left:${box.clientWidth-wR}px;top:0;display:none;">${hr}</div>`;
+    ajustarEixosFixos();
   }catch(e){}
 }
-document.addEventListener('DOMContentLoaded',()=>{const b=document.getElementById('chartScroll'); if(b) b.addEventListener('scroll',atualizarEixoFixo,{passive:true}); window.addEventListener('resize',atualizarEixoFixo);});
+document.addEventListener('DOMContentLoaded',()=>{const b=document.getElementById('chartScroll'); if(b) b.addEventListener('scroll',ajustarEixosFixos,{passive:true}); window.addEventListener('resize',atualizarEixoFixo);});
 function renderChart(){
   const d = DATA[genero];
   const linhas = calcularSeries(d.clubes, d.provas);
@@ -650,7 +664,7 @@ function renderChart(){
   });
 
   svg.innerHTML = svgContent;
-  window.__chartGeom={W,H,padL,padT,padB,n:nClubes};
+  window.__chartGeom={W,H,padL,padR,padT,padB,n:nClubes};
   atualizarEixoFixo();
 
   // legenda
