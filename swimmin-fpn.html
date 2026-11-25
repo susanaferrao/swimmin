@@ -14,8 +14,8 @@
 <link rel="manifest" id="manifest-link">
 <script>
 /* ===== NACIONAL DE CLUBES — INTERRUPTOR =====
-   false = botões "Brevemente" (bloqueados). true = abrem as páginas normalmente. */
-var NACIONAL_CLUBES_DESBLOQUEADO = false;
+   true = botões abrem as páginas. false = bloqueados (10 cliques seguidos num botão abrem-no, só para teste). */
+var NACIONAL_CLUBES_DESBLOQUEADO = true;
 </script>
 <script>
 (function() {
@@ -2328,9 +2328,9 @@ html.light-mode .fpn-btn:active { transform: scale(0.98) !important; }
 .nc-wrap { margin: 0 0 16px 0; display: flex; flex-direction: column; gap: 12px; }
 .nc-btn {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  min-height: 108px; padding: 16px 24px; border-radius: 54px; text-align: center; cursor: pointer;
-  background: linear-gradient(135deg, #ff9d1a, #e65c00); color: #fff; text-decoration: none;
-  box-shadow: 0 10px 28px rgba(230,92,0,0.42);
+  min-height: 88px; padding: 12px 24px; border-radius: 44px; text-align: center; cursor: pointer;
+  background: linear-gradient(135deg, #ffd84a, #ffa400); color: #111; text-decoration: none;
+  box-shadow: 0 10px 26px rgba(255,164,0,0.45);
   -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none;
   transition: transform .12s ease;
 }
@@ -2752,8 +2752,20 @@ document.addEventListener("click", function(e) {
   <!-- Nacional de Clubes — botões de destaque. Interruptor: NACIONAL_CLUBES_DESBLOQUEADO (topo do ficheiro).
        Botões laranja de resultados "ao vivo": usar o formato dos botões do arquivo "Resultados de Competições Anteriores". -->
   <div class="nc-wrap">
-    <a class="nc-btn" data-nc="3" role="button" tabindex="0"><span class="nc-btn-title">Nacional de Clubes<span class="nc-btn-div">3.ª Divisão</span></span><span class="nc-btn-sub">Brevemente</span></a>
-    <a class="nc-btn" data-nc="2" role="button" tabindex="0"><span class="nc-btn-title">Nacional de Clubes<span class="nc-btn-div">2.ª Divisão</span></span><span class="nc-btn-sub">Brevemente</span></a>
+    <a class="nc-btn" data-nc="3" role="button" tabindex="0"><span class="nc-btn-title">Nacional de Clubes<span class="nc-btn-div">3.ª Divisão</span></span></a>
+    <a class="nc-btn" data-nc="2" role="button" tabindex="0"><span class="nc-btn-title">Nacional de Clubes<span class="nc-btn-div">2.ª Divisão</span></span></a>
+  </div>
+
+  <!-- Botões Resultados — visíveis durante as provas; depois de terminar, passar para "Resultados de Competições Anteriores" e remover daqui -->
+  <div style="margin:0 0 14px 0;">
+    <a href="https://live.swimrankings.net/11000/" target="_blank" rel="noopener noreferrer"
+       style="display:block;background:linear-gradient(135deg,#ff8c00,#e65c00);color:#fff;font-family:'DM Sans',sans-serif;font-weight:700;font-size:12.5px;line-height:1.35;letter-spacing:1px;text-transform:uppercase;text-decoration:none;padding:10px 18px;border-radius:19px;box-shadow:0 4px 16px rgba(230,92,0,0.35);cursor:pointer;text-align:center;margin-bottom:8px;">
+      RESULTADOS · Clubes 3.ª Divisão
+    </a>
+    <a href="https://live.swimrankings.net/11002/" target="_blank" rel="noopener noreferrer"
+       style="display:block;background:linear-gradient(135deg,#ff8c00,#e65c00);color:#fff;font-family:'DM Sans',sans-serif;font-weight:700;font-size:12.5px;line-height:1.35;letter-spacing:1px;text-transform:uppercase;text-decoration:none;padding:10px 18px;border-radius:19px;box-shadow:0 4px 16px rgba(230,92,0,0.35);cursor:pointer;text-align:center;margin-bottom:8px;">
+      RESULTADOS · Clubes 2.ª Divisão
+    </a>
   </div>
 
   <!-- Botão VER EM DIRETO — oculto, provas terminadas. Manter para reutilizar na próxima época.
@@ -5435,10 +5447,6 @@ if ('serviceWorker' in navigator) {
       (function (el) {
         el.addEventListener('click', function (e) { e.preventDefault(); tocar(el); });
         el.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tocar(el); } });
-        if (NACIONAL_CLUBES_DESBLOQUEADO) {
-          var sub = el.querySelector('.nc-btn-sub');
-          if (sub) sub.textContent = 'Classificação · Previsões';
-        }
       })(els[i]);
     }
   }
