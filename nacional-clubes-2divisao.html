@@ -542,7 +542,7 @@ function ajustarEixosFixos(){
     const box=document.getElementById('chartScroll'), L=document.getElementById('yAxisL'), R=document.getElementById('yAxisR'), sticky=document.getElementById('yAxisSticky');
     if(!box||!L||!R||!sticky) return;
     sticky.style.display='block';
-    L.style.display = box.scrollLeft>4 ? 'block':'none';
+    L.style.display = 'none'; // só a barra da direita fica fixa
     R.style.display = (box.scrollLeft+box.clientWidth) < (box.scrollWidth-4) ? 'block':'none';
   }catch(e){}
 }
