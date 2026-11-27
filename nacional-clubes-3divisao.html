@@ -367,6 +367,13 @@ function ligarSincronizacao(){
         const remoto = JSON.parse(doc.data().json);
         // datas não sobrevivem ao JSON — reconstruir validadoEm como objeto Date
         remoto.provas.forEach(p=>{ if(p.validadoEm) p.validadoEm = new Date(p.validadoEm); });
+        // garantir o CPCD nas estafetas masculinas (P12 e P26), caso falte nos dados guardados
+        if(g==='masculino'){
+          [[12,'35381'],[26,'41646']].forEach(([po,ti])=>{
+            const pv = remoto.provas.find(p=>p.provaOficial===po);
+            if(pv && pv.estafeta && !pv.inscricoes.some(i=>i.clube==='CPCD')) pv.inscricoes.push({clube:'CPCD', nadador:'Estafeta', tempo_insc:ti, serie:null});
+          });
+        }
         DATA[g] = remoto;
         firestorePronto[g] = true;
       } else {
