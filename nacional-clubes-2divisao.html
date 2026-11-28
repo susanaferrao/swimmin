@@ -1471,6 +1471,7 @@ async function publicarResumoSessao(){
 function renderResumosSessao(){
   const card = document.getElementById('cardResumosSessao');
   const lista = document.getElementById('listaResumosSessao');
+  card.style.display='none'; return; // secção "Resumos de Sessão" retirada da vista pública
   const resumos = RESUMOS_SESSAO[genero] || {};
   const sessoesComResumo = [1,2,3,4].filter(s=>resumos[`sessao${s}`]);
   if(!sessoesComResumo.length){ card.style.display='none'; return; }
