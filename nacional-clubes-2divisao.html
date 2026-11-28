@@ -1655,7 +1655,7 @@ async function importarResultados(){
     for(const it of itens){
       const g = it.g==='M' ? 'masculino' : 'feminino';
       const d = DATA[g];
-      const prova = d.provas.find(p=>p.provaOficial===it.p);
+      const prova = d.provas.find(p=>p.id==='p'+it.p);
       const etiqueta = `Prova ${it.p} (${g})`;
       if(!prova){ linhas.push(`✗ ${etiqueta}: não encontrada.`); continue; }
       if(prova.validado){ linhas.push(`– ${etiqueta} ${prova.nome}: já estava validada, ignorada (reabre-a primeiro se quiseres substituir).`); continue; }
